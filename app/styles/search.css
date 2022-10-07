@@ -1,0 +1,31 @@
+.flight {
+  border-radius: 1rem;
+  padding: 1rem;
+  border: solid 1px #dcdcdc;
+  margin: 1rem 0;
+}
+.flight-search {
+  border-radius: 1rem;
+  padding: 1rem;
+  border: solid 1px #dcdcdc;
+}
+.flight-search-controls {
+  display: flex;
+}
+.flight-search-controls > * {
+  flex: 1;
+}
+.flight-layout {
+  display: flex;
+  flex-direction: row;
+}
+.flight-layout > div {
+  flex: 1;
+}
+.flight-price {
+  display: flex;
+  flex-direction: row;
+}
+.flight-layout > * {
+  flex: 1;
+}
