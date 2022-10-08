@@ -34,4 +34,7 @@
   .flight-layout {
     display: block;
   }
+  .flight-search-controls {
+    display: block;
+  }
 }
