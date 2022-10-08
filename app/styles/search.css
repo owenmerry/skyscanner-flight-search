@@ -29,3 +29,9 @@
 .flight-layout > * {
   flex: 1;
 }
+
+@media only screen and (max-width: 600px) {
+  .flight-layout {
+    display: block;
+  }
+}
