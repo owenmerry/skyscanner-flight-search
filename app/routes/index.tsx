@@ -1,4 +1,7 @@
 import { useState, useRef } from 'react';
+import type { LoaderFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { skyscanner } from '~/helpers/sdk/flight';
 import type { SearchSDK } from '~/helpers/sdk/flight';
 import styles from '~/styles/search.css';
@@ -11,7 +14,16 @@ export function links() {
   return [{ rel: 'stylesheet', href: styles }];
 }
 
+export const loader: LoaderFunction = async ({ request, context }) => {
+  const apiUrl = process.env.SKYSCANNER_APP_API_URL;
+
+  return json({
+    apiUrl
+  });
+};
+
 export default function Index() {
+  const { apiUrl } = useLoaderData();
   const sessionTokenSaved = useRef<string>('');
   const [search, setSearch] = useState<SearchSDK | false>(false);
   const [searching, setSearching] = useState<boolean>(false);
@@ -33,7 +45,7 @@ export default function Index() {
 
   const pollFlights = async (token: string) => {
     console.log('poll search - start');
-    const res = await fetch(`http://localhost:3000/poll/${token}`);
+    const res = await fetch(`${apiUrl}/poll/${token}`);
     const json = await res.json();
     console.log('poll search', json);
 
@@ -61,7 +73,7 @@ export default function Index() {
     setResults(10);
     try {
       const res = await fetch(
-        `http://localhost:3000/create?from=${query.from}&to=${
+        `${apiUrl}/create?from=${query.from}&to=${
           query.to
         }&depart=${query.depart}${
           tripType === 'return' ? `&return=${query.return}` : ''
