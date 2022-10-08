@@ -5,12 +5,14 @@ import type { Place } from '~/helpers/sdk/autosuggest';
 
 interface LocationProps {
   name?: string;
+  apiUrl?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
 }
 
 export const Location = ({
   name = 'location',
+  apiUrl = '',
   defaultValue,
   onChange,
 }: LocationProps): JSX.Element => {
@@ -20,7 +22,7 @@ export const Location = ({
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     onChange && onChange(e.target.value);
-    const originResults = await searchAutoSuggest(e.target.value);
+    const originResults = await searchAutoSuggest(e.target.value, apiUrl);
 
     setSearchOrigin(originResults);
   };

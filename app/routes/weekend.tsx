@@ -107,6 +107,7 @@ export default function Weekend() {
       <Location
         name="To"
         onChange={(value) => handleQueryChange(value)}
+        apiUrl={apiUrl}
       />
 
       {searching && (

@@ -22,10 +22,10 @@ export interface Place {
   untransliteratedResultingPhrase: string;
 }
 
-export const searchAutoSuggest = async (searchTerm: string) => {
+export const searchAutoSuggest = async (searchTerm: string, apiUrl: string) => {
   if (searchTerm === '') return [];
   const res = await fetch(
-    `http://localhost:3000/autosuggest/flights/${searchTerm}`,
+    `${apiUrl}/autosuggest/flights/${searchTerm}`,
   );
   const json: SkyscannerAPIAutoSuggestResponse = await res.json();
 

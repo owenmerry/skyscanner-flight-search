@@ -13,10 +13,12 @@ export interface Query {
 
 interface FlightSearchControlsProps {
   onSubmit?: (query: Query) => void;
+  apiUrl?: string;
 }
 
 export const FlightSearchControls = ({
   onSubmit,
+  apiUrl = '',
 }: FlightSearchControlsProps): JSX.Element => {
   const [tripType, setTripType] = useState('single');
   const [query, setQuery] = useState<Query>({
@@ -68,11 +70,13 @@ export const FlightSearchControls = ({
         name="From"
         defaultValue={'London'}
         onChange={(value) => handleQueryChange(value, 'from')}
+        apiUrl={apiUrl}
       />
       <Location
         name="To"
         defaultValue={'Edinburgh'}
         onChange={(value) => handleQueryChange(value, 'to')}
+        apiUrl={apiUrl}
       />
       <Date
         name="Depart"

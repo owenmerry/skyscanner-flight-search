@@ -93,7 +93,7 @@ export default function Search() {
     <div>
       <h1>Welcome to My Flight Search</h1>
 
-     <FlightSearchControls onSubmit={handleSearch} />
+     <FlightSearchControls onSubmit={handleSearch} apiUrl={apiUrl} />
 
       {searching && (
         <div>
