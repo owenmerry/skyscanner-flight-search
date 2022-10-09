@@ -7,8 +7,8 @@ import type { SearchSDK } from '~/helpers/sdk/flight';
 import styles from '~/styles/search.css';
 
 import { Loading } from '~/components/loading';
-import { FlightSearchControls } from '~/components/flight-controls';
-import type { Query } from '~/components/flight-controls';
+import { FlightSearchControls } from '~/components/flight-search-controls';
+import type { FlightQuery } from '~/types/search';
 
 export function links() {
   return [{ rel: 'stylesheet', href: styles }];
@@ -32,13 +32,10 @@ export default function Search() {
   const [results, setResults] = useState(10);
 
   const pollFlights = async (token: string) => {
-    console.log('poll search - start');
     const res = await fetch(`${apiUrl}/poll/${token}`);
     const json = await res.json();
-    console.log('poll search', json);
 
     setSearch(skyscanner(json).search());
-    console.log('poll search - finished');
 
     // run again until is complete
     if (json.status === 'RESULT_STATUS_INCOMPLETE') {
@@ -54,7 +51,7 @@ export default function Search() {
     setResults(amount);
   };
 
-  const handleSearch = async (query : Query) => {
+  const handleSearch = async (query : FlightQuery) => {
     setSearch(false);
     setSearching(true);
     setError('');
@@ -75,7 +72,6 @@ export default function Search() {
           'Sorry something happened and we couldnt do this search, maybe try a differnt search',
         );
       } else {
-        console.log('create search', json);
 
         setSearch(skyscanner(json).search());
         sessionTokenSaved.current = json.sessionToken;

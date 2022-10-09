@@ -2,17 +2,10 @@ import { useState } from 'react';
 
 import { Location } from '~/components/location';
 import { Date } from '~/components/date';
-
-export interface Query {
-  to: string;
-  from: string;
-  depart: string;
-  return: string;
-  tripType: string;
-}
+import type { FlightQuery } from '~/types/search';
 
 interface FlightSearchControlsProps {
-  onSubmit?: (query: Query) => void;
+  onSubmit?: (query: FlightQuery) => void;
   apiUrl?: string;
 }
 
@@ -21,7 +14,7 @@ export const FlightSearchControls = ({
   apiUrl = '',
 }: FlightSearchControlsProps): JSX.Element => {
   const [tripType, setTripType] = useState('single');
-  const [query, setQuery] = useState<Query>({
+  const [query, setQuery] = useState<FlightQuery>({
     from: '27544008', // London
     to: '95673668', //Edinburgh
     depart: '2022-11-02',

@@ -1,14 +1,14 @@
 import { useState, useRef } from 'react';
 import type { LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, Link } from '@remix-run/react';
 import { skyscanner } from '~/helpers/sdk/flight';
 import type { SearchSDK } from '~/helpers/sdk/flight';
 import styles from '~/styles/search.css';
 
 import { Loading } from '~/components/loading';
-import { Location } from '~/components/location';
-import { getWeekendDates, convertDateToYYYMMDDFormat } from '~/helpers/date';
+import { FlightWeekendSearchControls } from '~/components/flight-weekend-search-controls';
+import type { FlightQuery } from '~/types/search';
 
 export function links() {
   return [{ rel: 'stylesheet', href: styles }];
@@ -32,13 +32,10 @@ export default function Weekend() {
   const [results, setResults] = useState(10);
 
   const pollFlights = async (token: string) => {
-    console.log('poll search - start');
     const res = await fetch(`${apiUrl}/poll/${token}`);
     const json = await res.json();
-    console.log('poll search', json);
 
     setSearch(skyscanner(json).search());
-    console.log('poll search - finished');
 
     // run again until is complete
     if (json.status === 'RESULT_STATUS_INCOMPLETE') {
@@ -54,25 +51,17 @@ export default function Weekend() {
     setResults(amount);
   };
 
-  const handleSearch = async (to : string) => {
+  const handleSearch = async (query : FlightQuery) => {
     setSearch(false);
     setSearching(true);
     setError('');
     setResults(10);
 
-    const locationSaved = {
-      from: '27544008',
-    }
-    const weekend = getWeekendDates(new Date());
-    const datesCalculated = {
-      depart: convertDateToYYYMMDDFormat(weekend.friday),
-      return: convertDateToYYYMMDDFormat(weekend.sunday),
-    }
     try {
       const res = await fetch(
-        `${apiUrl}/create?from=${locationSaved.from}&to=${
-          to
-        }&depart=${datesCalculated.depart}&return=${datesCalculated.return}`,
+        `${apiUrl}/create?from=${query.from}&to=${
+          query.to
+        }&depart=${query.depart}&return=${query.return}`,
       );
       const json = await res.json();
 
@@ -82,7 +71,6 @@ export default function Weekend() {
           'Sorry something happened and we couldnt do this search, maybe try a differnt search',
         );
       } else {
-        console.log('create search', json);
 
         setSearch(skyscanner(json).search());
         sessionTokenSaved.current = json.sessionToken;
@@ -96,17 +84,17 @@ export default function Weekend() {
     }
   };
 
-  const handleQueryChange = (value: string) => {
-    handleSearch(value);
+  const handleQueryChange = (query: FlightQuery) => {
+    handleSearch(query);
   };
 
   return (
     <div>
-      <h1>Welcome to My Flight Search</h1>
+      <Link to="/">Back</Link>
+      <h1>Weekend Flight Search</h1>
 
-      <Location
-        name="To"
-        onChange={(value) => handleQueryChange(value)}
+      <FlightWeekendSearchControls
+        onChange={handleQueryChange}
         apiUrl={apiUrl}
       />
 

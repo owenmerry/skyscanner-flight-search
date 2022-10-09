@@ -29,7 +29,5 @@ export const searchAutoSuggest = async (searchTerm: string, apiUrl: string) => {
   );
   const json: SkyscannerAPIAutoSuggestResponse = await res.json();
 
-  console.log('autosuggest', json, searchTerm);
-
   return json.places;
 };

@@ -8,6 +8,7 @@ interface LocationProps {
   apiUrl?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
+  onSelect?: (value: string) => void;
 }
 
 export const Location = ({
@@ -15,6 +16,7 @@ export const Location = ({
   apiUrl = '',
   defaultValue,
   onChange,
+  onSelect,
 }: LocationProps): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState(defaultValue);
   const [searchOrigin, setSearchOrigin] = useState<Place[]>([]);
@@ -31,6 +33,7 @@ export const Location = ({
     setSearchTerm(placeId);
     setSearchOrigin([]);
     onChange && onChange(geoId);
+    onSelect && onSelect(geoId);
   };
 
   return (
@@ -45,9 +48,9 @@ export const Location = ({
         {searchOrigin.length > 0 && (
           <div>
             Results for :
-            {searchOrigin.map((place) => (
+            {searchOrigin.map((place,key) => (
               <div
-                key={place.placeId}
+                key={place.entityId}
                 onClick={() => handleSelect(place.name, place.entityId)}
               >
                 {place.name}{' '}
