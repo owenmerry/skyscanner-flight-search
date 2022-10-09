@@ -1,0 +1,22 @@
+body {
+  background: #253D5B;
+  color: white;
+  font-size: 16px;
+  font-family: 'Open Sans', serif;
+}
+a:visited, body a {
+  color: white;
+}
+
+button{
+  background-color: #C6878F;
+  border: none;
+  border-radius: 0.25rem;
+  color: white;
+  padding: .5rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1rem;
+  cursor: pointer;
+}

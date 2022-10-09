@@ -5,5 +5,12 @@ export const getDateTime = (
   hour: number,
   minute: number,
 ): string => {
-  return `${day}/${month}/${year} ${hour}:${String(minute).padStart(2, '0')}`;
+  return `${day}/${month}/${year} ${getTime(hour,minute)}`;
+};
+
+export const getTime = (
+  hour: number,
+  minute: number,
+): string => {
+  return `${hour}:${String(minute).padStart(2, '0')}`;
 };

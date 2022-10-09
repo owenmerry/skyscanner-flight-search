@@ -3,8 +3,10 @@
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
+    "dev-scss": "concurrently \"npm run sass\" \"remix dev\"",
     "dev": "remix dev",
-    "start": "remix-serve build"
+    "start": "remix-serve build",
+    "sass": "sass --watch app/:app/"
   },
   "dependencies": {
     "@remix-run/node": "^1.6.8",
@@ -18,7 +20,9 @@
     "@remix-run/eslint-config": "^1.6.8",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "concurrently": "^7.4.0",
     "eslint": "^8.20.0",
+    "sass": "^1.55.0",
     "typescript": "^4.7.4"
   },
   "engines": {

@@ -1,0 +1,62 @@
+.flight {
+  border-radius: 1rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: #365071;
+}
+.flight-search {
+  border-radius: 1rem;
+  padding: 1rem;
+  border: solid 1px #dcdcdc;
+}
+.flight-search-controls {
+  display: flex;
+}
+.flight-search-controls > * {
+  flex: 1;
+}
+.flight-layout {
+
+}
+.panel-leg {
+  display: flex;
+}
+.panel-leg > div {
+  flex: 1;
+}
+.panel-leg > div.times {
+  max-width: 60px;
+}
+.gauge-background{
+  background: #253D5B;
+  border-radius: 20px;
+}
+.gauge-status{
+  border-radius: 20px;
+  background-color: #C6878F;
+  width: 50%;
+  padding: 0.5rem 1rem;
+}
+.flight-layout > div {
+  flex: 1;
+}
+.panel-price {
+
+}
+.flight-layout > * {
+  flex: 1;
+}
+
+
+.button-stretch{
+  width:100%;
+}
+
+@media only screen and (max-width: 600px) {
+  .flight-layout {
+    display: block;
+  }
+  .flight-search-controls {
+    display: block;
+  }
+}

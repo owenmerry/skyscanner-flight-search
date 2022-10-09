@@ -1,5 +1,5 @@
 import { getPrice } from './price';
-import { getDateTime } from './dateTime';
+import { getDateTime, getTime } from './dateTime';
 import { convertDeepLink } from './link';
 
 // types (Response)
@@ -115,15 +115,15 @@ export interface SearchSDK {
   stats: StatsSDK;
 }
 
-interface FlightSDK {
+export interface FlightSDK {
   itineraryId: string;
-  deals: DealSDK[];
+  prices: PriceSDK[];
   price: string;
   deepLink: string;
   legs: LegSDK[];
 }
 
-interface DealSDK {
+interface PriceSDK {
   price: string;
   deepLinks: DeepLinkSDK[];
 }
@@ -158,6 +158,10 @@ interface LegSDK {
   arrival: string;
   stops: number;
   segments: SegmentSDK[];
+  fromIata: string;
+  toIata: string;
+  departureTime: String;
+  arrivalTime: String;
 }
 
 // functions (SDK)
@@ -236,12 +240,22 @@ export const getSortingOptions = (
         ),
         stops: leg.stopCount,
         segments: segments,
+        fromIata: res.content.results.places[leg.originPlaceId].iata,
+        toIata: res.content.results.places[leg.destinationPlaceId].iata,
+        departureTime: getTime(
+          leg.departureDateTime.hour,
+          leg.departureDateTime.minute,
+        ),
+        arrivalTime: getTime(
+          leg.arrivalDateTime.hour,
+          leg.arrivalDateTime.minute,
+        ),
       };
     });
 
     return {
       itineraryId: item.itineraryId,
-      deals:
+      prices:
         flight.pricingOptions.map((pricingOption) => {
           return {
             price: getPrice(

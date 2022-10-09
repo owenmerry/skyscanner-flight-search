@@ -1,15 +1,19 @@
 import { useState } from 'react';
-import type { LoaderFunction } from '@remix-run/node';
+import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
-import styles from '~/styles/search.css';
+import globalStyles from '~/styles/global.css';
+import flightStyles from '~/styles/flight.css';
 
 import { FlightSearchControls } from '~/components/flight-search-controls';
 import type { FlightQuery } from '~/types/search';
 import { FlightResults } from '~/components/flight-results';
 
-export function links() {
-  return [{ rel: 'stylesheet', href: styles }];
+export const links: LinksFunction = () => {
+  return [
+    { rel: 'stylesheet', href: globalStyles },
+    { rel: 'stylesheet', href: flightStyles },
+  ];
 }
 
 export const loader: LoaderFunction = async ({ request, context }) => {

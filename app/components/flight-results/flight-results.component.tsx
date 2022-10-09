@@ -4,6 +4,7 @@ import { skyscanner } from '~/helpers/sdk/flight';
 import type { SearchSDK } from '~/helpers/sdk/flight';
 
 import { Loading } from '~/components/loading';
+import { Prices } from '~/components/prices';
 
 interface FlightResultsProps {
   query?: FlightQuery;
@@ -106,18 +107,43 @@ useEffect(() => {
             {search.status === 'RESULT_STATUS_COMPLETE' && <>Search finished</>}
           </h3>
 
+          <h3>Suggested Flights</h3>
+
           {search[sort].slice(0, results).map((itinerary) => {
             return (
               <div className="flight" key={itinerary.itineraryId}>
                 <div className="flight-layout">
-                  <div>
-                    {itinerary.legs.map((leg) => (
+                    <div className='panel-date'>
+                      <div>{itinerary.legs[0].departure} - {itinerary.legs[1].arrival}</div>
+                    </div>
+                    <div className='panel-legs'>
+                      {itinerary.legs.map((leg) => (
+                        <div key={leg.id} className='panel-leg'>
+                          <div className='times'>
+                            {leg.departureTime}<br />
+                            {leg.fromIata}
+                          </div>
+                          <div>
+                            <div className='gauge-background'>
+                              <div className='gauge-status'>
+                                {leg.duration} minutes
+                              </div>
+                            </div>
+                          </div>
+                          <div className='times'>
+                            {leg.arrivalTime}<br />
+                            {leg.toIata}
+                          </div>
+                        </div>
+                      ))} 
+                    </div>
+
+                    <Prices flight={itinerary} />
+                    
+                    {/* <div>
+                     {itinerary.legs.map((leg) => (
                       <div key={leg.id}>
                         <div>
-                          {leg.from} to {leg.to}
-                        </div>
-                        <div>
-                          Depature:{leg.departure}, Arrival: {leg.arrival}
                         </div>
                         <div>
                           Stops: {leg.stops}, Journey time: {leg.duration} min
@@ -138,35 +164,11 @@ useEffect(() => {
                           </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    ))} 
+                  </div> */}
 
-                  <div>
-                    <h3>{itinerary.price}</h3>
-                    {itinerary.deals.map((deal, key) => (
-                      <div key={`${deal.price}-${key}`}>
-                        {deal.deepLinks.map((deepLink) => (
-                          <div key={deepLink.link} className="flight-price">
-                            <div>{deal.price}</div>
-                            <img
-                              width="100px"
-                              src={deepLink.agentImageUrl}
-                              alt={`${deepLink.agentName} logo`}
-                            />
-                            <a
-                              target="_blank"
-                              href={deepLink.link}
-                              rel="noreferrer"
-                            >
-                              View Deal
-                            </a>
-                            <div>({deepLink.agentName})</div>
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  
+              </div>
               </div>
             );
           })}

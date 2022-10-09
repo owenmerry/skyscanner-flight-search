@@ -2,14 +2,18 @@ import { useState } from 'react';
 import type { LoaderFunction,LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
-import styles from '~/styles/search.css';
+import globalStyles from '~/styles/global.css';
+import flightStyles from '~/styles/flight.css';
 
 import { FlightWeekendSearchControls } from '~/components/flight-weekend-search-controls';
 import { FlightResults } from '~/components/flight-results';
 import type { FlightQuery } from '~/types/search';
 
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: styles }];
+  return [
+    { rel: 'stylesheet', href: globalStyles },
+    { rel: 'stylesheet', href: flightStyles },
+  ];
 }
 
 export const loader: LoaderFunction = async ({ request, context }) => {

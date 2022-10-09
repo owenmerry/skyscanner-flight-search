@@ -18,6 +18,8 @@ export default function App() {
   return (
     <html lang="en">
       <head>
+      <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Open+Sans" />
         <Meta />
         <Links />
       </head>
