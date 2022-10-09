@@ -10,8 +10,8 @@ import {
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
-  title: 'New Remix App',
-  viewport: 'width=device-width,initial-scale=1',
+  title: 'Flight Search App',
+  viewport: 'width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0',
 });
 
 export default function App() {
