@@ -126,7 +126,7 @@ useEffect(() => {
                           <div>
                             <div className='gauge-background'>
                               <div className='gauge-status'>
-                                {leg.duration} minutes
+                                {leg.duration} minutes ({leg.direct ? 'Direct' : `${leg.stops} Stop${leg.stops > 1 ? 's' : ''}`})
                               </div>
                             </div>
                           </div>

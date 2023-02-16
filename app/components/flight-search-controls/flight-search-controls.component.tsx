@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { Location } from '~/components/location';
 import { Date } from '~/components/date';
+import { getDateFormated } from '~/helpers/date';
 import type { FlightQuery } from '~/types/search';
 
 interface FlightSearchControlsProps {
@@ -13,12 +14,12 @@ export const FlightSearchControls = ({
   onSubmit,
   apiUrl = '',
 }: FlightSearchControlsProps): JSX.Element => {
-  const [tripType, setTripType] = useState('single');
+  const [tripType, setTripType] = useState('return');
   const [query, setQuery] = useState<FlightQuery>({
     from: '27544008', // London
-    to: '95673668', //Edinburgh
-    depart: '2022-11-02',
-    return: '2022-11-06',
+    to: '95673529', //Dublin
+    depart: getDateFormated(1),
+    return: getDateFormated(3),
     tripType,
   });
 
@@ -67,7 +68,7 @@ export const FlightSearchControls = ({
       />
       <Location
         name="To"
-        defaultValue={'Edinburgh'}
+        defaultValue={'Dublin'}
         onChange={(value) => handleQueryChange(value, 'to')}
         apiUrl={apiUrl}
       />

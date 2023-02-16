@@ -41,10 +41,23 @@
   flex: 1;
 }
 .panel-price {
-
 }
 .flight-layout > * {
   flex: 1;
+}
+.flight-price{
+  display: flex;
+  align-items: center;
+  background: #253D5B;
+  border-radius: 5px;
+  padding: 10px;
+  margin-top: 5px;
+}
+.flight-price > * {
+  flex: 1;
+}
+.flight-price > image {
+  flex: none;
 }
 
 

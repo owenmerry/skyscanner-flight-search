@@ -157,6 +157,7 @@ interface LegSDK {
   departure: string;
   arrival: string;
   stops: number;
+  direct: boolean;
   segments: SegmentSDK[];
   fromIata: string;
   toIata: string;
@@ -239,6 +240,7 @@ export const getSortingOptions = (
           leg.arrivalDateTime.minute,
         ),
         stops: leg.stopCount,
+        direct: leg.stopCount === 0,
         segments: segments,
         fromIata: res.content.results.places[leg.originPlaceId].iata,
         toIata: res.content.results.places[leg.destinationPlaceId].iata,

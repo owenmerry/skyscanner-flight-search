@@ -1,3 +1,5 @@
+import {addDays} from 'date-fns';
+
 export const getNextFriday =(date = new Date()) => {
     const dateCopy = new Date(date.getTime());
 
@@ -28,4 +30,12 @@ export const convertDateToYYYMMDDFormat = (date: Date) => date.toISOString().spl
 export const addWeeksToDate = (date : Date,numberOfWeeks : number) => {
     date.setDate(date.getDate()+ numberOfWeeks * 7);
     return date;
+}
+
+export const getDateFormated = (add ?: number) : string => {
+    const dateAdd = add || 0;
+    const date = new Date()
+    const updatedDate = addDays(date, dateAdd)
+    
+    return updatedDate.toISOString().split('T')[0];
 }
