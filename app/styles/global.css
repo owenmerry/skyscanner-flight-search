@@ -49,3 +49,10 @@ a.link-light:visited, body a.link-light {
 b{
   font-weight: 600;
 }
+
+@media only screen and (max-width: 600px) {
+  .panels{
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

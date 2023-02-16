@@ -48,12 +48,15 @@
   margin: 0 auto;
 }
 .flight-results .loading{
-  margin-top: 1rem;
   text-align: center;
   border-radius: 1rem;
   padding: 1rem;
   background-color: #fff;
-  display: inline-block;
+  position: sticky;
+  top: 1rem;
+  max-width: 500px;
+  margin: 1rem auto 0 auto;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 .flight-results .error{
   margin-top: 1rem;
@@ -128,6 +131,9 @@
 }
 
 @media only screen and (max-width: 600px) {
+  .flight-price{
+    display: block;
+  }
   .flight-layout {
     display: block;
   }
