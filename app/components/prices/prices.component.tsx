@@ -17,29 +17,30 @@ export const Prices = ({
   return (
     <div>
       <div className='panel-price'>
-        <div>{flight?.price}</div>  
-        <div><button className='button-stretch' onClick={handleToggle}>See Prices ({flight?.prices.length})</button></div>  
+        <div><button className='button-stretch' onClick={handleToggle}>See Prices from {flight?.price} ({flight?.prices.length} deal{flight && flight?.prices.length > 1 ? 's' : ''})</button></div>  
       </div>
       {flight && show && (
         <>
-        <h3>{flight.price}</h3>
         {flight?.prices.map((price, key) => (
           <div key={`${price.price}-${key}`}>
             {price.deepLinks.map((deepLink) => (
               <div key={deepLink.link} className="flight-price">
                 <div className="image">
-                  <img
-                    height="30px"
-                    src={deepLink.agentImageUrl}
-                    alt={`${deepLink.agentName} logo`}
-                  />
+                  {deepLink.agentImageUrl !== "" &&
+                    <img
+                      height="30px"
+                      src={deepLink.agentImageUrl}
+                      alt={`${deepLink.agentName} logo`}
+                    />
+                  }
                 </div>
-                <div>({deepLink.agentName})</div>
+                <div>{deepLink.agentName}</div>
                  <div>{price.price}</div>
                 <a
                   target="_blank"
                   href={deepLink.link}
                   rel="noreferrer"
+                  className='button'
                 >
                   View Deal
                 </a>

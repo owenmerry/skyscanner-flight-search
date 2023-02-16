@@ -48,10 +48,10 @@ export const FlightResults = ({
       );
       const json = await res.json();
 
-      if (!json && json.statusCode === 500) {
+      if (!json && json.statusCode === 500 && json.statusCode !== 200) {
         setSearching(false);
         setError(
-          'Sorry something happened and we couldnt do this search, maybe try a differnt search',
+          'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
         );
       } else {
 
@@ -63,7 +63,7 @@ export const FlightResults = ({
       }
     } catch (ex) {
       setSearching(false);
-      setError('Sorry something happened and we couldnt do this search.');
+      setError('Sorry, something happened and we couldnt do this search.');
     }
   },[apiUrl, pollFlights]);
 
@@ -82,60 +82,70 @@ useEffect(() => {
   return (
     <div className="flight-results">
         {searching && (
-        <div>
+        <div className='loading'>
           Loading search <Loading />
         </div>
       )}
-      {error !== '' && <div>{error}</div>}
+      {error !== '' && <div className='error'>{error}</div>}
       {search && (
         <div>
           <h2>
             Results {search.stats.total} - Lowest Price: {search.stats.minPrice}
           </h2>
-          <div>
-            <button onClick={() => handleSort('best')}>Best</button>
-            <button onClick={() => handleSort('cheapest')}>Cheapest</button>
-            <button onClick={() => handleSort('fastest')}>Fastest</button>
+          <div className='sort-buttons'>
+            <button className={sort === 'best' ? 'selected' : ''} onClick={() => handleSort('best')}>Best</button>
+            <button className={sort === 'cheapest' ? 'selected' : ''} onClick={() => handleSort('cheapest')}>Cheapest</button>
+            <button className={sort === 'fastest' ? 'selected' : ''} onClick={() => handleSort('fastest')}>Fastest</button>
           </div>
-          <h3>
-            {search.status !== 'RESULT_STATUS_COMPLETE' && (
+          {search.status !== 'RESULT_STATUS_COMPLETE' && (
+            <div className='loading'>
               <>
-                Loading prices and extra flights
+                Searching for <b>more flights and best prices</b>
                 <Loading />
               </>
-            )}
-            {search.status === 'RESULT_STATUS_COMPLETE' && <>Search finished</>}
-          </h3>
-
-          <h3>Suggested Flights</h3>
-
+            </div>
+          )}
           {search[sort].slice(0, results).map((itinerary) => {
             return (
               <div className="flight" key={itinerary.itineraryId}>
                 <div className="flight-layout">
-                    <div className='panel-date'>
-                      <div>{itinerary.legs[0].departure} - {itinerary.legs[1].arrival}</div>
-                    </div>
                     <div className='panel-legs'>
                       {itinerary.legs.map((leg) => (
                         <div key={leg.id} className='panel-leg'>
                           <div className='times'>
-                            {leg.departureTime}<br />
+                            <div className='time'>{leg.departureTime}</div>
                             {leg.fromIata}
                           </div>
-                          <div>
-                            <div className='gauge-background'>
-                              <div className='gauge-status'>
-                                {leg.duration} minutes ({leg.direct ? 'Direct' : `${leg.stops} Stop${leg.stops > 1 ? 's' : ''}`})
-                              </div>
+                          <div className='duration'>
+                            <div>
+                              {leg.duration} minutes ({leg.direct ? 'Direct' : `${leg.stops} Stop${leg.stops > 1 ? 's' : ''}`})
                             </div>
                           </div>
                           <div className='times'>
-                            {leg.arrivalTime}<br />
+                            <div className='time'>{leg.arrivalTime}</div>
                             {leg.toIata}
                           </div>
                         </div>
                       ))} 
+                    </div>
+
+                    <div className='agent-images'>
+                      {itinerary.prices.map((price, key) => (
+                        <span key={`${price.price}-${key}`}>
+                          {price.deepLinks.map((deepLink) => (
+                            <span key={deepLink.link}>
+                              {deepLink.agentImageUrl !== "" &&
+                                <img
+                                  height="30px"
+                                  src={deepLink.agentImageUrl}
+                                  alt={`${deepLink.agentName} logo`}
+                                  className="agent-image"
+                                />
+                              }
+                            </span>
+                          ))}
+                        </span>
+                      ))}
                     </div>
 
                     <Prices flight={itinerary} />
@@ -172,7 +182,7 @@ useEffect(() => {
               </div>
             );
           })}
-          <div>
+          <div className='paging-buttons'>
             {results < search.stats.total && (
               <>
                 <button onClick={() => handleShowResults(results + 10)}>

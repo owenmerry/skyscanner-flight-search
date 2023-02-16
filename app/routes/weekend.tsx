@@ -38,15 +38,16 @@ export default function Weekend() {
 
   return (
     <div>
-      <Link to="/">Back</Link>
-      <h1>Weekend Flight Search</h1>
-
-      <FlightWeekendSearchControls
-        onChange={handleQueryChange}
-        apiUrl={apiUrl}
-      />
-
-      <FlightResults query={search} apiUrl={apiUrl} />
+      <div className='banner'>
+        <Link className='link-light' to="/">Back</Link>
+      </div>
+      <div className='wrapper'>
+        <FlightWeekendSearchControls
+          onChange={handleQueryChange}
+          apiUrl={apiUrl}
+        />
+        <FlightResults query={search} apiUrl={apiUrl} />
+      </div>
     </div>
   );
 }

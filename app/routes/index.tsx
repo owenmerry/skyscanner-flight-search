@@ -15,7 +15,21 @@ export const links: LinksFunction = () => {
 export default function Index() {
   
   return (<div>
-    <div><Link to="/search">Search flights</Link></div>
-    <div><Link to='/weekend'>Weekend flights</Link></div>
+     <div className='banner'>
+      </div>
+      <div className='wrapper'>
+        <div className='panels'>
+          <div className='panel'>
+            <h2>Flight Search</h2>
+            <p>Search for flights around the world.</p>
+            <Link className='button' to="/search">Search Flights</Link>
+            </div>
+          <div className='panel'>
+            <h2>Weekend Flight Search</h2>
+            <p>Search for your next weekend away trip.</p>
+            <Link className='button' to='/weekend'>Search Weekend Flights</Link>
+            </div>
+        </div>
+      </div>
   </div>);
 }

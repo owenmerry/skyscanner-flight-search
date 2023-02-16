@@ -37,7 +37,7 @@ export const FlightSearchControls = ({
 
   return (
     <div className="flight-search">
-    <h2>Search</h2>
+    <h2>Flight Search</h2>
     <div>
       <div>
         <input

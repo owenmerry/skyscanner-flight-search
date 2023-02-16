@@ -1,13 +1,37 @@
+.banner{
+  height: 300px;
+  padding: 1rem;
+  background-color: #242423;
+  margin-bottom: -80px;
+}
+.wrapper{
+  padding: 0 1rem;
+}
 .flight {
   border-radius: 1rem;
   padding: 1rem;
   margin: 1rem 0;
-  background: #365071;
+  background: #fff;
 }
 .flight-search {
+  margin-top: 1rem;
   border-radius: 1rem;
-  padding: 1rem;
-  border: solid 1px #dcdcdc;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.flight-search h2{
+  margin-top: 0;
+}
+.flight-weekend-search{
+  margin-top: 1rem;
+  border-radius: 1rem;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.flight-weekend-search h2{
+  margin-top: 0;
 }
 .flight-search-controls {
   display: flex;
@@ -18,24 +42,43 @@
 .flight-layout {
 
 }
+.flight-results {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.flight-results .loading{
+  margin-top: 1rem;
+  text-align: center;
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  display: inline-block;
+}
+.flight-results .error{
+  margin-top: 1rem;
+  text-align: center;
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  display: inline-block;
+  color: #b43939;
+}
 .panel-leg {
   display: flex;
+  align-items: center;
 }
 .panel-leg > div {
   flex: 1;
 }
 .panel-leg > div.times {
-  max-width: 60px;
+  max-width: 100px;
 }
-.gauge-background{
-  background: #253D5B;
-  border-radius: 20px;
+.panel-leg > div.times .time {
+  font-size: 1.5rem;
 }
-.gauge-status{
-  border-radius: 20px;
-  background-color: #C6878F;
-  width: 50%;
-  padding: 0.5rem 1rem;
+.panel-leg > div.duration {
+  text-align: center;
 }
 .flight-layout > div {
   flex: 1;
@@ -48,10 +91,10 @@
 .flight-price{
   display: flex;
   align-items: center;
-  background: #253D5B;
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 5px;
+  background: #fbfbfb;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
 }
 .flight-price > * {
   flex: 1;
@@ -63,6 +106,25 @@
 
 .button-stretch{
   width:100%;
+}
+
+.sort-buttons button{
+  margin-right: .5rem;
+}
+.sort-buttons button.selected{
+  color: #E8EDDF;
+  background: #242423;
+}
+.paging-buttons button{
+  margin-right: .5rem;
+}
+.weekend-buttons button{
+  margin-right: .5rem;
+}
+
+.agent-images{ padding: 0 1rem;}
+.agent-images .agent-image{
+  margin-right: 5px;
 }
 
 @media only screen and (max-width: 600px) {

@@ -1,13 +1,11 @@
 .flight {
   border-radius: 1rem;
   padding: 1rem;
-  border: solid 1px #dcdcdc;
   margin: 1rem 0;
 }
 .flight-search {
   border-radius: 1rem;
   padding: 1rem;
-  border: solid 1px #dcdcdc;
 }
 .flight-search-controls {
   display: flex;

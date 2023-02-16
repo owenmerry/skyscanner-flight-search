@@ -34,12 +34,13 @@ export default function Search() {
 
   return (
     <div>
-      <Link to="/">Back</Link>
-      <h1>Welcome to My Flight Search</h1>
-
-     <FlightSearchControls onSubmit={handleSearch} apiUrl={apiUrl} />
-
-     <FlightResults query={search} apiUrl={apiUrl} />
+      <div className='banner'>
+        <Link className='link-light' to="/">Back</Link>
+      </div>
+      <div className='wrapper'>
+        <FlightSearchControls onSubmit={handleSearch} apiUrl={apiUrl} />
+        <FlightResults query={search} apiUrl={apiUrl} />
+      </div>
     </div>
   );
 }

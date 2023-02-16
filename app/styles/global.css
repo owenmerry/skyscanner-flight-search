@@ -1,22 +1,47 @@
 body {
-  background: #253D5B;
-  color: white;
+  background: #E8EDDF;
+  color: #242423;
   font-size: 16px;
   font-family: 'Open Sans', serif;
+  margin: 0;
+  padding: 0;
 }
 a:visited, body a {
-  color: white;
+  color: #242423;
 }
 
-button{
-  background-color: #C6878F;
+button, .button{
+  background-color: #F5CB5C;
   border: none;
   border-radius: 0.25rem;
-  color: white;
   padding: .5rem 1rem;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   font-size: 1rem;
   cursor: pointer;
+  color: #242423; 
+}
+
+button:hover{
+  background-color: #f5c240;
+}
+
+a.link-light:visited, body a.link-light {
+  color: #fff;
+}
+
+.panels{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+.panel {
+  margin: 1rem;
+  border-radius: 1rem;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.panel h2{
+  margin-top: 0;
 }

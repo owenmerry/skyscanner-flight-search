@@ -48,14 +48,17 @@ export const FlightWeekendSearchControls = ({
 
   return (
     <div className="flight-weekend-search">
+          <h2>Weekend Flight Search</h2>
          <Location
         name="To"
         onSelect={(value) => handleQueryChange(value, week)}
         apiUrl={apiUrl}
       />
       <div>{displayDates.friday} - {displayDates.sunday}</div>
-      <button onClick={() => handleWeekChange('minus')}>-1</button>
-      <button onClick={() => handleWeekChange('add')}>+1</button>
+      <div className='weekend-buttons'>
+        <button onClick={() => handleWeekChange('minus')}>-1</button>
+        <button onClick={() => handleWeekChange('add')}>+1</button>
+      </div>
   </div>
   );
 };
