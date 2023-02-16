@@ -18,8 +18,9 @@ export default function App() {
   return (
     <html lang="en">
       <head>
-      <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Open+Sans" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
         <Meta />
         <Links />
       </head>

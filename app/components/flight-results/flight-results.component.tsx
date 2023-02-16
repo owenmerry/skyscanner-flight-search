@@ -83,7 +83,7 @@ useEffect(() => {
     <div className="flight-results">
         {searching && (
         <div className='loading'>
-          Loading search <Loading />
+          Searching for <b>Flights and the best prices</b> <Loading />
         </div>
       )}
       {error !== '' && <div className='error'>{error}</div>}
@@ -100,7 +100,7 @@ useEffect(() => {
           {search.status !== 'RESULT_STATUS_COMPLETE' && (
             <div className='loading'>
               <>
-                Searching for <b>more flights and best prices</b>
+                We are still searching for <b>More flights and the best prices</b>
                 <Loading />
               </>
             </div>

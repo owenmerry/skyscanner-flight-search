@@ -45,3 +45,7 @@ a.link-light:visited, body a.link-light {
 .panel h2{
   margin-top: 0;
 }
+
+b{
+  font-weight: 600;
+}

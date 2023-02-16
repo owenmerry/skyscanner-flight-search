@@ -17,7 +17,7 @@ export const Prices = ({
   return (
     <div>
       <div className='panel-price'>
-        <div><button className='button-stretch' onClick={handleToggle}>See Prices from {flight?.price} ({flight?.prices.length} deal{flight && flight?.prices.length > 1 ? 's' : ''})</button></div>  
+        <div><button className='button-stretch' onClick={handleToggle}>See Prices from <b>{flight?.price}</b> ({flight?.prices.length} deal{flight && flight?.prices.length > 1 ? 's' : ''})</button></div>  
       </div>
       {flight && show && (
         <>
@@ -35,7 +35,7 @@ export const Prices = ({
                   }
                 </div>
                 <div>{deepLink.agentName}</div>
-                 <div>{price.price}</div>
+                 <div><b>{price.price}</b></div>
                 <a
                   target="_blank"
                   href={deepLink.link}
