@@ -2,30 +2,30 @@ import { useState } from 'react';
 import { Location } from '~/components/location';
 import type { FlightQuery } from '~/types/search';
 
-import { getWeekendDates, convertDateToYYYMMDDFormat, addWeeksToDate } from '~/helpers/date';
+import { getWeekDates, convertDateToYYYMMDDFormat, addWeeksToDate } from '~/helpers/date';
 
-interface FlightWeekendSearchControlsProps {
+interface FlightWeekSearchControlsProps {
   onChange?: (query: FlightQuery) => void;
   apiUrl?: string;
 }
 
-export const FlightWeekendSearchControls = ({
+export const FlightWeekSearchControls = ({
   onChange,
   apiUrl = '',
-}: FlightWeekendSearchControlsProps): JSX.Element => {
+}: FlightWeekSearchControlsProps): JSX.Element => {
   const [location, setLocation] = useState('');
   const [week, setWeek] = useState(0);
   const displayDates = {
-      friday: getWeekendDates(addWeeksToDate(new Date(), week)).friday.toDateString(),
-      sunday: getWeekendDates(addWeeksToDate(new Date(), week)).sunday.toDateString(),
+      saturday: getWeekDates(addWeeksToDate(new Date(), week)).saturday.toDateString(),
+      sunday: getWeekDates(addWeeksToDate(new Date(), week)).sunday.toDateString(),
     };
 
 
   const handleQueryChange = (value: string,week: number) => {
-    const weekend = getWeekendDates(addWeeksToDate(new Date(), week));
+    const selectedWeek = getWeekDates(addWeeksToDate(new Date(), week));
     const datesCalculated = {
-      depart: convertDateToYYYMMDDFormat(weekend.friday),
-      return: convertDateToYYYMMDDFormat(weekend.sunday),
+      depart: convertDateToYYYMMDDFormat(selectedWeek.saturday),
+      return: convertDateToYYYMMDDFormat(selectedWeek.sunday),
     }
     onChange && onChange({
       from: '27544008', // London
@@ -47,17 +47,17 @@ export const FlightWeekendSearchControls = ({
   }
 
   return (
-    <div className="flight-weekend-search">
-          <h2>Weekend Flight Search</h2>
+    <div className="flight-week-search">
+          <h2>Week Flight Search</h2>
          <Location
         name="To"
         onSelect={(value) => handleQueryChange(value, week)}
         apiUrl={apiUrl}
       />
-      <div>{displayDates.friday} - {displayDates.sunday}</div>
-      <div className='weekend-buttons'>
-        <button onClick={() => handleWeekChange('minus')}>-1</button>
-        <button onClick={() => handleWeekChange('add')}>+1</button>
+      <div>{displayDates.saturday} - {displayDates.sunday}</div>
+      <div className='week-buttons'>
+        <button onClick={() => handleWeekChange('minus')}>-1 week</button>
+        <button onClick={() => handleWeekChange('add')}>+1 week</button>
       </div>
   </div>
   );

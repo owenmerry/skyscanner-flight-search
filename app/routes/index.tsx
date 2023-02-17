@@ -28,7 +28,12 @@ export default function Index() {
             <h2>Weekend Flight Search</h2>
             <p>Search for your next weekend away trip.</p>
             <Link className='button' to='/weekend'>Search Weekend Flights</Link>
-            </div>
+          </div>
+          <div className='panel'>
+            <h2>Week Flight Search</h2>
+            <p>Search for your week away.</p>
+            <Link className='button' to='/week'>Search Week Flights</Link>
+          </div>
         </div>
       </div>
   </div>);

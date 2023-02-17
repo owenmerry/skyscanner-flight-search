@@ -5,7 +5,7 @@ import { useLoaderData, Link } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
 import flightStyles from '~/styles/flight.css';
 
-import { FlightWeekendSearchControls } from '~/components/flight-weekend-search-controls copy';
+import { FlightWeekSearchControls } from '~/components/flight-week-search-controls';
 import { FlightResults } from '~/components/flight-results';
 import type { FlightQuery } from '~/types/search';
 
@@ -42,7 +42,7 @@ export default function Weekend() {
         <Link className='link-light' to="/">Back</Link>
       </div>
       <div className='wrapper'>
-        <FlightWeekendSearchControls
+        <FlightWeekSearchControls
           onChange={handleQueryChange}
           apiUrl={apiUrl}
         />

@@ -33,6 +33,16 @@
 .flight-weekend-search h2{
   margin-top: 0;
 }
+.flight-week-search{
+  margin-top: 1rem;
+  border-radius: 1rem;
+  padding: 2rem;
+  background-color: #fff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+.flight-week-search h2{
+  margin-top: 0;
+}
 .flight-search-controls {
   display: flex;
 }
@@ -122,6 +132,9 @@
   margin-right: .5rem;
 }
 .weekend-buttons button{
+  margin-right: .5rem;
+}
+.week-buttons button{
   margin-right: .5rem;
 }
 

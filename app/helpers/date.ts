@@ -1,5 +1,13 @@
 import {addDays} from 'date-fns';
 
+export const getNextDay =(date = new Date(), dayNumber : number) => {
+    const dateCopy = new Date(date.getTime());
+
+    const nextDay = new Date(dateCopy.setDate(dateCopy.getDate() +((7 - dateCopy.getDay() + dayNumber) % 7 || 7),),);
+
+    return nextDay;
+}
+
 export const getNextFriday =(date = new Date()) => {
     const dateCopy = new Date(date.getTime());
 
@@ -22,6 +30,15 @@ export const getWeekendDates =(date : Date) => {
     return {
         friday,
         sunday: getNextSunday(friday)
+    };
+};
+
+export const getWeekDates =(date : Date) => {
+    const saturday = getNextDay(date,6);
+
+    return {
+        saturday,
+        sunday: addWeeksToDate(getNextDay(saturday,7), 1)
     };
 };
 
