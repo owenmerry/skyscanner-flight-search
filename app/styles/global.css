@@ -27,6 +27,15 @@ button:hover{
   background-color: #f5c240;
 }
 
+.button-small{
+  padding: 0.1rem 0.45rem;
+  margin: 0 .25rem;
+}
+.button-small:disabled{
+  background-color: #e8e8e8;
+  cursor: not-allowed;
+}
+
 a.link-light:visited, body a.link-light {
   color: #fff;
 }

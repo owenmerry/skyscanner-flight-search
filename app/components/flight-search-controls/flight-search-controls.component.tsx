@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { Location } from '~/components/location';
-import { Date } from '~/components/date';
+import { DateInput } from '~/components/date';
 import { getDateFormated } from '~/helpers/date';
 import type { FlightQuery } from '~/types/search';
 
@@ -72,16 +72,19 @@ export const FlightSearchControls = ({
         onChange={(value) => handleQueryChange(value, 'to')}
         apiUrl={apiUrl}
       />
-      <Date
+      <DateInput
         name="Depart"
         defaultValue={query.depart}
-        onChange={(value) => handleQueryChange(value, 'depart')}
+        min={getDateFormated()}
+        max={query.return}
+        onChange={(value : string) => handleQueryChange(value, 'depart')}
       />
       {tripType === 'return' && (
-        <Date
+        <DateInput
           name="Return"
           defaultValue={query.return}
-          onChange={(value) => handleQueryChange(value, 'return')}
+          min={query.depart}
+          onChange={(value : string) => handleQueryChange(value, 'return')}
         />
       )}
       <button onClick={handleSearch}>Search</button>

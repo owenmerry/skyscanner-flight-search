@@ -49,10 +49,14 @@ export const addWeeksToDate = (date : Date,numberOfWeeks : number) => {
     return date;
 }
 
+export const formatDate = (date : Date) => {
+    return date.toISOString().split('T')[0];
+} 
+
 export const getDateFormated = (add ?: number) : string => {
     const dateAdd = add || 0;
     const date = new Date()
     const updatedDate = addDays(date, dateAdd)
     
-    return updatedDate.toISOString().split('T')[0];
+    return formatDate(updatedDate);
 }

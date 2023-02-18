@@ -1,1 +1,1 @@
-export { Date } from './date.component';
+export { DateInput } from './date.component';
