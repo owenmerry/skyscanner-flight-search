@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { Link } from '@remix-run/react';
 import { Location } from '~/components/location';
 import { DateInput } from '~/components/date';
 import { getDateFormated } from '~/helpers/date';
@@ -7,21 +8,23 @@ import type { FlightQuery } from '~/types/search';
 
 interface FlightSearchControlsProps {
   onSubmit?: (query: FlightQuery) => void;
+  defaultQuery?: FlightQuery;
   apiUrl?: string;
 }
 
 export const FlightSearchControls = ({
   onSubmit,
   apiUrl = '',
-}: FlightSearchControlsProps): JSX.Element => {
-  const [tripType, setTripType] = useState('return');
-  const [query, setQuery] = useState<FlightQuery>({
+  defaultQuery = {
     from: '27544008', // London
     to: '95673529', //Dublin
     depart: getDateFormated(1),
     return: getDateFormated(3),
-    tripType,
-  });
+    tripType: 'return',
+  }
+}: FlightSearchControlsProps): JSX.Element => {
+  const [tripType, setTripType] = useState(defaultQuery.tripType);
+  const [query, setQuery] = useState<FlightQuery>(defaultQuery);
 
   const handleQueryChange = (value: string, key: string) => {
     setQuery({ ...query, [key]: value });
@@ -87,7 +90,7 @@ export const FlightSearchControls = ({
           onChange={(value : string) => handleQueryChange(value, 'return')}
         />
       )}
-      <button onClick={handleSearch}>Search</button>
+      <Link className='button' to={`/search/${query.from}/${query.to}/${query.depart}${query.tripType === 'return' ? `/${query.return}` : '' }`}>Search</Link>
     </div>
   </div>
   );
