@@ -20,18 +20,45 @@ export const FlightResults = ({
   const [error, setError] = useState<string>('');
   const [sort, setSort] = useState<'best' | 'cheapest' | 'fastest'>('best');
   const [results, setResults] = useState(10);
+  const [retry, setRetry] = useState(0);
+  const maxRetry = 10;
   const sessionTokenSaved = useRef<string>('');
 
   const pollFlights = useCallback(async (token: string) => {
-    const res = await fetch(`${apiUrl}/poll/${token}`);
-    const json = await res.json();
+    try {
+      const res = await fetch(`${apiUrl}/poll/${token}`);
+      const json = await res.json();
 
-    setSearch(skyscanner(json).search());
+      if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+        // if(retry < maxRetry) {
+        //   setRetry(retry + 1);
+        //   pollFlights(token);
+        // } else {
+          setError(
+            'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+          );
+          setSearching(false);
+        // }
+      } else {
+        setSearch(skyscanner(json).search());
 
-    // run again until is complete
-    if (json.status === 'RESULT_STATUS_INCOMPLETE' && sessionTokenSaved.current === token) {
-      pollFlights(token);
+        // run again until is complete
+        if (json.status === 'RESULT_STATUS_INCOMPLETE' && sessionTokenSaved.current === token) {
+          pollFlights(token);
+        }
+      }
+    } catch (ex) {
+      // if(retry < maxRetry) {
+      //   setRetry(retry + 1);
+      //   pollFlights(token);
+      // } else {
+        setError(
+          'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+        );
+        setSearching(false);
+      // }
     }
+
   },[apiUrl]);
 
   const handleSearch = useCallback(async (query : FlightQuery) => {

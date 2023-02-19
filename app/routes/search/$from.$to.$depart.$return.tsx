@@ -1,11 +1,11 @@
 import { useState } from 'react';
+import { searchAutoSuggest } from '~/helpers/sdk/autosuggest';
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
+import { useLoaderData, useOutlet } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
 import flightStyles from '~/styles/flight.css';
 
-import { FlightSearchControls } from '~/components/flight-search-controls';
 import type { FlightQuery } from '~/types/search';
 import { FlightResults } from '~/components/flight-results';
 
@@ -17,39 +17,43 @@ export const links: LinksFunction = () => {
 }
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
-  const apiUrl = process.env.SKYSCANNER_APP_API_URL;
+  const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
   const url = new URL(request.url);
+  let fromEnityId = '27544008';
+  let toEnityId = '95673529';
+
+  if(params.from){
+    const fromPlaces = await searchAutoSuggest(params.from, apiUrl);
+    fromEnityId = fromPlaces[0].entityId;
+  }
+  if(params.to){
+    const toPlaces = await searchAutoSuggest(params.to, apiUrl);
+    toEnityId = toPlaces[0].entityId;
+  }
 
   return json({
     apiUrl,
     params,
+    context,
     query: Object.fromEntries(url.searchParams.entries()),
+    fromEnityId,
+    toEnityId,
   });
 };
 
 export default function Search() {
-  const { apiUrl, params, query } = useLoaderData();
+  const { apiUrl, params, context, fromEnityId, toEnityId, } = useLoaderData();
   const [search, setSearch] = useState<FlightQuery>({
-    from: params.from,
-    to: params.to,
+    from: fromEnityId,
+    to: toEnityId,
     depart: params.depart,
     return: params.return || params.depart,
     tripType: params.return ? 'return' : 'single',
   });
 
-  const handleSearch = async (query : FlightQuery) => {
-   setSearch(query);
-  };
-
   return (
     <div>
-      <div className='banner'>
-        <Link className='link-light' to="/">Back</Link>
-      </div>
-      <div className='wrapper'>
-        <FlightSearchControls onSubmit={handleSearch} apiUrl={apiUrl} defaultQuery={search} />
         <FlightResults query={search} apiUrl={apiUrl} />
-      </div>
     </div>
   );
 }

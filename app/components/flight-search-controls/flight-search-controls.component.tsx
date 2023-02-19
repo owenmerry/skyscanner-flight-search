@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { Link } from '@remix-run/react';
 import { Location } from '~/components/location';
@@ -9,7 +9,11 @@ import type { FlightQuery } from '~/types/search';
 interface FlightSearchControlsProps {
   onSubmit?: (query: FlightQuery) => void;
   defaultQuery?: FlightQuery;
+  defaultFrom?: string,
+  defaultTo?: string,
   apiUrl?: string;
+  fromText?: string;
+  toText?: string;
 }
 
 export const FlightSearchControls = ({
@@ -21,14 +25,33 @@ export const FlightSearchControls = ({
     depart: getDateFormated(1),
     return: getDateFormated(3),
     tripType: 'return',
-  }
+  },
+  defaultFrom = "LON",
+  defaultTo = "DUB",
+  fromText = "London",
+  toText = "Dublin"
 }: FlightSearchControlsProps): JSX.Element => {
   const [tripType, setTripType] = useState(defaultQuery.tripType);
   const [query, setQuery] = useState<FlightQuery>(defaultQuery);
+  const [from, setFrom] = useState(defaultFrom);
+  const [to, setTo] = useState(defaultTo);
+  const isReturn = query.tripType === 'return';
+
+  useEffect( () => {
+
+  },[]);
 
   const handleQueryChange = (value: string, key: string) => {
     setQuery({ ...query, [key]: value });
   };
+  const handleLocationChange = (value: string, key: string, iataCode: string) => {
+    handleQueryChange(value, key);
+    if(key === 'from'){
+      setFrom(iataCode);
+    } else {
+      setTo(iataCode);
+    }
+  }
   const handleTripTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTripType(e.target.value);
     setQuery({ ...query, tripType: e.target.value });
@@ -65,14 +88,14 @@ export const FlightSearchControls = ({
     <div className="flight-search-controls">
       <Location
         name="From"
-        defaultValue={'London'}
-        onChange={(value) => handleQueryChange(value, 'from')}
+        defaultValue={fromText}
+        onSelect={(value, iataCode) => handleLocationChange(value, 'from', iataCode)}
         apiUrl={apiUrl}
       />
       <Location
         name="To"
-        defaultValue={'Dublin'}
-        onChange={(value) => handleQueryChange(value, 'to')}
+        defaultValue={toText}
+        onSelect={(value, iataCode) => handleLocationChange(value, 'to', iataCode)}
         apiUrl={apiUrl}
       />
       <DateInput
@@ -90,7 +113,7 @@ export const FlightSearchControls = ({
           onChange={(value : string) => handleQueryChange(value, 'return')}
         />
       )}
-      <Link className='button' to={`/search/${query.from}/${query.to}/${query.depart}${query.tripType === 'return' ? `/${query.return}` : '' }`}>Search</Link>
+      <Link className='button' to={`/search/${from}/${to}/${query.depart}${isReturn ? `/${query.return}` : '' }`}>Search</Link>
     </div>
   </div>
   );

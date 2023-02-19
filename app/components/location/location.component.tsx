@@ -8,7 +8,7 @@ interface LocationProps {
   apiUrl?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
-  onSelect?: (value: string) => void;
+  onSelect?: (value: string, iataCode: string) => void;
 }
 
 export const Location = ({
@@ -29,11 +29,11 @@ export const Location = ({
     setSearchOrigin(originResults);
   };
 
-  const handleSelect = async (placeId: string, geoId: string) => {
+  const handleSelect = async (placeId: string, geoId: string, iataCode: string) => {
     setSearchTerm(placeId);
     setSearchOrigin([]);
     onChange && onChange(geoId);
-    onSelect && onSelect(geoId);
+    onSelect && onSelect(geoId, iataCode);
   };
 
   return (
@@ -51,7 +51,7 @@ export const Location = ({
             {searchOrigin.map((place,key) => (
               <div
                 key={place.entityId}
-                onClick={() => handleSelect(place.name, place.entityId)}
+                onClick={() => handleSelect(place.name, place.entityId, place.iataCode)}
               >
                 {place.name}{' '}
                 {place.cityId !== '' && (
