@@ -135,6 +135,9 @@ useEffect(() => {
           {search[sort].slice(0, results).map((itinerary) => {
             return (
               <div className="flight" key={itinerary.itineraryId}>
+                <div className='hidden'>
+                  <div>id: {itinerary.itineraryId}</div>
+                </div>
                 <div className="flight-layout">
                     <div className='panel-legs'>
                       {itinerary.legs.map((leg) => (

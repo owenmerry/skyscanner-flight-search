@@ -58,6 +58,9 @@ a.link-light:visited, body a.link-light {
 b{
   font-weight: 600;
 }
+.hidden{
+  display: none;
+}
 
 @media only screen and (max-width: 600px) {
   .panels{
