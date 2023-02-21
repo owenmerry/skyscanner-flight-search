@@ -161,6 +161,8 @@ interface LegSDK {
   segments: SegmentSDK[];
   fromIata: string;
   toIata: string;
+  fromEntityId: number;
+  toEntityId: number;
   departureTime: String;
   arrivalTime: String;
 }
@@ -244,6 +246,8 @@ export const getSortingOptions = (
         segments: segments,
         fromIata: res.content.results.places[leg.originPlaceId].iata,
         toIata: res.content.results.places[leg.destinationPlaceId].iata,
+        fromEntityId: Number(res.content.results.places[leg.originPlaceId].entityId),
+        toEntityId: Number(res.content.results.places[leg.destinationPlaceId].entityId),
         departureTime: getTime(
           leg.departureDateTime.hour,
           leg.departureDateTime.minute,

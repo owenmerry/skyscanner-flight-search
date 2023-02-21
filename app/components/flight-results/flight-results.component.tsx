@@ -178,7 +178,7 @@ useEffect(() => {
                       ))}
                     </div>
 
-                    <Prices flight={itinerary} />
+                    <Prices flight={itinerary} query={query} />
                     
                     {/* <div>
                      {itinerary.legs.map((leg) => (
