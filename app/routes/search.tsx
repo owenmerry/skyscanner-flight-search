@@ -61,8 +61,8 @@ export default function Search() {
     from: fromEnityId,
     to: toEnityId,
     depart: params.depart || getDateFormated(1),
-    return: params.return || params.depart || getDateFormated(2),
-    tripType: params.return ? params.return ? 'return' : 'single' : 'return',
+    return: params.return ? params.return : getDateFormated(2),
+    tripType: params.depart ? params.return ? 'return' : 'single' : 'return',
   });
 
   const handleSearch = async (query : FlightQuery) => {

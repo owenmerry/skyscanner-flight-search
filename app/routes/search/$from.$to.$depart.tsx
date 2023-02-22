@@ -35,22 +35,28 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
     apiUrl,
     params,
     query: Object.fromEntries(url.searchParams.entries()),
+    fromEnityId,
+    toEnityId,
+    url: {
+      to: params.to,
+      from: params.from,
+      depart: params.depart,
+    }
   });
 };
 
 export default function Search() {
-  const { apiUrl, params, fromEnityId, toEnityId, } = useLoaderData();
+  const { apiUrl, params, fromEnityId, toEnityId, url } = useLoaderData();
   const [search, setSearch] = useState<FlightQuery>({
     from: fromEnityId,
     to: toEnityId,
     depart: params.depart,
-    return: params.depart,
     tripType: 'single',
   });
 
   return (
     <div>
-        <FlightResults query={search} apiUrl={apiUrl} />
+        <FlightResults url={url} query={search} apiUrl={apiUrl} />
     </div>
   );
 }

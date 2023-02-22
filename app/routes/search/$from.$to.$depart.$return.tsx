@@ -6,7 +6,7 @@ import { useLoaderData, useOutlet } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
 import flightStyles from '~/styles/flight.css';
 
-import type { FlightQuery } from '~/types/search';
+import type { FlightQuery, FlightUrl } from '~/types/search';
 import { FlightResults } from '~/components/flight-results';
 
 export const links: LinksFunction = () => {
@@ -38,11 +38,17 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
     query: Object.fromEntries(url.searchParams.entries()),
     fromEnityId,
     toEnityId,
+    url: {
+      from: params.from,
+      to: params.to,
+      depart: params.depart,
+      return: params.return,
+    }
   });
 };
 
 export default function Search() {
-  const { apiUrl, params, context, fromEnityId, toEnityId, } = useLoaderData();
+  const { apiUrl, params, context, fromEnityId, toEnityId, url } = useLoaderData();
   const [search, setSearch] = useState<FlightQuery>({
     from: fromEnityId,
     to: toEnityId,
@@ -53,7 +59,7 @@ export default function Search() {
 
   return (
     <div>
-        <FlightResults query={search} apiUrl={apiUrl} />
+        <FlightResults url={url} query={search} apiUrl={apiUrl} />
     </div>
   );
 }

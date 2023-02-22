@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import type { FlightQuery } from '~/types/search';
+import type { FlightQuery, FlightUrl } from '~/types/search';
 import { skyscanner } from '~/helpers/sdk/flight';
 import type { SearchSDK } from '~/helpers/sdk/flight';
 
@@ -9,11 +9,13 @@ import { Prices } from '~/components/prices';
 interface FlightResultsProps {
   query?: FlightQuery;
   apiUrl?: string;
+  url?: FlightUrl;
 }
 
 export const FlightResults = ({
   query,
   apiUrl = '',
+  url,
 }: FlightResultsProps): JSX.Element => {
   const [search, setSearch] = useState<SearchSDK | false>(false);
   const [searching, setSearching] = useState<boolean>(false);
@@ -71,7 +73,7 @@ export const FlightResults = ({
       const res = await fetch(
         `${apiUrl}/create?from=${query.from}&to=${
           query.to
-        }&depart=${query.depart}&return=${query.return}`,
+        }&depart=${query.depart}${query?.return ? `&return=${query.return}` : ''}`,
       );
       const json = await res.json();
 
@@ -177,8 +179,7 @@ useEffect(() => {
                         </span>
                       ))}
                     </div>
-
-                    <Prices flight={itinerary} query={query} />
+                    <Prices url={url} flight={itinerary} query={query} />
                     
                     {/* <div>
                      {itinerary.legs.map((leg) => (

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link } from '@remix-run/react';
 import { Location } from '~/components/location';
 import { DateInput } from '~/components/date';
-import { getDateFormated } from '~/helpers/date';
+import { getDateFormated, addWeeksToDate, formatDate } from '~/helpers/date';
 import type { FlightQuery } from '~/types/search';
 
 interface FlightSearchControlsProps {
@@ -39,7 +39,7 @@ export const FlightSearchControls = ({
 
   useEffect( () => {
 
-  },[]);
+  },[query.depart]);
 
   const handleQueryChange = (value: string, key: string) => {
     setQuery({ ...query, [key]: value });
@@ -60,6 +60,16 @@ export const FlightSearchControls = ({
   const handleSearch = async () => {
     onSubmit && onSubmit(query);
   };
+
+  const handleWeekChange = (method : 'add' | 'minus') => {
+    const sumDate = method === 'add' ? 1 : -1;
+    const departDate = formatDate(addWeeksToDate(new Date(query.depart), sumDate));
+    const returnDate = query.return ? formatDate(addWeeksToDate(new Date(query.return), sumDate)) : null;
+    setQuery({ ...query, 
+      depart: departDate, 
+      ...returnDate && {return: returnDate}, 
+    });
+  }
 
   return (
     <div className="flight-search">
@@ -100,7 +110,7 @@ export const FlightSearchControls = ({
       />
       <DateInput
         name="Depart"
-        defaultValue={query.depart}
+        value={query.depart}
         min={getDateFormated()}
         max={query.return}
         onChange={(value : string) => handleQueryChange(value, 'depart')}
@@ -108,12 +118,16 @@ export const FlightSearchControls = ({
       {tripType === 'return' && (
         <DateInput
           name="Return"
-          defaultValue={query.return}
+          value={query.return}
           min={query.depart}
           onChange={(value : string) => handleQueryChange(value, 'return')}
         />
       )}
       <Link className='button' to={`/search/${from}/${to}/${query.depart}${isReturn ? `/${query.return}` : '' }`}>Search</Link>
+    </div>
+    <div className='week-buttons'>
+        <button onClick={() => handleWeekChange('minus')}>-1 week</button>
+        <button onClick={() => handleWeekChange('add')}>+1 week</button>
     </div>
   </div>
   );

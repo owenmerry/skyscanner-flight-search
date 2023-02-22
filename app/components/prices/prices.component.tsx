@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import type { FlightSDK } from '~/helpers/sdk/flight';
-import type { FlightQuery } from '~/types/search';
+import type { FlightQuery, FlightUrl } from '~/types/search';
 
 interface PricesProps {
   flight?: FlightSDK;
   query?: FlightQuery;
+  url?: FlightUrl;
 }
 
 export const Prices = ({
   flight,
   query,
+  url,
 }: PricesProps): JSX.Element => {
   const [show, setShow] = useState(false);
 
   const departDateSkyscannerUrlFormat = `${query?.depart.split('-')[0].slice(2)}${query?.depart.split('-')[1]}${query?.depart.split('-')[2]}`;
-  const returnDateSkyscannerUrlFormat = `${query?.return.split('-')[0].slice(2)}${query?.return.split('-')[1]}${query?.return.split('-')[2]}`;
+  const returnDateSkyscannerUrlFormat = query?.return && `${query?.return.split('-')[0].slice(2)}${query?.return.split('-')[1]}${query?.return.split('-')[2]}` || null;
 
   const handleToggle = () => {
     setShow(!show);
@@ -58,7 +60,7 @@ export const Prices = ({
         <div className="flight-price">
                   <a 
                   target="_blank"
-                  href={`https://www.skyscanner.net/transport/flights/${flight.legs[0].fromIata}/${flight.legs[flight.legs.length - 1].fromIata}/${departDateSkyscannerUrlFormat}${returnDateSkyscannerUrlFormat !== '' ? `/${returnDateSkyscannerUrlFormat}` : '' }/config/${encodeURIComponent(flight.itineraryId)}`}
+                  href={`https://www.skyscanner.net/transport/flights/${url?.from}/${url?.to}/${departDateSkyscannerUrlFormat}${returnDateSkyscannerUrlFormat ? `/${returnDateSkyscannerUrlFormat}` : '' }/config/${encodeURIComponent(flight.itineraryId)}`}
                   rel="noreferrer"
                   className='button'
                   >See on Skyscanner</a>

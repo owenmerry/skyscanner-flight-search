@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { formatDate } from '~/helpers/date';
 import { addDays } from 'date-fns';
 
@@ -6,23 +6,27 @@ interface DateProps {
   name?: string;
   min?: string;
   max?: string;
-  defaultValue?: string;
+  value?: string;
   onChange?: (value: string) => void;
 }
 
 export const DateInput = ({
   name = 'date',
-  defaultValue = '',
+  value = '',
   min,
   max,
   onChange,
 }: DateProps): JSX.Element => {
-  const [date, setDate] = useState(defaultValue);
+  const [date, setDate] = useState(value);
   const minDate = new Date(min || '');
   const maxDate = new Date(max || '');
   const currentDate = new Date(date);
   const isMinDisabled = min && minDate > addDays(currentDate,-1) || false;
   const isMaxDisabled = max && maxDate < addDays(currentDate,1) || false;
+
+  useEffect(() => {
+    setDate(value);
+  },[value]);
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
@@ -38,6 +42,8 @@ export const DateInput = ({
     setDate(currentDateFormatted);
     onChange && onChange(currentDateFormatted);
   };
+
+
 
   return (
     <div>
