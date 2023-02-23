@@ -42,7 +42,7 @@ export const FlightDetails = ({
         //   pollFlights(token);
         // } else {
           setError(
-            'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+            `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 1 (status: ${retry})`,
           );
           setSearching(false);
         // }
@@ -55,15 +55,15 @@ export const FlightDetails = ({
         }
       }
     } catch (ex) {
-      // if(retry < maxRetry) {
-      //   setRetry(retry + 1);
-      //   pollFlights(token);
-      // } else {
+      setSearching(false);
+      if(retry < maxRetry) {
+        setRetry(retry + 1);
+        pollFlights(token);
+      } else {
         setError(
-          'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+          `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 2 (status: ${retry})`,
         );
-        setSearching(false);
-      // }
+      }
     }
 
   },[apiUrl]);
@@ -85,7 +85,7 @@ export const FlightDetails = ({
       if (!json && json.statusCode === 500 && json.statusCode !== 200) {
         setSearching(false);
         setError(
-          'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+          `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 3 (status: ${retry})`,
         );
       } else {
 
@@ -97,7 +97,12 @@ export const FlightDetails = ({
       }
     } catch (ex) {
       setSearching(false);
-      setError('Sorry, something happened and we couldnt do this search.');
+      if(retry < maxRetry) {
+        setRetry(retry + 1);
+        handleSearch(query);
+      } else {
+        setError(`Sorry, something happened and we couldnt do this search. code: 4 (status: ${retry})`);
+      }
     }
   },[apiUrl, pollFlights]);
 

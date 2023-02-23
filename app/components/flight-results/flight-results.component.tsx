@@ -34,15 +34,15 @@ export const FlightResults = ({
       const json = await res.json();
 
       if (!json && json.statusCode === 500 && json.statusCode !== 200) {
-        // if(retry < maxRetry) {
-        //   setRetry(retry + 1);
-        //   pollFlights(token);
-        // } else {
+        setSearching(false);
+        if(retry < maxRetry) {
+          setRetry(retry + 1);
+          pollFlights(token);
+        } else {
           setError(
-            'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+            `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 1 (status:${retry})`,
           );
-          setSearching(false);
-        // }
+        }
       } else {
         setSearch(skyscanner(json).search());
 
@@ -52,15 +52,15 @@ export const FlightResults = ({
         }
       }
     } catch (ex) {
-      // if(retry < maxRetry) {
-      //   setRetry(retry + 1);
-      //   pollFlights(token);
-      // } else {
+      if(retry < maxRetry) {
+        setRetry((st) => st + 1);
+        pollFlights(token);
+      } else {
         setError(
-          'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+          `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 2 (status:${retry})`,
         );
         setSearching(false);
-      // }
+      }
     }
 
   },[apiUrl]);
@@ -82,7 +82,7 @@ export const FlightResults = ({
       if (!json && json.statusCode === 500 && json.statusCode !== 200) {
         setSearching(false);
         setError(
-          'Sorry, something happened and we couldnt do this search, maybe try a differnt search',
+          `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 3 (status:${retry})`,
         );
       } else {
 
@@ -94,7 +94,7 @@ export const FlightResults = ({
       }
     } catch (ex) {
       setSearching(false);
-      setError('Sorry, something happened and we couldnt do this search.');
+      setError(`Sorry, something happened and we couldnt do this search.code: 4 (status:${retry})`);
     }
   },[apiUrl, pollFlights]);
 
@@ -114,7 +114,7 @@ useEffect(() => {
     <div className="flight-results">
         {searching && (
         <div className='loading'>
-          Searching for <b>Flights and the best prices</b> <Loading />
+          Searching for <b>Flights and the best prices</b> ({retry}/5)<Loading />
         </div>
       )}
       {error !== '' && <div className='error'>{error}</div>}
@@ -131,7 +131,7 @@ useEffect(() => {
           {search.status !== 'RESULT_STATUS_COMPLETE' && (
             <div className='loading'>
               <>
-                We are still searching for <b>More flights and the best prices</b>
+                We are still searching for <b>More flights and the best prices</b> ({retry}/5)
                 <Loading />
               </>
             </div>
