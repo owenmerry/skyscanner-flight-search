@@ -8,17 +8,19 @@ import { Link } from '@remix-run/react';
 import { Loading } from '~/components/loading';
 import { Prices } from '~/components/prices';
 
-interface FlightResultsProps {
+interface FlightDetailsProps {
   query?: FlightQuery;
   apiUrl?: string;
   url?: FlightUrl;
+  itineraryId?: string;
 }
 
-export const FlightResults = ({
+export const FlightDetails = ({
   query,
   apiUrl = '',
   url,
-}: FlightResultsProps): JSX.Element => {
+  itineraryId,
+}: FlightDetailsProps): JSX.Element => {
   const [search, setSearch] = useState<SearchSDK | false>(false);
   const [searching, setSearching] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
@@ -27,6 +29,7 @@ export const FlightResults = ({
   const [retry, setRetry] = useState(0);
   const maxRetry = 10;
   const sessionTokenSaved = useRef<string>('');
+  const foundFlight = !!(search && search[sort].filter((item) => item.itineraryId === itineraryId).length > 0);
 
   const pollFlights = useCallback(async (token: string) => {
     try {
@@ -114,29 +117,25 @@ useEffect(() => {
     <div className="flight-results">
         {searching && (
         <div className='loading'>
-          Searching for <b>Flights and the best prices</b> <Loading />
+          Searching for <b>Flight and the best prices</b> <Loading />
         </div>
       )}
       {error !== '' && <div className='error'>{error}</div>}
       {search && (
         <div>
-          <h2>
-            Results {search.stats.total} - Lowest Price: {search.stats.minPrice}
-          </h2>
-          <div className='sort-buttons'>
-            <button className={sort === 'best' ? 'selected' : ''} onClick={() => handleSort('best')}>Best</button>
-            <button className={sort === 'cheapest' ? 'selected' : ''} onClick={() => handleSort('cheapest')}>Cheapest</button>
-            <button className={sort === 'fastest' ? 'selected' : ''} onClick={() => handleSort('fastest')}>Fastest</button>
-          </div>
           {search.status !== 'RESULT_STATUS_COMPLETE' && (
             <div className='loading'>
               <>
-                We are still searching for <b>More flights and the best prices</b>
+                {foundFlight ? (
+                  <>Verifing prices and <b>Searching for more deals</b></>
+                  ) : (
+                    <>Loading Flight details</>
+                  )}
                 <Loading />
               </>
             </div>
           )}
-          {search[sort].slice(0, results).map((itinerary) => {
+          {search[sort].filter((item) => item.itineraryId === itineraryId).map((itinerary) => {
             return (
               <div className="flight" key={itinerary.itineraryId}>
                 <div className='hidden'>
@@ -181,10 +180,10 @@ useEffect(() => {
                         </span>
                       ))}
                     </div>
-                    <Prices url={url} flight={itinerary} query={query} />
-                    <Link to={`/booking/${url?.from}/${url?.to}/${url?.depart}${url?.return ? `/${url?.return}` : ''}/${itinerary.itineraryId}`}>View Details</Link>
-                    
-                    {/* <div>
+
+
+                    <div>
+                      <h2>Details</h2>
                      {itinerary.legs.map((leg) => (
                       <div key={leg.id}>
                         <div>
@@ -196,41 +195,34 @@ useEffect(() => {
                           <div>
                             <ul>
                               {leg.segments.map((segment) => (
-                                <li key={segment.id}>
-                                  {segment.from} to {segment.to}
-                                  <br />
-                                  Depature:{segment.departure}, Arrival:{' '}
-                                  {segment.arrival}, Journey time:{' '}
-                                  {segment.duration} min
-                                </li>
+                                <div key={segment.id}>
+                                  <div>{segment.from} to {segment.to}</div>
+                                  <div>Depature:{segment.departure}</div>
+                                  <div>Arrival: {segment.arrival}</div>
+                                  <div>Journey time: {segment.duration} min</div>
+                                </div>
                               ))}
                             </ul>
                           </div>
                         </div>
                       </div>
                     ))} 
-                  </div> */}
+                  </div>
+
+                  <div>
+                    <h2>Deals</h2>
+                    <Prices url={url} flight={itinerary} query={query} open showButton={false} />
+                  </div>
+                    
+                    
+                    
+
 
                   
               </div>
               </div>
             );
           })}
-          <div className='paging-buttons'>
-            {results < search.stats.total && (
-              <>
-                <button onClick={() => handleShowResults(results + 10)}>
-                  Show 10 more results
-                </button>
-                <button onClick={() => handleShowResults(results + 100)}>
-                  Show 100 more results
-                </button>
-                <button onClick={() => handleShowResults(10000)}>
-                  Show all results
-                </button>
-              </>
-            )}
-          </div>
         </div>
       )}
   </div>

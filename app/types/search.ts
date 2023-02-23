@@ -11,4 +11,5 @@ export interface FlightUrl {
     from: string,
     depart: string,
     return?: string,
+    itineraryId?: string,
 }

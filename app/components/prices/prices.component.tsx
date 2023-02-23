@@ -6,14 +6,18 @@ interface PricesProps {
   flight?: FlightSDK;
   query?: FlightQuery;
   url?: FlightUrl;
+  open?: boolean;
+  showButton?: boolean;
 }
 
 export const Prices = ({
   flight,
   query,
   url,
+  open = false,
+  showButton = true,
 }: PricesProps): JSX.Element => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(open);
 
   const departDateSkyscannerUrlFormat = `${query?.depart.split('-')[0].slice(2)}${query?.depart.split('-')[1]}${query?.depart.split('-')[2]}`;
   const returnDateSkyscannerUrlFormat = query?.return && `${query?.return.split('-')[0].slice(2)}${query?.return.split('-')[1]}${query?.return.split('-')[2]}` || null;
@@ -25,7 +29,9 @@ export const Prices = ({
   return (
     <div>
       <div className='panel-price'>
-        <div><button className='button-stretch' onClick={handleToggle}>See Prices from <b>{flight?.price}</b> ({flight?.prices.length} deal{flight && flight?.prices.length > 1 ? 's' : ''})</button></div>  
+        {showButton && (
+          <div><button className='button-stretch' onClick={handleToggle}>See Prices from <b>{flight?.price}</b> ({flight?.prices.length} deal{flight && flight?.prices.length > 1 ? 's' : ''})</button></div>  
+        )}
       </div>
       {flight && show && (
         <>
