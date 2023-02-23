@@ -183,35 +183,6 @@ useEffect(() => {
                     </div>
                     <Prices url={url} flight={itinerary} query={query} />
                     <Link to={`/booking/${url?.from}/${url?.to}/${url?.depart}${url?.return ? `/${url?.return}` : ''}/${itinerary.itineraryId}`}>View Details</Link>
-                    
-                    {/* <div>
-                     {itinerary.legs.map((leg) => (
-                      <div key={leg.id}>
-                        <div>
-                        </div>
-                        <div>
-                          Stops: {leg.stops}, Journey time: {leg.duration} min
-                        </div>
-                        <div>
-                          <div>
-                            <ul>
-                              {leg.segments.map((segment) => (
-                                <li key={segment.id}>
-                                  {segment.from} to {segment.to}
-                                  <br />
-                                  Depature:{segment.departure}, Arrival:{' '}
-                                  {segment.arrival}, Journey time:{' '}
-                                  {segment.duration} min
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    ))} 
-                  </div> */}
-
-                  
               </div>
               </div>
             );

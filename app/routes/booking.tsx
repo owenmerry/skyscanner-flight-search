@@ -8,6 +8,7 @@ import globalStyles from '~/styles/global.css';
 import flightStyles from '~/styles/flight.css';
 import { getDateFormated } from '~/helpers/date';
 
+
 import { FlightSearchControls } from '~/components/flight-search-controls';
 import type { FlightQuery } from '~/types/search';
 
@@ -50,11 +51,17 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
     toIata,
     fromEnityId,
     toEnityId,
+    url: {
+      from: params.from,
+      to: params.to,
+      depart: params.depart,
+      return: params.return,
+    }
   });
 };
 
 export default function Search() {
-  const { apiUrl, params, fromText, toText, fromIata, toIata, fromEnityId,toEnityId } = useLoaderData();
+  const { apiUrl, params, fromText, toText, fromIata, toIata, fromEnityId, toEnityId, url } = useLoaderData();
   const { pathname } = useLocation()
   const isResultsPage = fromIata;
   const [search, setSearch] = useState<FlightQuery>({
@@ -72,7 +79,7 @@ export default function Search() {
   return (
     <div>
       <div className='banner'>
-        <Link className='link-light' to="/">Back</Link>
+      <Link className='link-light' to={`/search/${url?.from}/${url?.to}/${url?.depart}${url?.return ? `/${url?.return}` : ''}`}>Back</Link>
       </div>
       <div className='wrapper'>
         <Outlet key={pathname} />

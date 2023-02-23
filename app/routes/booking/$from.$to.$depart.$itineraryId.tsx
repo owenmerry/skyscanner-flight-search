@@ -43,7 +43,6 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
       from: params.from,
       to: params.to,
       depart: params.depart,
-      return: params.return,
       itineraryId: params.itineraryId,
     }
   });
@@ -55,7 +54,6 @@ export default function Search() {
     from: fromEnityId,
     to: toEnityId,
     depart: params.depart,
-    return: params.return || params.depart,
     tripType: params.return ? 'return' : 'single',
   });
 
