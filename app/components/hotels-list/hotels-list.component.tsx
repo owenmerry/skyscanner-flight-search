@@ -2,6 +2,9 @@ import { useState, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
 
 interface HotelsResponse {
+  meta: {
+    final_status: string;
+  },
   results: {
     hotels: {
       hotel_id: string;
@@ -34,16 +37,20 @@ export const HotelList = ({
 }: HotelListProps): JSX.Element => {
   const [search, setSearch] = useState<HotelsResponse>();
   const hasResults = search && search?.results.hotels.length > 0;
+  const numbeOfResults = search && search?.results.hotels.length;
 
   const handleSearch = useCallback(async (query: FlightQuery) => {
     try {
       const res = await fetch(
         `${apiUrl}/hotel/search?from=${query.from}&to=${query.to}&depart=${query.depart}&return=${query.return}&entityId=${query.to}`);
-      const json = await res.json();
+      const json : HotelsResponse = await res.json();
 
       if (!json && json.statusCode === 500 && json.statusCode !== 200) {
       } else {
         setSearch(json);
+        if(json.meta.final_status !== "COMPLETED") {
+          handleSearch(query);
+        }
       }
     } catch (ex) {
     }
@@ -57,7 +64,7 @@ export const HotelList = ({
     <>
     {!hasResults ? '' : (
       <div className="hotels">
-        <h2>Hotels</h2>
+        <h2>Hotels ({numbeOfResults} Results)</h2>
         <div className="hotels-results">
           {search?.results.hotels.sort((a,b) => a.offers[0].price - b.offers[0].price).map((hotel) => (
             <div className='hotel' key={hotel.hotel_id}>
