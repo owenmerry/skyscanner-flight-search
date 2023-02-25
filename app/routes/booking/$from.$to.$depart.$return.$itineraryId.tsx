@@ -5,15 +5,18 @@ import { json } from '@remix-run/node';
 import { useLoaderData, useOutlet } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
 import flightStyles from '~/styles/flight.css';
+import hotelStyles from '~/styles/hotel.css';
 
 
 import type { FlightQuery, FlightUrl } from '~/types/search';
 import { FlightDetails } from '~/components/flight-details';
+import { HotelList } from '~/components/hotels-list';
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: globalStyles },
     { rel: 'stylesheet', href: flightStyles },
+    { rel: 'stylesheet', href: hotelStyles },
   ];
 }
 
@@ -62,6 +65,7 @@ export default function Search() {
   return (
     <div>
         <FlightDetails url={url} query={search} apiUrl={apiUrl} itineraryId={url.itineraryId}  />
+        <HotelList url={url} query={search} apiUrl={apiUrl} />
     </div>
   );
 }
