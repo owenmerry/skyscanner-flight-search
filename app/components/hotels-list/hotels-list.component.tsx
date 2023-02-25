@@ -11,7 +11,7 @@ interface HotelsResponse {
       rating: { value: string; }
       stars: string;
       images: {
-        thumbnail: string;
+        thumbnail?: string;
       }[];
       offers: {
         price: number;
@@ -61,7 +61,7 @@ export const HotelList = ({
         <div className="hotels-results">
           {search?.results.hotels.sort((a,b) => a.offers[0].price - b.offers[0].price).map((hotel) => (
             <div className='hotel' key={hotel.hotel_id}>
-              <img src={hotel.images[0].thumbnail} />
+              <img src={hotel.images[0]?.thumbnail} />
               <h2>{hotel.name}</h2>
               <div>Price: {hotel.offers[0].price}</div>
               <div><a className='button' href={`http://${hotel.offers[0].deeplink}`} target="_blank">View Deal</a></div>
