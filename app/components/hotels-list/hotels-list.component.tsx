@@ -33,6 +33,7 @@ export const HotelList = ({
   url,
 }: HotelListProps): JSX.Element => {
   const [search, setSearch] = useState<HotelsResponse>();
+  const hasResults = search && search?.results.hotels.length > 0;
 
   const handleSearch = useCallback(async (query: FlightQuery) => {
     try {
@@ -54,7 +55,7 @@ export const HotelList = ({
 
   return (
     <>
-    {!search ? '' : (
+    {!hasResults ? '' : (
       <div className="hotels">
         <h2>Hotels</h2>
         <div className="hotels-results">
