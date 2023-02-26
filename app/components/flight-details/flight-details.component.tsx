@@ -120,26 +120,14 @@ useEffect(() => {
 
   return (
     <div className="flight-results">
-        {searching && (
+      {(searching || !foundFlight) && (
         <div className='loading'>
-          Searching for <b>Flight and the best prices</b> <Loading />
+          Loading Flight Details and Prices <Loading />
         </div>
       )}
       {error !== '' && <div className='error'>{error}</div>}
       {search && (
         <div>
-          {search.status !== 'RESULT_STATUS_COMPLETE' && (
-            <div className='loading'>
-              <>
-                {foundFlight ? (
-                  <>Verifing prices and <b>Searching for more deals</b></>
-                  ) : (
-                    <>Loading Flight details</>
-                  )}
-                <Loading />
-              </>
-            </div>
-          )}
           {search[sort].filter((item) => item.itineraryId === itineraryId).map((itinerary) => {
             return (
               <div className="flight" key={itinerary.itineraryId}>
@@ -215,7 +203,12 @@ useEffect(() => {
                   </div>
 
                   <div>
-                    <h2>Deals</h2>
+                    <h2>Deals </h2>
+                    {search.status !== 'RESULT_STATUS_COMPLETE' && (
+                      <div className='loading'>
+                        Loading Deals and Prices <Loading />
+                      </div>
+                    )}
                     <Prices url={url} flight={itinerary} query={query} open showButton={false} />
                   </div>
                     

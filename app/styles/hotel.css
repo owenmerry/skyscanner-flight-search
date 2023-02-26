@@ -9,12 +9,30 @@
 }
 .hotel{
   border-radius: 1rem;
-  padding: 1rem;
   margin: 1rem 0;
   background: #fff;
+  overflow: hidden;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 3px 5px;
+  border: solid 1px #d0d0d0;
 }
 .hotel h2{
   margin-top: 0;
+  font-size: 1rem;
+}
+.hotel-image{
+  height: 180px;
+  background-size: cover;
+}
+.hotel-details{
+  padding: 1rem;
+}
+.hotel-rating{
+  display: flex;
+  align-items: center;
+}
+.hotel-title{
+}
+.hotel-price{
 }
 
 @media only screen and (max-width: 600px) {
