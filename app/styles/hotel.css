@@ -16,3 +16,9 @@
 .hotel h2{
   margin-top: 0;
 }
+
+@media only screen and (max-width: 600px) {
+  .hotels-results{
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
