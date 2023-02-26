@@ -70,8 +70,8 @@ export const HotelList = ({
             <div className='hotel' key={hotel.hotel_id}>
               <img src={hotel.images[0]?.thumbnail} />
               <h2>{hotel.name}</h2>
-              <div>Prices: 
-                <b>£{hotel.offers[0].price}</b>
+              <div>
+                <b>£{hotel.offers[0].price}</b> Total Stay
               </div>
               <div><a className='button' href={`http://${hotel.offers[0].deeplink}`} target="_blank">View Deal</a></div>
               <div><a href={`https://www.skyscanner.net/hotels/location/hotels/place/ht-${hotel.hotel_id}?checkin=${query?.depart}&checkout=${query?.return}&adults=1&rooms=1`} target="_blank">View on Skyscanner</a></div>
