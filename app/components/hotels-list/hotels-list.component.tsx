@@ -45,7 +45,7 @@ export const HotelList = ({
         `${apiUrl}/hotel/search?from=${query.from}&to=${query.to}&depart=${query.depart}&return=${query.return}&entityId=${query.to}`);
       const json : HotelsResponse = await res.json();
 
-      if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+      if (!json) {
       } else {
         setSearch(json);
         if(json.meta.final_status !== "COMPLETED") {
@@ -70,7 +70,9 @@ export const HotelList = ({
             <div className='hotel' key={hotel.hotel_id}>
               <img src={hotel.images[0]?.thumbnail} />
               <h2>{hotel.name}</h2>
-              <div>Price: {hotel.offers[0].price}</div>
+              <div>Prices: 
+                <b>£{hotel.offers[0].price}</b>
+              </div>
               <div><a className='button' href={`http://${hotel.offers[0].deeplink}`} target="_blank">View Deal</a></div>
               <div><a href={`https://www.skyscanner.net/hotels/location/hotels/place/ht-${hotel.hotel_id}?checkin=${query?.depart}&checkout=${query?.return}&adults=1&rooms=1`} target="_blank">View on Skyscanner</a></div>
             </div>
