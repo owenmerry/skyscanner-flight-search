@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
 import { skyscanner } from '~/helpers/sdk/flight';
 import type { SearchSDK } from '~/helpers/sdk/flight';
+import { format } from 'date-fns';
 
 import { Link } from '@remix-run/react';
 
@@ -134,80 +135,82 @@ useEffect(() => {
                 <div className='hidden'>
                   <div>id: {itinerary.itineraryId}</div>
                 </div>
-                <div className="flight-layout">
-                    <div className='panel-legs'>
-                      {itinerary.legs.map((leg) => (
-                        <div key={leg.id} className='panel-leg'>
-                          <div className='times'>
-                            <div className='time'>{leg.departureTime}</div>
-                            {leg.fromIata}
-                          </div>
-                          <div className='duration'>
-                            <div>
-                              {leg.duration} minutes ({leg.direct ? 'Direct' : `${leg.stops} Stop${leg.stops > 1 ? 's' : ''}`})
-                            </div>
-                          </div>
-                          <div className='times'>
-                            <div className='time'>{leg.arrivalTime}</div>
-                            {leg.toIata}
+
+
+
+
+
+
+                <div className='flight-details'>
+                  <div className='flight-title'>
+                    {url?.from} to {url?.to}
+                  </div>
+                  {itinerary.legs.map((leg, key) => {
+                    
+                    return (<div key={leg.id}>
+                      {key === 0 && (
+                        <h3>Outbound</h3>
+                      )}
+                      {key === 1 && (
+                        <h3>Return</h3>
+                      )}
+                      <div className='panel-leg'>
+                        <div className='times'>
+                          <div className='time'>{leg.departureTime}</div>
+                          {leg.fromIata}
+                        </div>
+                        <div className='duration'>
+                          <div>
+                            {leg.duration} minutes ({leg.direct ? 'Direct' : `${leg.stops} Stop${leg.stops > 1 ? 's' : ''}`})
                           </div>
                         </div>
-                      ))} 
-                    </div>
-
-                    <div className='agent-images'>
-                      {itinerary.prices.map((price, key) => (
-                        <span key={`${price.price}-${key}`}>
-                          {price.deepLinks.map((deepLink) => (
-                            <span key={deepLink.link}>
-                              {deepLink.agentImageUrl !== "" &&
-                                <img
-                                  height="30px"
-                                  src={deepLink.agentImageUrl}
-                                  alt={`${deepLink.agentName} logo`}
-                                  className="agent-image"
-                                />
-                              }
-                            </span>
-                          ))}
-                        </span>
-                      ))}
-                    </div>
+                        <div className='times'>
+                          <div className='time'>{leg.arrivalTime}</div>
+                          {leg.toIata}
+                        </div>
+                      </div>
 
 
-                    <div>
-                      <h2>Details</h2>
-                     {itinerary.legs.map((leg) => (
                       <div key={leg.id}>
-                        <div>
-                        </div>
                         <div>
                           Stops: {leg.stops}, Journey time: {leg.duration} min
                         </div>
                         <div>
                           <div>
-                            <ul>
+                            <div>
                               {leg.segments.map((segment) => (
-                                <div key={segment.id}>
+                                <div className='segment' key={segment.id}>
                                   <div>{segment.from} to {segment.to}</div>
                                   <div>Depature:{segment.departure}</div>
                                   <div>Arrival: {segment.arrival}</div>
                                   <div>Journey time: {segment.duration} min</div>
                                 </div>
                               ))}
-                            </ul>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    ))} 
-                  </div>
 
+
+                    </div>);
+                  })}
+                </div>
+
+
+
+
+
+                <div className="flight-layout">
+
+
+
+                  {/* Deals */}
                   <div>
                     <h2>Deals </h2>
                     {search.status !== 'RESULT_STATUS_COMPLETE' && (
-                      <div className='loading'>
-                        Loading Deals and Prices <Loading />
-                      </div>
+                      <>
+                        Checking prices and availability... <Loading />
+                      </>
                     )}
                     <Prices url={url} flight={itinerary} query={query} open showButton={false} />
                   </div>

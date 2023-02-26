@@ -6,6 +6,7 @@ import { json } from '@remix-run/node';
 import { useLoaderData, Link, Outlet, useLocation, useParams } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
 import flightStyles from '~/styles/flight.css';
+import flightDetailsStyles from '~/styles/flight-details.css';
 import { getDateFormated } from '~/helpers/date';
 
 
@@ -16,6 +17,7 @@ export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: globalStyles },
     { rel: 'stylesheet', href: flightStyles },
+    { rel: 'stylesheet', href: flightDetailsStyles },
   ];
 }
 
@@ -79,7 +81,10 @@ export default function Search() {
   return (
     <div>
       <div className='banner'>
-      <Link className='link-light' to={`/search/${url?.from}/${url?.to}/${url?.depart}${url?.return ? `/${url?.return}` : ''}`}>Back</Link>
+        <Link className='link-light' to={`/search/${url?.from}/${url?.to}/${url?.depart}${url?.return ? `/${url?.return}` : ''}`}>Back</Link>
+        <div className='banner-title'>
+          {url.from} to {url.to}
+        </div>
       </div>
       <div className='wrapper'>
         <Outlet key={pathname} />

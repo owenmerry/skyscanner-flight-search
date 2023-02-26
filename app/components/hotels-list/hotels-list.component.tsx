@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
+import { format } from 'date-fns';
 
 interface HotelsResponse {
   meta: {
@@ -28,6 +29,7 @@ interface HotelsResponse {
         score_image_url: string;
       };
       total_images: number;
+      distance: number;
     }[];
   };
 }
@@ -46,6 +48,12 @@ export const HotelList = ({
   const [search, setSearch] = useState<HotelsResponse>();
   const hasResults = search && search?.results.hotels.length > 0;
   const numbeOfResults = search && search?.results.hotels.length;
+  const checkIn = query && format(new Date(query?.depart),'dd MMM');
+  const checkOut = query && query?.return && format(new Date(query?.return),'dd MMM');
+  const getDistanceDisplay = (distance : number) => {
+    const km = distance / 1000;
+     return `${km.toFixed(1)} km`;
+  }
 
   const handleSearch = useCallback(async (query: FlightQuery) => {
     try {
@@ -78,20 +86,31 @@ export const HotelList = ({
             <div className='hotel' key={hotel.hotel_id}>
               <div className="hotel-image" style={{backgroundImage: `url(${hotel.images[0]?.dynamic})` }}></div>
               <div className='hotel-details hotel-title'>
-              <h2>{hotel.name}</h2>
-              <div className='hotel-rating'>
-                <div><b>{hotel.review_summary.score.toFixed(1)}</b></div>
-                <div><img style={{height: '1rem'}} src={hotel.review_summary.score_image_url.replace('.png', '.svg')} /></div>
-                <div>{hotel.reviews_count.toLocaleString()}</div>
+                <h2>{hotel.name}</h2>
+                <div className='hotel-rating'>
+                  <div><b>{hotel.review_summary.score.toFixed(1)}</b></div>
+                  <div><img style={{height: '1rem'}} src={hotel.review_summary.score_image_url.replace('.png', '.svg')} /></div>
+                  <div className='hotel-reviews'>{hotel.reviews_count.toLocaleString()} reviews</div>
+                </div>
+                <div className='hotel-distance'>
+                  {getDistanceDisplay(hotel.distance)} from city centre
+                </div>
               </div>
-
+              <div className='hotel-details hotel-details-price'>
+                <div className='hotel-stay'>
+                  <div><b>{checkIn} - {checkOut}</b></div>
+                  <div className='hotel-price-room'>1 adult, 1 room</div>
+                </div>
+                <div className='hotel-price'>
+                  <div>
+                    <b>£{hotel.offers[0].price.toLocaleString()}</b>
+                  </div>
+                  <div className='hotel-price-per'>Total Stay</div>
+                </div>
               </div>
-              <div className='hotel-details hotel-price'>
-              <div>
-                <b>£{hotel.offers[0].price.toLocaleString()}</b> Total Stay
-                <div><a className='button' href={`http://${hotel.offers[0].deeplink}`} target="_blank">View Deal</a></div>
-                <div><a href={`https://www.skyscanner.net/hotels/location/hotels/place/ht-${hotel.hotel_id}?checkin=${query?.depart}&checkout=${query?.return}&adults=1&rooms=1`} target="_blank">View on Skyscanner</a></div>
-              </div>
+              <div className='hotel-details hotel-details-buttons'>
+                <div className='hotel-buttons-button'><a className='button' href={`http://${hotel.offers[0].deeplink}`} target="_blank">View Deal</a></div>
+                <div className='hotel-buttons-to-skyscanner'><a href={`https://www.skyscanner.net/hotels/location/hotels/place/ht-${hotel.hotel_id}?checkin=${query?.depart}&checkout=${query?.return}&adults=1&rooms=1`} target="_blank">View on Skyscanner</a></div>
               </div>
             </div>
           ))}

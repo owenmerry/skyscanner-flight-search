@@ -1,0 +1,12 @@
+.flight-details{
+    text-align: left;
+}
+.flight-title{
+    font-size: 1.5rem;
+    font-weight: bold;
+    max-width: 800px;
+}
+.segment{
+    padding: 1rem;
+    border-bottom: solid 1px #d0d0d0;
+}

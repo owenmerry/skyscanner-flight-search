@@ -6,10 +6,10 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 1rem;
+  row-gap: 1rem;
 }
 .hotel{
   border-radius: 1rem;
-  margin: 1rem 0;
   background: #fff;
   overflow: hidden;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 3px 5px;
@@ -22,17 +22,63 @@
 .hotel-image{
   height: 180px;
   background-size: cover;
+  background-position: center center;
 }
 .hotel-details{
   padding: 1rem;
+}
+.hotel-details-price{
+  display: flex;
+  align-items: center;
+  border-bottom: solid 1px #d0d0d0;
+}
+.hotel-details-price > * {
+  flex: 1;
 }
 .hotel-rating{
   display: flex;
   align-items: center;
 }
+.hotel-rating img{
+  margin-top: 5px;
+}
+.hotel-reviews{
+  font-size: .8rem;
+}
+.hotel-distance{
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
 .hotel-title{
+  border-bottom: solid 1px #d0d0d0;
+}
+.hotel-stay{
+}
+.hotel-price-room{
+  font-size: 0.8rem;
+  opacity: 0.8;
 }
 .hotel-price{
+  text-align: right;
+}
+.hotel-price-per{
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+.hotel-details-buttons{
+  display: flex;
+  align-items: center;
+}
+.hotel-details-buttons > * {
+  flex: 1;
+}
+.hotel-buttons-to-skyscanner{
+  font-size: 0.8rem;
+  opacity: 0.8;
+  text-align: right;
+}
+.hotel-buttons-button{
+ 
 }
 
 @media only screen and (max-width: 600px) {

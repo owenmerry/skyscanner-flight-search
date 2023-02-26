@@ -63,12 +63,11 @@ export const Prices = ({
             </div>
           </div>
         ))}
-        <div className="flight-price">
+        <div className="">
                   <a 
                   target="_blank"
                   href={`https://www.skyscanner.net/transport/flights/${url?.from}/${url?.to}/${departDateSkyscannerUrlFormat}${returnDateSkyscannerUrlFormat ? `/${returnDateSkyscannerUrlFormat}` : '' }/config/${encodeURIComponent(flight.itineraryId)}`}
                   rel="noreferrer"
-                  className='button'
                   >See on Skyscanner</a>
             </div>
         </>)}
