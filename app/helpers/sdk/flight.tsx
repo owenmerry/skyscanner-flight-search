@@ -12,6 +12,7 @@ interface SkyscannerAPICreateResponse {
       agents: { [key: string]: Agent };
       itineraries: { [key: string]: Itinerary };
       legs: { [key: string]: Leg };
+      carriers: { [key: string]: Carrier };
       places: { [key: string]: Place };
       segments: { [key: string]: Segment };
     };
@@ -58,6 +59,13 @@ interface Agent {
   };
 }
 
+interface Carrier {
+  name: string;
+  allianceId: string;
+  imageUrl: string;
+  iata: string;
+}
+
 interface Itinerary {
   pricingOptions: {
     price: { amount: string; unit: string };
@@ -74,6 +82,8 @@ interface Leg {
   arrivalDateTime: DateTime;
   stopCount: number;
   segmentIds: string[];
+  marketingCarrierIds: string[];
+  operatingCarrierIds: string[];
 }
 
 interface Segment {
@@ -149,6 +159,13 @@ interface SegmentSDK {
   arrival: string;
 }
 
+interface CarrierSDK {
+  name: string;
+  imageUrl: string;
+  iata: string;
+  allianceId: string;
+}
+
 interface LegSDK {
   id: string;
   from: string;
@@ -165,6 +182,7 @@ interface LegSDK {
   toEntityId: number;
   departureTime: String;
   arrivalTime: String;
+  carriers: CarrierSDK[];
 }
 
 // functions (SDK)
@@ -221,6 +239,14 @@ export const getSortingOptions = (
           ),
         };
       });
+      const carriers = leg.operatingCarrierIds.map((carrierItem): CarrierSDK => {
+        const carrierRef = carrierItem;
+        const carrier: Carrier = res.content.results.carriers[carrierRef];
+
+        return {
+          ...carrier,
+        };
+      });
 
       return {
         id: legRef,
@@ -244,6 +270,7 @@ export const getSortingOptions = (
         stops: leg.stopCount,
         direct: leg.stopCount === 0,
         segments: segments,
+        carriers: carriers,
         fromIata: res.content.results.places[leg.originPlaceId].iata,
         toIata: res.content.results.places[leg.destinationPlaceId].iata,
         fromEntityId: Number(res.content.results.places[leg.originPlaceId].entityId),

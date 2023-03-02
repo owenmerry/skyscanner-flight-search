@@ -152,7 +152,17 @@ useEffect(() => {
                           </div>
                           <div className='duration'>
                             <div>
+                              <div>
                               {leg.duration} minutes ({leg.direct ? 'Direct' : `${leg.stops} Stop${leg.stops > 1 ? 's' : ''}`})
+                              </div>
+                              <div className='flight-carrier'>
+                                {leg.carriers.map((carrier, key) => (
+                                  <>
+                                    <img src={carrier.imageUrl} alt={`${carrier.name} logo`} height='13px' />
+                                    <>{`${key > 0 ? ', ' : ''}${carrier.name}`}</>
+                                  </>
+                                  ))}
+                                </div>
                             </div>
                           </div>
                           <div className='times'>
