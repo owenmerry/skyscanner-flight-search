@@ -56,7 +56,7 @@ export const Location = ({
                 {place.name}{' '}
                 {place.cityId !== '' && (
                   <>
-                    {place.name} ({place.iataCode}) - <i>{place.countryName}</i>
+                    ({place.iataCode}) - <i>{place.countryName}</i>
                   </>
                 )}
               </div>
