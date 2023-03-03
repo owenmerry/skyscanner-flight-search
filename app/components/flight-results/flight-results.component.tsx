@@ -193,7 +193,7 @@ export const FlightResults = ({
                                   {carrier.imageUrl && carrier.imageUrl !== '' && (
                                     <img
                                       src={carrier.imageUrl}
-                                      alt={`${carrier.name} logo`}
+                                      alt={``}
                                       height="13px"
                                     />
                                   )}
