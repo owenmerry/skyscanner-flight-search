@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { FlightSDK } from '~/helpers/sdk/flight';
+import type { FlightSDK } from '~/helpers/sdk/flightSDK';
 import type { FlightQuery, FlightUrl } from '~/types/search';
 
 interface PricesProps {

@@ -34,6 +34,11 @@ export default function Index() {
             <p>Search for your week away.</p>
             <Link className='button' to='/week'>Search Week Flights</Link>
           </div>
+          <div className='panel'>
+            <h2>Year Flight Search</h2>
+            <p>Search a route for a year</p>
+            <Link className='button' to='/year'>Year Flight Search</Link>
+          </div>
         </div>
       </div>
   </div>);

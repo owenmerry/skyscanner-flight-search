@@ -1,14 +1,19 @@
 export interface FlightQuery {
-    to: string;
     from: string;
+    to: string;
     depart: string;
     return?: string;
     tripType: string;
 }
 
+export interface FlightCheckQuery {
+    from: string;
+    to: string;
+}
+
 export interface FlightUrl {
-    to: string,
     from: string,
+    to: string,
     depart: string,
     return?: string,
     itineraryId?: string,

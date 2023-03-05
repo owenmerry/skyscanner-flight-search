@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
 import { format } from 'date-fns';
 
-interface HotelsResponse {
+interface SkyscannerAPIHotelSearchResponse {
   meta: {
     final_status: string;
   },
@@ -45,7 +45,7 @@ export const HotelList = ({
   apiUrl = '',
   url,
 }: HotelListProps): JSX.Element => {
-  const [search, setSearch] = useState<HotelsResponse>();
+  const [search, setSearch] = useState<SkyscannerAPIHotelSearchResponse>();
   const hasResults = search && search?.results.hotels.length > 0;
   const numbeOfResults = search && search?.results.hotels.length;
   const checkIn = query && format(new Date(query?.depart),'dd MMM');
@@ -59,7 +59,7 @@ export const HotelList = ({
     try {
       const res = await fetch(
         `${apiUrl}/hotel/search?from=${query.from}&to=${query.to}&depart=${query.depart}&return=${query.return}&entityId=${query.to}`);
-      const json : HotelsResponse = await res.json();
+      const json : SkyscannerAPIHotelSearchResponse = await res.json();
 
       if (!json) {
       } else {

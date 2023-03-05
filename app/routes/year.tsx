@@ -5,9 +5,9 @@ import { useLoaderData, Link } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
 import flightStyles from '~/styles/flight.css';
 
-import { FlightWeekendSearchControls } from '~/components/flight-weekend-search-controls';
-import { FlightResults } from '~/components/flight-results';
-import type { FlightQuery } from '~/types/search';
+import { FlightYearSearchControls } from '~/components/flight-year-search-controls';
+import { FlightCheckResults } from '~/components/flight-check-results';
+import type { FlightCheckQuery } from '~/types/search';
 
 export const links: LinksFunction = () => {
   return [
@@ -24,15 +24,15 @@ export const loader: LoaderFunction = async ({ request, context }) => {
   });
 };
 
-export default function Weekend() {
+export default function Year() {
   const { apiUrl } = useLoaderData();
-  const [search,setSearch] = useState<FlightQuery>();
+  const [search,setSearch] = useState<FlightCheckQuery>();
 
-  const handleSearch = async (query : FlightQuery) => {
+  const handleSearch = async (query : FlightCheckQuery) => {
     setSearch(query);
   };
 
-  const handleQueryChange = (query: FlightQuery) => {
+  const handleQueryChange = (query: FlightCheckQuery) => {
     handleSearch(query);
   };
 
@@ -42,11 +42,11 @@ export default function Weekend() {
         <Link className='link-light' to="/">Back</Link>
       </div>
       <div className='wrapper'>
-        <FlightWeekendSearchControls
+        <FlightYearSearchControls
           onChange={handleQueryChange}
           apiUrl={apiUrl}
         />
-        <FlightResults query={search} apiUrl={apiUrl} />
+        <FlightCheckResults query={search} apiUrl={apiUrl} />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
-import { skyscanner } from '~/helpers/sdk/flight';
-import type { SearchSDK } from '~/helpers/sdk/flight';
+import { skyscanner } from '~/helpers/sdk/flightSDK';
+import type { SearchSDK } from '~/helpers/sdk/flightSDK';
 import { format } from 'date-fns';
 
 import { Link } from '@remix-run/react';
