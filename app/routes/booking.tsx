@@ -23,20 +23,20 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
-  let fromText = 'London';
+  let fromText = 'London Heathrow';
   let toText = 'Dublin';
   let fromEnityId = '27544008';
   let toEnityId = '95673529';
   let fromIata = 'LON';
   let toIata = 'DUB';
 
-  if(params.from){
+  if (params.from) {
     const fromPlaces = await searchAutoSuggest(params.from, apiUrl);
     fromText = fromPlaces[0].name;
     fromEnityId = fromPlaces[0].entityId;
     fromIata = fromPlaces[0].iataCode;
   }
-  if(params.to){
+  if (params.to) {
     const toPlaces = await searchAutoSuggest(params.to, apiUrl);
     toText = toPlaces[0].name;
     toEnityId = toPlaces[0].entityId;
@@ -74,8 +74,8 @@ export default function Search() {
     tripType: params.depart ? params.return ? 'return' : 'single' : 'return',
   });
 
-  const handleSearch = async (query : FlightQuery) => {
-   setSearch(query);
+  const handleSearch = async (query: FlightQuery) => {
+    setSearch(query);
   };
 
   return (

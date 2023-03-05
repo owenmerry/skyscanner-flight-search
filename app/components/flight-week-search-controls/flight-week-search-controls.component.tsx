@@ -16,19 +16,19 @@ export const FlightWeekSearchControls = ({
   const [location, setLocation] = useState('');
   const [week, setWeek] = useState(0);
   const displayDates = {
-      saturday: getWeekDates(addWeeksToDate(new Date(), week)).saturday.toDateString(),
-      sunday: getWeekDates(addWeeksToDate(new Date(), week)).sunday.toDateString(),
-    };
+    saturday: getWeekDates(addWeeksToDate(new Date(), week)).saturday.toDateString(),
+    sunday: getWeekDates(addWeeksToDate(new Date(), week)).sunday.toDateString(),
+  };
 
 
-  const handleQueryChange = (value: string,week: number) => {
+  const handleQueryChange = (value: string, week: number) => {
     const selectedWeek = getWeekDates(addWeeksToDate(new Date(), week));
     const datesCalculated = {
       depart: convertDateToYYYMMDDFormat(selectedWeek.saturday),
       return: convertDateToYYYMMDDFormat(selectedWeek.sunday),
     }
     onChange && onChange({
-      from: '27544008', // London
+      from: '95565050', // London Heathrow
       to: value,
       depart: datesCalculated.depart,
       return: datesCalculated.return,
@@ -38,18 +38,18 @@ export const FlightWeekSearchControls = ({
     setLocation(value);
   };
 
-  const handleWeekChange = (method : 'add' | 'minus') => {
+  const handleWeekChange = (method: 'add' | 'minus') => {
     const currentWeek = method === 'add' ? week + 1 : method === 'minus' && week !== 0 ? week - 1 : week;
     setWeek(currentWeek);
-    if(location !== ''){
+    if (location !== '') {
       handleQueryChange(location, currentWeek);
     }
   }
 
   return (
     <div className="flight-week-search">
-          <h2>Week Flight Search</h2>
-         <Location
+      <h2>Week Flight Search</h2>
+      <Location
         name="To"
         onSelect={(value) => handleQueryChange(value, week)}
         apiUrl={apiUrl}
@@ -59,6 +59,6 @@ export const FlightWeekSearchControls = ({
         <button onClick={() => handleWeekChange('minus')}>-1 week</button>
         <button onClick={() => handleWeekChange('add')}>+1 week</button>
       </div>
-  </div>
+    </div>
   );
 };

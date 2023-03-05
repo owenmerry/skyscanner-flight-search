@@ -13,19 +13,19 @@ export const FlightYearSearchControls = ({
 
   const handleQueryChange = (value: string) => {
     onChange && onChange({
-      from: '27544008', // London
+      from: '95565050', // London Heathrow
       to: value,
     });
   };
 
   return (
     <div className="flight-week-search">
-          <h2>Year Flight Search</h2>
-         <Location
+      <h2>Year Flight Search</h2>
+      <Location
         name="To"
         onSelect={(value) => handleQueryChange(value)}
         apiUrl={apiUrl}
       />
-  </div>
+    </div>
   );
 };
