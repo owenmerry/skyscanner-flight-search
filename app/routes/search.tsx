@@ -24,7 +24,7 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
   let toText = 'Dublin';
   let fromEnityId = '95565050';
   let toEnityId = '95673529';
-  let fromIata = 'LON';
+  let fromIata = 'LHR';
   let toIata = 'DUB';
 
   if (params.from) {
