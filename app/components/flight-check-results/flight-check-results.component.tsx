@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import type { FlightCheckQuery, FlightUrl } from "~/types/search";
 import { getFlightLiveCreate, getFlightLivePoll } from "~/helpers/sdk/query";
 import { SearchSDK } from "~/helpers/sdk/flightSDK";
+import { debounce } from "lodash";
 
 interface FlightCheckResultsProps {
   query?: FlightCheckQuery;
@@ -70,6 +71,9 @@ export const FlightCheckResults = ({
   }, [apiUrl]
   )
 
+  const clickedPoll = debounce(() => {
+    handlePoll(apiUrl);
+  }, 5000);
 
   const handlePoll = async (apiUrl: string) => {
 
@@ -99,7 +103,7 @@ export const FlightCheckResults = ({
 
 
   return (<>
-    <div><button onClick={() => handlePoll(apiUrl)}>Poll Searches</button></div>
+    <div><button onClick={() => clickedPoll()}>Poll Searches</button></div>
     {error ? (<div>{error}</div>) : ''}
     {searches?.map((search, key) => {
       if ('error' in search) return;

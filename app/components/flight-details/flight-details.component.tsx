@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
 import { skyscanner } from '~/helpers/sdk/flightSDK';
 import type { SearchSDK } from '~/helpers/sdk/flightSDK';
-import { sleepSeconds } from '~/helpers/utils';
+import { waitSeconds } from '~/helpers/utils';
 
 import { Link } from '@remix-run/react';
 
@@ -33,7 +33,7 @@ export const FlightDetails = ({
   const foundFlight = !!(search && search[sort].filter((item) => item.itineraryId === itineraryId).length > 0);
 
   const pollFlights = useCallback(async (token: string) => {
-    await sleepSeconds(1);
+    await waitSeconds(1);
     try {
       const res = await fetch(`${apiUrl}/poll/${token}`);
       const json = await res.json();
