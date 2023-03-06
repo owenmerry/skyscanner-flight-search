@@ -20,14 +20,14 @@ export const links: LinksFunction = () => {
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
   const url = new URL(request.url);
-  let fromEnityId = '27544008';
+  let fromEnityId = '95565050';
   let toEnityId = '95673529';
 
-  if(params.from){
+  if (params.from) {
     const fromPlaces = await searchAutoSuggest(params.from, apiUrl);
     fromEnityId = fromPlaces[0].entityId;
   }
-  if(params.to){
+  if (params.to) {
     const toPlaces = await searchAutoSuggest(params.to, apiUrl);
     toEnityId = toPlaces[0].entityId;
   }
@@ -59,7 +59,7 @@ export default function Search() {
 
   return (
     <div>
-        <FlightDetails url={url} query={search} apiUrl={apiUrl} itineraryId={url.itineraryId}  />
+      <FlightDetails url={url} query={search} apiUrl={apiUrl} itineraryId={url.itineraryId} />
     </div>
   );
 }

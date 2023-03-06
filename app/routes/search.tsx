@@ -22,7 +22,7 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
   let fromText = 'London Heathrow';
   let toText = 'Dublin';
-  let fromEnityId = '27544008';
+  let fromEnityId = '95565050';
   let toEnityId = '95673529';
   let fromIata = 'LON';
   let toIata = 'DUB';
