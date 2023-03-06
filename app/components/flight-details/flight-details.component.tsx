@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
 import { skyscanner } from '~/helpers/sdk/flightSDK';
 import type { SearchSDK } from '~/helpers/sdk/flightSDK';
-import { format } from 'date-fns';
+import { sleepSeconds } from '~/helpers/utils';
 
 import { Link } from '@remix-run/react';
 
@@ -33,20 +33,21 @@ export const FlightDetails = ({
   const foundFlight = !!(search && search[sort].filter((item) => item.itineraryId === itineraryId).length > 0);
 
   const pollFlights = useCallback(async (token: string) => {
+    await sleepSeconds(1);
     try {
       const res = await fetch(`${apiUrl}/poll/${token}`);
       const json = await res.json();
 
-      if (!json && json.statusCode === 500 && json.statusCode !== 200) {
-        // if(retry < maxRetry) {
-        //   setRetry(retry + 1);
-        //   pollFlights(token);
-        // } else {
+      if (!json || json.statusCode === 500 || json.statusCode && json.statusCode !== 200 || json.code) {
+        if (retry < maxRetry) {
+          setRetry(retry + 1);
+          pollFlights(token);
+        } else {
           setError(
-            `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 1 (status: ${retry})`,
+            `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:${retry}|1)`,
           );
           setSearching(false);
-        // }
+        }
       } else {
         setSearch(skyscanner(json).search());
 
@@ -57,19 +58,19 @@ export const FlightDetails = ({
       }
     } catch (ex) {
       setSearching(false);
-      if(retry < maxRetry) {
+      if (retry < maxRetry) {
         setRetry(retry + 1);
         pollFlights(token);
       } else {
         setError(
-          `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 2 (status: ${retry})`,
+          `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:${retry}|2)`,
         );
       }
     }
 
-  },[apiUrl]);
+  }, [apiUrl]);
 
-  const handleSearch = useCallback(async (query : FlightQuery) => {
+  const handleSearch = useCallback(async (query: FlightQuery) => {
     setSearch(false);
     setSearching(true);
     setError('');
@@ -77,16 +78,15 @@ export const FlightDetails = ({
 
     try {
       const res = await fetch(
-        `${apiUrl}/create?from=${query.from}&to=${
-          query.to
+        `${apiUrl}/create?from=${query.from}&to=${query.to
         }&depart=${query.depart}${query?.return ? `&return=${query.return}` : ''}`,
       );
       const json = await res.json();
 
-      if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+      if (!json || json.statusCode === 500 || json.statusCode && json.statusCode !== 200 || json.code) {
         setSearching(false);
         setError(
-          `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 3 (status: ${retry})`,
+          `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:${retry}|3)`,
         );
       } else {
 
@@ -98,14 +98,14 @@ export const FlightDetails = ({
       }
     } catch (ex) {
       setSearching(false);
-      if(retry < maxRetry) {
+      if (retry < maxRetry) {
         setRetry(retry + 1);
         handleSearch(query);
       } else {
-        setError(`Sorry, something happened and we couldnt do this search. code: 4 (status: ${retry})`);
+        setError(`Sorry, something happened and we couldnt do this search. (code:${retry}|4)`);
       }
     }
-  },[apiUrl, pollFlights]);
+  }, [apiUrl, pollFlights]);
 
   const handleSort = (sortType: 'best' | 'cheapest' | 'fastest') => {
     setSort(sortType);
@@ -115,9 +115,9 @@ export const FlightDetails = ({
     setResults(amount);
   };
 
-useEffect(() => {
-  query && handleSearch(query);
-},[query, handleSearch]);
+  useEffect(() => {
+    query && handleSearch(query);
+  }, [query, handleSearch]);
 
   return (
     <div className="flight-results">
@@ -146,7 +146,7 @@ useEffect(() => {
                     {url?.from} to {url?.to}
                   </div>
                   {itinerary.legs.map((leg, key) => {
-                    
+
                     return (<div key={leg.id}>
                       {key === 0 && (
                         <h3>Outbound</h3>
@@ -214,18 +214,18 @@ useEffect(() => {
                     )}
                     <Prices url={url} flight={itinerary} query={query} open showButton={false} />
                   </div>
-                    
-                    
-                    
 
 
-                  
-              </div>
+
+
+
+
+                </div>
               </div>
             );
           })}
         </div>
       )}
-  </div>
+    </div>
   );
 };

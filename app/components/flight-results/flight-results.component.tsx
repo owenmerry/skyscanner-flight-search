@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import type { FlightQuery, FlightUrl } from "~/types/search";
 import { skyscanner } from "~/helpers/sdk/flightSDK";
 import type { SearchSDK } from "~/helpers/sdk/flightSDK";
+import { sleepSeconds } from "~/helpers/utils";
 
 import { Link } from "@remix-run/react";
 
@@ -30,18 +31,19 @@ export const FlightResults = ({
 
   const pollFlights = useCallback(
     async (token: string) => {
+      await sleepSeconds(1);
       try {
         const res = await fetch(`${apiUrl}/poll/${token}`);
         const json = await res.json();
 
-        if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+        if (!json || json.statusCode === 500 || json.statusCode && json.statusCode !== 200 || json.code) {
           setSearching(false);
           if (retry < maxRetry) {
             setRetry(retry + 1);
             pollFlights(token);
           } else {
             setError(
-              `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 1 (status:${retry})`
+              `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:${retry}|1)`
             );
           }
         } else {
@@ -57,11 +59,11 @@ export const FlightResults = ({
         }
       } catch (ex) {
         if (retry < maxRetry) {
-          setRetry((st) => st + 1);
+          setRetry(retry + 1);
           pollFlights(token);
         } else {
           setError(
-            `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 2 (status:${retry})`
+            `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:${retry}|2)`
           );
           setSearching(false);
         }
@@ -79,16 +81,15 @@ export const FlightResults = ({
 
       try {
         const res = await fetch(
-          `${apiUrl}/create?from=${query.from}&to=${query.to}&depart=${
-            query.depart
+          `${apiUrl}/create?from=${query.from}&to=${query.to}&depart=${query.depart
           }${query?.return ? `&return=${query.return}` : ""}`
         );
         const json = await res.json();
 
-        if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+        if (!json || json.statusCode === 500 || json.statusCode && json.statusCode !== 200 || json.code) {
           setSearching(false);
           setError(
-            `Sorry, something happened and we couldnt do this search, maybe try a differnt search code: 3 (status:${retry})`
+            `Sorry, something happened and we couldnt do this search, maybe try a differnt (code:${retry}|3)`
           );
         } else {
           setSearch(skyscanner(json).search());
@@ -100,7 +101,7 @@ export const FlightResults = ({
       } catch (ex) {
         setSearching(false);
         setError(
-          `Sorry, something happened and we couldnt do this search.code: 4 (status:${retry})`
+          `Sorry, something happened and we couldnt do this search (code:${retry}|4)`
         );
       }
     },
@@ -182,9 +183,8 @@ export const FlightResults = ({
                               {leg.duration} minutes (
                               {leg.direct
                                 ? "Direct"
-                                : `${leg.stops} Stop${
-                                    leg.stops > 1 ? "s" : ""
-                                  }`}
+                                : `${leg.stops} Stop${leg.stops > 1 ? "s" : ""
+                                }`}
                               )
                             </div>
                             <div className="flight-carrier">
@@ -231,9 +231,8 @@ export const FlightResults = ({
                   </div>
                   <Prices url={url} flight={itinerary} query={query} />
                   <Link
-                    to={`/booking/${url?.from}/${url?.to}/${url?.depart}${
-                      url?.return ? `/${url?.return}` : ""
-                    }/${itinerary.itineraryId}`}
+                    to={`/booking/${url?.from}/${url?.to}/${url?.depart}${url?.return ? `/${url?.return}` : ""
+                      }/${itinerary.itineraryId}`}
                   >
                     View Details
                   </Link>

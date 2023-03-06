@@ -26,7 +26,7 @@ export const FlightSearchControls = ({
     return: getDateFormated(3),
     tripType: 'return',
   },
-  defaultFrom = "LON",
+  defaultFrom = "LHR",
   defaultTo = "DUB",
   fromText = "London Heathrow",
   toText = "Dublin"
