@@ -71,9 +71,7 @@ export const FlightCheckResults = ({
   }, [apiUrl]
   )
 
-  const clickedPoll = debounce(() => {
-    handlePoll(apiUrl);
-  }, 5000);
+  const clickedPoll = debounce(() => handlePoll(apiUrl), 5000, { leading: true });
 
   const handlePoll = async (apiUrl: string) => {
 
