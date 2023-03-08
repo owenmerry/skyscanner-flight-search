@@ -15,14 +15,16 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({ request, context }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL;
+  const googleApiKey = process.env.GOOGLE_API_KEY;
 
   return json({
-    apiUrl
+    apiUrl,
+    googleApiKey
   });
 };
 
 export default function SEOAnytime() {
-  const { apiUrl } = useLoaderData();
+  const { apiUrl, googleApiKey } = useLoaderData();
 
   return (
     <div>
@@ -30,7 +32,7 @@ export default function SEOAnytime() {
         <Link className='link-light' to="/">Back</Link>
       </div>
       <div className='wrapper'>
-        <SEO apiUrl={apiUrl} />
+        <SEO apiUrl={apiUrl} googleApiKey={googleApiKey} />
       </div>
     </div>
   );
