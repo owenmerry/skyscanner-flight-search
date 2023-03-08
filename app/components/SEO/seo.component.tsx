@@ -167,7 +167,7 @@ export const SEO = ({
       seo results
       {!search ? '' : (<>
         <Wrapper apiKey={googleApiKey}>
-          <Map center={{ lat: 0, lng: 0 }} zoom={5} markers={getMarkers()} />
+          <Map center={{ lat: 51.509865, lng: -0.118092 }} zoom={5} markers={getMarkers()} />
         </Wrapper>
         {sortByPrice(search.content.groupingOptions.byRoute.quotesGroups).map((quoteKey) => {
           const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
