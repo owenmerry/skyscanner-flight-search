@@ -87,11 +87,10 @@ export const SEO = ({
   const handleSearch = useCallback(async () => {
     try {
       const res = await fetch(
-        `${apiUrl}/price`);
+        `${apiUrl}/price?from=95565050&month=4`);
       const json: SkyscannerAPIIndicitiveResponse = await res.json();
 
-      if (!json) {
-      } else {
+      if (json) {
         setSearch(json);
       }
     } catch (ex) {
