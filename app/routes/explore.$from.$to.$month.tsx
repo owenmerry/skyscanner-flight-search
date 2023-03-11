@@ -13,18 +13,25 @@ export const links: LinksFunction = () => {
   ];
 }
 
-export const loader: LoaderFunction = async ({ request, context }) => {
+export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL;
   const googleApiKey = process.env.GOOGLE_API_KEY;
 
   return json({
+    params,
     apiUrl,
     googleApiKey
   });
 };
 
 export default function SEOAnytime() {
-  const { apiUrl, googleApiKey } = useLoaderData();
+  const { apiUrl, googleApiKey, params } = useLoaderData();
+
+  const query = {
+    from: params.from,
+    to: params.to,
+    month: params.month,
+  };
 
   return (
     <div>
@@ -32,7 +39,7 @@ export default function SEOAnytime() {
         <Link className='link-light' to="/">Back</Link>
       </div>
       <div className='wrapper'>
-        <SEO apiUrl={apiUrl} googleApiKey={googleApiKey} />
+        <SEO apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} />
       </div>
     </div>
   );

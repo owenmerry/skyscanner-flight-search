@@ -40,9 +40,9 @@ export default function Index() {
           <Link className='button' to='/year'>Year Flight Search</Link>
         </div>
         <div className='panel'>
-          <h2>SEO Anytime</h2>
+          <h2>SEO</h2>
           <p>Search location to location anytime</p>
-          <Link className='button' to='/seo/anytime'>SEO Anytime Search</Link>
+          <Link className='button' to='/seo'>SEO Search</Link>
         </div>
       </div>
     </div>

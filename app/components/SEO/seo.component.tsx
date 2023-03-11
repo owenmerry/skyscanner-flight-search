@@ -76,18 +76,25 @@ interface SkyscannerAPIIndicitiveResponse {
 interface SEOProps {
   apiUrl: string;
   googleApiKey: string;
+  query: {
+    from: string;
+    to: string;
+    month: string;
+  };
 }
 
 export const SEO = ({
   apiUrl,
   googleApiKey,
+  query,
 }: SEOProps): JSX.Element => {
   const [search, setSearch] = useState<SkyscannerAPIIndicitiveResponse>();
+  const [filter, setFilter] = useState<number | undefined>();
 
   const handleSearch = useCallback(async () => {
     try {
       const res = await fetch(
-        `${apiUrl}/price?from=95565050&month=4`);
+        `${apiUrl}/price?from=${query.from}&month=${query.month}`);
       const json: SkyscannerAPIIndicitiveResponse = await res.json();
 
       if (json) {
@@ -112,9 +119,19 @@ export const SEO = ({
 
     return sorted;
   }
+
+  const filterItems = (quoteGroups: any) => {
+    return quoteGroups.filter((quoteGroup) => {
+      const quote: any = search?.content.results.quotes[quoteGroup.quoteIds[0]];
+      if (!filter) return true;
+
+      return quote.minPrice.amount <= filter;
+    });
+  }
+
   const getMarkers = (): { location: google.maps.LatLngLiteral; label: string; }[] | null => {
     if (!search) return null;
-    const markers = search.content.groupingOptions.byRoute.quotesGroups.map((quoteKey) => {
+    const markers = filterItems(search.content.groupingOptions.byRoute.quotesGroups).map((quoteKey) => {
       const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
       const placeInboundOrigin = search.content.results.places[quote.inboundLeg.originPlaceId];
       const placeInboundDestination = search.content.results.places[quote.inboundLeg.destinationPlaceId];
@@ -123,14 +140,14 @@ export const SEO = ({
       const dateOutbound = new Date(Number(quote.outboundLeg.quoteCreationTimestamp) * 1000);
       const dateInbound = new Date(Number(quote.inboundLeg.quoteCreationTimestamp) * 1000);
       const dateOutboundFlight = new Date(
-        `${quote.outboundLeg.departureDateTime.year}-
-        ${quote.outboundLeg.departureDateTime.month}-
-        ${quote.outboundLeg.departureDateTime.day}`
+        quote.outboundLeg.departureDateTime.year,
+        quote.outboundLeg.departureDateTime.month,
+        quote.outboundLeg.departureDateTime.day,
       );
       const dateInboundFlight = new Date(
-        `${quote.inboundLeg.departureDateTime.year}-
-        ${quote.inboundLeg.departureDateTime.month}-
-        ${quote.inboundLeg.departureDateTime.day}`
+        quote.inboundLeg.departureDateTime.year,
+        quote.inboundLeg.departureDateTime.month,
+        quote.inboundLeg.departureDateTime.day,
       );
       const dateOutboundAgo = formatDistance(
         dateOutbound,
@@ -160,15 +177,22 @@ export const SEO = ({
     return markers;
   }
 
+  const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(Number(e.target.value));
+  }
+
 
   return (
     <>
       seo results
       {!search ? '' : (<>
+        <div className='panel'>
+          <div>Filter: <input value={filter || ''} onChange={handleFilter} /></div>
+        </div>
         <Wrapper apiKey={googleApiKey}>
           <Map center={{ lat: 51.509865, lng: -0.118092 }} zoom={5} markers={getMarkers()} />
         </Wrapper>
-        {sortByPrice(search.content.groupingOptions.byRoute.quotesGroups).map((quoteKey) => {
+        {sortByPrice(filterItems(search.content.groupingOptions.byRoute.quotesGroups)).map((quoteKey) => {
           const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
           const placeInboundOrigin = search.content.results.places[quote.inboundLeg.originPlaceId];
           const placeInboundDestination = search.content.results.places[quote.inboundLeg.destinationPlaceId];
@@ -177,14 +201,14 @@ export const SEO = ({
           const dateOutbound = new Date(Number(quote.outboundLeg.quoteCreationTimestamp) * 1000);
           const dateInbound = new Date(Number(quote.inboundLeg.quoteCreationTimestamp) * 1000);
           const dateOutboundFlight = new Date(
-            `${quote.outboundLeg.departureDateTime.year}-
-            ${quote.outboundLeg.departureDateTime.month}-
-            ${quote.outboundLeg.departureDateTime.day}`
+            quote.outboundLeg.departureDateTime.year,
+            quote.outboundLeg.departureDateTime.month,
+            quote.outboundLeg.departureDateTime.day,
           );
           const dateInboundFlight = new Date(
-            `${quote.inboundLeg.departureDateTime.year}-
-            ${quote.inboundLeg.departureDateTime.month}-
-            ${quote.inboundLeg.departureDateTime.day}`
+            quote.inboundLeg.departureDateTime.year,
+            quote.inboundLeg.departureDateTime.month,
+            quote.inboundLeg.departureDateTime.day,
           );
           const dateOutboundAgo = formatDistance(
             dateOutbound,
