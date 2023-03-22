@@ -2,13 +2,13 @@ import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
-import flightStyles from '~/styles/flight.css';
+import seoStyles from '~/styles/seo.css';
 import geoData from "~/data/geo.json";
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: globalStyles },
-    { rel: 'stylesheet', href: flightStyles },
+    { rel: 'stylesheet', href: seoStyles },
   ];
 }
 
@@ -46,22 +46,16 @@ export default function SEOAnytime() {
         <Link className='link-light' to="/">Back</Link>
       </div>
       <div className='wrapper'>
-        <div className='panel'>
-          <h2>Select a Country</h2>
+        <div>
+          <h2>Countries</h2>
         </div>
-        <div className='panels'>
+        <div className='list'>
           {placeList.sort((a, b) => a.name.localeCompare(b.name)).map((place) => {
             if (place.type !== 'PLACE_TYPE_COUNTRY') return;
 
             return (
-              <div className='panel'>
-                <h3>{place.name}</h3>
-                <div>
-                  <i>{place.type}, ID: {place.entityId}, Parent: {place.parentId}</i>
-                </div>
-                <div>
-                  <Link className='button' to={`/seo/${place.entityId}`}>View Cities</Link>
-                </div>
+              <div className='item'>
+                <Link to={`/seo/${place.entityId}`}>{place.name}</Link>
               </div>
             );
           })}

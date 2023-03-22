@@ -2,13 +2,13 @@ import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
-import flightStyles from '~/styles/flight.css';
+import seoStyles from '~/styles/seo.css';
 import geoData from "~/data/geo.json";
 
 export const links: LinksFunction = () => {
     return [
         { rel: 'stylesheet', href: globalStyles },
-        { rel: 'stylesheet', href: flightStyles },
+        { rel: 'stylesheet', href: seoStyles },
     ];
 }
 
@@ -39,6 +39,7 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
 export default function SEOAnytime() {
     const { apiUrl, googleApiKey, params, places } = useLoaderData();
     const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
+    const selectedPlace: Place = places[params.country];
 
     return (
         <div>
@@ -46,22 +47,16 @@ export default function SEOAnytime() {
                 <Link className='link-light' to="/seo">Back</Link>
             </div>
             <div className='wrapper'>
-                <div className='panel'>
-                    <h2>Select a City</h2>
+                <div>
+                    <h2>Cities in {selectedPlace.name}</h2>
                 </div>
-                <div className='panels'>
+                <div className='list'>
                     {placeList.sort((a, b) => a.name.localeCompare(b.name)).map((place) => {
                         if (!(place.type === 'PLACE_TYPE_CITY' && place.parentId === params.country)) return;
 
                         return (
-                            <div className='panel'>
-                                <h3>{place.name} ({place.iata})</h3>
-                                <div>
-                                    <i>{place.type}, ID: {place.entityId}, Parent: {place.parentId}</i>
-                                </div>
-                                <div>
-                                    <Link className='button' to={`/explore/${place.entityId}/anywhere/${new Date().getMonth() + 1}`}>View</Link>
-                                </div>
+                            <div className='item'>
+                                <Link to={`/explore/${place.entityId}/anywhere/${new Date().getMonth() + 1}`}>{place.name} ({place.iata})</Link>
                             </div>
                         );
                     })}

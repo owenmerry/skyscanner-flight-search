@@ -6,11 +6,14 @@ body {
   margin: 0;
   padding: 0;
 }
-a:visited, body a {
+
+a:visited,
+body a {
   color: #242423;
 }
 
-button, .button{
+button,
+.button {
   background-color: #F5CB5C;
   border: none;
   border-radius: 0.25rem;
@@ -20,30 +23,33 @@ button, .button{
   display: inline-block;
   font-size: 1rem;
   cursor: pointer;
-  color: #242423; 
+  color: #242423;
 }
 
-button:hover{
+button:hover {
   background-color: #f5c240;
 }
 
-.button-small{
+.button-small {
   padding: 0.1rem 0.45rem;
   margin: 0 .25rem;
 }
-.button-small:disabled{
+
+.button-small:disabled {
   background-color: #e8e8e8;
   cursor: not-allowed;
 }
 
-a.link-light:visited, body a.link-light {
+a.link-light:visited,
+body a.link-light {
   color: #fff;
 }
 
-.panels{
+.panels {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
 }
+
 .panel {
   margin: 1rem;
   border-radius: 1rem;
@@ -51,19 +57,32 @@ a.link-light:visited, body a.link-light {
   background-color: #fff;
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
-.panel h2{
+
+.panel h2 {
   margin-top: 0;
 }
 
-b{
+b {
   font-weight: 600;
 }
-.hidden{
+
+.hidden {
   display: none;
 }
 
+.banner {
+  height: 300px;
+  padding: 1rem;
+  background-color: #242423;
+  margin-bottom: -80px;
+}
+
+.wrapper {
+  padding: 0 1rem;
+}
+
 @media only screen and (max-width: 600px) {
-  .panels{
+  .panels {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
   }

@@ -2,15 +2,28 @@ import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
 import globalStyles from '~/styles/global.css';
-import flightStyles from '~/styles/flight.css';
+import seoStyles from '~/styles/flight.css';
+import geoData from "~/data/geo.json";
 
 import { SEO } from '~/components/SEO';
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: globalStyles },
-    { rel: 'stylesheet', href: flightStyles },
+    { rel: 'stylesheet', href: seoStyles },
   ];
+}
+
+interface Place {
+  entityId: string;
+  parentId: string;
+  name: string;
+  type: string;
+  iata: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
 }
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
@@ -20,17 +33,23 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
   return json({
     params,
     apiUrl,
-    googleApiKey
+    googleApiKey,
+    places: geoData.places,
   });
 };
 
 export default function SEOAnytime() {
-  const { apiUrl, googleApiKey, params } = useLoaderData();
+  const { apiUrl, googleApiKey, params, places } = useLoaderData();
+  const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey])).filter((place) => place.parentId === params.from);
+  const selectedPlace: Place = places[params.from];
+  const showAirports = placeList.length > 1;
 
   const query = {
     from: params.from,
     to: params.to,
     month: params.month,
+    endMonth: 6,
+    groupType: 'month',
   };
 
   return (
@@ -38,8 +57,25 @@ export default function SEOAnytime() {
       <div className='banner'>
         <Link className='link-light' to="/">Back</Link>
       </div>
+      {showAirports ? (
+        <div className='wrapper panel'>
+          <div>
+            <h2>Airports in {selectedPlace.name}</h2>
+          </div>
+          <div className='list'>
+            {placeList.sort((a, b) => a.name.localeCompare(b.name)).map((place) => {
+
+              return (
+                <div className='item'>
+                  <Link to={`/explore/${place.entityId}/anywhere/${new Date().getMonth() + 1}`}>{place.name} ({place.iata})</Link>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : ''}
       <div className='wrapper'>
-        <SEO apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} />
+        <SEO fromLocation={selectedPlace} apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} />
       </div>
     </div>
   );
