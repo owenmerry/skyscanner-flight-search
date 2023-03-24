@@ -15,6 +15,9 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
+  const url = new URL(request.url);
+  let queryParams = new URL(url).searchParams;
+
   const configuration = new Configuration({
     apiKey: process.env.OPEN_AI_API_KEY,
   });
@@ -22,16 +25,13 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
 
   const openAiResponse = await openai.createCompletion({
     model: "text-davinci-003",
-    prompt:
-      "Tell me a joke?",
+    prompt: queryParams.get('ai') ? queryParams.get('ai') : "Tell me a joke?",
     temperature: 1,
     max_tokens: 256,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
   });
-  //const response = {this: 'that'}
-  //console.log(response);
 
   return {
     stat: true,
