@@ -1,50 +1,92 @@
+import { Link } from "@remix-run/react";
+import type { LinksFunction } from "@remix-run/node";
 
-import { Link } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
-
-import globalStyles from '~/styles/global.css';
-import flightStyles from '~/styles/flight.css';
+import globalStyles from "~/styles/global.css";
+import flightStyles from "~/styles/flight.css";
+import { Configuration, OpenAIApi } from "openai";
+import type { LoaderFunction } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: globalStyles },
-    { rel: 'stylesheet', href: flightStyles },
+    { rel: "stylesheet", href: globalStyles },
+    { rel: "stylesheet", href: flightStyles },
   ];
-}
+};
+
+export const loader: LoaderFunction = async ({ request, context, params }) => {
+  const configuration = new Configuration({
+    apiKey: process.env.OPEN_AI_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+
+  const openAiResponse = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt:
+      "Tell me a joke?",
+    temperature: 1,
+    max_tokens: 256,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+  });
+  //const response = {this: 'that'}
+  //console.log(response);
+
+  return {
+    stat: true,
+    openAiResponse: {data: {...openAiResponse.data}},
+  }
+
+};
 
 export default function Index() {
+  const { openAiResponse } = useLoaderData();
 
-  return (<div>
-    <div className='banner'>
-    </div>
-    <div className='wrapper'>
-      <div className='panels'>
-        <div className='panel'>
-          <h2>Flight Search</h2>
-          <p>Search for flights around the world.</p>
-          <Link className='button' to="/search">Search Flights</Link>
-        </div>
-        <div className='panel'>
-          <h2>Weekend Flight Search</h2>
-          <p>Search for your next weekend away trip.</p>
-          <Link className='button' to='/weekend'>Search Weekend Flights</Link>
-        </div>
-        <div className='panel'>
-          <h2>Week Flight Search</h2>
-          <p>Search for your week away.</p>
-          <Link className='button' to='/week'>Search Week Flights</Link>
-        </div>
-        <div className='panel'>
-          <h2>Year Flight Search</h2>
-          <p>Search a route for a year</p>
-          <Link className='button' to='/year'>Year Flight Search</Link>
-        </div>
-        <div className='panel'>
-          <h2>SEO</h2>
-          <p>Search location to location anytime</p>
-          <Link className='button' to='/seo'>SEO Search</Link>
+  console.log(openAiResponse.data.choices[0].text);
+
+  return (
+    <div>
+      <div className="banner"></div>
+      <div className="wrapper">
+        <div className="panels">
+          <div className="panel">
+            <h2>Flight Search</h2>
+            <p>Search for flights around the world.</p>
+            <Link className="button" to="/search">
+              Search Flights
+            </Link>
+          </div>
+          <div className="panel">
+            <h2>Weekend Flight Search</h2>
+            <p>Search for your next weekend away trip.</p>
+            <Link className="button" to="/weekend">
+              Search Weekend Flights
+            </Link>
+          </div>
+          <div className="panel">
+            <h2>Week Flight Search</h2>
+            <p>Search for your week away.</p>
+            <Link className="button" to="/week">
+              Search Week Flights
+            </Link>
+          </div>
+          <div className="panel">
+            <h2>Year Flight Search</h2>
+            <p>Search a route for a year</p>
+            <Link className="button" to="/year">
+              Year Flight Search
+            </Link>
+          </div>
+          <div className="panel">
+            <h2>SEO Anytime</h2>
+            <p>Search location to location anytime</p>
+            <Link className="button" to="/seo/anytime">
+              SEO Anytime Search
+            </Link>
+          </div>
         </div>
       </div>
     </div>
-  </div>);
+  );
 }
