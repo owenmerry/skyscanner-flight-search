@@ -3,7 +3,6 @@ import type { LinksFunction } from "@remix-run/node";
 
 import globalStyles from "~/styles/global.css";
 import flightStyles from "~/styles/flight.css";
-import { Configuration, OpenAIApi } from "openai";
 import type { LoaderFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 
@@ -15,35 +14,14 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
-  const url = new URL(request.url);
-  let queryParams = new URL(url).searchParams;
-
-  const configuration = new Configuration({
-    apiKey: process.env.OPEN_AI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
-
-  const openAiResponse = await openai.createCompletion({
-    model: "text-davinci-003",
-    prompt: queryParams.get('ai') ? queryParams.get('ai') : "Tell me a joke?",
-    temperature: 1,
-    max_tokens: 256,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-  });
 
   return {
     stat: true,
-    openAiResponse: {data: {...openAiResponse.data}},
   }
 
 };
 
 export default function Index() {
-  const { openAiResponse } = useLoaderData();
-
-  console.log(openAiResponse.data.choices[0].text);
 
   return (
     <div>
