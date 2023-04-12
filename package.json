@@ -3,8 +3,10 @@
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
-    "dev-scss": "concurrently \"npm run sass\" \"remix dev\"",
+    "build:css": "tailwindcss -m -i ./app/styles/tailwind.css -o app/styles/tailwind.css",
     "dev": "remix dev",
+    "dev:css": "tailwindcss -w -i ./app/styles/tailwind.css -o app/styles/tailwind.css",
+    "dev-scss": "concurrently \"npm run sass\" \"remix dev\"",
     "start": "remix-serve build",
     "sass": "sass --watch app/:app/"
   },
@@ -15,6 +17,7 @@
     "@remix-run/serve": "^1.6.8",
     "date-fns": "^2.29.3",
     "lodash": "^4.17.21",
+    "preline": "^1.8.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
@@ -25,9 +28,10 @@
     "@types/lodash": "^4.14.191",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "concurrently": "^7.4.0",
+    "concurrently": "^7.6.0",
     "eslint": "^8.20.0",
     "sass": "^1.55.0",
+    "tailwindcss": "^3.3.1",
     "typescript": "^4.7.4"
   },
   "engines": {

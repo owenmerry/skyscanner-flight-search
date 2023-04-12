@@ -7,12 +7,19 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
+// import { LinksFunction } from '@remix-run/node';
+// import stylesheet from "./styles/tailwind.css";
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
   title: 'Flight Search App',
   viewport: 'width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0',
 });
+
+
+// export const links: LinksFunction = () => [
+//   { rel: "stylesheet", href: stylesheet },
+// ];
 
 export default function App() {
   return (

@@ -6,6 +6,8 @@ import seoStyles from '~/styles/flight.css';
 import geoData from "~/data/geo.json";
 
 import { SEO } from '~/components/SEO';
+// import { HeroPolygon } from '~/components/ui/hero/hero-polygon';
+// import { HeroImageReview } from '~/components/ui/hero/hero-image-review';
 
 export const links: LinksFunction = () => {
   return [
@@ -74,6 +76,8 @@ export default function SEOAnytime() {
           </div>
         </div>
       ) : ''}
+      {/* <HeroPolygon />
+      <HeroImageReview /> */}
       <div className='wrapper'>
         <SEO fromLocation={selectedPlace} apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} />
       </div>

@@ -59,7 +59,7 @@ export default function Index() {
           <div className="panel">
             <h2>SEO Anytime</h2>
             <p>Search location to location anytime</p>
-            <Link className="button" to="/seo/anytime">
+            <Link className="button" to="/seo">
               SEO Anytime Search
             </Link>
           </div>
