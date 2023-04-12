@@ -26,7 +26,7 @@ interface SEOProps {
     name: string;
     type: string;
     iata: string;
-    coordinates: {
+    coordinates?: {
       latitude: number;
       longitude: number;
     };
@@ -81,19 +81,30 @@ export const SEO = ({
       return quote.minPrice.amount <= filter;
     });
   }
+  const filterNonCordItems = (quoteGroups: IndicitiveQuote[]) => {
+    return quoteGroups.filter((quoteGroup) => {
+      if (!search) return null;
+      const {
+        placeOutboundDestination,
+      } = getSEODateDetails(search.content.results, quoteGroup.quoteIds[0]);
+
+      return !!placeOutboundDestination.coordinates;
+    });
+  }
 
   const getMarkers = (): {
     location: google.maps.LatLngLiteral;
     label: string;
   }[] | null => {
     if (!search) return null;
-    const markers = filterItems(search.content.groupingOptions.byRoute.quotesGroups).map((quoteKey) => {
+    const markers = filterItems(filterNonCordItems(search.content.groupingOptions.byRoute.quotesGroups)).map((quoteKey) => {
       const {
         quote,
         placeOutboundDestination,
         dateOutboundFlight,
         dateInboundFlight,
-        tripDays
+        tripDays,
+        placeOutboundOrigin
       } = getSEODateDetails(search.content.results, quoteKey.quoteIds[0]);
 
       return {
@@ -101,7 +112,7 @@ export const SEO = ({
           lat: placeOutboundDestination.coordinates.latitude,
           lng: placeOutboundDestination.coordinates.longitude,
         },
-        label: `${placeOutboundDestination.name} for ${getPrice(quote.minPrice.amount, quote.minPrice.unit)} and <b>${tripDays}</b> long, ${format(dateOutboundFlight, 'EEE, dd MMM')} to ${format(dateInboundFlight, 'EEE, dd MMM')}`,
+        label: `${placeOutboundDestination.name} for ${getPrice(quote.minPrice.amount, quote.minPrice.unit)} and <b>${tripDays}</b> long, ${format(dateOutboundFlight, 'EEE, dd MMM')} to ${format(dateInboundFlight, 'EEE, dd MMM')} <a href='${`/search/${placeOutboundOrigin?.iata}/${placeOutboundDestination?.iata}/${convertDateToYYYMMDDFormat(dateOutboundFlight)}/${format(dateInboundFlight, 'yyyy-MM-dd')}`}'>See deal</a>`,
       }
     });
     return markers;
@@ -120,7 +131,7 @@ export const SEO = ({
         </div>
         {showMap ? (
           <Wrapper apiKey={googleApiKey}>
-            <Map center={{ lat: fromLocation.coordinates.latitude, lng: fromLocation.coordinates.longitude }} zoom={5} markers={getMarkers()} />
+            <Map center={fromLocation.coordinates ? { lat: fromLocation.coordinates.latitude, lng: fromLocation.coordinates.longitude } : { lat: 0, lng: 0 }} zoom={5} markers={getMarkers()} />
           </Wrapper>
         ) : ''}
         {showItems ? (
@@ -137,11 +148,15 @@ export const SEO = ({
                 quote.outboundLeg.departureDateTime.year,
                 quote.outboundLeg.departureDateTime.month,
                 quote.outboundLeg.departureDateTime.day,
+                quote.outboundLeg.departureDateTime.hour,
+                quote.outboundLeg.departureDateTime.minute,
               );
               const dateInboundFlight = new Date(
                 quote.inboundLeg.departureDateTime.year,
                 quote.inboundLeg.departureDateTime.month,
                 quote.inboundLeg.departureDateTime.day,
+                quote.inboundLeg.departureDateTime.hour,
+                quote.inboundLeg.departureDateTime.minute,
               );
               const dateOutboundAgo = formatDistance(
                 dateOutbound,
@@ -166,10 +181,10 @@ export const SEO = ({
                 </div>
                 <h3 style={{ marginTop: '0' }}>{placeOutboundDestination?.name} from {getPrice(quote.minPrice.amount, quote.minPrice.unit)}</h3>
                 <div><b>Outbound</b></div>
-                <div>{placeOutboundOrigin?.name} to {placeOutboundDestination?.name} on <b>{format(dateOutboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateOutboundAgo})
+                <div>{placeOutboundOrigin?.name} to {placeOutboundDestination?.name} on <b>{format(dateOutboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateOutboundAgo}) ({dateOutboundFlight.toISOString()})
                 </div>
                 <div><b>Inbound</b></div>
-                <div>{placeInboundOrigin?.name} to {placeInboundDestination?.name} on <b>{format(dateInboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateInboundAgo})
+                <div>{placeInboundOrigin?.name} to {placeInboundDestination?.name} on <b>{format(dateInboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateInboundAgo}) ({dateInboundFlight.toISOString()})
                 </div>
                 <div>Trip is <b>{tripDays}</b> long</div>
                 <div><Link className='button' to={`/search/${placeOutboundOrigin?.iata}/${placeOutboundDestination?.iata}/${convertDateToYYYMMDDFormat(dateOutboundFlight)}/${format(dateInboundFlight, 'yyyy-MM-dd')}`}>Search Deal</Link></div>

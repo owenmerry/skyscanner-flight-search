@@ -22,7 +22,7 @@ interface Place {
   name: string;
   type: string;
   iata: string;
-  coordinates: {
+  coordinates?: {
     latitude: number;
     longitude: number;
   };
