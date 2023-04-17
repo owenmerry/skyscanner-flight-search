@@ -127,7 +127,7 @@ export const SEO = ({
     <>
       {!search ? '' : (<>
         <div className='panel'>
-          <div>Filter: <input value={filter || ''} onChange={handleFilter} /></div>
+          <div>Filter by Buget: <input type='number' value={filter || ''} onChange={handleFilter} /></div>
         </div>
         {showMap ? (
           <Wrapper apiKey={googleApiKey}>

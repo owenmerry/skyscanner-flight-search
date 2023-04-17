@@ -6,8 +6,9 @@ import seoStyles from '~/styles/flight.css';
 import geoData from "~/data/geo.json";
 
 import { SEO } from '~/components/SEO';
-// import { HeroPolygon } from '~/components/ui/hero/hero-polygon';
-// import { HeroImageReview } from '~/components/ui/hero/hero-image-review';
+import { HeroPolygon } from '~/components/ui/hero/hero-polygon';
+import { HeroImageReview } from '~/components/ui/hero/hero-image-review';
+import { Tooltip, Button } from "flowbite-react";
 
 export const links: LinksFunction = () => {
   return [
@@ -78,6 +79,14 @@ export default function SEOAnytime() {
       ) : ''}
       {/* <HeroPolygon />
       <HeroImageReview /> */}
+      {/* <div>
+        <h1>Welcome to Remix</h1>
+        <Tooltip content="Flowbite is awesome">
+          <Button>
+            Hover to find out
+          </Button>
+        </Tooltip>
+      </div> */}
       <div className='wrapper'>
         <SEO fromLocation={selectedPlace} apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} />
       </div>
