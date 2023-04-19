@@ -1,11 +1,19 @@
 import { Link } from "@remix-run/react";
 
+export const Overlay = () => {
+
+    return (<div className="opacity-10 bg-black absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>);
+};
+export const Gradient = () => {
+
+    return (<div className="bg-gradient-to-t from-white to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>);
+};
 export const Text = () => {
 
-    return (<> <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
+    return (<div> <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white">
         Explore the World with Ease
     </h1>
-        <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
+        <p className="mb-8 text-lg font-normal text-white lg:text-xl sm:px-16 xl:px-48 dark:text-white">
             Find your perfect flight or holiday package with our unique traveler first features.
         </p>
         <div className="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
@@ -28,7 +36,7 @@ export const Text = () => {
                 </svg>
             </Link>
         </div>
-    </>);
+    </div>);
 };
 
 export const NewFeature = () => {
@@ -190,8 +198,10 @@ interface HeroDefaultProps {
 export const HeroDefault = ({
     newFeature,
 }: HeroDefaultProps) => {
-    return (<section className="bg-white dark:bg-gray-900">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
+    return (<section className="bg-[url('/images/hero/airport.jpg')] relative bg-cover bg-bottom">
+        <Overlay />
+        <Gradient />
+        <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
             {newFeature ? <NewFeature /> : ``}
             <Text />
             <FlightForm />
