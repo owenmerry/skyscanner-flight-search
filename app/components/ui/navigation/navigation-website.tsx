@@ -20,8 +20,8 @@ export const Article = ({
         {image ? <Link to={to}>
             <img
                 className="mb-5 rounded-lg"
-                src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/blog/office-laptops-2.png"
-                alt="office laptops"
+                src={image}
+                alt={`${label} navigation image`}
             />
         </Link> : ``}
         <span className={` bg-${labelBg}-100 text-${labelBg}-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-${labelBg}-200 dark:text-${labelBg}-900`}>

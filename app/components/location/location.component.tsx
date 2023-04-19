@@ -38,32 +38,59 @@ export const Location = ({
 
   return (
     <div>
-      <div>
-        {name}: <br />
+      <label htmlFor="location-form" className="sr-only">
+        From
+      </label>
+      <div className="relative">
+        <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+          <svg
+            className="w-5 h-5 text-gray-500 dark:text-gray-400"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
         <input
           value={searchTerm}
           type="text"
           onChange={(e) => handleSearch(e)}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+          placeholder="From"
         />
-        {searchOrigin.length > 0 && (
-          <div>
-            Results for :
-            {searchOrigin.map((place,key) => (
-              <div
+      </div>
+      {searchOrigin.length > 0 && (
+        <div className="relative z-20">
+          <ul className="bg-white border border-gray-100 w-full mt-2 absolute">
+            {searchOrigin.map((place, key) => (
+              <li
                 key={place.entityId}
                 onClick={() => handleSelect(place.name, place.entityId, place.iataCode)}
-              >
-                {place.name}{' '}
-                {place.cityId !== '' && (
-                  <>
-                    ({place.iataCode}) - <i>{place.countryName}</i>
-                  </>
-                )}
-              </div>
+                className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-gray-100 relative cursor-pointer hover:bg-slate-100 hover:text-gray-900">
+                <div className="text-left">
+                  <div>{place.name}
+                    {place.cityId !== '' && (
+                      <>
+                        ({place.iataCode})
+                      </>
+                    )}
+                  </div>
+                  <div className="text-xs">{place.countryName}</div>
+                </div>
+                <div className="text-right text-xs self-center">
+                  City
+                </div>
+
+              </li>
             ))}
-          </div>
-        )}
-      </div>
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

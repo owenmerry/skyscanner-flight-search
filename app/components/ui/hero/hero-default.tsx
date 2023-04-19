@@ -1,5 +1,22 @@
+import { useState } from 'react';
 import { Link } from "@remix-run/react";
+import { DateSimpleInput } from "~/components/date/index";
+import { Location } from "~/components/location";
+import { getDateFormated } from '~/helpers/date';
 
+export const SearchItem = () => {
+
+    return (<li className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-gray-100 relative cursor-pointer hover:bg-slate-100 hover:text-gray-900">
+        <div className="text-left">
+            <div><b>Lon</b>don (LON)</div>
+            <div className="text-xs">United Kingdom</div>
+        </div>
+        <div className="text-right text-xs self-center">
+            City
+        </div>
+
+    </li>);
+};
 export const Overlay = () => {
 
     return (<div className="opacity-10 bg-black absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>);
@@ -67,8 +84,41 @@ export const NewFeature = () => {
     </a>);
 
 };
+interface Query {
+    from: string;
+    fromIata: string;
+    to: string;
+    toIata: string;
+    depart: string;
+    return: string;
+    tripType: string;
+}
+interface FlightFormProps {
+    apiUrl?: string;
+}
+export const FlightForm = ({
+    apiUrl = ''
+}: FlightFormProps) => {
+    const defaultQuery: Query = {
+        from: '95565050', // London Heathrow
+        fromIata: 'LHR', // London Heathrow
+        to: '95673529', //Dublin
+        toIata: 'DUB', //Dublin
+        depart: getDateFormated(1),
+        return: getDateFormated(3),
+        tripType: 'return',
+    };
+    const [query, setQuery] = useState<Query>(defaultQuery);
 
-export const FlightForm = () => {
+    const handleQueryChange = (value: string, key: string) => {
+        setQuery({ ...query, [key]: value });
+        console.log(query, { value, key });
+    };
+    const handleLocationChange = (value: string, key: string, iataCode: string) => {
+        handleQueryChange(value, key);
+        handleQueryChange(iataCode, `${key}Iata`);
+    }
+
     return (<div className="bg-white rounded-2xl p-4 border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
         <h1 className=" text-left mb-4 text-3xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-2xl dark:text-white">
             Quick Search
@@ -78,32 +128,21 @@ export const FlightForm = () => {
             action="#"
             className="grid gap-y-4 mt-8 w-full bg-white rounded lg:gap-x-4 lg:grid-cols-9 lg:mt-4 dark:bg-gray-800"
         >
-            <div className="lg:col-span-3">
-                <label htmlFor="location-form" className="sr-only">
-                    Location
-                </label>
-                <div className="relative">
-                    <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-                        <svg
-                            className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                fillRule="evenodd"
-                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                clipRule="evenodd"
-                            />
-                        </svg>
-                    </div>
-                    <input
-                        type="text"
-                        id="location-form"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Search destinations"
-                    />
-                </div>
+            <div className="lg:col-span-2">
+                <Location
+                    name="From"
+                    defaultValue={'London Heathrow'}
+                    apiUrl={apiUrl}
+                    onSelect={(value, iataCode) => handleLocationChange(value, 'to', iataCode)}
+                />
+            </div>
+            <div className="lg:col-span-2">
+                <Location
+                    name="From"
+                    defaultValue={'Dublin'}
+                    apiUrl={apiUrl}
+                    onSelect={(value, iataCode) => handleLocationChange(value, 'to', iataCode)}
+                />
             </div>
             <div date-rangepicker="" className="grid grid-cols-2 gap-x-4 lg:col-span-3">
                 <div className="relative">
@@ -121,11 +160,10 @@ export const FlightForm = () => {
                             />
                         </svg>
                     </div>
-                    <input
-                        name="start"
-                        type="text"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Check in"
+                    <DateSimpleInput
+                        name="Depart"
+                        value={query.depart}
+                        onChange={(value: string) => handleQueryChange(value, 'depart')}
                     />
                 </div>
                 <div className="relative">
@@ -143,32 +181,15 @@ export const FlightForm = () => {
                             />
                         </svg>
                     </div>
-                    <input
-                        name="end"
-                        type="text"
-                        className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                        placeholder="Check out"
+                    <DateSimpleInput
+                        name="return"
+                        value={query.return}
+                        onChange={(value: string) => handleQueryChange(value, 'return')}
                     />
                 </div>
             </div>
-            <div className="lg:col-span-1">
-                <label htmlFor="guests" className="sr-only">
-                    Select number of guests
-                </label>
-                <select
-                    id="guests"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                >
-                    <option>Add guests</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5+</option>
-                </select>
-            </div>
             <Link
-                to='/search'
+                to={`/search/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
                 className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
             >
                 <svg
@@ -193,10 +214,12 @@ export const FlightForm = () => {
 
 interface HeroDefaultProps {
     newFeature?: string;
+    apiUrl?: string;
 }
 
 export const HeroDefault = ({
     newFeature,
+    apiUrl,
 }: HeroDefaultProps) => {
     return (<section className="bg-[url('/images/hero/airport.jpg')] relative bg-cover bg-bottom">
         <Overlay />
@@ -204,7 +227,7 @@ export const HeroDefault = ({
         <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
             {newFeature ? <NewFeature /> : ``}
             <Text />
-            <FlightForm />
+            <FlightForm apiUrl={apiUrl} />
         </div>
     </section>
     );
