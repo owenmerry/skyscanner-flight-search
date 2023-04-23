@@ -5,7 +5,7 @@ export const getDateTime = (
   hour: number,
   minute: number,
 ): string => {
-  return `${day}/${month}/${year} ${getTime(hour,minute)}`;
+  return `${day}/${month}/${year} ${getTime(hour, minute)}`;
 };
 
 export const getTime = (
@@ -14,3 +14,9 @@ export const getTime = (
 ): string => {
   return `${hour}:${String(minute).padStart(2, '0')}`;
 };
+
+export const toHoursAndMinutes = (totalMinutes: number): { hours: number, minutes: number } => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return { hours, minutes };
+}

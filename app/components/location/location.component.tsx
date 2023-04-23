@@ -25,8 +25,9 @@ export const Location = ({
     setSearchTerm(e.target.value);
     onChange && onChange(e.target.value);
     const originResults = await searchAutoSuggest(e.target.value, apiUrl);
+    const originResultsFiltered = originResults.filter(suggest => suggest.iataCode);
 
-    setSearchOrigin(originResults);
+    setSearchOrigin(originResultsFiltered);
   };
 
   const handleSelect = async (placeId: string, geoId: string, iataCode: string) => {
@@ -70,7 +71,7 @@ export const Location = ({
             {searchOrigin.map((place, key) => (
               <li
                 key={place.entityId}
-                onClick={() => handleSelect(place.name, place.entityId, place.iataCode)}
+                onClick={() => handleSelect(place.name, place.entityId, place?.iataCode || '')}
                 className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-gray-100 relative cursor-pointer hover:bg-slate-100 hover:text-gray-900">
                 <div className="text-left">
                   <div>{place.name}

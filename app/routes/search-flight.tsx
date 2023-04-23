@@ -1,9 +1,7 @@
 import type { LoaderFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, Outlet } from '@remix-run/react';
 import { HeaderDefault } from '~/components/ui/header/header-default';
 import { HeroDefault } from '~/components/ui/hero/hero-default';
-import { NavigationWebsite } from '~/components/ui/navigation/navigation-website';
-import { FooterDefault } from '~/components/ui/footer/footer-default';
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
@@ -14,15 +12,15 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
 
 };
 
-export default function Index() {
+export default function SearchFlight() {
   const { apiUrl } = useLoaderData();
+
 
   return (
     <div>
-      <HeaderDefault selectedUrl='/' />
-      <HeroDefault apiUrl={apiUrl} />
-      <NavigationWebsite />
-      <FooterDefault />
+      <HeaderDefault selectedUrl='/search-flight' />
+      <HeroDefault apiUrl={apiUrl} showText={false} />
+      <Outlet />
     </div>
   );
 }

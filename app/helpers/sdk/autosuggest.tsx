@@ -11,7 +11,7 @@ export interface Place {
   geoContainerId: string;
   entityId: string;
   highlighting: number[][];
-  iataCode: string;
+  iataCode?: string;
   localizedPlaceName: string;
   location: string;
   placeId: string;
