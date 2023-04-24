@@ -65,7 +65,7 @@ interface FlightProps {
 }
 const Flight = ({ flight }: FlightProps) => {
     return (
-        <div className='flex border-2 border-slate-100 py-4 px-4 mb-2 rounded-lg'>
+        <div className='md:flex border-2 border-slate-100 py-4 px-4 mb-2 rounded-lg'>
 
             <SegmentsColumn flight={flight} />
             <ButtonColumn flight={flight} />
