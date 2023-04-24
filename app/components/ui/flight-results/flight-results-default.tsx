@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from 'flowbite-react';
 import { FlightSDK, SearchSDK } from '~/helpers/sdk/flightSDK';
 import { toHoursAndMinutes } from '~/helpers/sdk/dateTime';
@@ -31,7 +32,7 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                             <div className="text-center">
                                 <div className="text-slate-400 text-sm">{durationShow}</div>
                                 <hr className='my-2' />
-                                <div className="text-slate-400 text-sm">Direct</div>
+                                <div className="text-slate-400 text-sm">{leg.direct ? 'Direct' : leg.stops === 1 ? '1 Stop' : `${leg.stops} Stops`}</div>
                             </div>
 
                             <div className="text-center">
@@ -46,16 +47,43 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
     );
 }
 
-interface ButtonProps {
+interface DealsProps {
     flight: FlightSDK;
 }
-const ButtonColumn = ({ flight }: ButtonProps) => {
+const Deals = ({ flight }: DealsProps) => {
+    return (
+        <div className='border-slate-100 border-x-2'>
+            {
+                flight.prices.map((price) => (
+                    <div className='border-slate-100 border-b-2 top:border-b-0 last:border-b-0'>
+                        {
+                            price.deepLinks.map((deepLink) => (
+                                <div className='grid grid-cols-4 items-center p-4'>
+                                    <div className=''><img src={deepLink.agentImageUrl} /></div>
+                                    <div className=''>{deepLink.agentName}</div>
+                                    <div className=''>{price.price}</div>
+                                    <div className='self-end'><Button href={deepLink.link} target='_blank'>Book</Button></div>
+                                </div>
+                            ))
+                        }
+                    </div>
+                ))
+            }
+        </div>);
+}
+
+interface ButtonProps {
+    flight: FlightSDK;
+    showDeals: boolean;
+    onButtonSelect: () => void
+}
+const ButtonColumn = ({ flight, onButtonSelect, showDeals }: ButtonProps) => {
     return (
         <div className='self-center flex justify-self-end'>
             <div className='self-center'>
                 <span className='text-sm text-slate-400'>from</span> <span className='text-xl font-bold'>{flight.price.split('.')[0]}</span>
             </div>
-            <Button className='ml-2'>Select</Button>
+            <Button outline={showDeals} className='ml-2' onClick={onButtonSelect}>{showDeals ? 'Hide' : 'Select'}</Button>
         </div>
     );
 }
@@ -64,12 +92,18 @@ interface FlightProps {
     flight: FlightSDK;
 }
 const Flight = ({ flight }: FlightProps) => {
+    const [showDeals, setShowDeals] = useState(false);
     return (
-        <div className='md:flex border-2 border-slate-100 py-4 px-4 mb-2 rounded-lg'>
-
-            <SegmentsColumn flight={flight} />
-            <ButtonColumn flight={flight} />
-
+        <div className='mb-2'>
+            <div className='md:flex border-2 border-slate-100 py-4 px-4 rounded-lg'>
+                <SegmentsColumn flight={flight} />
+                <ButtonColumn flight={flight} onButtonSelect={() => setShowDeals(!showDeals)} showDeals={showDeals} />
+            </div>
+            {showDeals ? (
+                <div>
+                    <Deals flight={flight} />
+                </div>
+            ) : ''}
         </div>
     );
 }
