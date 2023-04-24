@@ -81,7 +81,7 @@ export default function Search() {
           <div className='xl:w-[400px] md:block hidden max-w-none'>
             <FiltersDefault />
           </div>
-          <div className='xl:w-full md:ml-2'>
+          <div className='w-full md:ml-2'>
             {error !== '' ? <> {error}
             </> : <>
               {loading ? <div className='text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl'><Spinner className='mr-2' /> Loading More Prices & Flights...</div> : ''}

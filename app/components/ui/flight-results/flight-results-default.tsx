@@ -17,7 +17,7 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                             {leg.carriers.map(carrier => (
                                 <>
                                     <img className='w-20 p-1' src={carrier.imageUrl} />
-                                    <div className="self-center text-sm text-slate-400">{carrier.name}</div>
+                                    <div className="hidden md:block self-center text-sm text-slate-400">{carrier.name}</div>
                                 </>
                             ))}
                         </div>
