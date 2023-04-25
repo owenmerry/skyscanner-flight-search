@@ -1,5 +1,5 @@
 import type { LoaderFunction } from '@remix-run/node';
-import { useLoaderData, Outlet } from '@remix-run/react';
+import { useLoaderData, Outlet, useLocation } from '@remix-run/react';
 import { HeaderDefault } from '~/components/ui/header/header-default';
 import { HeroDefault } from '~/components/ui/hero/hero-default';
 
@@ -14,13 +14,14 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
 
 export default function SearchFlight() {
   const { apiUrl } = useLoaderData();
+  const { pathname } = useLocation();
 
 
   return (
     <div>
       <HeaderDefault selectedUrl='/search-flight' />
-      <HeroDefault apiUrl={apiUrl} showText={false} />
-      <Outlet />
+      <HeroDefault apiUrl={apiUrl} showText={false} buttonLoading={false} />
+      <Outlet key={pathname} />
     </div>
   );
 }

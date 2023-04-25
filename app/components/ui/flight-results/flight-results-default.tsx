@@ -14,11 +14,11 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                 const durationShow = `${duration.hours > 0 && `${duration.hours}h `}${duration.minutes}m`
                 return (
                     <div className='grid grid-cols-3 pb-4 last:pb-0'>
-                        <div className="flex">
+                        <div className="">
                             {leg.carriers.map(carrier => (
                                 <>
-                                    <img className='w-20 p-1' src={carrier.imageUrl} />
-                                    <div className="hidden md:block self-center text-sm text-slate-400">{carrier.name}</div>
+                                    <img className='inline-block w-20 p-1' src={carrier.imageUrl} />
+                                    {/* <div className="hidden md:block self-center text-sm text-slate-400">{carrier.name}</div> */}
                                 </>
                             ))}
                         </div>

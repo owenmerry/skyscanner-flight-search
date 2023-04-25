@@ -4,6 +4,7 @@ import { DateSimpleInput } from "~/components/date/index";
 import { Location } from "~/components/location";
 import { getDateFormated } from '~/helpers/date';
 import { Spinner } from 'flowbite-react';
+import { useNavigation } from "@remix-run/react";
 
 export const SearchItem = () => {
 
@@ -96,9 +97,11 @@ interface Query {
 }
 interface FlightFormProps {
     apiUrl?: string;
+    buttonLoading?: boolean;
 }
 export const FlightForm = ({
-    apiUrl = ''
+    apiUrl = '',
+    buttonLoading = true,
 }: FlightFormProps) => {
     const defaultQuery: Query = {
         from: '95565050', // London Heathrow
@@ -120,6 +123,7 @@ export const FlightForm = ({
         handleQueryChange(value, key);
         handleQueryChange(iataCode, `${key}Iata`);
     }
+    const navigation = useNavigation();
 
     return (<div className="bg-white rounded-2xl p-4 border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
         <h1 className=" text-left mb-4 text-3xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-2xl dark:text-white">
@@ -195,7 +199,7 @@ export const FlightForm = ({
                 className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
                 onClick={() => setLoading(true)}
             >
-                {loading ? (
+                {navigation.state === 'loading' && loading ? (
                     <>
                         <Spinner aria-label="Spinner button example" />
                         <span className="pl-3">
@@ -230,12 +234,14 @@ interface HeroDefaultProps {
     newFeature?: string;
     apiUrl?: string;
     showText?: boolean;
+    buttonLoading?: boolean;
 }
 
 export const HeroDefault = ({
     newFeature,
     apiUrl,
     showText = true,
+    buttonLoading = false,
 }: HeroDefaultProps) => {
     return (<section className="bg-[url('/images/hero/airport.jpg')] relative bg-cover bg-bottom">
         <Overlay />
@@ -243,7 +249,7 @@ export const HeroDefault = ({
         <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
             {newFeature ? <NewFeature /> : ``}
             {showText ? <Text /> : ``}
-            <FlightForm apiUrl={apiUrl} />
+            <FlightForm apiUrl={apiUrl} buttonLoading={buttonLoading} />
         </div>
     </section>
     );

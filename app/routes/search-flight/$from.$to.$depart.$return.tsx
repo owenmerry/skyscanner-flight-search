@@ -8,6 +8,7 @@ import { SearchSDK } from '~/helpers/sdk/flightSDK';
 import { getEntityIdFromIata } from '~/helpers/sdk/place';
 import { FlightQuery } from '~/types/search';
 import { Spinner } from 'flowbite-react';
+import { useNavigation } from "@remix-run/react";
 
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -19,8 +20,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   //get locations
   const from = getEntityIdFromIata(params.from);
   const to = getEntityIdFromIata(params.to);
-  // const from = '95565050' || '';
-  // const to = '95673529' || '';
 
   console.log(from, to);
 
@@ -52,6 +51,7 @@ export default function Search() {
   const sessionToken = search.sessionToken;
 
   useEffect(() => {
+    setLoading(true);
     runPoll();
   }, []);
 
