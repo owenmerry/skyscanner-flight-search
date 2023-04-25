@@ -58,9 +58,9 @@ const Deals = ({ flight }: DealsProps) => {
                     <div className='border-slate-100 border-b-2 top:border-b-0 last:border-b-0'>
                         {
                             price.deepLinks.map((deepLink) => (
-                                <div className='grid grid-cols-4 items-center p-4'>
+                                <div className='grid grid-cols-3 md:grid-cols-4 items-center p-4'>
                                     <div className=''><img src={deepLink.agentImageUrl} /></div>
-                                    <div className=''>{deepLink.agentName}</div>
+                                    <div className='hidden md:block'>{deepLink.agentName}</div>
                                     <div className=''>{price.price}</div>
                                     <div className='self-end'><Button href={deepLink.link} target='_blank'>Book</Button></div>
                                 </div>
