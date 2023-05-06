@@ -108,18 +108,43 @@ const Flight = ({ flight }: FlightProps) => {
     );
 }
 
+interface PagingProps {
+    total?: number;
+    shown?: number;
+    onShowMore?: (number: number) => void;
+};
+
+const Paging = ({ shown = 100, total = 1000, onShowMore = (number: number) => { } }: PagingProps) => {
+    return (
+        <>{total} / {shown}
+            {total > shown ? (
+                <div className='my-4 text-center'>
+                    <button className='text-white bg-blue-700 border border-transparent hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disabled:hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:disabled:hover:bg-blue-600 focus:!ring-2 group h-min items-center justify-center p-0.5 text-center font-medium focus:z-10 rounded-lg ml-2' onClick={() => onShowMore(shown + 100)}>
+                        <span className="flex items-center rounded-md text-sm px-4 py-2">Show more results</span>
+                    </button>
+                </div>
+            ) : ''}
+        </>
+    );
+}
+
 interface FlightResultsDefaultProps {
     flights: SearchSDK;
 }
 
 export const FlightResultsDefault = ({ flights }: FlightResultsDefaultProps) => {
+    const [results, setResults] = useState(100);
 
     return (<div>
-        {flights.cheapest.splice(0, 100).map((flight) => {
+        {flights.cheapest.splice(0, results).map((flight) => {
             return (
                 <Flight flight={flight} />
             );
         })}
+        <Paging
+            total={flights.cheapest.length}
+            shown={results}
+            onShowMore={(amount) => setResults(amount)} />
     </div>
     );
 
