@@ -47,6 +47,7 @@ export default function Search() {
   const { flightSearch, apiUrl } = useLoaderData<{ apiUrl: string, flightSearch: SearchSDK, params: FlightQuery }>();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(flightSearch);
+  const [filters, setFilters] = useState({});
   const [error, setError] = useState('error' in flightSearch ? flightSearch.error : '');
   const sessionToken = search.sessionToken;
 
@@ -79,13 +80,13 @@ export default function Search() {
       <div className=''>
         <div className='flex justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-800 xl:p-9 xl:mx-auto'>
           <div className='xl:w-[400px] md:block hidden max-w-none'>
-            <FiltersDefault />
+            <FiltersDefault onFilterChange={(filters) => setFilters(filters)} />
           </div>
           <div className='w-full md:ml-2'>
             {error !== '' ? <> {error}
             </> : <>
               {loading ? <div className='text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl'><Spinner className='mr-2' /> Loading More Prices & Flights...</div> : ''}
-              <FlightResultsDefault flights={search} />
+              <FlightResultsDefault flights={search} filters={filters} />
             </>}
           </div>
         </div>

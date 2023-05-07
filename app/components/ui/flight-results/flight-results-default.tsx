@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Button } from 'flowbite-react';
 import { FlightSDK, SearchSDK } from '~/helpers/sdk/flightSDK';
 import { toHoursAndMinutes } from '~/helpers/sdk/dateTime';
+import type { SearchFilters } from '~/helpers/sdk/filters';
+import { addSearchResultFilters } from '~/helpers/sdk/filters';
 
 interface SegmentsProps {
     flight: FlightSDK;
@@ -88,22 +90,64 @@ const ButtonColumn = ({ flight, onButtonSelect, showDeals }: ButtonProps) => {
     );
 }
 
+interface LabelsProps {
+    flight: FlightSDK;
+    labels: {
+        text: string,
+        labelBg: string,
+        show: boolean,
+    }[]
+}
+const Labels = ({ labels, flight }: LabelsProps) => {
+    return (
+        <>
+            {labels.map(label => (
+                <>
+                    {
+                        label.show ? (
+                            <span className={` bg-${label.labelBg}-100 text-${label.labelBg}-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-${label.labelBg}-200 dark:text-${label.labelBg}-900`}>
+                                {label.text}
+                            </span>
+                        ) : ''
+                    }
+                </>
+            ))}
+        </>
+    )
+}
 interface FlightProps {
     flight: FlightSDK;
 }
 const Flight = ({ flight }: FlightProps) => {
     const [showDeals, setShowDeals] = useState(false);
+    const labelBg = 'purple';
+    const labels = [
+        {
+            text: 'Direct',
+            labelBg: 'purple',
+            show: flight.isDirectFlights,
+        },
+        {
+            text: 'Airline Option',
+            labelBg: 'green',
+            show: flight.prices.map(price => price.deepLinks.map(link => link.type === 'AGENT_TYPE_AIRLINE').length > 0).length > 0,
+        },
+    ];
+
     return (
         <div className='mb-2'>
-            <div className='md:flex border-2 border-slate-100 py-4 px-4 rounded-lg'>
-                <SegmentsColumn flight={flight} />
-                <ButtonColumn flight={flight} onButtonSelect={() => setShowDeals(!showDeals)} showDeals={showDeals} />
-            </div>
-            {showDeals ? (
-                <div>
-                    <Deals flight={flight} />
+            <div className='border-2 border-slate-100 py-4 px-4 rounded-lg'>
+                <Labels flight={flight} labels={labels} />
+                <div className='md:flex'>
+                    <SegmentsColumn flight={flight} />
+                    <ButtonColumn flight={flight} onButtonSelect={() => setShowDeals(!showDeals)} showDeals={showDeals} />
                 </div>
-            ) : ''}
+                {showDeals ? (
+                    <div>
+                        <Deals flight={flight} />
+                    </div>
+                ) : ''}
+            </div>
         </div>
     );
 }
@@ -120,7 +164,7 @@ const Paging = ({ shown = 100, total = 1000, onShowMore = (number: number) => { 
             {total > shown ? (
                 <div className='my-4 text-center'>
                     <button className='text-white bg-blue-700 border border-transparent hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disabled:hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:disabled:hover:bg-blue-600 focus:!ring-2 group h-min items-center justify-center p-0.5 text-center font-medium focus:z-10 rounded-lg ml-2' onClick={() => onShowMore(shown + 100)}>
-                        <span className="flex items-center rounded-md text-sm px-4 py-2">Show more results</span>
+                        <span className="flex items-center rounded-md text-sm px-4 py-2">Show more results (Showing<b className='px-1'>1-{shown}</b>of<b className='px-1'>{total}</b>)</span>
                     </button>
                 </div>
             ) : ''}
@@ -128,21 +172,32 @@ const Paging = ({ shown = 100, total = 1000, onShowMore = (number: number) => { 
     );
 }
 
+
 interface FlightResultsDefaultProps {
     flights: SearchSDK;
+    filters?: SearchFilters;
 }
 
-export const FlightResultsDefault = ({ flights }: FlightResultsDefaultProps) => {
-    const [results, setResults] = useState(100);
+export const FlightResultsDefault = ({ flights, filters = {} }: FlightResultsDefaultProps) => {
+    const [results, setResults] = useState(filters.numberOfResultsToShow || 10);
+    console.log(filters);
+    const filteredResults = () => (addSearchResultFilters(flights.cheapest, {
+        ...filters,
+        numberOfResultsToShow: results,
+    }));
+
 
     return (<div>
-        {flights.cheapest.splice(0, results).map((flight) => {
+        <div className='border-2 border-slate-100 py-4 px-4 rounded-lg mb-2'>
+            Showing<b className='px-1'>1-{results}</b>of<b className='px-1'>{filteredResults().total}</b>
+        </div>
+        {filteredResults().results.map((flight) => {
             return (
                 <Flight flight={flight} />
             );
         })}
         <Paging
-            total={flights.cheapest.length}
+            total={filteredResults().total}
             shown={results}
             onShowMore={(amount) => setResults(amount)} />
     </div>

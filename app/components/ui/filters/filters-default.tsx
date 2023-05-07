@@ -1,4 +1,32 @@
-export const FiltersDefault = () => {
+
+import { useState } from 'react';
+import type { SearchFilters } from '~/helpers/sdk/filters';
+
+interface FiltersDefaultProps {
+    onFilterChange: (filters: SearchFilters) => void;
+}
+
+export const FiltersDefault = ({
+    onFilterChange
+}: FiltersDefaultProps) => {
+    const [filters, setFilters] = useState<SearchFilters>({});
+
+
+    const updateStops = (arr: number[] | undefined, value: number, checked: boolean) => {
+        let stopsUpdated = arr ? arr : [];
+        stopsUpdated = stopsUpdated.filter(item => item !== value);
+        if (checked) {
+            stopsUpdated.push(value);
+        }
+        updateFilters({ numberOfStops: stopsUpdated });
+    }
+
+    const updateFilters = (filterAdd: SearchFilters) => {
+        const filtersUpdated = { ...filters, ...filterAdd };
+        setFilters(filtersUpdated);
+        onFilterChange && onFilterChange(filtersUpdated);
+    }
+
     return (
         <>
             {/* drawer component */}
@@ -30,6 +58,7 @@ export const FiltersDefault = () => {
                                         type="checkbox"
                                         defaultValue=""
                                         className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        onChange={(e) => updateStops(filters.numberOfStops, 0, e.target.checked)}
                                     />
                                     <label
                                         htmlFor="blue"
@@ -44,6 +73,7 @@ export const FiltersDefault = () => {
                                         type="checkbox"
                                         defaultValue=""
                                         className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        onChange={(e) => updateStops(filters.numberOfStops, 1, e.target.checked)}
                                     />
                                     <label
                                         htmlFor="gray"
@@ -58,6 +88,7 @@ export const FiltersDefault = () => {
                                         type="checkbox"
                                         defaultValue=""
                                         className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                        onChange={(e) => updateStops(filters.numberOfStops, 2, e.target.checked)}
                                     />
                                     <label
                                         htmlFor="green"
