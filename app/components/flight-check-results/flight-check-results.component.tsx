@@ -58,7 +58,6 @@ export const FlightCheckResults = ({
 
       return res;
     }));
-    console.log('create search', results);
 
     // results.map((result) => {
     //   if ('error' in result) {
@@ -90,7 +89,6 @@ export const FlightCheckResults = ({
 
       return res;
     }));
-    console.log('poll search', results);
 
     setSearches(results);
   }

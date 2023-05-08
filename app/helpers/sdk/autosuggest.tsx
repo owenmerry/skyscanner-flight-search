@@ -20,6 +20,7 @@ export interface Place {
   regionId: string;
   resultingPhrase: string;
   untransliteratedResultingPhrase: string;
+  type: 'PLACE_TYPE_AIRPORT' | 'PLACE_TYPE_CITY';
 }
 
 export const searchAutoSuggest = async (searchTerm: string, apiUrl: string) => {

@@ -123,7 +123,6 @@ export const FlightForm = ({
 
     const handleQueryChange = (value: string, key: string) => {
         setQuery({ ...query, [key]: value });
-        console.log(query, { value, key });
     };
     const handleLocationChange = (value: string, key: string, iataCode: string) => {
         handleQueryChange(value, key);

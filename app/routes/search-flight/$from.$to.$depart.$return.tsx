@@ -21,8 +21,6 @@ export const loader: LoaderFunction = async ({ params }) => {
   const from = getEntityIdFromIata(params.from);
   const to = getEntityIdFromIata(params.to);
 
-  console.log(from, to);
-
   //get search
   const flightSearch = await getFlightLiveCreate({
     apiUrl,

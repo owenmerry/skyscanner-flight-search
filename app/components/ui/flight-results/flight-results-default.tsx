@@ -205,7 +205,6 @@ export const FlightResultsDefault = ({ flights, filters = {} }: FlightResultsDef
         ...filters,
         numberOfResultsToShow: results,
     }));
-    console.log(flights);
 
 
     return (<div>

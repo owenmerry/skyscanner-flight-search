@@ -26,7 +26,6 @@ export const Location = ({
     onChange && onChange(e.target.value);
     const originResults = await searchAutoSuggest(e.target.value, apiUrl);
     const originResultsFiltered = originResults.filter(suggest => suggest.iataCode);
-    console.log(originResultsFiltered);
 
     setSearchOrigin(originResultsFiltered);
   };
@@ -78,14 +77,15 @@ export const Location = ({
                   <div>{place.name}
                     {place.cityId !== '' && (
                       <>
-                        ({place.iataCode})
+                        {' '}({place.iataCode})
                       </>
                     )}
                   </div>
                   <div className="text-xs">{place.countryName}</div>
                 </div>
                 <div className="text-right text-xs self-center">
-                  City
+                  {place.type === 'PLACE_TYPE_AIRPORT' ? 'Airport' : ''}
+                  {place.type === 'PLACE_TYPE_CITY' ? 'City' : ''}
                 </div>
 
               </li>

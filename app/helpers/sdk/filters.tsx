@@ -36,7 +36,6 @@ export const addSearchResultFilters = (flights: FlightSDK[],
 
     // agent types
     if (agentTypes.length > 0) {
-        console.log('agents filter');
         flightsFiltered = filterAgentTypes(flightsFiltered, agentTypes)
     }
 
