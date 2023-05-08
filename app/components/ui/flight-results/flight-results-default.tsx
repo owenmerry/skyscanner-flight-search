@@ -54,16 +54,22 @@ interface DealsProps {
 }
 const Deals = ({ flight }: DealsProps) => {
     return (
-        <div className='border-slate-100 border-x-2'>
+        <div className='pt-2'>
             {
                 flight.prices.map((price) => (
-                    <div className='border-slate-100 border-b-2 top:border-b-0 last:border-b-0'>
+                    <div className='border-slate-100 bg-slate-50 border-b-2'>
                         {
                             price.deepLinks.map((deepLink) => (
                                 <div className='grid grid-cols-3 md:grid-cols-4 items-center p-4'>
-                                    <div className=''><img src={deepLink.agentImageUrl} /></div>
-                                    <div className='hidden md:block'>{deepLink.agentName}</div>
-                                    <div className=''>{price.price !== '£0.00' ? price.price : 'See Website'}</div>
+                                    <div className=''><img className='inline-block w-20 p-1' src={deepLink.agentImageUrl} /></div>
+                                    <div className='hidden md:block'>
+                                        {deepLink.agentName}
+                                        {deepLink.type === 'AGENT_TYPE_AIRLINE' ? (<div><Label color='green' text='Airline Option' /></div>) : ''}
+                                    </div>
+                                    <div className='font-bold'>
+                                        {price.price !== '£0.00' ? price.price : 'See Website'}
+                                        {deepLink.type === 'AGENT_TYPE_AIRLINE' ? (<div className='md:hidden'><Label color='green' text='Airline Option' /></div>) : ''}
+                                    </div>
                                     <div className='self-end'><Button href={deepLink.link} target='_blank'>Book</Button></div>
                                 </div>
                             ))
@@ -105,9 +111,7 @@ const Labels = ({ labels, flight }: LabelsProps) => {
                 <>
                     {
                         label.show ? (
-                            <span className={` bg-${label.labelBg}-100 text-${label.labelBg}-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-${label.labelBg}-200 dark:text-${label.labelBg}-900`}>
-                                {label.text}
-                            </span>
+                            <Label color={label.labelBg} text={label.text} />
                         ) : ''
                     }
                 </>
@@ -115,12 +119,24 @@ const Labels = ({ labels, flight }: LabelsProps) => {
         </>
     )
 }
+interface LabelProps {
+    text?: string,
+    color?: string,
+}
+const Label = ({ text = "Label", color = 'purple' }: LabelProps) => {
+    return (
+        <span className={` bg-${color}-100 text-${color}-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-${color}-200 dark:text-${color}-900`}>
+            {text}
+        </span>
+    )
+}
+
 interface FlightProps {
     flight: FlightSDK;
+    flights: SearchSDK;
 }
-const Flight = ({ flight }: FlightProps) => {
+const Flight = ({ flight, flights }: FlightProps) => {
     const [showDeals, setShowDeals] = useState(false);
-    const labelBg = 'purple';
     const labels = [
         {
             text: 'Direct',
@@ -130,7 +146,12 @@ const Flight = ({ flight }: FlightProps) => {
         {
             text: 'Airline Option',
             labelBg: 'green',
-            show: flight.prices.map(price => price.deepLinks.map(link => link.type === 'AGENT_TYPE_AIRLINE').length > 0).length > 0,
+            show: flight.prices.filter(price => price.deepLinks.filter(link => link.type === 'AGENT_TYPE_AIRLINE').length > 0).length > 0,
+        },
+        {
+            text: 'Cheapest',
+            labelBg: 'yellow',
+            show: flight.itineraryId === flights.cheapest[0].itineraryId,
         },
     ];
 
@@ -180,11 +201,11 @@ interface FlightResultsDefaultProps {
 
 export const FlightResultsDefault = ({ flights, filters = {} }: FlightResultsDefaultProps) => {
     const [results, setResults] = useState(filters.numberOfResultsToShow || 10);
-    console.log(filters);
     const filteredResults = () => (addSearchResultFilters(flights.cheapest, {
         ...filters,
         numberOfResultsToShow: results,
     }));
+    console.log(flights);
 
 
     return (<div>
@@ -193,7 +214,7 @@ export const FlightResultsDefault = ({ flights, filters = {} }: FlightResultsDef
         </div>
         {filteredResults().results.map((flight) => {
             return (
-                <Flight flight={flight} />
+                <Flight flight={flight} flights={flights} />
             );
         })}
         <Paging

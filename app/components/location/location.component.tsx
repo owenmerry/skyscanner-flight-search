@@ -26,6 +26,7 @@ export const Location = ({
     onChange && onChange(e.target.value);
     const originResults = await searchAutoSuggest(e.target.value, apiUrl);
     const originResultsFiltered = originResults.filter(suggest => suggest.iataCode);
+    console.log(originResultsFiltered);
 
     setSearchOrigin(originResultsFiltered);
   };
