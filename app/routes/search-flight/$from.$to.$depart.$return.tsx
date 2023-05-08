@@ -60,7 +60,8 @@ export default function Search() {
   const runPoll = async () => {
     const res = await getFlightLivePoll({
       apiUrl,
-      token: sessionToken
+      token: sessionToken,
+      wait: 1,
     });
 
     if ('error' in res) return;

@@ -1,6 +1,7 @@
 import type { SearchSDK } from './flightSDK';
 import type { FlightQuery } from '~/types/search';
 import { skyscanner } from './flightSDK';
+import { waitSeconds } from '~/helpers/utils';
 
 export const getFlightLiveCreate = async ({ apiUrl, query }: { apiUrl: string, query: FlightQuery }): Promise<SearchSDK | { error: string }> => {
     let error: string = `Sorry, something happened and we couldnt do this`;
@@ -25,11 +26,14 @@ export const getFlightLiveCreate = async ({ apiUrl, query }: { apiUrl: string, q
     return search ? search : { error };
 }
 
-export const getFlightLivePoll = async ({ apiUrl, token }: { apiUrl: string, token: string }): Promise<SearchSDK | { error: string }> => {
+export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: string, token: string, wait?: number }): Promise<SearchSDK | { error: string }> => {
     let error: string = `Sorry, something happened and we couldnt do this`;
     let search: SearchSDK | null = null;
 
     try {
+        if (wait) {
+            await waitSeconds(wait);
+        }
         const res = await fetch(
             `${apiUrl}/poll/${token}`
         );
