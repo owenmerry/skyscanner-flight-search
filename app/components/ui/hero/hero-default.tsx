@@ -89,8 +89,10 @@ export const NewFeature = () => {
 interface Query {
     from: string;
     fromIata: string;
+    fromText: string;
     to: string;
     toIata: string;
+    toText: string;
     depart: string;
     return: string;
     tripType: string;
@@ -98,16 +100,20 @@ interface Query {
 interface FlightFormProps {
     apiUrl?: string;
     buttonLoading?: boolean;
+    flightDefault?: Query;
 }
 export const FlightForm = ({
     apiUrl = '',
     buttonLoading = true,
+    flightDefault,
 }: FlightFormProps) => {
-    const defaultQuery: Query = {
+    const defaultQuery: Query = flightDefault ? flightDefault : {
         from: '95565050', // London Heathrow
         fromIata: 'LHR', // London Heathrow
+        fromText: 'London Heathrow', // London Heathrow
         to: '95673529', //Dublin
         toIata: 'DUB', //Dublin
+        toText: 'Dublin', //Dublin
         depart: getDateFormated(1),
         return: getDateFormated(3),
         tripType: 'return',
@@ -137,7 +143,7 @@ export const FlightForm = ({
             <div className="lg:col-span-2">
                 <Location
                     name="From"
-                    defaultValue={'London Heathrow'}
+                    defaultValue={query.fromText}
                     apiUrl={apiUrl}
                     onSelect={(value, iataCode) => handleLocationChange(value, 'to', iataCode)}
                 />
@@ -145,7 +151,7 @@ export const FlightForm = ({
             <div className="lg:col-span-2">
                 <Location
                     name="From"
-                    defaultValue={'Dublin'}
+                    defaultValue={query.toText}
                     apiUrl={apiUrl}
                     onSelect={(value, iataCode) => handleLocationChange(value, 'to', iataCode)}
                 />
@@ -235,6 +241,7 @@ interface HeroDefaultProps {
     apiUrl?: string;
     showText?: boolean;
     buttonLoading?: boolean;
+    flightDefault: Query;
 }
 
 export const HeroDefault = ({
@@ -242,6 +249,7 @@ export const HeroDefault = ({
     apiUrl,
     showText = true,
     buttonLoading = false,
+    flightDefault,
 }: HeroDefaultProps) => {
     return (<section className="bg-[url('/images/hero/airport.jpg')] relative bg-cover bg-bottom">
         <Overlay />
@@ -249,7 +257,7 @@ export const HeroDefault = ({
         <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
             {newFeature ? <NewFeature /> : ``}
             {showText ? <Text /> : ``}
-            <FlightForm apiUrl={apiUrl} buttonLoading={buttonLoading} />
+            <FlightForm apiUrl={apiUrl} buttonLoading={buttonLoading} flightDefault={flightDefault} />
         </div>
     </section>
     );

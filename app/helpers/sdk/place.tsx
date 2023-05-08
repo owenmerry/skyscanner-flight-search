@@ -21,3 +21,13 @@ export const getEntityIdFromIata = (iata: string): string => {
   const iataFound = iataList.filter(item => item.iata === iata);
   return iataFound.length > 0 ? iataFound[0].entityId : '';
 }
+
+export const getPlaceFromIata = (iata: string): Place => {
+  const places = geoData.places;
+  const placeList = Object.keys(places);
+  const iataList = placeList.map((value) => {
+    return ((places as any)[value]);
+  })
+  const iataFound = iataList.filter(item => item.iata === iata);
+  return iataFound.length > 0 ? iataFound[0] : '';
+}
