@@ -5,27 +5,15 @@ import { Location } from "~/components/location";
 import { getDateFormated } from '~/helpers/date';
 import { Spinner } from 'flowbite-react';
 import { useNavigation } from "@remix-run/react";
+import { setFromLocationLocalStorage, getFromPlaceLocalOrDefault, getSearchFromLocalStorage, addSearchToLocalStorage } from "~/helpers/local-storage";
 
-export const SearchItem = () => {
-
-    return (<li className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-gray-100 relative cursor-pointer hover:bg-slate-100 hover:text-gray-900">
-        <div className="text-left">
-            <div><b>Lon</b>don (LON)</div>
-            <div className="text-xs">United Kingdom</div>
-        </div>
-        <div className="text-right text-xs self-center">
-            City
-        </div>
-
-    </li>);
-};
 export const Overlay = () => {
 
     return (<div className="opacity-10 bg-black absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>);
 };
 export const Gradient = () => {
 
-    return (<div className="bg-gradient-to-t from-white to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>);
+    return (<div className="bg-gradient-to-t from-white dark:from-gray-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>);
 };
 export const Text = () => {
 
@@ -58,18 +46,21 @@ export const Text = () => {
     </div>);
 };
 
-export const NewFeature = () => {
+interface NewFeatureProps {
+    text?: string;
+}
+export const NewFeature = ({ text = 'See our new feature' }: NewFeatureProps) => {
 
     return (<a
-        href="#"
-        className="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+        href=''
+        className="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200  rounded-full dark:bg-gray-800 dark:text-white  dark:hover:bg-gray-700"
         role="alert"
     >
         <span className="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3">
             New
         </span>{" "}
         <span className="text-sm font-medium">
-            Flowbite is out! See what's new
+            {text}
         </span>
         <svg
             className="ml-2 w-5 h-5"
@@ -107,10 +98,11 @@ export const FlightForm = ({
     buttonLoading = true,
     flightDefault,
 }: FlightFormProps) => {
+    const fromPlace = getFromPlaceLocalOrDefault();
     const defaultQuery: Query = flightDefault ? flightDefault : {
-        from: '95565050', // London Heathrow
-        fromIata: 'LHR', // London Heathrow
-        fromText: 'London Heathrow', // London Heathrow
+        from: fromPlace.entityId,
+        fromIata: fromPlace.iata,
+        fromText: fromPlace.name,
         to: '95673529', //Dublin
         toIata: 'DUB', //Dublin
         toText: 'Dublin', //Dublin
@@ -118,6 +110,7 @@ export const FlightForm = ({
         return: getDateFormated(3),
         tripType: 'return',
     };
+    const previousSearches = getSearchFromLocalStorage().reverse().slice(0, 5);
     const [query, setQuery] = useState<Query>(defaultQuery);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -125,8 +118,13 @@ export const FlightForm = ({
         setQuery({ ...query, [key]: value });
     };
     const handleLocationChange = (value: string, key: string, iataCode: string) => {
+        if (key === 'from') setFromLocationLocalStorage(iataCode);
         handleQueryChange(value, key);
         handleQueryChange(iataCode, `${key}Iata`);
+    }
+    const handleSearchClicked = () => {
+        setLoading(true);
+        addSearchToLocalStorage(query);
     }
     const navigation = useNavigation();
 
@@ -202,7 +200,7 @@ export const FlightForm = ({
             <Link
                 to={`/search-flight/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
                 className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
-                onClick={() => setLoading(true)}
+                onClick={handleSearchClicked}
             >
                 {navigation.state === 'loading' && loading ? (
                     <>
@@ -230,7 +228,20 @@ export const FlightForm = ({
                 )}
             </Link>
         </form>
-
+        {previousSearches.length > 0 ? (
+            <div className='py-2 text-left md:flex align-middle items-center'>
+                <h3 className="mr-2 text-left my-4 font-medium tracking-tight leading-none text-gray-500 dark:text-white">
+                    Previous Searches
+                </h3>
+                {previousSearches.map(previousSearch => (
+                    <Link
+                        to={`/search-flight/${previousSearch.fromIata}/${previousSearch.toIata}/${previousSearch.depart}/${previousSearch.return}`}
+                        className="mr-2 mb-2 md:mb-0 lg:col-span-2 justify-center md:w-auto text-slate-600 bg-slate-100 hover:bg-slate-200 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 inline-flex items-center"
+                        onClick={() => setLoading(true)}
+                    >{previousSearch.fromIata} to {previousSearch.toIata}</Link>
+                ))}
+            </div>
+        ) : ''}
     </div>
     );
 }
@@ -240,7 +251,7 @@ interface HeroDefaultProps {
     apiUrl?: string;
     showText?: boolean;
     buttonLoading?: boolean;
-    flightDefault: Query;
+    flightDefault?: Query;
 }
 
 export const HeroDefault = ({
@@ -254,7 +265,7 @@ export const HeroDefault = ({
         <Overlay />
         <Gradient />
         <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
-            {newFeature ? <NewFeature /> : ``}
+            {newFeature ? <NewFeature text={newFeature} /> : ``}
             {showText ? <Text /> : ``}
             <FlightForm apiUrl={apiUrl} buttonLoading={buttonLoading} flightDefault={flightDefault} />
         </div>

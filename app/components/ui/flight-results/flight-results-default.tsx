@@ -18,16 +18,16 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                     <div className='grid grid-cols-3 pb-4 last:pb-0'>
                         <div className="">
                             {leg.carriers.map(carrier => (
-                                <>
+                                <div className='bg-white inline-block border-slate-50 border-2 mr-2'>
                                     <img className='inline-block w-20 p-1' src={carrier.imageUrl} />
                                     {/* <div className="hidden md:block self-center text-sm text-slate-400">{carrier.name}</div> */}
-                                </>
+                                </div>
                             ))}
                         </div>
 
                         <div className="col-span-2 grid grid-cols-3 flex-1">
                             <div className="text-center">
-                                <div className="text-xl font-bold">{leg.departureTime}</div>
+                                <div className="text-xl font-bold dark:text-white">{leg.departureTime}</div>
                                 <div className="text-slate-400">{leg.fromIata}</div>
                             </div>
 
@@ -38,7 +38,7 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                             </div>
 
                             <div className="text-center">
-                                <div className="text-xl font-bold">{leg.arrivalTime}</div>
+                                <div className="text-xl font-bold dark:text-white">{leg.arrivalTime}</div>
                                 <div className="text-slate-400">{leg.toIata}</div>
                             </div>
                         </div>
@@ -89,7 +89,7 @@ const ButtonColumn = ({ flight, onButtonSelect, showDeals }: ButtonProps) => {
     return (
         <div className='self-center flex justify-self-end'>
             <div className='self-center'>
-                <span className='text-sm text-slate-400'>from</span> <span className='text-xl font-bold'>{flight.price.split('.')[0]}</span>
+                <span className='text-sm text-slate-400'>from</span> <span className='text-xl font-bold dark:text-white'>{flight.price.split('.')[0]}</span>
             </div>
             <Button outline={showDeals} className='ml-2' onClick={onButtonSelect}>{showDeals ? 'Hide' : 'Select'}</Button>
         </div>
@@ -157,7 +157,7 @@ const Flight = ({ flight, flights }: FlightProps) => {
 
     return (
         <div className='mb-2'>
-            <div className='border-2 border-slate-100 py-4 px-4 rounded-lg'>
+            <div className='border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-800'>
                 <Labels flight={flight} labels={labels} />
                 <div className='md:flex'>
                     <SegmentsColumn flight={flight} />
@@ -208,7 +208,7 @@ export const FlightResultsDefault = ({ flights, filters = {} }: FlightResultsDef
 
 
     return (<div>
-        <div className='border-2 border-slate-100 py-4 px-4 rounded-lg mb-2'>
+        <div className='border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800'>
             Showing<b className='px-1'>1-{results}</b>of<b className='px-1'>{filteredResults().total}</b>
         </div>
         {filteredResults().results.map((flight) => {

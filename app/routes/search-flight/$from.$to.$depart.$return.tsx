@@ -8,7 +8,6 @@ import { SearchSDK } from '~/helpers/sdk/flightSDK';
 import { getEntityIdFromIata } from '~/helpers/sdk/place';
 import { FlightQuery } from '~/types/search';
 import { Spinner } from 'flowbite-react';
-import { useNavigation } from "@remix-run/react";
 
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -77,8 +76,8 @@ export default function Search() {
 
   return (
     <div>
-      <div className=''>
-        <div className='md:flex justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-800 xl:p-9 xl:mx-auto'>
+      <div className='bg-white dark:bg-gray-900'>
+        <div className='md:flex justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto'>
           <div
             className='md:hidden border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer'
             onClick={() => setShowFilters(!showFilters)}
@@ -91,7 +90,7 @@ export default function Search() {
           <div className='w-full md:ml-2'>
             {error !== '' ? <> {error}
             </> : <>
-              {loading ? <div className='text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl'><Spinner className='mr-2' /> Loading More Prices & Flights...</div> : ''}
+              {loading ? <div className='text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800'><Spinner className='mr-2' /> Loading More Prices & Flights...</div> : ''}
               <FlightResultsDefault flights={search} filters={filters} />
             </>}
           </div>

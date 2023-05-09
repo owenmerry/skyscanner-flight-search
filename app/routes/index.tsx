@@ -1,9 +1,8 @@
 import type { LoaderFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { HeaderDefault } from '~/components/ui/header/header-default';
 import { HeroDefault } from '~/components/ui/hero/hero-default';
 import { NavigationWebsite } from '~/components/ui/navigation/navigation-website';
-import { FooterDefault } from '~/components/ui/footer/footer-default';
+import { Layout } from '~/components/ui/layout/layout';
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
@@ -18,11 +17,9 @@ export default function Index() {
   const { apiUrl } = useLoaderData();
 
   return (
-    <div>
-      <HeaderDefault selectedUrl='/' />
-      <HeroDefault apiUrl={apiUrl} />
+    <Layout>
+      <HeroDefault apiUrl={apiUrl} newFeature='Added Features history of previous searches, flight origin saved and Dark Mode' />
       <NavigationWebsite />
-      <FooterDefault />
-    </div>
+    </Layout>
   );
 }

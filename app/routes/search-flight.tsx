@@ -1,6 +1,6 @@
 import type { LoaderFunction } from '@remix-run/node';
 import { useLoaderData, Outlet, useLocation } from '@remix-run/react';
-import { HeaderDefault } from '~/components/ui/header/header-default';
+import { Layout } from '~/components/ui/layout/layout';
 import { HeroDefault } from '~/components/ui/hero/hero-default';
 import { getPlaceFromIata } from '~/helpers/sdk/place';
 
@@ -52,14 +52,15 @@ export default function SearchFlight() {
 
   return (
     <div>
-      <HeaderDefault selectedUrl='/search-flight' />
-      <HeroDefault
-        apiUrl={apiUrl}
-        showText={false}
-        buttonLoading={false}
-        flightDefault={flightParams}
-      />
-      <Outlet key={pathname} />
+      <Layout selectedUrl='/search-flight'>
+        <HeroDefault
+          apiUrl={apiUrl}
+          showText={false}
+          buttonLoading={false}
+          flightDefault={flightParams}
+        />
+        <Outlet key={pathname} />
+      </Layout>
     </div>
   );
 }

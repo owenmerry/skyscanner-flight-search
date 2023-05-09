@@ -18,3 +18,15 @@ export interface FlightUrl {
     return?: string,
     itineraryId?: string,
 }
+
+export interface Query {
+    from: string;
+    fromIata: string;
+    fromText: string;
+    to: string;
+    toIata: string;
+    toText: string;
+    depart: string;
+    return: string;
+    tripType: string;
+}
