@@ -106,17 +106,17 @@ interface LabelsProps {
 }
 const Labels = ({ labels, flight }: LabelsProps) => {
     return (
-        <>
+        <div className='mb-2'>
             {labels.map(label => (
-                <div className='mb-2'>
+                <>
                     {
                         label.show ? (
                             <Label color={label.labelBg} text={label.text} />
                         ) : ''
                     }
-                </div>
+                </>
             ))}
-        </>
+        </div>
     )
 }
 interface LabelProps {
