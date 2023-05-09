@@ -144,7 +144,7 @@ export const FlightForm = ({
                     name="From"
                     defaultValue={query.fromText}
                     apiUrl={apiUrl}
-                    onSelect={(value, iataCode) => handleLocationChange(value, 'to', iataCode)}
+                    onSelect={(value, iataCode) => handleLocationChange(value, 'from', iataCode)}
                 />
             </div>
             <div className="lg:col-span-2">
