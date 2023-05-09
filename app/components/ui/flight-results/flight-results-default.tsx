@@ -57,16 +57,16 @@ const Deals = ({ flight }: DealsProps) => {
         <div className='pt-2'>
             {
                 flight.prices.map((price) => (
-                    <div className='border-slate-100 bg-slate-50 border-b-2'>
+                    <div className='border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600'>
                         {
                             price.deepLinks.map((deepLink) => (
                                 <div className='grid grid-cols-3 md:grid-cols-4 items-center p-4'>
-                                    <div className=''><img className='inline-block w-20 p-1' src={deepLink.agentImageUrl} /></div>
-                                    <div className='hidden md:block'>
+                                    <div className=''><div className='bg-white inline-block'><img className='inline-block w-20 p-1' src={deepLink.agentImageUrl} /></div></div>
+                                    <div className='hidden md:block dark:text-white'>
                                         {deepLink.agentName}
                                         {deepLink.type === 'AGENT_TYPE_AIRLINE' ? (<div><Label color='green' text='Airline Option' /></div>) : ''}
                                     </div>
-                                    <div className='font-bold'>
+                                    <div className='font-bold text-center md:text-left dark:text-white'>
                                         {price.price !== '£0.00' ? price.price : 'See Website'}
                                         {deepLink.type === 'AGENT_TYPE_AIRLINE' ? (<div className='md:hidden'><Label color='green' text='Airline Option' /></div>) : ''}
                                     </div>
