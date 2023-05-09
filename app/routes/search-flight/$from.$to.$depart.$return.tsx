@@ -79,7 +79,7 @@ export default function Search() {
       <div className='bg-white dark:bg-gray-900'>
         <div className='md:flex justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto'>
           <div
-            className='md:hidden border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer'
+            className='md:hidden border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800'
             onClick={() => setShowFilters(!showFilters)}
           >
             {showFilters ? 'Hide Filters' : 'Show Filters'}

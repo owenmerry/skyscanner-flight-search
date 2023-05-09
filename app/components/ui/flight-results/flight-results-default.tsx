@@ -108,13 +108,13 @@ const Labels = ({ labels, flight }: LabelsProps) => {
     return (
         <>
             {labels.map(label => (
-                <>
+                <div className='mb-2'>
                     {
                         label.show ? (
                             <Label color={label.labelBg} text={label.text} />
                         ) : ''
                     }
-                </>
+                </div>
             ))}
         </>
     )
