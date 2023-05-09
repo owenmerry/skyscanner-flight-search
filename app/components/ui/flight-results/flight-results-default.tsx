@@ -33,7 +33,7 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
 
                             <div className="text-center">
                                 <div className="text-slate-400 text-sm">{durationShow}</div>
-                                <hr className='my-2' />
+                                <hr className='my-2 dark:border-gray-700' />
                                 <div className="text-slate-400 text-sm">{leg.direct ? 'Direct' : leg.stops === 1 ? '1 Stop' : `${leg.stops} Stops`}</div>
                             </div>
 
@@ -70,7 +70,26 @@ const Deals = ({ flight }: DealsProps) => {
                                         {price.price !== '£0.00' ? price.price : 'See Website'}
                                         {deepLink.type === 'AGENT_TYPE_AIRLINE' ? (<div className='md:hidden'><Label color='green' text='Airline Option' /></div>) : ''}
                                     </div>
-                                    <div className='self-end'><Button href={deepLink.link} target='_blank'>Book</Button></div>
+                                    <div className='self-end'>
+                                        <Button href={deepLink.link} target='_blank'>
+                                            Book{' '}
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={2}
+                                                stroke="currentColor"
+                                                aria-hidden="true"
+                                                className="w-4 h-4"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                                />
+                                            </svg>
+
+                                        </Button></div>
                                 </div>
                             ))
                         }
@@ -80,15 +99,15 @@ const Deals = ({ flight }: DealsProps) => {
         </div>);
 }
 
-interface ButtonProps {
+interface ButtonColumnProps {
     flight: FlightSDK;
     showDeals: boolean;
     onButtonSelect: () => void
 }
-const ButtonColumn = ({ flight, onButtonSelect, showDeals }: ButtonProps) => {
+const ButtonColumn = ({ flight, onButtonSelect, showDeals }: ButtonColumnProps) => {
     return (
-        <div className='self-center flex justify-self-end'>
-            <div className='self-center'>
+        <div className='self-center flex mt-2 md:mt-0'>
+            <div className='self-center flex-1 text-right'>
                 <span className='text-sm text-slate-400'>from</span> <span className='text-xl font-bold dark:text-white'>{flight.price.split('.')[0]}</span>
             </div>
             <Button outline={showDeals} className='ml-2' onClick={onButtonSelect}>{showDeals ? 'Hide' : 'Select'}</Button>

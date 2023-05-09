@@ -5,11 +5,11 @@ import { Location } from "~/components/location";
 import { getDateFormated } from '~/helpers/date';
 import { Spinner } from 'flowbite-react';
 import { useNavigation } from "@remix-run/react";
-import { setFromLocationLocalStorage, getFromPlaceLocalOrDefault, getSearchFromLocalStorage, addSearchToLocalStorage } from "~/helpers/local-storage";
+import { setFromLocationLocalStorage, getFromPlaceLocalOrDefault, getSearchFromLocalStorage, addSearchToLocalStorage, removeAllSearchFromLocalStorage } from "~/helpers/local-storage";
 
 export const Overlay = () => {
 
-    return (<div className="opacity-10 bg-black absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>);
+    return (<div className="opacity-80 bg-white dark:bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>);
 };
 export const Gradient = () => {
 
@@ -17,10 +17,10 @@ export const Gradient = () => {
 };
 export const Text = () => {
 
-    return (<div> <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl dark:text-white">
+    return (<div> <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-800 md:text-5xl lg:text-6xl dark:text-white">
         Explore the World with Ease
     </h1>
-        <p className="mb-8 text-lg font-normal text-white lg:text-xl sm:px-16 xl:px-48 dark:text-white">
+        <p className="mb-8 text-lg font-normal text-gray-800 lg:text-xl sm:px-16 xl:px-48 dark:text-white">
             Find your perfect flight or holiday package with our unique traveler first features.
         </p>
         <div className="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
@@ -53,7 +53,7 @@ export const NewFeature = ({ text = 'See our new feature' }: NewFeatureProps) =>
 
     return (<a
         href=''
-        className="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-gray-100 hover:bg-gray-200  rounded-full dark:bg-gray-800 dark:text-white  dark:hover:bg-gray-700"
+        className="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-white hover:bg-gray-200  rounded-full dark:bg-gray-800 dark:text-white  dark:hover:bg-gray-700"
         role="alert"
     >
         <span className="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3">
@@ -110,7 +110,7 @@ export const FlightForm = ({
         return: getDateFormated(3),
         tripType: 'return',
     };
-    const previousSearches = getSearchFromLocalStorage().reverse().slice(0, 5);
+    const [previousSearches, setPreviousSearches] = useState(getSearchFromLocalStorage().reverse().slice(0, 5));
     const [query, setQuery] = useState<Query>(defaultQuery);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -230,8 +230,8 @@ export const FlightForm = ({
         </form>
         {previousSearches.length > 0 ? (
             <div className='py-2 text-left md:flex align-middle items-center'>
-                <h3 className="mr-2 text-left my-4 font-medium tracking-tight leading-none text-gray-500 dark:text-white">
-                    Previous Searches
+                <h3 className="mr-2 text-left my-4 text-sm tracking-tight leading-none text-gray-500 dark:text-white">
+                    Previous Searches:
                 </h3>
                 {previousSearches.map(previousSearch => (
                     <Link
@@ -240,6 +240,10 @@ export const FlightForm = ({
                         onClick={() => setLoading(true)}
                     >{previousSearch.fromIata} to {previousSearch.toIata}</Link>
                 ))}
+                <div
+                    className='text-sm cursor-pointer hover:underline text-gray-400 hover:text-gray-600 dark:text-white'
+                    onClick={() => { removeAllSearchFromLocalStorage(); setPreviousSearches([]) }}
+                >Remove all</div>
             </div>
         ) : ''}
     </div>

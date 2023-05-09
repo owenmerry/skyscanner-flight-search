@@ -40,6 +40,11 @@ export const getSearchFromLocalStorage = () => {
     return json;
 }
 
+export const removeAllSearchFromLocalStorage = () => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(LOCAL_STORAGE_SEARCHES, JSON.stringify([]));
+}
+
 export const setDarkModeToLocalStorage = (value: boolean) => {
     if (typeof window === 'undefined') return;
     localStorage.setItem(LOCAL_STORAGE_DARK_MODE, JSON.stringify(value));

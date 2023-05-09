@@ -1,6 +1,6 @@
 export const FooterDefault = () => {
 
-    return (<footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-800">
+    return (<footer className="p-4 bg-white md:p-8 lg:p-10 dark:bg-gray-900">
         <div className="mx-auto max-w-screen-xl text-center">
             <a
                 href="#"
