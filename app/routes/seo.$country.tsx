@@ -25,7 +25,7 @@ export default function SEOAnytime() {
         <div>
           <h2 className='text-3xl mb-6'>Cities in {selectedPlace.name}</h2>
         </div>
-        <div className='grid grid-cols-5'>
+        <div className='grid sm:grid-cols-5 grid-cols-2'>
           {placeList.sort((a, b) => a.name.localeCompare(b.name)).map((place) => {
             if (!(place.type === 'PLACE_TYPE_CITY' && place.parentId === params.country)) return;
 
