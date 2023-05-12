@@ -9,6 +9,7 @@ interface SegmentsProps {
     flight: FlightSDK;
 }
 const SegmentsColumn = ({ flight }: SegmentsProps) => {
+
     return (
         <div className='col-span-2 flex-1'>
             {flight.legs.map((leg) => {
@@ -214,17 +215,18 @@ const Paging = ({ shown = 100, total = 1000, onShowMore = (number: number) => { 
 
 
 interface FlightResultsDefaultProps {
-    flights: SearchSDK;
+    flights?: SearchSDK;
     filters?: SearchFilters;
 }
 
 export const FlightResultsDefault = ({ flights, filters = {} }: FlightResultsDefaultProps) => {
+    if (!flights) return (<></>);
+
     const [results, setResults] = useState(filters.numberOfResultsToShow || 10);
     const filteredResults = () => (addSearchResultFilters(flights.cheapest, {
         ...filters,
         numberOfResultsToShow: results,
     }));
-
 
     return (<div>
         <div className='border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800'>

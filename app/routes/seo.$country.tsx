@@ -1,67 +1,42 @@
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
-import globalStyles from '~/styles/global.css';
-import seoStyles from '~/styles/seo.css';
 import geoData from "~/data/geo.json";
+import type { Place } from "~/helpers/sdk/place";
+import { Layout } from '~/components/ui/layout/layout';
 
-export const links: LinksFunction = () => {
-    return [
-        { rel: 'stylesheet', href: globalStyles },
-        { rel: 'stylesheet', href: seoStyles },
-    ];
-}
+export const loader: LoaderFunction = async ({ params }) => {
 
-interface Place {
-    entityId: string;
-    parentId: string;
-    name: string;
-    type: string;
-    iata: string;
-    coordinates: {
-        latitude: number;
-        longitude: number;
-    };
-}
-
-export const loader: LoaderFunction = async ({ request, context, params }) => {
-    const apiUrl = process.env.SKYSCANNER_APP_API_URL;
-    const googleApiKey = process.env.GOOGLE_API_KEY;
-
-    return json({
-        params,
-        apiUrl,
-        googleApiKey,
-        places: geoData.places,
-    });
+  return json({
+    places: geoData.places,
+    params,
+  });
 };
 
 export default function SEOAnytime() {
-    const { apiUrl, googleApiKey, params, places } = useLoaderData();
-    const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
-    const selectedPlace: Place = places[params.country];
+  const { places, params } = useLoaderData();
+  const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
+  const selectedPlace: Place = places[params.country];
 
-    return (
+  return (
+    <Layout selectedUrl='/seo'>
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+
         <div>
-            <div className='banner'>
-                <Link className='link-light' to="/seo">Back</Link>
-            </div>
-            <div className='wrapper'>
-                <div>
-                    <h2>Cities in {selectedPlace.name}</h2>
-                </div>
-                <div className='list'>
-                    {placeList.sort((a, b) => a.name.localeCompare(b.name)).map((place) => {
-                        if (!(place.type === 'PLACE_TYPE_CITY' && place.parentId === params.country)) return;
-
-                        return (
-                            <div className='item'>
-                                <Link to={`/explore/${place.entityId}/anywhere/${new Date().getMonth() + 1}`}>{place.name} ({place.iata})</Link>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
+          <h2 className='text-3xl mb-6'>Cities in {selectedPlace.name}</h2>
         </div>
-    );
+        <div className='grid grid-cols-5'>
+          {placeList.sort((a, b) => a.name.localeCompare(b.name)).map((place) => {
+            if (!(place.type === 'PLACE_TYPE_CITY' && place.parentId === params.country)) return;
+
+            return (
+              <div className=''>
+                <Link className='hover:underline' to={`/explore/${place.entityId}/anywhere/${new Date().getMonth() + 1}`}>{place.name}</Link>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </Layout>
+  );
 }

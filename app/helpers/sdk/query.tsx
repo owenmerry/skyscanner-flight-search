@@ -4,7 +4,7 @@ import { skyscanner } from './flightSDK';
 import { waitSeconds } from '~/helpers/utils';
 
 export const getFlightLiveCreate = async ({ apiUrl, query }: { apiUrl: string, query: FlightQuery }): Promise<SearchSDK | { error: string }> => {
-    let error: string = `Sorry, something happened and we couldnt do this`;
+    let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
     let search: SearchSDK | null = null;
 
     try {
@@ -15,19 +15,19 @@ export const getFlightLiveCreate = async ({ apiUrl, query }: { apiUrl: string, q
         const json = await res.json();
 
         if (!json && json.statusCode === 500 && json.statusCode !== 200) {
-            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search`;
+            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
         } else {
             search = skyscanner(json).search();
         }
     } catch (ex) {
-        error = `Sorry, something happened and we couldnt do this`;
+        error = `Sorry, something happened and we couldnt do this (code:3catch)`;
     }
 
     return search ? search : { error };
 }
 
 export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: string, token: string, wait?: number }): Promise<SearchSDK | { error: string }> => {
-    let error: string = `Sorry, something happened and we couldnt do this`;
+    let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
     let search: SearchSDK | null = null;
 
     try {
@@ -40,12 +40,12 @@ export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: strin
         const json = await res.json();
 
         if (!json && json.statusCode === 500 && json.statusCode !== 200) {
-            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search`;
+            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
         } else {
             search = skyscanner(json).search();
         }
     } catch (ex) {
-        error = `Sorry, something happened and we couldnt do this`;
+        error = `Sorry, something happened and we couldnt do this (code:3catch)`;
     }
 
     return search ? search : { error };
