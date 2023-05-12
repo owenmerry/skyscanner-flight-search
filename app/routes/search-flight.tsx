@@ -20,7 +20,9 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
 
   //exit
-  if (!params.from || !params.to) return;
+  if (!params.from || !params.to) return {
+    apiUrl,
+  };
 
   //get locations
   const fromPlace = getPlaceFromIata(params.from);

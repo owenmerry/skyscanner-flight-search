@@ -1,21 +1,10 @@
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
-import globalStyles from '~/styles/global.css';
-import seoStyles from '~/styles/flight.css';
 import geoData from "~/data/geo.json";
+import { Layout } from '~/components/ui/layout/layout';
 
 import { SEO } from '~/components/SEO';
-import { HeroPolygon } from '~/components/ui/hero/hero-polygon';
-import { HeroImageReview } from '~/components/ui/hero/hero-image-review';
-import { Tooltip, Button } from "flowbite-react";
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: globalStyles },
-    { rel: 'stylesheet', href: seoStyles },
-  ];
-}
 
 interface Place {
   entityId: string;
@@ -56,9 +45,9 @@ export default function SEOAnytime() {
   };
 
   return (
-    <div>
-      <div className='banner'>
-        <Link className='link-light' to="/">Back</Link>
+    <Layout selectedUrl='/seo'>
+      <SEO fromLocation={selectedPlace} apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} showItems />
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
       </div>
       {showAirports ? (
         <div className='wrapper panel'>
@@ -77,19 +66,6 @@ export default function SEOAnytime() {
           </div>
         </div>
       ) : ''}
-      {/* <HeroPolygon />
-      <HeroImageReview /> */}
-      {/* <div>
-        <h1>Welcome to Remix</h1>
-        <Tooltip content="Flowbite is awesome">
-          <Button>
-            Hover to find out
-          </Button>
-        </Tooltip>
-      </div> */}
-      <div className='wrapper'>
-        <SEO fromLocation={selectedPlace} apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} />
-      </div>
-    </div>
+    </Layout>
   );
 }

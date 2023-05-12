@@ -112,7 +112,7 @@ export const SEO = ({
           lat: placeOutboundDestination.coordinates.latitude,
           lng: placeOutboundDestination.coordinates.longitude,
         },
-        label: `${placeOutboundDestination.name} for ${getPrice(quote.minPrice.amount, quote.minPrice.unit)} and <b>${tripDays}</b> long, ${format(dateOutboundFlight, 'EEE, dd MMM')} to ${format(dateInboundFlight, 'EEE, dd MMM')} <a href='${`/search/${placeOutboundOrigin?.iata}/${placeOutboundDestination?.iata}/${convertDateToYYYMMDDFormat(dateOutboundFlight)}/${format(dateInboundFlight, 'yyyy-MM-dd')}`}'>See deal</a>`,
+        label: `${placeOutboundDestination.name} for ${getPrice(quote.minPrice.amount, quote.minPrice.unit)} and <b>${tripDays}</b> long, ${format(dateOutboundFlight, 'EEE, dd MMM')} to ${format(dateInboundFlight, 'EEE, dd MMM')} <a href='${`/search-flight/${placeOutboundOrigin?.iata}/${placeOutboundDestination?.iata}/${convertDateToYYYMMDDFormat(dateOutboundFlight)}/${format(dateInboundFlight, 'yyyy-MM-dd')}`}'>See deal</a>`,
       }
     });
     return markers;
@@ -126,73 +126,75 @@ export const SEO = ({
   return (
     <>
       {!search ? '' : (<>
-        <div className='panel'>
-          <div>Filter by Buget: <input type='number' value={filter || ''} onChange={handleFilter} /></div>
-        </div>
         {showMap ? (
-          <Wrapper apiKey={googleApiKey}>
-            <Map center={fromLocation.coordinates ? { lat: fromLocation.coordinates.latitude, lng: fromLocation.coordinates.longitude } : { lat: 0, lng: 0 }} zoom={5} markers={getMarkers()} />
-          </Wrapper>
+          <div className='dark:text-black'>
+            <Wrapper apiKey={googleApiKey}>
+              <Map center={fromLocation.coordinates ? { lat: fromLocation.coordinates.latitude, lng: fromLocation.coordinates.longitude } : { lat: 0, lng: 0 }} zoom={5} markers={getMarkers()} />
+            </Wrapper>
+          </div>
         ) : ''}
-        {showItems ? (
-          <>
-            {sortByPrice(filterItems(search.content.groupingOptions.byRoute.quotesGroups)).map((quoteKey) => {
-              const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
-              const placeInboundOrigin = search.content.results.places[quote.inboundLeg.originPlaceId];
-              const placeInboundDestination = search.content.results.places[quote.inboundLeg.destinationPlaceId];
-              const placeOutboundOrigin = search.content.results.places[quote.outboundLeg.originPlaceId];
-              const placeOutboundDestination = search.content.results.places[quote.outboundLeg.destinationPlaceId];
-              const dateOutbound = new Date(Number(quote.outboundLeg.quoteCreationTimestamp) * 1000);
-              const dateInbound = new Date(Number(quote.inboundLeg.quoteCreationTimestamp) * 1000);
-              const dateOutboundFlight = new Date(
-                quote.outboundLeg.departureDateTime.year,
-                quote.outboundLeg.departureDateTime.month,
-                quote.outboundLeg.departureDateTime.day,
-                quote.outboundLeg.departureDateTime.hour,
-                quote.outboundLeg.departureDateTime.minute,
-              );
-              const dateInboundFlight = new Date(
-                quote.inboundLeg.departureDateTime.year,
-                quote.inboundLeg.departureDateTime.month,
-                quote.inboundLeg.departureDateTime.day,
-                quote.inboundLeg.departureDateTime.hour,
-                quote.inboundLeg.departureDateTime.minute,
-              );
-              const dateOutboundAgo = formatDistance(
-                dateOutbound,
-                new Date(),
-                { addSuffix: true }
-              );
-              const dateInboundAgo = formatDistance(
-                dateInbound,
-                new Date(),
-                { addSuffix: true }
-              );
-              const tripDays = formatDistance(
-                dateOutboundFlight,
-                dateInboundFlight,
-                { addSuffix: false }
-              );
+        <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+          <div className='mb-2'>Filter by Buget: <input className='dark:bg-gray-800' type='number' value={filter || ''} onChange={handleFilter} /></div>
+          {showItems ? (
+            <>
+              {sortByPrice(filterItems(search.content.groupingOptions.byRoute.quotesGroups)).map((quoteKey) => {
+                const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
+                const placeInboundOrigin = search.content.results.places[quote.inboundLeg.originPlaceId];
+                const placeInboundDestination = search.content.results.places[quote.inboundLeg.destinationPlaceId];
+                const placeOutboundOrigin = search.content.results.places[quote.outboundLeg.originPlaceId];
+                const placeOutboundDestination = search.content.results.places[quote.outboundLeg.destinationPlaceId];
+                const dateOutbound = new Date(Number(quote.outboundLeg.quoteCreationTimestamp) * 1000);
+                const dateInbound = new Date(Number(quote.inboundLeg.quoteCreationTimestamp) * 1000);
+                const dateOutboundFlight = new Date(
+                  quote.outboundLeg.departureDateTime.year,
+                  quote.outboundLeg.departureDateTime.month,
+                  quote.outboundLeg.departureDateTime.day,
+                  quote.outboundLeg.departureDateTime.hour,
+                  quote.outboundLeg.departureDateTime.minute,
+                );
+                const dateInboundFlight = new Date(
+                  quote.inboundLeg.departureDateTime.year,
+                  quote.inboundLeg.departureDateTime.month,
+                  quote.inboundLeg.departureDateTime.day,
+                  quote.inboundLeg.departureDateTime.hour,
+                  quote.inboundLeg.departureDateTime.minute,
+                );
+                const dateOutboundAgo = formatDistance(
+                  dateOutbound,
+                  new Date(),
+                  { addSuffix: true }
+                );
+                const dateInboundAgo = formatDistance(
+                  dateInbound,
+                  new Date(),
+                  { addSuffix: true }
+                );
+                const tripDays = formatDistance(
+                  dateOutboundFlight,
+                  dateInboundFlight,
+                  { addSuffix: false }
+                );
 
-              return (<div className='panel'>
-                <div className='hidden'>
-                  <div>Outbound:{placeOutboundOrigin.entityId} to {placeOutboundDestination.entityId}</div>
-                  <div>Inbound:{placeOutboundOrigin.entityId} to {placeInboundDestination.entityId}</div>
-                </div>
-                <h3 style={{ marginTop: '0' }}>{placeOutboundDestination?.name} from {getPrice(quote.minPrice.amount, quote.minPrice.unit)}</h3>
-                <div><b>Outbound</b></div>
-                <div>{placeOutboundOrigin?.name} to {placeOutboundDestination?.name} on <b>{format(dateOutboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateOutboundAgo}) ({dateOutboundFlight.toISOString()})
-                </div>
-                <div><b>Inbound</b></div>
-                <div>{placeInboundOrigin?.name} to {placeInboundDestination?.name} on <b>{format(dateInboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateInboundAgo}) ({dateInboundFlight.toISOString()})
-                </div>
-                <div>Trip is <b>{tripDays}</b> long</div>
-                <div><Link className='button' to={`/search/${placeOutboundOrigin?.iata}/${placeOutboundDestination?.iata}/${convertDateToYYYMMDDFormat(dateOutboundFlight)}/${format(dateInboundFlight, 'yyyy-MM-dd')}`}>Search Deal</Link></div>
-              </div>);
+                return (<div className='border-2 border-gray-200 rounded-md mb-2 p-3 dark:border-gray-600'>
+                  <div className='hidden'>
+                    <div>Outbound:{placeOutboundOrigin.entityId} to {placeOutboundDestination.entityId}</div>
+                    <div>Inbound:{placeOutboundOrigin.entityId} to {placeInboundDestination.entityId}</div>
+                  </div>
+                  <h3 style={{ marginTop: '0' }}>{placeOutboundDestination?.name} from {getPrice(quote.minPrice.amount, quote.minPrice.unit)}</h3>
+                  <div><b>Outbound</b></div>
+                  <div>{placeOutboundOrigin?.name} to {placeOutboundDestination?.name} on <b>{format(dateOutboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateOutboundAgo})
+                  </div>
+                  <div><b>Inbound</b></div>
+                  <div>{placeInboundOrigin?.name} to {placeInboundDestination?.name} on <b>{format(dateInboundFlight, 'EEE, dd MMM')}</b> <br />(checked {dateInboundAgo})
+                  </div>
+                  <div>Trip is <b>{tripDays}</b> long</div>
+                  <div><Link className='button' to={`/search-flight/${placeOutboundOrigin?.iata}/${placeOutboundDestination?.iata}/${convertDateToYYYMMDDFormat(dateOutboundFlight)}/${format(dateInboundFlight, 'yyyy-MM-dd')}`}>Search Deal</Link></div>
+                </div>);
 
-            })}
-          </>
-        ) : ''}
+              })}
+            </>
+          ) : ''}
+        </div>
       </>)}
     </>
   );
