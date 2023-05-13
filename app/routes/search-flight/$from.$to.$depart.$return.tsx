@@ -55,6 +55,7 @@ export default function Search() {
   }, []);
 
   const runPoll = async () => {
+    console.log('run poll started...');
     const res = await getFlightLivePoll({
       apiUrl,
       token: sessionToken,
@@ -62,11 +63,14 @@ export default function Search() {
     });
 
     if ('error' in res) {
-      setLoading(false);
+      //setLoading(false);
       setError(res.error);
+      runPoll();
 
       return;
-    };
+    } else { }
+    setError('');
+    ;
 
     if (
       res.status === "RESULT_STATUS_INCOMPLETE"

@@ -67,12 +67,12 @@ export const Location = ({
       </div>
       {searchOrigin.length > 0 && (
         <div className="relative z-20">
-          <ul className="bg-white border border-gray-100 w-full mt-2 absolute">
+          <ul className="bg-white border border-gray-100 w-full mt-2 absolute dark:bg-gray-800 dark:border-gray-600">
             {searchOrigin.map((place, key) => (
               <li
                 key={place.entityId}
                 onClick={() => handleSelect(place.name, place.entityId, place?.iataCode || '')}
-                className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-gray-100 relative cursor-pointer hover:bg-slate-100 hover:text-gray-900">
+                className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-gray-100 relative cursor-pointer hover:bg-slate-100  dark:hover:bg-gray-900 dark:border-gray-600">
                 <div className="text-left">
                   <div>{place.name}
                     {place.cityId !== '' && (

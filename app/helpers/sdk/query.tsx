@@ -34,18 +34,22 @@ export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: strin
         if (wait) {
             await waitSeconds(wait);
         }
+        console.log('poll fetch start...');
         const res = await fetch(
             `${apiUrl}/poll/${token}`
         );
         const json = await res.json();
+        console.log('poll fetch ended...', json);
 
-        if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+        if (!json && json.statusCode === 500 && json.statusCode !== 200 || Object.keys(json?.content?.results?.itineraries).length === 0) {
+            if (Object.keys(json?.content?.results?.itineraries).length === 0) console.log('no results found for session token', token);
             error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
         } else {
             search = skyscanner(json).search();
         }
     } catch (ex) {
         error = `Sorry, something happened and we couldnt do this (code:3catch)`;
+        console.log(ex);
     }
 
     return search ? search : { error };
