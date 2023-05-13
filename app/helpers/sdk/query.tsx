@@ -43,7 +43,7 @@ export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: strin
 
         if (!json && json.statusCode === 500 && json.statusCode !== 200 || Object.keys(json?.content?.results?.itineraries).length === 0) {
             if (Object.keys(json?.content?.results?.itineraries).length === 0) console.log('no results found for session token', token);
-            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
+            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2)`;
         } else {
             search = skyscanner(json).search();
         }

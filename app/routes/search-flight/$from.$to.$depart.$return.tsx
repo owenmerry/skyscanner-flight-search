@@ -63,14 +63,12 @@ export default function Search() {
     });
 
     if ('error' in res) {
-      //setLoading(false);
       setError(res.error);
       runPoll();
 
       return;
-    } else { }
+    };
     setError('');
-    ;
 
     if (
       res.status === "RESULT_STATUS_INCOMPLETE"
