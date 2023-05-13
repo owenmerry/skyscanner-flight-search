@@ -116,7 +116,7 @@ export const HeaderDefault = ({
                 >
                     <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                         {menuItems.map((item, key) => (
-                            <li>
+                            <li key={`menu-item-${key}`}>
                                 <a
                                     href={item.to}
                                     className={item.selected ?

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, Fragment } from 'react';
 import { Button } from 'flowbite-react';
 import { FlightSDK, SearchSDK } from '~/helpers/sdk/flightSDK';
 import { toHoursAndMinutes } from '~/helpers/sdk/dateTime';
@@ -16,10 +16,10 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                 const duration = toHoursAndMinutes(leg.duration);
                 const durationShow = `${duration.hours > 0 && `${duration.hours}h `}${duration.minutes}m`
                 return (
-                    <div className='grid grid-cols-3 pb-4 last:pb-0'>
+                    <div key={`leg-${leg.id}`} className='grid grid-cols-3 pb-4 last:pb-0'>
                         <div className="">
-                            {leg.carriers.map(carrier => (
-                                <div className='bg-white inline-block border-slate-50 border-2 mr-2'>
+                            {leg.carriers.map((carrier, key) => (
+                                <div key={`carrier-${carrier.name}-${key}`} className='bg-white inline-block border-slate-50 border-2 mr-2'>
                                     <img className='inline-block w-20 p-1' src={carrier.imageUrl} />
                                     {/* <div className="hidden md:block self-center text-sm text-slate-400">{carrier.name}</div> */}
                                 </div>
@@ -57,11 +57,11 @@ const Deals = ({ flight }: DealsProps) => {
     return (
         <div className='pt-2'>
             {
-                flight.prices.map((price) => (
-                    <div className='border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600'>
+                flight.prices.map((price, key) => (
+                    <div key={`price-${price.price}-${key}`} className='border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600'>
                         {
                             price.deepLinks.map((deepLink) => (
-                                <div className='grid grid-cols-3 md:grid-cols-4 items-center p-4'>
+                                <div key={deepLink.link} className='grid grid-cols-3 md:grid-cols-4 items-center p-4'>
                                     <div className=''><div className='bg-white inline-block'><img className='inline-block w-20 p-1' src={deepLink.agentImageUrl} /></div></div>
                                     <div className='hidden md:block dark:text-white'>
                                         {deepLink.agentName}
@@ -127,14 +127,14 @@ interface LabelsProps {
 const Labels = ({ labels, flight }: LabelsProps) => {
     return (
         <div className='mb-2'>
-            {labels.map(label => (
-                <>
+            {labels.map((label, key) => (
+                <Fragment key={`label-${label.text}-${key}`}>
                     {
                         label.show ? (
                             <Label color={label.labelBg} text={label.text} />
                         ) : ''
                     }
-                </>
+                </Fragment>
             ))}
         </div>
     )
@@ -234,7 +234,7 @@ export const FlightResultsDefault = ({ flights, filters = {} }: FlightResultsDef
         </div>
         {filteredResults().results.map((flight) => {
             return (
-                <Flight flight={flight} flights={flights} />
+                <Flight flight={flight} flights={flights} key={flight.itineraryId} />
             );
         })}
         <Paging
