@@ -4,24 +4,49 @@ import { useLoaderData, Link } from '@remix-run/react';
 import geoData from "~/data/geo.json";
 import type { Place } from "~/helpers/sdk/place";
 import { Layout } from '~/components/ui/layout/layout';
+import { getImages } from '~/helpers/sdk/query';
 
 export const loader: LoaderFunction = async ({ params }) => {
+  const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
+  const places: any = geoData.places;
+  const selectedCountry = params.country || '';
+  const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
+  const selectedPlace: Place = places[selectedCountry];
+  const images = await getImages({ apiUrl: apiUrl, query: selectedPlace.name });
 
   return json({
+    apiUrl,
     places: geoData.places,
     params,
+    placeList,
+    selectedPlace,
+    images
   });
 };
 
 export default function SEOAnytime() {
-  const { places, params } = useLoaderData();
-  const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
-  const selectedPlace: Place = places[params.country];
+  const {
+    apiUrl,
+    params,
+    placeList,
+    selectedPlace, images }: {
+      apiUrl: string;
+      params: {
+        country: string;
+      },
+      placeList: Place[],
+      selectedPlace: Place,
+      images: string[],
+    } = useLoaderData();
+
+  console.log(images);
 
   return (
     <Layout selectedUrl='/seo'>
+      <div>
+        <img className='w-full' src={images[0]} />
+      </div>
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-
         <div>
           <h2 className='text-3xl mb-6'>Cities in {selectedPlace.name}</h2>
         </div>

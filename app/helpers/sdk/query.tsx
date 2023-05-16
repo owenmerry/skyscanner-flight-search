@@ -57,3 +57,15 @@ export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: strin
 
     return search ? search : { error };
 }
+
+export const getImages = async ({ apiUrl, query }: { apiUrl: string, query: string }): Promise<string[]> => {
+    const res = await fetch(
+        `${apiUrl}/images?query=${query}`
+    );
+    const json = await res.json();
+    const imagesMin: string[] = json.response.results.map((item: any) => (item.urls.raw + "&w=1200"))
+
+    //console.log('images', imagesMin);
+
+    return imagesMin;
+}
