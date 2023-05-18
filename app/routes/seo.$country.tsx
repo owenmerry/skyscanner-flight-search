@@ -13,6 +13,7 @@ export const loader: LoaderFunction = async ({ params }) => {
   const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
   const selectedPlace: Place = places[selectedCountry];
   const images = await getImages({ apiUrl: apiUrl, query: selectedPlace.name });
+  //const images = ['https://images.unsplash.com/photo-1530841377377-3ff06c0ca713?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxHcmVlY2V8ZW58MHwwfHx8MTY4NDI1NDgyOXww&ixlib=rb-4.0.3&w=1200'];
 
   return json({
     apiUrl,
@@ -38,8 +39,6 @@ export default function SEOAnytime() {
       selectedPlace: Place,
       images: string[],
     } = useLoaderData();
-
-  console.log(images);
 
   return (
     <Layout selectedUrl='/seo'>

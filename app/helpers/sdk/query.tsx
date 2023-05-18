@@ -34,12 +34,10 @@ export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: strin
         if (wait) {
             await waitSeconds(wait);
         }
-        console.log('poll fetch start...');
         const res = await fetch(
             `${apiUrl}/poll/${token}`
         );
         const json = await res.json();
-        console.log('poll fetch ended...', json);
 
         if (!json && json.statusCode === 500 && json.statusCode !== 200 || Object.keys(json?.content?.results?.itineraries).length === 0) {
             if (Object.keys(json?.content?.results?.itineraries).length === 0) {
@@ -59,13 +57,15 @@ export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: strin
 }
 
 export const getImages = async ({ apiUrl, query }: { apiUrl: string, query: string }): Promise<string[]> => {
-    const res = await fetch(
-        `${apiUrl}/images?query=${query}`
-    );
-    const json = await res.json();
-    const imagesMin: string[] = json.response.results.map((item: any) => (item.urls.raw + "&w=1200"))
-
-    //console.log('images', imagesMin);
+    let imagesMin: string[] = [];
+    try {
+        const res = await fetch(
+            `${apiUrl}/images?query=${query}`
+        );
+        const json = await res.json();
+        imagesMin = json.response.results.map((item: any) => (item.urls.raw + "&w=1200"))
+    } catch (ex) {
+    }
 
     return imagesMin;
 }

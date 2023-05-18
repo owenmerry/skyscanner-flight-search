@@ -55,7 +55,6 @@ export default function Search() {
   }, []);
 
   const runPoll = async () => {
-    console.log('run poll started...');
     const res = await getFlightLivePoll({
       apiUrl,
       token: sessionToken,
