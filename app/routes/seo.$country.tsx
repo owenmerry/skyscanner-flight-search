@@ -43,7 +43,7 @@ export default function SEOAnytime() {
   return (
     <Layout selectedUrl='/seo'>
       <div>
-        <img className='w-full' src={images[0]} />
+        <div style={{ backgroundImage: `url(${images[0]})` }} className={`h-[300px] md:h-[500px] bg-cover bg-center`}></div>
       </div>
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
