@@ -34,13 +34,13 @@ export const Map = ({
       anchor: new google.maps.Point(0, 20),
     };
 
-    new window.google.maps.Marker({
-      position: center,
-      map: googleMap,
-      title: "Location From",
-      clickable: false,
-      icon: locationSvg,
-    });
+    // new window.google.maps.Marker({
+    //   position: center,
+    //   map: googleMap,
+    //   title: "Location From",
+    //   clickable: false,
+    //   icon: locationSvg,
+    // });
 
     if (markers) {
       markers.map((marker) => {
@@ -61,6 +61,8 @@ export const Map = ({
             map: googleMap,
           });
         });
+
+
       })
     }
 

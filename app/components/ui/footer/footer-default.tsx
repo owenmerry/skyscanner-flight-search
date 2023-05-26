@@ -162,7 +162,7 @@ export const FooterDefault = () => {
                     </a>
                 </li>
                 <li>
-                    <a href="/seo" className="mr-4 hover:underline md:mr-6">
+                    <a href="/explore" className="mr-4 hover:underline md:mr-6">
                         Explore
                     </a>
                 </li>

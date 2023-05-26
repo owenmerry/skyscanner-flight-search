@@ -44,7 +44,7 @@ export default function SEOAnytime() {
     return (
         <div>
             <div className='banner'>
-                <Link className='link-light' to="/seo">Back</Link>
+                <Link className='link-light' to="/explore">Back</Link>
             </div>
             <div className='wrapper'>
                 <div>

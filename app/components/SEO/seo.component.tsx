@@ -92,7 +92,7 @@ export const SEO = ({
     });
   }
 
-  const getMarkers = (): {
+  const getMarkers = (search?: SkyscannerAPIIndicitiveResponse): {
     location: google.maps.LatLngLiteral;
     label: string;
   }[] | null => {

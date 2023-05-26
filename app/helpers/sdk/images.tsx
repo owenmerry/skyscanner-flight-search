@@ -1,18 +1,13 @@
 import { getImages } from '~/helpers/sdk/query';
 import geoData from "~/data/geo.json";
-import type { Place } from "~/helpers/sdk/place";
-
-
-export type CountryImagesJSON = (Place & {
-    images: string[];
-});
+import type { Place, PlaceExtra } from "~/helpers/sdk/place";
 
 export const runSaveImages = async (apiUrl: string) => {
     const places: { [key: string]: Place } = geoData.places;
     const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
     let countryCount = 0;
-    let countryJSON: CountryImagesJSON[] = [];
-    const group = 9; //run 6
+    let countryJSON: PlaceExtra[] = [];
+    const group = 12; //run 6
     const groupShow = 20;
 
     const countries = placeList.filter(place => place.type === 'PLACE_TYPE_COUNTRY').sort((a, b) => a.name.localeCompare(b.name));
@@ -30,4 +25,8 @@ export const runSaveImages = async (apiUrl: string) => {
     }
 
     return countryJSON;
+}
+
+export const getRandomImageNumber = (max: number) => {
+    return Math.floor(Math.random() * max);
 }

@@ -82,7 +82,7 @@ export const NavigationWebsite = () => {
                     <Article label="Live" title="Weekend Flight Search" description="Use our live search to make a your own search" to='/weekend' />
                     <Article label="Live" title="Week Flight Search" description="Use our live search to make a your own search" to='/week' />
                     <Article label="Live" title="Year Flight Search" description="Use our live search to make a your own search" to='/year' />
-                    <Article label="Saved" labelBg="yellow" title="Search by Location" description="Use our live search to make a your own search" to='/seo' />
+                    <Article label="Saved" labelBg="yellow" title="Search by Location" description="Use our live search to make a your own search" to='/explore' />
                 </div>
             </div>
         </section>
