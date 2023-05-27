@@ -8,8 +8,6 @@ import type { PlaceExtra } from '~/helpers/sdk/place';
 import { Map } from '~/components/map';
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { getMarkers } from "~/helpers/map";
-import { updateGEOSlug } from "~/helpers/sdk/data";
-import slugify from 'slugify';
 
 export const loader: LoaderFunction = async ({ }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
@@ -25,7 +23,6 @@ export const loader: LoaderFunction = async ({ }) => {
 
 export default function SEOAnytime() {
   const { countries, googleApiKey } = useLoaderData();
-  console.log(updateGEOSlug());
 
   return (
     <Layout selectedUrl='/explore'>
@@ -50,10 +47,11 @@ export default function SEOAnytime() {
         </div>
       </div>
 
-
-      <Wrapper apiKey={googleApiKey}>
-        <Map center={{ lat: 0, lng: 0 }} zoom={2} markers={getMarkers(countries)} />
-      </Wrapper>
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <Wrapper apiKey={googleApiKey}>
+          <Map center={{ lat: 0, lng: 0 }} zoom={2} markers={getMarkers(countries)} />
+        </Wrapper>
+      </div>
 
     </Layout>
   );

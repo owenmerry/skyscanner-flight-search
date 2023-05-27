@@ -20,12 +20,14 @@ export type PlaceExtra = (Place & {
 });
 
 export const getEntityIdFromIata = (iata: string): string => {
-  const found = geoData.filter(item => item.iata === iata);
+  const list = getGeoList();
+  const found = list.filter(item => item.iata === iata);
   return found.length > 0 ? found[0].entityId : '';
 }
 
 export const getIataFromEntityId = (entityId: string): string => {
-  const found = geoData.filter(item => item.entityId === entityId);
+  const list = getGeoList();
+  const found = list.filter(item => item.entityId === entityId);
   return found.length > 0 ? found[0].iata : '';
 }
 

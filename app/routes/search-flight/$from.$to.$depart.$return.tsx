@@ -4,9 +4,7 @@ import { FiltersDefault } from '~/components/ui/filters/filters-default';
 import { FlightResultsDefault } from '~/components/ui/flight-results/flight-results-default';
 import { getFlightLiveCreate, getFlightLivePoll } from "~/helpers/sdk/query";
 import { useLoaderData } from '@remix-run/react';
-import { SearchSDK } from '~/helpers/sdk/flightSDK';
 import { getEntityIdFromIata } from '~/helpers/sdk/place';
-import { FlightQuery } from '~/types/search';
 import { Spinner } from 'flowbite-react';
 
 

@@ -18,7 +18,7 @@ export default function Index() {
 
   return (
     <Layout>
-      <HeroDefault apiUrl={apiUrl} newFeature='Added Features history of previous searches, flight origin saved and Dark Mode' />
+      <HeroDefault apiUrl={apiUrl} newFeature='Added Maps for explore and country pages' />
       <NavigationWebsite />
     </Layout>
   );

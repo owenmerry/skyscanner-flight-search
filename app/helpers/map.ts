@@ -24,7 +24,7 @@ export const getMarkers = (places: PlaceExtra[]): {
                 lat: place.coordinates.latitude,
                 lng: place.coordinates.longitude,
             },
-            label: `<div><img src='${place.images[0]}&w=250' /></div><div class='mt-2 dark:text-black'><a href='/explore/${place.slug}'>${place.name}</a></div>`,
+            label: `<div>${place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ''}</div><div class='mt-2 dark:text-black'><a href='/explore/${place.slug}'>${place.name}</a></div>`,
         }
     });
     return markers;
