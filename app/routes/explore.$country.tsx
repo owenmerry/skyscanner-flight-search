@@ -50,6 +50,25 @@ export default function SEOAnytime() {
       <div>
         <div style={{ backgroundImage: `url(${country.images[0]}&w=1500)` }} className={`h-[300px] md:h-[500px] bg-cover bg-center`}></div>
       </div>
+
+
+      {/* Images */}
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <div>
+          <h2 className='text-3xl mb-6'>Images</h2>
+        </div>
+        <div className='grid gap-2 sm:grid-cols-5 grid-cols-2'>
+          {country.images.map((image) => {
+
+            return (
+              <div className=''>
+                <div style={{ backgroundImage: `url(${image}&w=250)` }} className={`h-[120px] bg-cover`}></div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
           <h2 className='text-3xl mb-6'>Cities in {country.name}</h2>
@@ -66,6 +85,9 @@ export default function SEOAnytime() {
       </div>
 
       <div className="relative z-10 py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <div>
+          <h2 className='text-3xl mb-6'>Map</h2>
+        </div>
         <Wrapper apiKey={googleApiKey}>
           <Map center={{ lat: country.coordinates.latitude, lng: country.coordinates.longitude }} zoom={5} markers={getMarkers(cities)} />
         </Wrapper>
