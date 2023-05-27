@@ -18,7 +18,7 @@ export default function Index() {
 
   return (
     <Layout>
-      <HeroDefault apiUrl={apiUrl} newFeature='Added Maps for explore and country pages' />
+      <HeroDefault apiUrl={apiUrl} newFeature='Added Maps, Images and deals for explore and country pages' />
       <NavigationWebsite />
     </Layout>
   );

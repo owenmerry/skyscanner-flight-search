@@ -2,12 +2,14 @@ import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
 import type { Place, PlaceExtra } from "~/helpers/sdk/place";
-import { getPlaceFromSlug, getGeoList } from "~/helpers/sdk/place";
+import { getPlaceFromSlug, getGeoList, getPlaceFromIata } from "~/helpers/sdk/place";
 import { Layout } from '~/components/ui/layout/layout';
 import { getImages } from '~/helpers/sdk/query';
 import { Map } from '~/components/map';
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { getMarkers } from "~/helpers/map";
+import { SEO } from '~/components/SEO';
+import { getFromPlaceLocalOrDefault } from '~/helpers/local-storage';
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
@@ -44,6 +46,14 @@ export default function SEOAnytime() {
     places: PlaceExtra[],
     googleApiKey: string,
   } = useLoaderData();
+  const from = getFromPlaceLocalOrDefault() || getPlaceFromIata('LHR');
+  const query = {
+    from: from ? from.entityId : '',
+    to: country.entityId,
+    month: String(new Date().getMonth() + 2),
+    endMonth: new Date().getMonth() + 1,
+    groupType: 'month',
+  };
 
   return (
     <Layout selectedUrl='/explore'>
@@ -77,7 +87,7 @@ export default function SEOAnytime() {
           {cities.sort((a, b) => a.name.localeCompare(b.name)).map((place) => {
             return (
               <div className=''>
-                <Link className='hover:underline' to={`/explore/${place.entityId}/anywhere/${new Date().getMonth() + 1}`}>{place.name}</Link>
+                <Link className='hover:underline' to={`/explore/${place.slug}`}>{place.name}</Link>
               </div>
             );
           })}
@@ -92,6 +102,15 @@ export default function SEOAnytime() {
           <Map center={{ lat: country.coordinates.latitude, lng: country.coordinates.longitude }} zoom={5} markers={getMarkers(cities)} />
         </Wrapper>
       </div>
+
+
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <div>
+          <h2 className='text-3xl mb-6'>Flights Next Month </h2>
+        </div>
+        <SEO fromLocation={country} apiUrl={apiUrl} query={query} googleApiKey={googleApiKey} showItems showMap={false} />
+      </div>
+
     </Layout>
   );
 }

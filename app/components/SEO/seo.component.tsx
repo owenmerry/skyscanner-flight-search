@@ -47,7 +47,7 @@ export const SEO = ({
   const handleSearch = useCallback(async () => {
     try {
       const res = await fetch(
-        `${apiUrl}/price?from=${query.from}&month=${query.month}&groupType=month`);
+        `${apiUrl}/price?from=${query.from}&to=${query.to}&month=${query.month}&groupType=month`);
       const json: SkyscannerAPIIndicitiveResponse = await res.json();
 
       if (json) {
@@ -129,7 +129,7 @@ export const SEO = ({
         {showMap ? (
           <div className='dark:text-black'>
             <Wrapper apiKey={googleApiKey}>
-              <Map center={fromLocation.coordinates ? { lat: fromLocation.coordinates.latitude, lng: fromLocation.coordinates.longitude } : { lat: 0, lng: 0 }} zoom={5} markers={getMarkers()} />
+              <Map center={fromLocation.coordinates ? { lat: fromLocation.coordinates.latitude, lng: fromLocation.coordinates.longitude } : { lat: 0, lng: 0 }} zoom={5} markers={getMarkers(search)} />
             </Wrapper>
           </div>
         ) : ''}
