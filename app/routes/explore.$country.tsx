@@ -1,22 +1,23 @@
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link } from '@remix-run/react';
-import type { Place, PlaceExtra } from "~/helpers/sdk/place";
+import type { Place } from "~/helpers/sdk/place";
 import { getPlaceFromSlug, getGeoList, getPlaceFromIata } from "~/helpers/sdk/place";
 import { Layout } from '~/components/ui/layout/layout';
-import { getImages } from '~/helpers/sdk/query';
 import { Map } from '~/components/map';
 import { Wrapper } from "@googlemaps/react-wrapper";
-import { getMarkers } from "~/helpers/map";
+import { getMarkersCountry } from "~/helpers/map";
 import { SEO } from '~/components/SEO';
 import { getFromPlaceLocalOrDefault } from '~/helpers/local-storage';
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
-  const country = getPlaceFromSlug(params.country || '');
+  const country = getPlaceFromSlug(params.country || '', 'PLACE_TYPE_COUNTRY');
   const googleApiKey = process.env.GOOGLE_API_KEY || '';
   const places = getGeoList();
-  const cities = places.filter((place) => (country && place.parentId === country.entityId));
+  const countryPlaces = places.filter((place) => (country && place.parentId === country.entityId));
+  const cities = countryPlaces.filter((place) => (place.type === 'PLACE_TYPE_CITY'));
+  const airports = countryPlaces.filter((place) => (place.type === 'PLACE_TYPE_AIRPORT'));
 
   return json({
     apiUrl,
@@ -25,25 +26,28 @@ export const loader: LoaderFunction = async ({ params }) => {
     country,
     googleApiKey,
     cities,
+    airports,
   });
 };
 
 export default function SEOAnytime() {
   const {
     apiUrl,
+    googleApiKey,
     params,
     country,
     places,
-    googleApiKey,
     cities,
+    airports
   }: {
     apiUrl: string;
     params: {
       country: string;
     },
-    country: PlaceExtra,
-    cities: PlaceExtra[],
-    places: PlaceExtra[],
+    country: Place,
+    cities: Place[],
+    places: Place[],
+    airports: Place[],
     googleApiKey: string,
   } = useLoaderData();
   const from = getFromPlaceLocalOrDefault() || getPlaceFromIata('LHR');
@@ -99,7 +103,7 @@ export default function SEOAnytime() {
           <h2 className='text-3xl mb-6'>Map</h2>
         </div>
         <Wrapper apiKey={googleApiKey}>
-          <Map center={{ lat: country.coordinates.latitude, lng: country.coordinates.longitude }} zoom={5} markers={getMarkers(cities)} />
+          <Map center={{ lat: country.coordinates.latitude, lng: country.coordinates.longitude }} zoom={5} markers={getMarkersCountry([...cities, ...airports])} />
         </Wrapper>
       </div>
 

@@ -1,12 +1,12 @@
 import { getImages } from '~/helpers/sdk/query';
 import geoData from "~/data/geo.json";
-import type { Place, PlaceExtra } from "~/helpers/sdk/place";
+import type { Place, Place } from "~/helpers/sdk/place";
 
 export const runSaveImages = async (apiUrl: string) => {
     const places: { [key: string]: Place } = geoData.places;
     const placeList: Place[] = Object.keys(places).map((placeKey) => (places[placeKey]));
     let countryCount = 0;
-    let countryJSON: PlaceExtra[] = [];
+    let countryJSON: Place[] = [];
     const group = 12; //run 6
     const groupShow = 20;
 

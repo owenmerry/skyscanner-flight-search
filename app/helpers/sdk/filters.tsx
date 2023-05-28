@@ -1,4 +1,4 @@
-import { FlightSDK } from '~/helpers/sdk/flightSDK';
+import { FlightSDK } from '~/helpers/sdk/skyscannerSDK';
 
 export interface SearchFilters {
     numberOfResultsToShow?: number;

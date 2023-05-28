@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import type { FlightQuery, FlightUrl } from '~/types/search';
-import { skyscanner } from '~/helpers/sdk/flightSDK';
-import type { SearchSDK } from '~/helpers/sdk/flightSDK';
+import { skyscanner } from '~/helpers/sdk/skyscannerSDK';
+import type { SearchSDK } from '~/helpers/sdk/skyscannerSDK';
 import { waitSeconds } from '~/helpers/utils';
 
 import { Link } from '@remix-run/react';
@@ -49,7 +49,7 @@ export const FlightDetails = ({
           setSearching(false);
         }
       } else {
-        setSearch(skyscanner(json).search());
+        setSearch(skyscanner().search(json));
 
         // run again until is complete
         if (json.status === 'RESULT_STATUS_INCOMPLETE' && sessionTokenSaved.current === token) {
@@ -90,7 +90,7 @@ export const FlightDetails = ({
         );
       } else {
 
-        setSearch(skyscanner(json).search());
+        setSearch(skyscanner().search(json));
         sessionTokenSaved.current = json.sessionToken;
         setSearching(false);
 

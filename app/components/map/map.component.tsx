@@ -6,6 +6,7 @@ interface MapProps {
   markers?: {
     location: google.maps.LatLngLiteral;
     label: string;
+    icon?: string;
   }[] | null;
 }
 
@@ -47,8 +48,15 @@ export const Map = ({
         const googleMarker = new google.maps.Marker({
           position: marker.location,
           map: googleMap,
-          title: "Hello World!",
           clickable: true,
+          ...marker.icon ? {
+            label: {
+              text: marker.icon,
+              fontFamily: "Material Icons",
+              color: "#ffffff",
+              fontSize: "18px",
+            }
+          } : {},
         });
 
         const infowindow = new google.maps.InfoWindow({

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { FlightSDK } from '~/helpers/sdk/flightSDK';
+import type { FlightSDK } from '~/helpers/sdk/skyscannerSDK';
 import type { FlightQuery, FlightUrl } from '~/types/search';
 
 interface PricesProps {
@@ -30,46 +30,46 @@ export const Prices = ({
     <div>
       <div className='panel-price'>
         {showButton && (
-          <div><button className='button-stretch' onClick={handleToggle}>See Prices from <b>{flight?.price}</b> ({flight?.prices.length} deal{flight && flight?.prices.length > 1 ? 's' : ''})</button></div>  
+          <div><button className='button-stretch' onClick={handleToggle}>See Prices from <b>{flight?.price}</b> ({flight?.prices.length} deal{flight && flight?.prices.length > 1 ? 's' : ''})</button></div>
         )}
       </div>
       {flight && show && (
         <>
-        {flight?.prices.map((price, key) => (
-          <div key={`${price.price}-${key}`}>
-            <div className="flight-price">
-            {price.deepLinks.map((deepLink) => (
-              <React.Fragment key={deepLink.link}>
-                <div className="image">
-                  {deepLink.agentImageUrl !== "" &&
-                    <img
-                      height="30px"
-                      src={deepLink.agentImageUrl}
-                      alt={`${deepLink.agentName} logo`}
-                    />
-                  }
-                </div>
-                <div>{deepLink.agentName}</div>
-                 <div><b>{price.price}</b></div>
-                <a
-                  target="_blank"
-                  href={deepLink.link}
-                  rel="noreferrer"
-                >
-                  View Deal
-                </a>
-              </React.Fragment>
-            ))}
+          {flight?.prices.map((price, key) => (
+            <div key={`${price.price}-${key}`}>
+              <div className="flight-price">
+                {price.deepLinks.map((deepLink) => (
+                  <React.Fragment key={deepLink.link}>
+                    <div className="image">
+                      {deepLink.agentImageUrl !== "" &&
+                        <img
+                          height="30px"
+                          src={deepLink.agentImageUrl}
+                          alt={`${deepLink.agentName} logo`}
+                        />
+                      }
+                    </div>
+                    <div>{deepLink.agentName}</div>
+                    <div><b>{price.price}</b></div>
+                    <a
+                      target="_blank"
+                      href={deepLink.link}
+                      rel="noreferrer"
+                    >
+                      View Deal
+                    </a>
+                  </React.Fragment>
+                ))}
+              </div>
             </div>
+          ))}
+          <div className="">
+            <a
+              target="_blank"
+              href={`https://www.skyscanner.net/transport/flights/${url?.from}/${url?.to}/${departDateSkyscannerUrlFormat}${returnDateSkyscannerUrlFormat ? `/${returnDateSkyscannerUrlFormat}` : ''}/config/${encodeURIComponent(flight.itineraryId)}`}
+              rel="noreferrer"
+            >See on Skyscanner</a>
           </div>
-        ))}
-        <div className="">
-                  <a 
-                  target="_blank"
-                  href={`https://www.skyscanner.net/transport/flights/${url?.from}/${url?.to}/${departDateSkyscannerUrlFormat}${returnDateSkyscannerUrlFormat ? `/${returnDateSkyscannerUrlFormat}` : '' }/config/${encodeURIComponent(flight.itineraryId)}`}
-                  rel="noreferrer"
-                  >See on Skyscanner</a>
-            </div>
         </>)}
-      </div>);
+    </div>);
 };

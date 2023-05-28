@@ -1,6 +1,6 @@
 import { useState, Fragment } from 'react';
 import { Button } from 'flowbite-react';
-import { FlightSDK, SearchSDK } from '~/helpers/sdk/flightSDK';
+import { FlightSDK, SearchSDK } from '~/helpers/sdk/skyscannerSDK';
 import { toHoursAndMinutes } from '~/helpers/sdk/dateTime';
 import type { SearchFilters } from '~/helpers/sdk/filters';
 import { addSearchResultFilters } from '~/helpers/sdk/filters';

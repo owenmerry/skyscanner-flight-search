@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { FlightCheckQuery, FlightUrl } from "~/types/search";
 import { getFlightLiveCreate, getFlightLivePoll } from "~/helpers/sdk/query";
-import { SearchSDK } from "~/helpers/sdk/flightSDK";
+import type { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import { debounce } from "lodash";
 
 interface FlightCheckResultsProps {

@@ -1,6 +1,6 @@
 import type { SkyscannerAPIIndicitiveResponse, IndicitiveQuote } from '~/types/geo';
 import { getSEODateDetails } from '~/helpers/date';
-import type { PlaceExtra } from '~/helpers/sdk/place';
+import type { Place } from '~/helpers/sdk/place';
 
 export const filterNonCordItems = (quoteGroups: IndicitiveQuote[], search?: SkyscannerAPIIndicitiveResponse) => {
     return quoteGroups.filter((quoteGroup) => {
@@ -13,10 +13,13 @@ export const filterNonCordItems = (quoteGroups: IndicitiveQuote[], search?: Skys
     });
 }
 
-export const getMarkers = (places: PlaceExtra[]): {
+export interface Markers {
     location: google.maps.LatLngLiteral;
     label: string;
-}[] | null => {
+    icon?: string
+}
+
+export const getMarkersWorld = (places: Place[]): Markers[] | null => {
     const markers = places.map((place) => {
 
         return {
@@ -25,6 +28,22 @@ export const getMarkers = (places: PlaceExtra[]): {
                 lng: place.coordinates.longitude,
             },
             label: `<div>${place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ''}</div><div class='mt-2 dark:text-black'><a href='/explore/${place.slug}'>${place.name}</a></div>`,
+            icon: '\ue153',
+        }
+    });
+    return markers;
+}
+
+export const getMarkersCountry = (places: Place[]): Markers[] | null => {
+    const markers = places.map((place) => {
+
+        return {
+            location: {
+                lat: place.coordinates.latitude,
+                lng: place.coordinates.longitude,
+            },
+            label: `<div>${place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ''}</div><div class='mt-2 dark:text-black'><a href='/explore/${place.slug}'>${place.name} (${place.type})</a></div>`,
+            icon: place.type === 'PLACE_TYPE_AIRPORT' ? '\ue539' : '\ue7f1',
         }
     });
     return markers;

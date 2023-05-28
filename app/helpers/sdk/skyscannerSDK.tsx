@@ -2,6 +2,10 @@ import { getPrice } from './price';
 import { getDateTime, getTime } from './dateTime';
 import { convertDeepLink } from './link';
 import { hasDirectFlights, isDirectFlights } from './flight';
+//geo
+import type { SkyscannerAPIGeoResponse } from './geo/geo-response';
+import type { GeoSDK } from './geo/geo-sdk';
+import { getGeoSDK } from './geo/geo-sdk';
 
 // types (Response)
 
@@ -68,9 +72,9 @@ interface Agent {
   name: string;
   rating: number;
   type:
-    | 'AGENT_TYPE_UNSPECIFIED'
-    | 'AGENT_TYPE_TRAVEL_AGENT'
-    | 'AGENT_TYPE_AIRLINE';
+  | 'AGENT_TYPE_UNSPECIFIED'
+  | 'AGENT_TYPE_TRAVEL_AGENT'
+  | 'AGENT_TYPE_AIRLINE';
   ratingBreakdown: {
     customerService: number;
     reliablePrices: number;
@@ -134,7 +138,8 @@ interface DateTime {
 
 //types (SDK)
 export interface SkyscannerSDK {
-  search: () => SearchSDK;
+  search: (res: SkyscannerAPICreateResponse) => SearchSDK;
+  geo: (res?: SkyscannerAPIGeoResponse) => GeoSDK;
 }
 
 export interface SearchSDK {
@@ -162,9 +167,9 @@ interface PriceSDK {
 interface DeepLinkSDK {
   link: string;
   type:
-    | 'AGENT_TYPE_UNSPECIFIED'
-    | 'AGENT_TYPE_TRAVEL_AGENT'
-    | 'AGENT_TYPE_AIRLINE';
+  | 'AGENT_TYPE_UNSPECIFIED'
+  | 'AGENT_TYPE_TRAVEL_AGENT'
+  | 'AGENT_TYPE_AIRLINE';
   agentImageUrl: string;
   agentName: string;
 }
@@ -210,9 +215,9 @@ export interface LegSDK {
 
 // functions (SDK)
 
-export const skyscanner = (res: SkyscannerAPICreateResponse): SkyscannerSDK => {
+export const skyscanner = (): SkyscannerSDK => {
   return {
-    search: () => ({
+    search: (res: SkyscannerAPICreateResponse) => ({
       sessionToken: res.sessionToken,
       status: res.status,
       best: getSortingOptions(res, 'best'),
@@ -220,6 +225,7 @@ export const skyscanner = (res: SkyscannerAPICreateResponse): SkyscannerSDK => {
       fastest: getSortingOptions(res, 'fastest'),
       stats: stats(res),
     }),
+    geo: (res?: SkyscannerAPIGeoResponse) => (getGeoSDK(res)),
   };
 };
 

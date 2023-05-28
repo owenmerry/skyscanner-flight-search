@@ -1,23 +1,10 @@
 import slugify from "slugify";
 import geoAll from "~/data/geo.json";
 import geoData from "~/data/geo-extra.json";
-
-export interface Place {
-  entityId: string;
-  parentId: string;
-  name: string;
-  type: string;
-  iata: string;
-  coordinates: {
-    latitude: number;
-    longitude: number;
-  };
-}
-
-export type PlaceExtra = (Place & {
-  images: string[];
-  slug: string;
-});
+import type { Geo } from "~/helpers/sdk/geo/geo-response";
+import type { Place } from "~/helpers/sdk/geo/geo-sdk";
+export type { Place } from "~/helpers/sdk/geo/geo-sdk";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 export const getEntityIdFromIata = (iata: string): string => {
   const list = getGeoList();
@@ -31,38 +18,34 @@ export const getIataFromEntityId = (entityId: string): string => {
   return found.length > 0 ? found[0].iata : '';
 }
 
-export const getPlaceFromIata = (iata: string): PlaceExtra | false => {
+export const getPlaceFromIata = (iata: string): Place | false => {
   const list = getGeoList();
   const found = list.filter(item => item.iata === iata);
   return found.length > 0 ? found[0] : false;
 }
 
-export const getPlaceFromSlug = (slug: string): PlaceExtra | false => {
+export const getPlaceFromSlug = (slug: string, type: string): Place | false => {
   const list = getGeoList();
-  const found = list.filter(item => item.slug === slug);
+  const found = list.filter(item => item.slug === slug && item.type === type);
   return found.length > 0 ? found[0] : false;
 }
 
-export const getPlaceFromEntityId = (entityId: string): PlaceExtra | false => {
+export const getPlaceFromEntityId = (entityId: string): Place | false => {
   const list = getGeoList();
   const found = list.filter(item => item.entityId === entityId);
   return found.length > 0 ? found[0] : false;
 }
 
-export const getGeoList = (): PlaceExtra[] => {
-  const places = geoAll.places;
-  const placeList = Object.keys(places);
-  const list = placeList.map((value) => {
-    return convertPlaceToPlaceExtra((places as any)[value]);
-  })
+export const getGeoList = (): Place[] => {
+  const list = skyscanner().geo().places;
 
   return list;
 }
 
-const convertPlaceToPlaceExtra = (place: Place): PlaceExtra => {
+const convertPlaceToPlace = (place: Geo): Place => {
   const found = geoData.filter(item => item.entityId === place.entityId);
-  const placeExtra = found.length > 0 ? found[0] : false;
-  return placeExtra || {
+  const Place = found.length > 0 ? found[0] : false;
+  return Place || {
     ...place,
     images: [],
     slug: place.name ? slugify(place.name, {

@@ -17,8 +17,8 @@ export default function Index() {
   const { apiUrl } = useLoaderData();
 
   return (
-    <Layout>
-      <HeroDefault apiUrl={apiUrl} newFeature='Added Maps, Images and deals for explore and country pages' />
+    <Layout selectedUrl='/'>
+      <HeroDefault apiUrl={apiUrl} newFeature='Added Maps, Images and deals for explore and country pages' newFeatureURL='/explore' />
       <NavigationWebsite />
     </Layout>
   );

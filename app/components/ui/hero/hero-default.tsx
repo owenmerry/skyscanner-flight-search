@@ -48,11 +48,12 @@ export const Text = () => {
 
 interface NewFeatureProps {
     text?: string;
+    url?: string;
 }
-export const NewFeature = ({ text = 'See our new feature' }: NewFeatureProps) => {
+export const NewFeature = ({ text = 'See our new feature', url }: NewFeatureProps) => {
 
     return (<a
-        href=''
+        href={url}
         className="inline-flex justify-between items-center py-1 px-1 pr-4 mb-7 text-sm text-gray-700 bg-white hover:bg-gray-200  rounded-full dark:bg-gray-800 dark:text-white  dark:hover:bg-gray-700"
         role="alert"
     >
@@ -253,6 +254,7 @@ export const FlightForm = ({
 
 interface HeroDefaultProps {
     newFeature?: string;
+    newFeatureURL?: string;
     apiUrl?: string;
     showText?: boolean;
     buttonLoading?: boolean;
@@ -261,6 +263,7 @@ interface HeroDefaultProps {
 
 export const HeroDefault = ({
     newFeature,
+    newFeatureURL,
     apiUrl,
     showText = true,
     buttonLoading = false,
@@ -270,7 +273,7 @@ export const HeroDefault = ({
         <Overlay />
         <Gradient />
         <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
-            {newFeature ? <NewFeature text={newFeature} /> : ``}
+            {newFeature ? <NewFeature text={newFeature} url={newFeatureURL} /> : ``}
             {showText ? <Text /> : ``}
             <FlightForm apiUrl={apiUrl} buttonLoading={buttonLoading} flightDefault={flightDefault} />
         </div>

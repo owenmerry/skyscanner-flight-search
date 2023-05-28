@@ -1,6 +1,6 @@
-import type { SearchSDK } from './flightSDK';
+import type { SearchSDK } from './skyscannerSDK';
 import type { FlightQuery } from '~/types/search';
-import { skyscanner } from './flightSDK';
+import { skyscanner } from './skyscannerSDK';
 import { waitSeconds } from '~/helpers/utils';
 
 export const getFlightLiveCreate = async ({ apiUrl, query }: { apiUrl: string, query: FlightQuery }): Promise<SearchSDK | { error: string }> => {
@@ -17,7 +17,7 @@ export const getFlightLiveCreate = async ({ apiUrl, query }: { apiUrl: string, q
         if (!json && json.statusCode === 500 && json.statusCode !== 200) {
             error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
         } else {
-            search = skyscanner(json).search();
+            search = skyscanner().search(json);
         }
     } catch (ex) {
         error = `Sorry, something happened and we couldnt do this (code:3catch)`;
@@ -46,7 +46,7 @@ export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: strin
             error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2)`;
             console.error('Flight Poll - Error Code (2)', json, token);
         } else {
-            search = skyscanner(json).search();
+            search = skyscanner().search(json);
         }
     } catch (ex) {
         error = `Sorry, something happened and we couldnt do this (code:3catch)`;

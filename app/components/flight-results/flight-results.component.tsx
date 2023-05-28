@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import type { FlightQuery, FlightUrl } from "~/types/search";
-import { skyscanner } from "~/helpers/sdk/flightSDK";
-import type { SearchSDK } from "~/helpers/sdk/flightSDK";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import type { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import { waitSeconds } from "~/helpers/utils";
 
 import { Link } from "@remix-run/react";
@@ -47,7 +47,7 @@ export const FlightResults = ({
             );
           }
         } else {
-          setSearch(skyscanner(json).search());
+          setSearch(skyscanner().search(json));
 
           // run again until is complete
           if (
@@ -92,7 +92,7 @@ export const FlightResults = ({
             `Sorry, something happened and we couldnt do this search, maybe try a differnt (code:${retry}|3)`
           );
         } else {
-          setSearch(skyscanner(json).search());
+          setSearch(skyscanner().search(json));
           sessionTokenSaved.current = json.sessionToken;
           setSearching(false);
 
