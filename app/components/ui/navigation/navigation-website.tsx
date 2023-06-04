@@ -78,11 +78,12 @@ export const NavigationWebsite = () => {
                 </div>
                 <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 
-                    <Article label="Live" title="Flight Search" description="Use our live search to make a your own search" to='/search' />
-                    <Article label="Live" title="Weekend Flight Search" description="Use our live search to make a your own search" to='/weekend' />
+                    <Article label="Live" title="Flight Search" description="Use our live search to make a your own search" to='/search-flight' />
+                    <Article label="History" labelBg="yellow" title="Explore" description="Explore all the locations and be inspired" to='/explore' />
+                    {/* <Article label="Live" title="Weekend Flight Search" description="Use our live search to make a your own search" to='/weekend' />
                     <Article label="Live" title="Week Flight Search" description="Use our live search to make a your own search" to='/week' />
                     <Article label="Live" title="Year Flight Search" description="Use our live search to make a your own search" to='/year' />
-                    <Article label="Saved" labelBg="yellow" title="Search by Location" description="Use our live search to make a your own search" to='/explore' />
+                    <Article label="Saved" labelBg="yellow" title="Search by Location" description="Use our live search to make a your own search" to='/explore' /> */}
                 </div>
             </div>
         </section>
