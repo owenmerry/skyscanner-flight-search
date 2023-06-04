@@ -288,25 +288,30 @@ export const FlightForm = ({
   );
 };
 
-interface HeroDefaultProps {
+interface HeroPageProps {
   newFeature?: string;
   newFeatureURL?: string;
   apiUrl?: string;
   showText?: boolean;
   buttonLoading?: boolean;
   flightDefault?: Query;
+  backgroundImage?: string;
 }
 
-export const HeroDefault = ({
+export const HeroPage = ({
   newFeature,
   newFeatureURL,
   apiUrl,
   showText = true,
   buttonLoading = false,
   flightDefault,
-}: HeroDefaultProps) => {
+  backgroundImage = "",
+}: HeroPageProps) => {
   return (
-    <section className="bg-[url('/images/hero/airport.jpg')] relative bg-cover bg-bottom">
+    <section
+      style={{ backgroundImage: `url(${backgroundImage}&w=1500)` }}
+      className={`relative bg-cover bg-center`}
+    >
       <Overlay />
       <Gradient />
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
