@@ -23,37 +23,18 @@ export const Gradient = () => {
     <div className="bg-gradient-to-t from-white dark:from-gray-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>
   );
 };
-export const Text = () => {
+interface TextProps {
+  flightDefault: Query;
+}
+export const Text = ({ flightDefault }: TextProps) => {
   return (
     <div>
-      {" "}
-      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-800 md:text-5xl lg:text-6xl dark:text-white">
-        Explore the World with Ease
+      <h1 className="mb-2 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+        {flightDefault.fromText} to {flightDefault.toText}
       </h1>
-      <p className="mb-8 text-lg font-normal text-gray-800 lg:text-xl sm:px-16 xl:px-48 dark:text-white">
-        Find your perfect flight or holiday package with our unique traveler
-        first features.
+      <p className="mb-2">
+        {flightDefault.depart} to {flightDefault.return}
       </p>
-      <div className="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-        <Link
-          to="/explore"
-          className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
-        >
-          Explore
-          <svg
-            className="ml-2 -mr-1 w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </Link>
-      </div>
     </div>
   );
 };
@@ -105,31 +86,17 @@ interface Query {
 interface FlightFormProps {
   apiUrl?: string;
   buttonLoading?: boolean;
-  flightDefault?: Query;
+  flightDefault: Query;
 }
 export const FlightForm = ({
   apiUrl = "",
   buttonLoading = true,
   flightDefault,
 }: FlightFormProps) => {
-  const fromPlace = getFromPlaceLocalOrDefault();
-  const defaultQuery: Query = flightDefault
-    ? flightDefault
-    : {
-        from: fromPlace.entityId,
-        fromIata: fromPlace.iata,
-        fromText: fromPlace.name,
-        to: "95673529", //Dublin
-        toIata: "DUB", //Dublin
-        toText: "Dublin", //Dublin
-        depart: getDateFormated(1),
-        return: getDateFormated(3),
-        tripType: "return",
-      };
   const [previousSearches, setPreviousSearches] = useState(
     getSearchFromLocalStorage().reverse().slice(0, 5)
   );
-  const [query, setQuery] = useState<Query>(defaultQuery);
+  const [query, setQuery] = useState<Query>(flightDefault);
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleQueryChange = (value: string, key: string) => {
@@ -152,7 +119,7 @@ export const FlightForm = ({
 
   return (
     <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
-      <h1 className=" text-left mb-4 text-3xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-2xl dark:text-white">
+      <h1 className=" text-left mb-4 text-2xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-2xl dark:text-white">
         Search
       </h1>
 
@@ -307,6 +274,21 @@ export const HeroPage = ({
   flightDefault,
   backgroundImage = "",
 }: HeroPageProps) => {
+  const fromPlace = getFromPlaceLocalOrDefault();
+  const flightQuery = flightDefault
+    ? flightDefault
+    : {
+        from: fromPlace.entityId,
+        fromIata: fromPlace.iata,
+        fromText: fromPlace.name,
+        to: "95673529", //Dublin
+        toIata: "DUB", //Dublin
+        toText: "Dublin", //Dublin
+        depart: getDateFormated(1),
+        return: getDateFormated(3),
+        tripType: "return",
+      };
+
   return (
     <section
       style={{ backgroundImage: `url(${backgroundImage}&w=1500)` }}
@@ -314,13 +296,13 @@ export const HeroPage = ({
     >
       <Overlay />
       <Gradient />
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         {newFeature ? <NewFeature text={newFeature} url={newFeatureURL} /> : ``}
-        {showText ? <Text /> : ``}
+        {showText ? <Text flightDefault={flightQuery} /> : ``}
         <FlightForm
           apiUrl={apiUrl}
           buttonLoading={buttonLoading}
-          flightDefault={flightDefault}
+          flightDefault={flightQuery}
         />
       </div>
     </section>

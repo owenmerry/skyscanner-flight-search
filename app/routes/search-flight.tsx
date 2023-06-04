@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, Outlet, useLocation } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
@@ -60,14 +61,20 @@ export default function SearchFlight() {
     parentImages,
   }: { apiUrl: string; flightParams: Query; parentImages: string[] } =
     useLoaderData();
+  const [image, setImage] = useState(parentImages[0]);
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    const toPlace = getPlaceFromIata(flightParams.to);
+    const parentImages = getImagesFromParents(toPlace.entityId);
+    setImage(parentImages[0]);
+  }, [pathname]);
 
   return (
     <div>
       <Layout selectedUrl="/search-flight">
         <HeroPage
           apiUrl={apiUrl}
-          showText={false}
           buttonLoading={false}
           flightDefault={flightParams}
           backgroundImage={parentImages[0]}
