@@ -47,10 +47,13 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
 
   const parentImages = getImagesFromParents(toPlace.entityId);
 
+  console.log("run loader...");
+
   return {
     apiUrl,
     flightParams,
     parentImages,
+    params,
   };
 };
 
@@ -59,15 +62,36 @@ export default function SearchFlight() {
     apiUrl,
     flightParams,
     parentImages,
-  }: { apiUrl: string; flightParams: Query; parentImages: string[] } =
-    useLoaderData();
+    params,
+  }: {
+    apiUrl: string;
+    flightParams: Query;
+    parentImages: string[];
+  } = useLoaderData();
+  const [query, setQuery] = useState(flightParams);
   const [image, setImage] = useState(parentImages[0]);
   const { pathname } = useLocation();
 
   useEffect(() => {
-    const toPlace = getPlaceFromIata(flightParams.to);
+    const pathSplit = pathname.split("/");
+    const fromPlace = getPlaceFromIata(pathSplit[2]);
+    const toPlace = getPlaceFromIata(pathSplit[3]);
     const parentImages = getImagesFromParents(toPlace.entityId);
     setImage(parentImages[0]);
+
+    const flightParams: Query = {
+      from: pathSplit[2] || "",
+      fromIata: fromPlace.iata,
+      fromText: fromPlace.name,
+      to: pathSplit[3] || "",
+      toIata: toPlace.iata,
+      toText: toPlace.name,
+      depart: pathSplit[4] || "",
+      return: pathSplit[5] || "",
+      tripType: "return",
+    };
+    setQuery(flightParams);
+    console.log("run effect...", pathname, params);
   }, [pathname]);
 
   return (
@@ -76,10 +100,12 @@ export default function SearchFlight() {
         <HeroPage
           apiUrl={apiUrl}
           buttonLoading={false}
-          flightDefault={flightParams}
-          backgroundImage={parentImages[0]}
+          flightDefault={query}
+          backgroundImage={image}
+          key={`hero-${pathname}`}
         />
-        <Outlet key={pathname} />
+        {pathname}
+        <Outlet key={`outlet-${pathname}`} />
       </Layout>
     </div>
   );

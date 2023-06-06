@@ -118,7 +118,7 @@ export const FlightForm = ({
   const navigation = useNavigation();
 
   return (
-    <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="bg-white rounded-2xl p-4 border bg-opacity-75 dark:bg-opacity-75 border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
       <h1 className=" text-left mb-4 text-2xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-2xl dark:text-white">
         Search
       </h1>
