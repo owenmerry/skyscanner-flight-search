@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import type { LoaderFunction, LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/ui/flight-results/flight-results-default";
-import { getFlightLiveCreate, getFlightLivePoll } from "~/helpers/sdk/query";
+import {
+  getFlightLiveCreate,
+  getFlightLivePoll,
+  getImages,
+} from "~/helpers/sdk/query";
 import { useLoaderData } from "@remix-run/react";
 import { getEntityIdFromIata } from "~/helpers/sdk/place";
 import { Spinner } from "flowbite-react";
@@ -51,6 +55,10 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   //images
   const parentImages = getImagesFromParents(toPlace.entityId);
+  const fromImage = await getImages({
+    apiUrl,
+    query: toPlace.name,
+  });
 
   //get search
   const flightSearch = await getFlightLiveCreate({
@@ -70,6 +78,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     flightSearch,
     flightParams,
     parentImages,
+    headerImage: fromImage[0] || parentImages[0] || "",
   };
 };
 
@@ -79,11 +88,13 @@ export default function Search() {
     apiUrl,
     flightParams,
     parentImages,
+    headerImage,
   }: {
     apiUrl: string;
     flightParams: Query;
     parentImages: string[];
     flightSearch: SearchSDK | { error: string };
+    headerImage: string;
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(flightSearch);
@@ -93,7 +104,7 @@ export default function Search() {
     "error" in flightSearch ? flightSearch.error : ""
   );
   const [query, setQuery] = useState(flightParams);
-  const [image, setImage] = useState(parentImages[0]);
+  const [image, setImage] = useState(headerImage);
   const sessionToken = "sessionToken" in search ? search.sessionToken : "";
 
   useEffect(() => {
