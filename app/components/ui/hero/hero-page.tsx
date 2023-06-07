@@ -96,6 +96,7 @@ export const FlightForm = ({
   const [previousSearches, setPreviousSearches] = useState(
     getSearchFromLocalStorage().reverse().slice(0, 5)
   );
+  const [tripType, setTripType] = useState<string>("return");
   const [query, setQuery] = useState<Query>(flightDefault);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -116,6 +117,10 @@ export const FlightForm = ({
     addSearchToLocalStorage(query);
   };
   const navigation = useNavigation();
+  const handleTripTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTripType(e.target.value);
+    setQuery({ ...query, tripType: e.target.value });
+  };
 
   return (
     <div className="bg-white rounded-2xl p-4 border bg-opacity-75 dark:bg-opacity-75 border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
@@ -123,105 +128,108 @@ export const FlightForm = ({
         Search
       </h1>
 
-      <form
-        action="#"
-        className="grid gap-y-4 mt-8 w-full bg-white rounded lg:gap-x-4 lg:grid-cols-9 lg:mt-4 dark:bg-gray-800"
-      >
-        <div className="lg:col-span-2">
-          <Location
-            name="From"
-            defaultValue={query.fromText}
-            apiUrl={apiUrl}
-            onSelect={(value, iataCode) =>
-              handleLocationChange(value, "from", iataCode)
-            }
-          />
-        </div>
-        <div className="lg:col-span-2">
-          <Location
-            name="From"
-            defaultValue={query.toText}
-            apiUrl={apiUrl}
-            onSelect={(value, iataCode) =>
-              handleLocationChange(value, "to", iataCode)
-            }
-          />
-        </div>
-        <div
-          date-rangepicker=""
-          className="grid grid-cols-2 gap-x-4 lg:col-span-3"
-        >
-          <div className="relative">
-            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-              <svg
-                className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <DateSimpleInput
-              name="Depart"
-              value={query.depart}
-              onChange={(value: string) => handleQueryChange(value, "depart")}
+      <form action="#" className="mt-8 w-full rounded lg:mt-4">
+        <div className={`grid gap-y-4 lg:gap-x-4 lg:grid-cols-9`}>
+          <div className="lg:col-span-2">
+            <Location
+              name="From"
+              defaultValue={query.fromText}
+              apiUrl={apiUrl}
+              onSelect={(value, iataCode) =>
+                handleLocationChange(value, "from", iataCode)
+              }
             />
           </div>
-          <div className="relative">
-            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
-              <svg
-                className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <DateSimpleInput
-              name="return"
-              value={query.return}
-              onChange={(value: string) => handleQueryChange(value, "return")}
+          <div className="lg:col-span-2">
+            <Location
+              name="From"
+              defaultValue={query.toText}
+              apiUrl={apiUrl}
+              onSelect={(value, iataCode) =>
+                handleLocationChange(value, "to", iataCode)
+              }
             />
           </div>
-        </div>
-        <Link
-          to={`/search-flight/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
-          className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
-          onClick={handleSearchClicked}
-        >
-          {navigation.state === "loading" && loading ? (
-            <>
-              <Spinner aria-label="Spinner button example" />
-              <span className="pl-3">Loading...</span>
-            </>
-          ) : (
-            <>
-              <svg
-                className="mr-2 -ml-1 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
+          <div
+            date-rangepicker=""
+            className="grid grid-cols-2 gap-x-4 lg:col-span-3"
+          >
+            <div className="relative">
+              <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                <svg
+                  className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <DateSimpleInput
+                name="Depart"
+                value={query.depart}
+                onChange={(value: string) => handleQueryChange(value, "depart")}
+              />
+            </div>
+            {tripType === "return" && (
+              <div className="relative">
+                <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+                  <svg
+                    className="w-5 h-5 text-gray-500 dark:text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <DateSimpleInput
+                  name="return"
+                  value={query.return}
+                  onChange={(value: string) =>
+                    handleQueryChange(value, "return")
+                  }
                 />
-              </svg>
-              Search
-            </>
-          )}
-        </Link>
+              </div>
+            )}
+          </div>
+          <Link
+            to={`/search-flight/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
+            className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+            onClick={handleSearchClicked}
+          >
+            {navigation.state === "loading" && loading ? (
+              <>
+                <Spinner aria-label="Spinner button example" />
+                <span className="pl-3">Loading...</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  className="mr-2 -ml-1 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Search
+              </>
+            )}
+          </Link>
+        </div>
       </form>
       {previousSearches.length > 0 ? (
         <div className="py-2 text-left md:flex align-middle items-center">
@@ -275,6 +283,8 @@ export const HeroPage = ({
   backgroundImage = "",
 }: HeroPageProps) => {
   const fromPlace = getFromPlaceLocalOrDefault();
+  if (fromPlace === false) return <></>;
+
   const flightQuery = flightDefault
     ? flightDefault
     : {

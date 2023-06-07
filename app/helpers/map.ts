@@ -42,7 +42,7 @@ export const getMarkersCountry = (places: Place[]): Markers[] | null => {
                 lat: place.coordinates.latitude,
                 lng: place.coordinates.longitude,
             },
-            label: `<div>${place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ''}</div><div class='mt-2 dark:text-black'><a href='/explore/${place.slug}'>${place.name} (${place.type})</a></div>`,
+            label: `<div>${place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ''}</div><div class='mt-2 dark:text-black'>${place.name} </div>`,
             icon: place.type === 'PLACE_TYPE_AIRPORT' ? '\ue539' : '\ue7f1',
         }
     });
