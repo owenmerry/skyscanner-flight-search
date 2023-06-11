@@ -14,18 +14,7 @@ import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getImagesFromParents } from "~/helpers/sdk/images";
 import { HeroPage } from "~/components/ui/hero/hero-page";
 import { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
-
-interface Query {
-  from: string;
-  fromIata: string;
-  fromText: string;
-  to: string;
-  toIata: string;
-  toText: string;
-  depart: string;
-  return: string;
-  tripType: string;
-}
+import type { Query } from "~/types/search";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -175,6 +164,7 @@ export default function Search() {
                 <FlightResultsDefault
                   flights={"error" in search ? undefined : search}
                   filters={filters}
+                  query={query}
                 />
               </>
             )}
