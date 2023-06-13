@@ -85,6 +85,7 @@ export default function Search() {
         apiUrl={apiUrl}
         backgroundImage={headerImage}
         flightDefault={oldQuery}
+        showFlightForm={false}
       />
       <FlightDetails
         url={url}

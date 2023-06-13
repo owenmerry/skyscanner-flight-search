@@ -271,6 +271,7 @@ interface HeroPageProps {
   buttonLoading?: boolean;
   flightDefault?: Query;
   backgroundImage?: string;
+  showFlightForm?: boolean;
 }
 
 export const HeroPage = ({
@@ -278,6 +279,7 @@ export const HeroPage = ({
   newFeatureURL,
   apiUrl,
   showText = true,
+  showFlightForm = true,
   buttonLoading = false,
   flightDefault,
   backgroundImage = "",
@@ -309,11 +311,15 @@ export const HeroPage = ({
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         {newFeature ? <NewFeature text={newFeature} url={newFeatureURL} /> : ``}
         {showText ? <Text flightDefault={flightQuery} /> : ``}
-        <FlightForm
-          apiUrl={apiUrl}
-          buttonLoading={buttonLoading}
-          flightDefault={flightQuery}
-        />
+        {showFlightForm ? (
+          <FlightForm
+            apiUrl={apiUrl}
+            buttonLoading={buttonLoading}
+            flightDefault={flightQuery}
+          />
+        ) : (
+          ""
+        )}
       </div>
     </section>
   );

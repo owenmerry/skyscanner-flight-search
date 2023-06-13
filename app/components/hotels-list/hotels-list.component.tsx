@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import type { FlightQuery, FlightUrl } from "~/types/search";
 import { format } from "date-fns";
+import { Button } from "flowbite-react";
 
 interface SkyscannerAPIHotelSearchResponse {
   meta: {
@@ -83,20 +84,25 @@ export const HotelList = ({
       {!hasResults ? (
         ""
       ) : (
-        <div className="mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-          <h2>Hotels ({numbeOfResults} Results)</h2>
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4 items-center p-4">
+        <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
+          <h2 className="text-xl mt-6 mb-2">
+            Hotels ({numbeOfResults} Results)
+          </h2>
+          <div className="grid grid-cols-1 gap-6 sm:gap-2 md:grid-cols-3 items-center">
             {search?.results.hotels
               .sort((a, b) => a.offers[0].price - b.offers[0].price)
               .map((hotel) => (
-                <div className="hotel" key={hotel.hotel_id}>
+                <div
+                  className="bg-white text-black rounded-md overflow-hidden"
+                  key={hotel.hotel_id}
+                >
                   <div
-                    className="h-[300px]"
+                    className="h-[300px] bg-cover"
                     style={{
                       backgroundImage: `url(${hotel.images[0]?.dynamic})`,
                     }}
                   ></div>
-                  <div className="hotel-details hotel-title">
+                  <div className="p-4">
                     <h2>{hotel.name}</h2>
                     <div className="hotel-rating">
                       <div>
@@ -119,7 +125,8 @@ export const HotelList = ({
                       {getDistanceDisplay(hotel.distance)} from city centre
                     </div>
                   </div>
-                  <div className="hotel-details hotel-details-price">
+
+                  <div className="p-4 border-t-2 border-gray-100">
                     <div className="hotel-stay">
                       <div>
                         <b>
@@ -135,23 +142,23 @@ export const HotelList = ({
                       <div className="hotel-price-per">Total Stay</div>
                     </div>
                   </div>
-                  <div className="hotel-details hotel-details-buttons">
-                    <div className="hotel-buttons-button">
-                      <a
-                        className="button"
+
+                  <div className="p-4 border-t-2 border-gray-100">
+                    <div className="mb-2">
+                      <Button
                         href={`http://${hotel.offers[0].deeplink}`}
                         target="_blank"
                       >
                         View Deal
-                      </a>
+                      </Button>
                     </div>
                     <div className="hotel-buttons-to-skyscanner">
-                      <a
+                      <Button
                         href={`https://www.skyscanner.net/hotels/location/hotels/place/ht-${hotel.hotel_id}?checkin=${query?.depart}&checkout=${query?.return}&adults=1&rooms=1`}
                         target="_blank"
                       >
                         View on Skyscanner
-                      </a>
+                      </Button>
                     </div>
                   </div>
                 </div>
