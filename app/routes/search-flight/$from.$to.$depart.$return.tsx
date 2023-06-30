@@ -107,6 +107,7 @@ export default function Search() {
       token: sessionToken,
       wait: 1,
     });
+    console.log(res);
 
     if ("error" in res) {
       setError(res.error);
