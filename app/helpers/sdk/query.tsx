@@ -1,71 +1,94 @@
-import type { SearchSDK } from './skyscannerSDK';
-import type { FlightQuery } from '~/types/search';
-import { skyscanner } from './skyscannerSDK';
-import { waitSeconds } from '~/helpers/utils';
+import type { SearchSDK } from "./skyscannerSDK";
+import type { FlightQuery } from "~/types/search";
+import { skyscanner } from "./skyscannerSDK";
+import { waitSeconds } from "~/helpers/utils";
 
-export const getFlightLiveCreate = async ({ apiUrl, query }: { apiUrl: string, query: FlightQuery }): Promise<SearchSDK | { error: string }> => {
-    let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
-    let search: SearchSDK | null = null;
+export const getFlightLiveCreate = async ({
+  apiUrl,
+  query,
+}: {
+  apiUrl: string;
+  query: FlightQuery;
+}): Promise<SearchSDK | { error: string }> => {
+  let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
+  let search: SearchSDK | null = null;
 
-    try {
-        const res = await fetch(
-            `${apiUrl}/create?from=${query.from}&to=${query.to}&depart=${query.depart
-            }${query?.return ? `&return=${query.return}` : ""}`
-        );
-        const json = await res.json();
+  try {
+    const res = await fetch(
+      `${apiUrl}/create?from=${query.from}&to=${query.to}&depart=${
+        query.depart
+      }${query?.return ? `&return=${query.return}` : ""}`
+    );
+    const json = await res.json();
 
-        if (!json && json.statusCode === 500 && json.statusCode !== 200) {
-            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
-        } else {
-            search = skyscanner().search(json);
-        }
-    } catch (ex) {
-        error = `Sorry, something happened and we couldnt do this (code:3catch)`;
+    if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+      error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
+    } else {
+      search = skyscanner().search(json);
     }
+  } catch (ex) {
+    error = `Sorry, something happened and we couldnt do this (code:3catch)`;
+  }
 
-    return search ? search : { error };
-}
+  return search ? search : { error };
+};
 
-export const getFlightLivePoll = async ({ apiUrl, token, wait }: { apiUrl: string, token: string, wait?: number }): Promise<SearchSDK | { error: string }> => {
-    let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
-    let search: SearchSDK | null = null;
+export const getFlightLivePoll = async ({
+  apiUrl,
+  token,
+  wait,
+}: {
+  apiUrl: string;
+  token: string;
+  wait?: number;
+}): Promise<SearchSDK | { error: string }> => {
+  let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
+  let search: SearchSDK | null = null;
 
-    try {
-        if (wait) {
-            await waitSeconds(wait);
-        }
-        const res = await fetch(
-            `${apiUrl}/poll/${token}`
-        );
-        const json = await res.json();
-
-        if (!json && json.statusCode === 500 && json.statusCode !== 200 || Object.keys(json?.content?.results?.itineraries).length === 0) {
-            if (Object.keys(json?.content?.results?.itineraries).length === 0) {
-                console.error('Flight Poll - No results found on poll', json, token);
-            }
-            error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2)`;
-            console.error('Flight Poll - Error Code (2)', json, token);
-        } else {
-            search = skyscanner().search(json);
-        }
-    } catch (ex) {
-        error = `Sorry, something happened and we couldnt do this (code:3catch)`;
-        console.error('Flight Poll - Error code (3)', token);
+  try {
+    if (wait) {
+      await waitSeconds(wait);
     }
+    const res = await fetch(`${apiUrl}/poll/${token}`);
+    const json = await res.json();
 
-    return search ? search : { error };
-}
+    console.log(json);
 
-export const getImages = async ({ apiUrl, query }: { apiUrl: string, query: string }): Promise<string[]> => {
-    let imagesMin: string[] = [];
-    try {
-        const res = await fetch(
-            `${apiUrl}/images?query=${query}`
-        );
-        const json = await res.json();
-        imagesMin = json.response.results.map((item: any) => (item.urls.raw + "&w=1200"))
-    } catch (ex) {
+    if (
+      (!json && json.statusCode === 500 && json.statusCode !== 200) ||
+      Object.keys(json?.content?.results?.itineraries).length === 0
+    ) {
+      if (Object.keys(json?.content?.results?.itineraries).length === 0) {
+        console.error("Flight Poll - No results found on poll", json, token);
+      }
+      error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2)`;
+      console.error("Flight Poll - Error Code (2)", json, token);
+    } else {
+      search = skyscanner().search(json);
     }
+  } catch (ex) {
+    error = `Sorry, something happened and we couldnt do this (code:3catch)`;
+    console.error("Flight Poll - Error code (3)", token);
+  }
 
-    return imagesMin;
-}
+  return search ? search : { error };
+};
+
+export const getImages = async ({
+  apiUrl,
+  query,
+}: {
+  apiUrl: string;
+  query: string;
+}): Promise<string[]> => {
+  let imagesMin: string[] = [];
+  try {
+    const res = await fetch(`${apiUrl}/images?query=${query}`);
+    const json = await res.json();
+    imagesMin = json.response.results.map(
+      (item: any) => item.urls.raw + "&w=1200"
+    );
+  } catch (ex) {}
+
+  return imagesMin;
+};
