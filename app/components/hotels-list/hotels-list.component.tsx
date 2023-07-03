@@ -45,8 +45,8 @@ export const HotelList = ({
   apiUrl = "",
 }: HotelListProps): JSX.Element => {
   const [search, setSearch] = useState<SkyscannerAPIHotelSearchResponse>();
-  const hasResults = search && search?.results.hotels.length > 0;
-  const numbeOfResults = search && search?.results.hotels.length;
+  const hasResults = search && search?.results?.hotels?.length > 0;
+  const numbeOfResults = search && search?.results?.hotels?.length;
   const checkIn = query && format(new Date(query?.depart), "dd MMM");
   const checkOut =
     query && query?.return && format(new Date(query?.return), "dd MMM");
