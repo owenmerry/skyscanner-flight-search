@@ -104,6 +104,13 @@ const Deals = ({ flight }: DealsProps) => {
                 ) : (
                   ""
                 )}
+                {price.deepLinks.length > 1 ? (
+                  <div className="">
+                    <Label color="yellow" text="Mashup" />
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
               <div className="font-bold text-center md:text-left dark:text-white">
                 {price.price !== "£0.00" ? price.price : "See Website"}
@@ -164,15 +171,14 @@ const ButtonColumn = ({
         </span>
       </div>
       <div>
-        <Button outline={showDeals} className="ml-2" onClick={onButtonSelect}>
-          {showDeals ? "Hide" : "Select"}
-        </Button>
         <Button
-          outline
-          className="ml-2 mt-2"
+          className="ml-2"
           href={`/search-flight/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}/${flight.itineraryId}`}
         >
-          See Details
+          Select
+        </Button>
+        <Button outline className="ml-2 mt-2" onClick={onButtonSelect}>
+          {showDeals ? "Hide Details" : "Show Details"}
         </Button>
       </div>
     </div>
@@ -239,6 +245,12 @@ const Flight = ({ flight, flights, query }: FlightProps) => {
       text: "Cheapest",
       labelBg: "yellow",
       show: flight.itineraryId === flights.cheapest[0].itineraryId,
+    },
+    {
+      text: "Mashup",
+      labelBg: "yellow",
+      show:
+        flight.prices.filter((price) => price.deepLinks.length > 1).length > 0,
     },
   ];
 

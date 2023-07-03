@@ -1,16 +1,17 @@
-import { getPrice } from './price';
-import { getDateTime, getTime } from './dateTime';
-import { convertDeepLink } from './link';
-import { hasDirectFlights, isDirectFlights } from './flight';
+import { getPrice } from "./price";
+import { getDateTime, getTime } from "./dateTime";
+import { convertDeepLink } from "./link";
+import { hasDirectFlights, isDirectFlights } from "./flight";
 //geo
-import type { SkyscannerAPIGeoResponse } from './geo/geo-response';
-import type { GeoSDK } from './geo/geo-sdk';
-import { getGeoSDK } from './geo/geo-sdk';
+import type { SkyscannerAPIGeoResponse } from "./geo/geo-response";
+import type { GeoSDK } from "./geo/geo-sdk";
+import { getGeoSDK } from "./geo/geo-sdk";
 
 // types (Response)
 
 export interface SkyscannerAPICreateResponse {
   sessionToken: string;
+  action: string;
   status: string;
   content: {
     results: {
@@ -43,7 +44,7 @@ export interface SkyscannerAPICreateResponse {
                 amount: string;
                 unit: string;
               };
-            }
+            };
           };
           oneStop: {
             total: {
@@ -52,9 +53,9 @@ export interface SkyscannerAPICreateResponse {
                 amount: string;
                 unit: string;
               };
-            }
-          }
-        }
+            };
+          };
+        };
       };
     };
   };
@@ -72,9 +73,9 @@ interface Agent {
   name: string;
   rating: number;
   type:
-  | 'AGENT_TYPE_UNSPECIFIED'
-  | 'AGENT_TYPE_TRAVEL_AGENT'
-  | 'AGENT_TYPE_AIRLINE';
+    | "AGENT_TYPE_UNSPECIFIED"
+    | "AGENT_TYPE_TRAVEL_AGENT"
+    | "AGENT_TYPE_AIRLINE";
   ratingBreakdown: {
     customerService: number;
     reliablePrices: number;
@@ -144,6 +145,7 @@ export interface SkyscannerSDK {
 
 export interface SearchSDK {
   sessionToken: string;
+  action: string;
   status: string;
   best: FlightSDK[];
   cheapest: FlightSDK[];
@@ -167,9 +169,9 @@ interface PriceSDK {
 interface DeepLinkSDK {
   link: string;
   type:
-  | 'AGENT_TYPE_UNSPECIFIED'
-  | 'AGENT_TYPE_TRAVEL_AGENT'
-  | 'AGENT_TYPE_AIRLINE';
+    | "AGENT_TYPE_UNSPECIFIED"
+    | "AGENT_TYPE_TRAVEL_AGENT"
+    | "AGENT_TYPE_AIRLINE";
   agentImageUrl: string;
   agentName: string;
 }
@@ -220,25 +222,26 @@ export const skyscanner = (): SkyscannerSDK => {
     search: (res: SkyscannerAPICreateResponse) => ({
       sessionToken: res.sessionToken,
       status: res.status,
-      best: getSortingOptions(res, 'best'),
-      cheapest: getSortingOptions(res, 'cheapest'),
-      fastest: getSortingOptions(res, 'fastest'),
+      action: res.action,
+      best: getSortingOptions(res, "best"),
+      cheapest: getSortingOptions(res, "cheapest"),
+      fastest: getSortingOptions(res, "fastest"),
       stats: stats(res),
     }),
-    geo: (res?: SkyscannerAPIGeoResponse) => (getGeoSDK(res)),
+    geo: (res?: SkyscannerAPIGeoResponse) => getGeoSDK(res),
   };
 };
 
 export const getSortingOptions = (
   res: SkyscannerAPICreateResponse,
-  type: 'best' | 'cheapest' | 'fastest',
+  type: "best" | "cheapest" | "fastest"
 ): FlightSDK[] => {
   const bestUpdated = res.content.sortingOptions[type].map((item) => {
     const flight: Itinerary = res.content.results.itineraries[
       item.itineraryId
     ] || {
-      amount: '',
-      unit: '',
+      amount: "",
+      unit: "",
     };
     const legs = flight.legIds.map((legItem): LegSDK => {
       const legRef = legItem;
@@ -257,25 +260,27 @@ export const getSortingOptions = (
             segment.departureDateTime.month,
             segment.departureDateTime.year,
             segment.departureDateTime.hour,
-            segment.departureDateTime.minute,
+            segment.departureDateTime.minute
           ),
           arrival: getDateTime(
             segment.arrivalDateTime.day,
             segment.arrivalDateTime.month,
             segment.arrivalDateTime.year,
             segment.arrivalDateTime.hour,
-            segment.arrivalDateTime.minute,
+            segment.arrivalDateTime.minute
           ),
         };
       });
-      const carriers = leg.operatingCarrierIds.map((carrierItem): CarrierSDK => {
-        const carrierRef = carrierItem;
-        const carrier: Carrier = res.content.results.carriers[carrierRef];
+      const carriers = leg.operatingCarrierIds.map(
+        (carrierItem): CarrierSDK => {
+          const carrierRef = carrierItem;
+          const carrier: Carrier = res.content.results.carriers[carrierRef];
 
-        return {
-          ...carrier,
-        };
-      });
+          return {
+            ...carrier,
+          };
+        }
+      );
 
       return {
         id: legRef,
@@ -287,14 +292,14 @@ export const getSortingOptions = (
           leg.departureDateTime.month,
           leg.departureDateTime.year,
           leg.departureDateTime.hour,
-          leg.departureDateTime.minute,
+          leg.departureDateTime.minute
         ),
         arrival: getDateTime(
           leg.arrivalDateTime.day,
           leg.arrivalDateTime.month,
           leg.arrivalDateTime.year,
           leg.arrivalDateTime.hour,
-          leg.arrivalDateTime.minute,
+          leg.arrivalDateTime.minute
         ),
         stops: leg.stopCount,
         direct: leg.stopCount === 0,
@@ -302,15 +307,19 @@ export const getSortingOptions = (
         carriers: carriers,
         fromIata: res.content.results.places[leg.originPlaceId].iata,
         toIata: res.content.results.places[leg.destinationPlaceId].iata,
-        fromEntityId: Number(res.content.results.places[leg.originPlaceId].entityId),
-        toEntityId: Number(res.content.results.places[leg.destinationPlaceId].entityId),
+        fromEntityId: Number(
+          res.content.results.places[leg.originPlaceId].entityId
+        ),
+        toEntityId: Number(
+          res.content.results.places[leg.destinationPlaceId].entityId
+        ),
         departureTime: getTime(
           leg.departureDateTime.hour,
-          leg.departureDateTime.minute,
+          leg.departureDateTime.minute
         ),
         arrivalTime: getTime(
           leg.arrivalDateTime.hour,
-          leg.arrivalDateTime.minute,
+          leg.arrivalDateTime.minute
         ),
       };
     });
@@ -322,7 +331,7 @@ export const getSortingOptions = (
           return {
             price: getPrice(
               pricingOption.price.amount,
-              pricingOption.price.unit,
+              pricingOption.price.unit
             ),
             deepLinks: pricingOption.items.map((item) => {
               const agent = res.content.results.agents[item.agentId];
@@ -340,13 +349,13 @@ export const getSortingOptions = (
         (flight.pricingOptions[0] &&
           getPrice(
             flight.pricingOptions[0].price.amount,
-            flight.pricingOptions[0].price.unit,
+            flight.pricingOptions[0].price.unit
           )) ||
-        '',
+        "",
       deepLink:
         (flight.pricingOptions[0] &&
           flight.pricingOptions[0].items[0].deepLink) ||
-        '',
+        "",
       legs: legs,
       isDirectFlights: isDirectFlights(legs),
     };
@@ -360,7 +369,7 @@ export const stats = (res: SkyscannerAPICreateResponse): StatsSDK => {
     total: res.content.stats.itineraries.total.count,
     minPrice: getPrice(
       res.content.stats.itineraries.total.minPrice.amount,
-      res.content.stats.itineraries.total.minPrice.unit,
+      res.content.stats.itineraries.total.minPrice.unit
     ),
     hasDirectFlights: hasDirectFlights(res),
   };

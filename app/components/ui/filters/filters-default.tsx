@@ -178,6 +178,31 @@ export const FiltersDefault = ({ onFilterChange }: FiltersDefaultProps) => {
               </div>
             </div>
 
+            <div className="w-full">
+              <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
+                Features
+              </h6>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <input
+                    id="blue"
+                    type="checkbox"
+                    defaultValue=""
+                    className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    onChange={(e) =>
+                      updateFilters({ mashup: e.target.checked })
+                    }
+                  />
+                  <label
+                    htmlFor="blue"
+                    className="flex items-center ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                  >
+                    Mashups
+                  </label>
+                </div>
+              </div>
+            </div>
+
             {showExtraFilters ? (
               <>
                 {/* Price */}

@@ -107,7 +107,6 @@ export default function Search() {
       token: sessionToken,
       wait: 1,
     });
-    console.log(res);
 
     if ("error" in res) {
       setError(res.error);
@@ -118,7 +117,7 @@ export default function Search() {
     setError("");
 
     if (res.status === "RESULT_STATUS_INCOMPLETE") {
-      setSearch(res);
+      if (res.action !== "RESULT_ACTION_NOT_MODIFIED") setSearch(res);
       runPoll();
     } else {
       setSearch(res);

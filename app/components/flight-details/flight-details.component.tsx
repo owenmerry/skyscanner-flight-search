@@ -232,7 +232,7 @@ const LegTimeline = ({ leg }: LegTimelineProps) => {
                   <Timeline.Time>{leg.departure}</Timeline.Time>
                   <Timeline.Title>{leg.from}</Timeline.Title>
                   <Timeline.Body>
-                    <p>Journey time: {durationShow} min</p>
+                    <p>Journey time: {durationShow}</p>
                   </Timeline.Body>
                 </Timeline.Content>
               </Timeline.Item>
