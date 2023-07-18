@@ -42,7 +42,7 @@ export const getFlightLivePoll = async ({
   token: string;
   wait?: number;
 }): Promise<SearchSDK | { error: string }> => {
-  let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
+  let error: string = `Sorry, something happened and we couldnt do this (code: 1def)`;
   let search: SearchSDK | null = null;
 
   try {
@@ -61,14 +61,15 @@ export const getFlightLivePoll = async ({
       if (Object.keys(json?.content?.results?.itineraries).length === 0) {
         console.error("Flight Poll - No results found on poll", json, token);
       }
-      error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2)`;
-      console.error("Flight Poll - Error Code (2)", json, token);
+      error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code: 2emp)`;
+      console.error("Flight Poll - Error Code (2empty)", json, token);
+      search = skyscanner().search(json);
     } else {
       search = skyscanner().search(json);
     }
   } catch (ex) {
-    error = `Sorry, something happened and we couldnt do this (code:3catch)`;
-    console.error("Flight Poll - Error code (3)", token);
+    error = `Sorry, something happened and we couldnt do this (code: 3catch)`;
+    console.error("Flight Poll - Error code (3catch)", token);
   }
 
   return search ? search : { error };

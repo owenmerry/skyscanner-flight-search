@@ -66,7 +66,6 @@ export const loader = async ({ params }: LoaderArgs) => {
     params,
     flightSearch,
     flightParams,
-    parentImages,
     headerImage: fromImage[0] || parentImages[0] || "",
   };
 };
@@ -76,15 +75,14 @@ export default function Search() {
     flightSearch,
     apiUrl,
     flightParams,
-    parentImages,
     headerImage,
   }: {
     apiUrl: string;
     flightParams: Query;
-    parentImages: string[];
     flightSearch: SearchSDK | { error: string };
     headerImage: string;
   } = useLoaderData();
+  console.log("/search", flightSearch);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(flightSearch);
   const [filters, setFilters] = useState({});

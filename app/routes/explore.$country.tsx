@@ -66,7 +66,7 @@ export default function SEOAnytime() {
   const query = {
     from: from ? from.entityId : "",
     to: country.entityId,
-    month: String(new Date().getMonth() + 2),
+    month: String(new Date().getMonth() + 1),
     endMonth: new Date().getMonth() + 1,
     groupType: "month",
   };
