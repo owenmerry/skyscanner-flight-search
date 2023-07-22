@@ -5,6 +5,7 @@ import type { Place } from "~/helpers/sdk/place";
 import {
   getPlaceFromSlug,
   getGeoList,
+  getGeo,
   getPlaceFromIata,
 } from "~/helpers/sdk/place";
 import { Layout } from "~/components/ui/layout/layout";
@@ -22,7 +23,10 @@ export const loader: LoaderFunction = async ({ params }) => {
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const places = getGeoList();
   const countryPlaces = places.filter(
-    (place) => country && place.parentId === country.entityId
+    (place) =>
+      country &&
+      (place.parentId === country.entityId ||
+        country.entityId === place.countryEntityId)
   );
   const cities = countryPlaces.filter(
     (place) => place.type === "PLACE_TYPE_CITY"
@@ -82,10 +86,10 @@ export default function SEOAnytime() {
 
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
-          <h2 className="text-3xl mb-6">Cities in {country.name}</h2>
+          <h2 className="text-3xl mb-6">Airports in {country.name}</h2>
         </div>
         <div className="grid sm:grid-cols-5 grid-cols-2">
-          {cities
+          {airports
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((place) => {
               return (
@@ -113,7 +117,7 @@ export default function SEOAnytime() {
               lng: country.coordinates.longitude,
             }}
             zoom={5}
-            markers={getMarkersCountry([...cities, ...airports])}
+            markers={getMarkersCountry([...airports])}
           />
         </Wrapper>
       </div>

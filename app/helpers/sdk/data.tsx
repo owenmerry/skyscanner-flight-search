@@ -23,6 +23,25 @@ export const getAllParents = (entityId: string): Place[] => {
   return parents;
 };
 
+export const getCountryEntityId = (entityId: string): string => {
+  var entityCheck = entityId;
+  console.log(`checking ${entityCheck}`);
+
+  for (let count = 0; count < 10; count++) {
+    const place = getPlaceFromEntityId(entityCheck);
+    if (place === false) return "";
+    if (place.type === "PLACE_TYPE_COUNTRY") {
+      console.log(`country ${place.name}`);
+      return place.entityId;
+    } else {
+      console.log(`check parent ${place.parentId}`);
+      entityCheck = place.parentId;
+    }
+  }
+
+  return "";
+};
+
 export const updateGEOSlug = () => {
   return geoExtra.map((geo) => {
     // const parents = getAllParents(geo.parentId);
@@ -37,4 +56,23 @@ export const updateGEOSlug = () => {
       //parents,
     };
   });
+};
+
+export const getAirportWithCountries = () => {
+  const places = getGeoList();
+  const airports = places.filter(
+    (place) => place.type === "PLACE_TYPE_AIRPORT"
+  );
+  const airportsWithCountry = airports.map((airport) => {
+    const countryEntity = getCountryEntityId(airport.parentId);
+
+    return {
+      iata: airport.iata,
+      entityId: airport.entityId,
+      name: airport.name,
+      countryEntityId: countryEntity,
+    };
+  });
+
+  return airportsWithCountry;
 };
