@@ -3,19 +3,17 @@ import { useEffect, useRef } from "react";
 interface MapProps {
   center: google.maps.LatLngLiteral;
   zoom: number;
-  markers?: {
-    location: google.maps.LatLngLiteral;
-    label: string;
-    icon?: string;
-  }[] | null;
+  height?: string;
+  markers?:
+    | {
+        location: google.maps.LatLngLiteral;
+        label: string;
+        icon?: string;
+      }[]
+    | null;
 }
 
-
-export const Map = ({
-  center,
-  zoom,
-  markers,
-}: MapProps) => {
+export const Map = ({ center, zoom, markers, height = "600px" }: MapProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,14 +47,16 @@ export const Map = ({
           position: marker.location,
           map: googleMap,
           clickable: true,
-          ...marker.icon ? {
-            label: {
-              text: marker.icon,
-              fontFamily: "Material Icons",
-              color: "#ffffff",
-              fontSize: "18px",
-            }
-          } : {},
+          ...(marker.icon
+            ? {
+                label: {
+                  text: marker.icon,
+                  fontFamily: "Material Icons",
+                  color: "#ffffff",
+                  fontSize: "18px",
+                },
+              }
+            : {}),
         });
 
         const infowindow = new google.maps.InfoWindow({
@@ -69,12 +69,9 @@ export const Map = ({
             map: googleMap,
           });
         });
-
-
-      })
+      });
     }
-
   });
 
-  return <div ref={ref} id="map" style={{ height: '600px' }} />;
-}
+  return <div ref={ref} id="map" style={{ height }} />;
+};

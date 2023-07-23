@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Link } from "@remix-run/react";
 import { DateSimpleInput } from "~/components/date/index";
+import { Query } from "~/types/search";
 import { Location } from "~/components/location";
-import { getDateFormated } from "~/helpers/date";
+import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { Spinner } from "flowbite-react";
 import { useNavigation } from "@remix-run/react";
 import {
   setFromLocationLocalStorage,
-  getFromPlaceLocalOrDefault,
   getSearchFromLocalStorage,
   addSearchToLocalStorage,
   removeAllSearchFromLocalStorage,
@@ -91,17 +91,6 @@ export const NewFeature = ({
     </a>
   );
 };
-interface Query {
-  from: string;
-  fromIata: string;
-  fromText: string;
-  to: string;
-  toIata: string;
-  toText: string;
-  depart: string;
-  return: string;
-  tripType: string;
-}
 interface FlightFormProps {
   apiUrl?: string;
   buttonLoading?: boolean;
@@ -112,20 +101,9 @@ export const FlightForm = ({
   buttonLoading = true,
   flightDefault,
 }: FlightFormProps) => {
-  const fromPlace = getFromPlaceLocalOrDefault();
   const defaultQuery: Query = flightDefault
     ? flightDefault
-    : {
-        from: fromPlace.entityId,
-        fromIata: fromPlace.iata,
-        fromText: fromPlace.name,
-        to: "95673529", //Dublin
-        toIata: "DUB", //Dublin
-        toText: "Dublin", //Dublin
-        depart: getDateFormated(1),
-        return: getDateFormated(3),
-        tripType: "return",
-      };
+    : getDefualtFlightQuery();
   const [previousSearches, setPreviousSearches] = useState(
     getSearchFromLocalStorage().reverse().slice(0, 5)
   );

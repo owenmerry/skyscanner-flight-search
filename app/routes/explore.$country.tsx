@@ -16,6 +16,7 @@ import { SEO } from "~/components/SEO";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { HeroExplore } from "~/components/ui/hero/hero-explore";
 import { ImagesDefault } from "~/components/ui/images/images-default";
+import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -74,6 +75,7 @@ export default function SEOAnytime() {
     endMonth: new Date().getMonth() + 1,
     groupType: "month",
   };
+  const defaultSearch = getDefualtFlightQuery();
 
   return (
     <Layout selectedUrl="/explore">
@@ -96,7 +98,9 @@ export default function SEOAnytime() {
                 <div className="">
                   <Link
                     className="hover:underline"
-                    to={`/explore/${place.slug}`}
+                    to={`/search-flight/${from ? from.iata : ""}/${
+                      place.iata
+                    }/${defaultSearch.depart}/${defaultSearch.return}`}
                   >
                     {place.name}
                   </Link>
@@ -117,7 +121,7 @@ export default function SEOAnytime() {
               lng: country.coordinates.longitude,
             }}
             zoom={5}
-            markers={getMarkersCountry([...airports])}
+            markers={getMarkersCountry([...airports], from, defaultSearch)}
           />
         </Wrapper>
       </div>

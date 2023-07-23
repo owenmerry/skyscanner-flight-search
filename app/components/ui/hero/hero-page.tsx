@@ -4,6 +4,7 @@ import { DateSimpleInput } from "~/components/date/index";
 import { Location } from "~/components/location";
 import { getDateFormated } from "~/helpers/date";
 import { Spinner } from "flowbite-react";
+import { Query } from "~/types/search";
 import { useNavigation } from "@remix-run/react";
 import {
   setFromLocationLocalStorage,
@@ -72,17 +73,6 @@ export const NewFeature = ({
     </a>
   );
 };
-interface Query {
-  from: string;
-  fromIata: string;
-  fromText: string;
-  to: string;
-  toIata: string;
-  toText: string;
-  depart: string;
-  return: string;
-  tripType: string;
-}
 interface FlightFormProps {
   apiUrl?: string;
   buttonLoading?: boolean;

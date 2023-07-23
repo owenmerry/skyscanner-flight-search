@@ -7,17 +7,23 @@ import {
   getFlightLivePoll,
   getImages,
 } from "~/helpers/sdk/query";
-import { useLoaderData } from "@remix-run/react";
-import { getEntityIdFromIata } from "~/helpers/sdk/place";
+import { useLoaderData, Link } from "@remix-run/react";
+import { getEntityIdFromIata, getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { Spinner } from "flowbite-react";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getImagesFromParents } from "~/helpers/sdk/images";
+import { getFlightSearch } from "~/helpers/map";
 import { HeroPage } from "~/components/ui/hero/hero-page";
 import { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
-import type { Query } from "~/types/search";
+import type { Query, QueryPlace } from "~/types/search";
+import { Map } from "~/components/map";
+import { Wrapper } from "@googlemaps/react-wrapper";
+import { getCountryEntityId } from "~/helpers/sdk/data";
+import type { Place } from "~/helpers/sdk/place";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
 
   //exit
   if (!params.from || !params.to) return;
@@ -42,6 +48,17 @@ export const loader = async ({ params }: LoaderArgs) => {
     tripType: "return",
   };
 
+  //explore
+  const flightQuery: QueryPlace = {
+    from: fromPlace,
+    to: toPlace,
+    depart: params.depart || "",
+    return: params.return || "",
+  };
+  const country = getPlaceFromEntityId(
+    getCountryEntityId(flightQuery.to.entityId)
+  );
+
   //images
   const parentImages = getImagesFromParents(toPlace.entityId);
   const fromImage = await getImages({
@@ -63,10 +80,13 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   return {
     apiUrl,
+    googleApiKey,
     params,
     flightSearch,
     flightParams,
+    flightQuery,
     headerImage: fromImage[0] || parentImages[0] || "",
+    country,
   };
 };
 
@@ -74,13 +94,19 @@ export default function Search() {
   const {
     flightSearch,
     apiUrl,
+    googleApiKey,
     flightParams,
+    flightQuery,
     headerImage,
+    country,
   }: {
     apiUrl: string;
+    googleApiKey: string;
     flightParams: Query;
+    flightQuery: QueryPlace;
     flightSearch: SearchSDK | { error: string };
     headerImage: string;
+    country: Place;
   } = useLoaderData();
   console.log("/search", flightSearch);
   const [loading, setLoading] = useState(true);
@@ -151,6 +177,27 @@ export default function Search() {
               <div className="dark:text-white"> {error}</div>
             ) : (
               <>
+                <div className="mb-2">
+                  <Wrapper apiKey={googleApiKey}>
+                    <Map
+                      center={{
+                        lat: flightQuery.to.coordinates.latitude,
+                        lng: flightQuery.to.coordinates.longitude,
+                      }}
+                      height="300px"
+                      zoom={5}
+                      markers={getFlightSearch([
+                        flightQuery.to,
+                        flightQuery.from,
+                      ])}
+                    />
+                  </Wrapper>
+                  <div className="mt-2">
+                    <Link className="text-sm" to={`/explore/${country.slug}`}>
+                      Explore {country.name}
+                    </Link>
+                  </div>
+                </div>
                 {loading ? (
                   <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
                     <Spinner className="mr-2" /> Loading More Prices &

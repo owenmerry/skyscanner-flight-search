@@ -8,14 +8,7 @@ import type { Place } from "~/helpers/sdk/geo/geo-sdk";
 import type { FlightQuery, FlightUrl } from "~/types/search";
 import { FlightDetails } from "~/components/flight-details";
 import { getImages } from "~/helpers/sdk/query";
-import type { Query as OldQuery } from "~/types/search";
-
-interface Query {
-  from: Place;
-  to: Place;
-  depart: string;
-  return?: string;
-}
+import type { Query as OldQuery, QueryPlace } from "~/types/search";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -66,7 +59,7 @@ export default function Search() {
     oldQuery,
   }: {
     apiUrl: string;
-    query: Query;
+    query: QueryPlace;
     url: FlightUrl;
     headerImage: string;
     oldQuery: OldQuery;
