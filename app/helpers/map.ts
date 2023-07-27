@@ -59,7 +59,7 @@ export const getMarkersCountry = (
       label: `<div>${
         place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ""
       }</div><div class='mt-2 dark:text-black'><a href='/search-flight/${
-        from ? from.name : ""
+        from ? from.iata : ""
       }/${place.iata}/${defaultSearch.depart}/${defaultSearch.return}'>${
         place.name
       }</a></div>`,
