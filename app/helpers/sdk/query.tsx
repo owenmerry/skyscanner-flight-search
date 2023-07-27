@@ -2,6 +2,7 @@ import type { SearchSDK } from "./skyscannerSDK";
 import type { FlightQuery } from "~/types/search";
 import { skyscanner } from "./skyscannerSDK";
 import { waitSeconds } from "~/helpers/utils";
+import { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
 
 export const getFlightLiveCreate = async ({
   apiUrl,
@@ -92,4 +93,31 @@ export const getImages = async ({
   } catch (ex) {}
 
   return imagesMin;
+};
+
+export const getHotelSearch = async ({
+  apiUrl,
+  query,
+}: {
+  apiUrl: string;
+  query?: FlightQuery;
+}): Promise<SkyscannerAPIHotelSearchResponse | { error: string }> => {
+  let hotels,
+    error = "";
+  if (!query) return { error: "Query is required" };
+  try {
+    const res = await fetch(
+      `${apiUrl}/hotel/search?from=${query.from}&to=${query.to}&depart=${query.depart}&return=${query.return}&entityId=${query.to}`
+    );
+    const json: SkyscannerAPIHotelSearchResponse = await res.json();
+
+    if (!json) {
+      error =
+        "Sorry, something happened and we couldnt do this search, maybe try a differnt search";
+    } else {
+      hotels = json;
+    }
+  } catch (ex) {}
+
+  return hotels || { error };
 };

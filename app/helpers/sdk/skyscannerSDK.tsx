@@ -6,6 +6,11 @@ import { hasDirectFlights, isDirectFlights } from "./flight";
 import type { SkyscannerAPIGeoResponse } from "./geo/geo-response";
 import type { GeoSDK } from "./geo/geo-sdk";
 import { getGeoSDK } from "./geo/geo-sdk";
+//hotels
+import type { SkyscannerAPIHotelSearchResponse } from "./hotel/hotel-response";
+import type { HotelSDK } from "./hotel/hotel-sdk";
+import { getHotelSDK } from "./hotel/hotel-sdk";
+import { FlightQuery } from "~/types/search";
 
 // types (Response)
 
@@ -141,6 +146,15 @@ interface DateTime {
 export interface SkyscannerSDK {
   search: (res: SkyscannerAPICreateResponse) => SearchSDK;
   geo: (res?: SkyscannerAPIGeoResponse) => GeoSDK;
+  hotel: ({
+    res,
+    query,
+    apiUrl,
+  }: {
+    res?: SkyscannerAPIHotelSearchResponse;
+    query?: FlightQuery;
+    apiUrl?: string;
+  }) => Promise<HotelSDK>;
 }
 
 export interface SearchSDK {
@@ -229,6 +243,7 @@ export const skyscanner = (): SkyscannerSDK => {
       stats: stats(res),
     }),
     geo: (res?: SkyscannerAPIGeoResponse) => getGeoSDK(res),
+    hotel: getHotelSDK,
   };
 };
 

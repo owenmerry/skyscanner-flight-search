@@ -71,7 +71,7 @@ export const Map = ({ center, zoom, markers, height = "600px" }: MapProps) => {
         });
       });
     }
-  });
+  }, []);
 
   return <div ref={ref} id="map" style={{ height }} />;
 };

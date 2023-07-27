@@ -17,12 +17,17 @@ export default function Index() {
 
   return (
     <Layout selectedUrl="/">
-      <HeroDefault
-        apiUrl={apiUrl}
-        newFeature="Added Map of location on search and Deals panel for Flight and Hotel. See New Features"
-        newFeatureURL="/news"
-      />
-      <NavigationWebsite />
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <div className="border-slate-700 pb-4 border-b-2">
+          <h2 className="text-lg">
+            Added Map of location on search and Deals panel for Flight and Hotel
+          </h2>
+          <img
+            className="object-scale-down"
+            src="/images/news/Screenshot%202023-07-27%20at%2000.46.50.png"
+          />
+        </div>
+      </div>
     </Layout>
   );
 }
