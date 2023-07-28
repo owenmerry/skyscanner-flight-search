@@ -17,7 +17,7 @@ export default function Index() {
 
   return (
     <Layout selectedUrl="/">
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-md lg:py-16 lg:px-12">
         <div className="border-slate-700 pb-4 border-b-2">
           <h2 className="text-lg">
             Added Map of location on search and Deals panel for Flight and Hotel
