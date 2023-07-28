@@ -4,7 +4,10 @@ import type { Place } from "~/helpers/sdk/place";
 import { getAllParents } from "~/helpers/sdk/data";
 
 export const runSaveImages = async (apiUrl: string) => {
-  const places: { [key: string]: Place } = geoData.places;
+  const geoDataJson = geoData as unknown as {
+    places: { [key: string]: Place };
+  };
+  const places = geoDataJson.places;
   const placeList: Place[] = Object.keys(places).map(
     (placeKey) => places[placeKey]
   );
@@ -28,7 +31,6 @@ export const runSaveImages = async (apiUrl: string) => {
         ...country,
         images: imageResponse,
       });
-      console.log(country.name);
     }
   }
 
@@ -41,7 +43,10 @@ export const getRandomImageNumber = (max: number) => {
 
 export const getImagesFromParents = (entityId: string) => {
   const parents = getAllParents(entityId);
-  const parentsWithImages = parents.filter((item) => item.images.length > 0);
+  const parentsWithImages = parents.filter(
+    (item) => item && item?.images?.length > 0
+  );
+  const image = parentsWithImages[0] || {};
 
-  return parentsWithImages[0].images;
+  return image.images || [];
 };

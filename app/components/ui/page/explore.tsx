@@ -1,0 +1,261 @@
+import { Link } from "@remix-run/react";
+import { type Place } from "~/helpers/sdk/place";
+import { getPlaceFromEntityId } from "~/helpers/sdk/place";
+import {
+  IndicitiveQuote,
+  IndicitiveQuoteResult,
+  SkyscannerAPIIndicativeResponse,
+  SkyscannerDateTimeObject,
+} from "~/helpers/sdk/indicative/indicative-response";
+import { getPrice } from "~/helpers/sdk/price";
+import { QueryPlace } from "~/types/search";
+import { formatDistance, format, addDays } from "date-fns";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import { getFlightLiveCreate, getFlightLivePoll } from "~/helpers/sdk/query";
+import { useState } from "react";
+
+export const ExploreEverywhere = ({
+  from,
+  search,
+  title = "",
+  apiUrl,
+}: {
+  from: Place;
+  apiUrl?: string;
+  search?: SkyscannerAPIIndicativeResponse;
+  title?: string;
+}) => {
+  const sortByPrice = (quoteGroups: IndicitiveQuote[]) => {
+    const sorted = quoteGroups.sort(function (a, b) {
+      const quoteA: any = search?.content.results.quotes[a.quoteIds[0]];
+      const quoteB: any = search?.content.results.quotes[b.quoteIds[0]];
+
+      return quoteA.minPrice.amount - quoteB.minPrice.amount;
+    });
+
+    return sorted;
+  };
+
+  return (
+    <>
+      {search ? (
+        <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+          <div>
+            <h2 className="text-3xl mb-6">{title}</h2>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-5 grid-cols-2">
+            {sortByPrice(
+              search.content.groupingOptions.byRoute.quotesGroups
+            ).map((quoteKey) => {
+              const [priceUpdated, setPriceUpdated] = useState<string>();
+              const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
+              const destinationPlace = getPlaceFromEntityId(
+                quote.inboundLeg.originPlaceId
+              );
+              const getDateDisplay = (date: SkyscannerDateTimeObject) => {
+                const numberTwoDigits = (myNumber: number) => {
+                  return ("0" + myNumber).slice(-2);
+                };
+                return `${date.year}-${numberTwoDigits(
+                  date.month
+                )}-${numberTwoDigits(date.day)}`;
+              };
+              const departDateYYYYMMDD = getDateDisplay(
+                quote.outboundLeg.departureDateTime
+              );
+              const returnDateYYYYMMDD = getDateDisplay(
+                quote.inboundLeg.departureDateTime
+              );
+              const getLink = (query: QueryPlace) => {
+                return `/search-flight/${query.from.iata}/${query.to.iata}/${
+                  query.depart
+                }${query.return ? `/${query.return}` : ""}`;
+              };
+              const getTripDays = (departDate: string, returnDate: string) => {
+                const departDateObject = new Date(departDate);
+                const returnDateObject = addDays(new Date(returnDate), 1);
+
+                return formatDistance(departDateObject, returnDateObject, {});
+              };
+              const getDateFormatted = (
+                date: string,
+                formatString?: string
+              ) => {
+                const dateObject = new Date(date);
+
+                return format(dateObject, formatString || "EEE,d");
+              };
+              const getUpdated = (quote: IndicitiveQuoteResult) => {
+                const departUpdateTimestamp = new Date(
+                  Number(quote.outboundLeg.quoteCreationTimestamp) * 1000
+                );
+                const returnUpdateTimestamp = new Date(
+                  Number(quote.inboundLeg.quoteCreationTimestamp) * 1000
+                );
+                const updateTimestamp =
+                  departUpdateTimestamp >= returnUpdateTimestamp
+                    ? departUpdateTimestamp
+                    : returnUpdateTimestamp;
+
+                return formatDistance(updateTimestamp, new Date(), {
+                  addSuffix: true,
+                });
+              };
+              const checkPrice = async (
+                updateQuery: {
+                  from: string;
+                  to: string;
+                  depart: string;
+                  return: string;
+                },
+                sessionToken?: string
+              ) => {
+                setPriceUpdated("loading");
+
+                if (!sessionToken) {
+                  const flightSearch = await getFlightLiveCreate({
+                    apiUrl: apiUrl || "",
+                    query: {
+                      from: updateQuery.from,
+                      to: updateQuery.to,
+                      depart: updateQuery.depart,
+                      return: updateQuery.return,
+                      tripType: "return",
+                    },
+                  });
+                  if ("error" in flightSearch) return;
+                  sessionToken = flightSearch.sessionToken;
+                }
+
+                const flightPoll = await getFlightLivePoll({
+                  apiUrl: apiUrl || "",
+                  token: sessionToken || "",
+                  wait: 5,
+                });
+                //error run again
+                if ("error" in flightPoll) {
+                  checkPrice(updateQuery, sessionToken);
+
+                  return;
+                }
+
+                //check status
+                if (flightPoll.status === "RESULT_STATUS_COMPLETE") {
+                  setPriceUpdated(flightPoll.stats.minPrice);
+                } else {
+                  checkPrice(updateQuery, sessionToken);
+                }
+              };
+
+              if (!destinationPlace)
+                return <>{`not found:${quote.inboundLeg.originPlaceId}`}</>;
+
+              return (
+                <div className="bg-slate-50 font-semibold mr-2 p-4 rounded dark:hover:bg-gray-700 dark:bg-gray-800 text-slate-400">
+                  <a
+                    href={getLink({
+                      from,
+                      to: destinationPlace,
+                      depart: departDateYYYYMMDD,
+                      return: returnDateYYYYMMDD,
+                    })}
+                  >
+                    <div className="text-white mb-2">
+                      {destinationPlace.name}{" "}
+                    </div>
+                    <div>
+                      {getDateFormatted(departDateYYYYMMDD)} to{" "}
+                      {getDateFormatted(returnDateYYYYMMDD)}{" "}
+                      {getDateFormatted(returnDateYYYYMMDD, "MMM")}
+                    </div>
+                    <div>
+                      Trip is{" "}
+                      {getTripDays(departDateYYYYMMDD, returnDateYYYYMMDD)}
+                    </div>
+                    <div>
+                      From{" "}
+                      {getPrice(quote.minPrice.amount, quote.minPrice.unit)}
+                      <div>
+                        {priceUpdated && priceUpdated !== "loading"
+                          ? `(Now ${priceUpdated})`
+                          : ""}
+                      </div>
+                    </div>
+                    <div className="text-xs text-right mt-6 text-slate-500">
+                      Updated {getUpdated(quote)}
+                    </div>
+                  </a>
+                  <div
+                    className="text-xs text-right mt-4 text-slate-400 cursor-pointer underline"
+                    onClick={() =>
+                      checkPrice({
+                        from: from.entityId,
+                        to: destinationPlace ? destinationPlace.entityId : "",
+                        depart: departDateYYYYMMDD,
+                        return: returnDateYYYYMMDD,
+                      })
+                    }
+                  >
+                    {priceUpdated === "loading"
+                      ? `Loading Price...`
+                      : `Check Price`}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+    </>
+  );
+};
+
+export const AllCountries = ({
+  countries,
+  showAll,
+  onShowToggle,
+}: {
+  countries: Place[];
+  showAll: boolean;
+  onShowToggle: () => void;
+}) => {
+  return (
+    <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+      <div>
+        <h2 className="text-3xl mb-6">Countries</h2>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-5 grid-cols-2">
+        {countries
+          .slice(0, showAll ? 999 : 30)
+          .map((country: Place, key: number) => {
+            return (
+              <div className="">
+                <Link
+                  className="hover:underline"
+                  to={`/explore/${country.slug}`}
+                >
+                  <div
+                    style={{
+                      backgroundImage: `url(${country.images[0]}&w=250)`,
+                    }}
+                    className={`h-[120px] bg-cover`}
+                  ></div>
+                  <div>{country.name}</div>
+                </Link>
+              </div>
+            );
+          })}
+      </div>
+      <div className="text-center mt-4">
+        <div
+          className="inline-block justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 cursor-pointer"
+          onClick={onShowToggle}
+        >
+          {showAll ? "Show Less Countries" : "Show All Countries"}
+        </div>
+      </div>
+    </div>
+  );
+};

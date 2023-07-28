@@ -1,10 +1,8 @@
-import slugify from "slugify";
-import geoAll from "~/data/geo.json";
-import geoData from "~/data/geo-extra.json";
-import type { Geo } from "~/helpers/sdk/geo/geo-response";
 import type { Place } from "~/helpers/sdk/geo/geo-sdk";
 export type { Place } from "~/helpers/sdk/geo/geo-sdk";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+
+const geoData = skyscanner().geo();
 
 export const getEntityIdFromIata = (iata: string): string => {
   const list = getGeoList();
@@ -31,7 +29,7 @@ export const getPlaceFromSlug = (slug: string, type: string): Place | false => {
 };
 
 export const getPlaceFromEntityId = (entityId: string): Place | false => {
-  const list = getGeoObject();
+  const list = getGeoIndex();
   const found = list[entityId];
   return found ? found : false;
 };
@@ -42,12 +40,12 @@ export const getGeoList = (): Place[] => {
   return list;
 };
 
-export const getGeoObject = (): { [key: string]: Place } => {
-  const list = geoAll.places as unknown as { [key: string]: Place };
+export const getGeoIndex = (): { [key: string]: Place } => {
+  const index = getGeo().index as unknown as { [key: string]: Place };
 
-  return list;
+  return index;
 };
 
 export const getGeo = () => {
-  return skyscanner().geo();
+  return geoData;
 };

@@ -17,6 +17,10 @@ import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { HeroExplore } from "~/components/ui/hero/hero-explore";
 import { ImagesDefault } from "~/components/ui/images/images-default";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
+import { ExploreEverywhere } from "~/components/ui/page/explore";
+import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
+import { useEffect, useState } from "react";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -76,6 +80,31 @@ export default function SEOAnytime() {
     groupType: "month",
   };
   const defaultSearch = getDefualtFlightQuery();
+  const [searchIndicative, setSearchIndicative] =
+    useState<SkyscannerAPIIndicativeResponse>();
+
+  useEffect(() => {
+    runIndicative();
+  }, []);
+
+  const runIndicative = async () => {
+    const indicativeSearch = await skyscanner().indicative({
+      apiUrl,
+      query: {
+        from: from ? from.entityId : "",
+        to: country.entityId,
+        depart: "2023-08-01",
+        return: "2023-08-20",
+        tripType: "return",
+      },
+      month: Number("2023-08-01".split("-")[1]),
+    });
+
+    if ("error" in indicativeSearch.search) return;
+
+    setSearchIndicative(indicativeSearch.search);
+  };
+  if (!from) return;
 
   return (
     <Layout selectedUrl="/explore">
@@ -85,6 +114,13 @@ export default function SEOAnytime() {
       />
 
       <ImagesDefault images={country.images} />
+
+      <ExploreEverywhere
+        title={`${from.name} to ${country.name}`}
+        from={from}
+        search={searchIndicative}
+        apiUrl={apiUrl}
+      />
 
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
@@ -124,22 +160,6 @@ export default function SEOAnytime() {
             markers={getMarkersCountry([...airports], from, defaultSearch)}
           />
         </Wrapper>
-      </div>
-
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div>
-          <h2 className="text-3xl mb-6">
-            Flights from {from ? from.name : ""}
-          </h2>
-        </div>
-        <SEO
-          fromLocation={country}
-          apiUrl={apiUrl}
-          query={query}
-          googleApiKey={googleApiKey}
-          showItems
-          showMap={false}
-        />
       </div>
     </Layout>
   );

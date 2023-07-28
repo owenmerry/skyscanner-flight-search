@@ -15,31 +15,32 @@ export interface IndicitiveQuote {
   destinationPlaceId: string;
   quoteIds: string[];
 }
+export interface IndicitiveQuoteResult {
+  minPrice: {
+    amount: string;
+    unit: string;
+    updateStatus: string;
+  };
+  isDirect: boolean;
+  outboundLeg: {
+    originPlaceId: string;
+    destinationPlaceId: string;
+    departureDateTime: SkyscannerDateTimeObject;
+    quoteCreationTimestamp: string;
+    marketingCarrierId: string;
+  };
+  inboundLeg: {
+    originPlaceId: string;
+    destinationPlaceId: string;
+    departureDateTime: SkyscannerDateTimeObject;
+    quoteCreationTimestamp: string;
+    marketingCarrierId: string;
+  };
+}
 
 export interface IndicitiveResults {
   quotes: {
-    [key: string]: {
-      minPrice: {
-        amount: string;
-        unit: string;
-        updateStatus: string;
-      };
-      isDirect: boolean;
-      outboundLeg: {
-        originPlaceId: string;
-        destinationPlaceId: string;
-        departureDateTime: SkyscannerDateTimeObject;
-        quoteCreationTimestamp: string;
-        marketingCarrierId: string;
-      };
-      inboundLeg: {
-        originPlaceId: string;
-        destinationPlaceId: string;
-        departureDateTime: SkyscannerDateTimeObject;
-        quoteCreationTimestamp: string;
-        marketingCarrierId: string;
-      };
-    };
+    [key: string]: IndicitiveQuoteResult;
   };
   places: {
     [key: string]: {

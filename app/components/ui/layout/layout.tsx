@@ -1,45 +1,48 @@
-import { useState, useEffect } from 'react';
-import { HeaderDefault } from '~/components/ui/header/header-default';
-import { FooterDefault } from '~/components/ui/footer/footer-default';
-import { setDarkModeToLocalStorage, getDarkModeFromLocalStorage } from '~/helpers/local-storage';
+import { useState, useEffect } from "react";
+import { HeaderDefault } from "~/components/ui/header/header-default";
+import { FooterDefault } from "~/components/ui/footer/footer-default";
+import {
+  setDarkModeToLocalStorage,
+  getDarkModeFromLocalStorage,
+} from "~/helpers/local-storage";
 
 interface LayoutProps {
-    children: React.ReactNode,
-    selectedUrl?: string
+  children: React.ReactNode;
+  selectedUrl?: string;
 }
 
 export const Layout = ({ children, selectedUrl }: LayoutProps) => {
-    const [darkMode, setDarkMode] = useState(getDarkModeFromLocalStorage());
-    const localDarkMode = getDarkModeFromLocalStorage();
+  const [darkMode, setDarkMode] = useState(getDarkModeFromLocalStorage());
+  const localDarkMode = getDarkModeFromLocalStorage();
 
-    const checkDarkMode = () => {
-        if(localDarkMode === darkMode) return;
+  const checkDarkMode = () => {
+    if (localDarkMode === darkMode) return;
 
-        console.log('changed dark mode');
-        setDarkMode(localDarkMode);
-    }
-    
-    useEffect(() => {
-        console.log('run dark mode check..', getDarkModeFromLocalStorage());
-        checkDarkMode();
-    },[darkMode, localDarkMode]);
-    
-    const handleDarkModeChange = () => {
-        const darkModeUpdated = !darkMode;
-        setDarkMode(darkModeUpdated);
-        setDarkModeToLocalStorage(darkModeUpdated);
-    }
-    
-    return (
-        <div className={darkMode ? 'dark' : ''}>
-            <div className='hidden'>{localDarkMode ? 'dark' : 'light'}</div>
-            <HeaderDefault
-                selectedUrl={selectedUrl}
-                isDarkMode={darkMode}
-                onDarkModeClick={handleDarkModeChange}
-            />
-            <div className='bg-white text-black dark:bg-gray-900 dark:text-white'>{children}</div>
-            <FooterDefault />
-        </div>
-    );
-}
+    setDarkMode(localDarkMode);
+  };
+
+  useEffect(() => {
+    checkDarkMode();
+  }, [darkMode, localDarkMode]);
+
+  const handleDarkModeChange = () => {
+    const darkModeUpdated = !darkMode;
+    setDarkMode(darkModeUpdated);
+    setDarkModeToLocalStorage(darkModeUpdated);
+  };
+
+  return (
+    <div className={darkMode ? "dark" : ""}>
+      <div className="hidden">{localDarkMode ? "dark" : "light"}</div>
+      <HeaderDefault
+        selectedUrl={selectedUrl}
+        isDarkMode={darkMode}
+        onDarkModeClick={handleDarkModeChange}
+      />
+      <div className="bg-white text-black dark:bg-gray-900 dark:text-white">
+        {children}
+      </div>
+      <FooterDefault />
+    </div>
+  );
+};

@@ -24,6 +24,22 @@ export default function Index() {
           website.
         </p>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
+            Added Check Price Feature for Cached prices
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/public/images/news/Screenshot 2023-07-28 at 19.01.42.png"
+          />
+        </div>
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">Added Explore Everywhere</h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-07-28 at 18.03.48.png"
+          />
+        </div>
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">Added Different options to search</h2>
           <img
             className="object-scale-down my-4"

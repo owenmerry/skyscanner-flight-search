@@ -54,8 +54,6 @@ export const getFlightLivePoll = async ({
     const res = await fetch(`${apiUrl}/poll/${token}`);
     const json = await res.json();
 
-    console.log(json);
-
     if (
       (!json && json.statusCode === 500 && json.statusCode !== 200) ||
       Object.keys(json?.content?.results?.itineraries).length === 0

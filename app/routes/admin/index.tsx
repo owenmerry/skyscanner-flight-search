@@ -17,7 +17,6 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
 
 export default function Index() {
   const { airports }: { airports: Place[] } = useLoaderData();
-  console.log("/airports", airports);
 
   return <Layout selectedUrl="/">Run Fuctions</Layout>;
 }

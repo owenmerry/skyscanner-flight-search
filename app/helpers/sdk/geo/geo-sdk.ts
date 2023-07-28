@@ -10,6 +10,7 @@ export interface GeoSDK {
   countries: Place[];
   cities: Place[];
   airports: Place[];
+  index: { [key: string]: Place };
 }
 
 export type Place = Geo & {
@@ -54,17 +55,23 @@ export const getGeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
   const airports = places.filter(
     (place) => place.type === "PLACE_TYPE_AIRPORT"
   );
+  var index: { [key: string]: Place } = {};
+  places.forEach((place) => {
+    index[place.entityId] = place;
+  });
 
   return {
     places,
     countries,
     cities,
     airports,
+    index,
   };
 };
 
 export const convertGeoToArray = (res?: SkyscannerAPIGeoResponse): Place[] => {
-  const geoRes = res ? res : geoAll;
+  const geoAllType = geoAll as unknown as { places: { [key: string]: string } };
+  const geoRes = res ? res : geoAllType;
   const places = geoRes.places;
   const placeList = Object.keys(places);
   const list = placeList.map((value) => {

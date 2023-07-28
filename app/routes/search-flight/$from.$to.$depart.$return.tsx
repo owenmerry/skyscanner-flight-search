@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { LoaderFunction, LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/ui/flight-results/flight-results-default";
 import {
@@ -12,25 +12,21 @@ import { getEntityIdFromIata, getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { Spinner } from "flowbite-react";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getImagesFromParents } from "~/helpers/sdk/images";
-import { getFlightSearch } from "~/helpers/map";
 import { HeroPage } from "~/components/ui/hero/hero-page";
 import { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { Query, QueryPlace } from "~/types/search";
-import { Map } from "~/components/map";
-import { Wrapper } from "@googlemaps/react-wrapper";
 import { getCountryEntityId } from "~/helpers/sdk/data";
 import type { Place } from "~/helpers/sdk/place";
 import { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
 import { waitSeconds } from "~/helpers/utils";
-import { Loading } from "~/components/loading";
+import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import {
-  SkyscannerAPIIndicativeResponse,
-  IndicitiveQuote,
-  SkyscannerDateTimeObject,
-} from "~/helpers/sdk/indicative/indicative-response";
-import { getSEODateDetails } from "~/helpers/date";
-import { getPrice } from "~/helpers/sdk/price";
+  ExploreDates,
+  ExplorePage,
+  FlightHotelBundle,
+  MapComponent,
+} from "~/components/ui/page/search";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -70,6 +66,8 @@ export const loader = async ({ params }: LoaderArgs) => {
     getCountryEntityId(flightQuery.to.entityId)
   );
 
+  console.log("country", country);
+
   //images
   const parentImages = getImagesFromParents(toPlace.entityId);
   const fromImage = await getImages({
@@ -101,155 +99,6 @@ export const loader = async ({ params }: LoaderArgs) => {
   };
 };
 
-const MapComponent = ({
-  googleApiKey,
-  flightQuery,
-}: {
-  googleApiKey: string;
-  flightQuery: QueryPlace;
-}) => {
-  return (
-    <div className="mb-2">
-      <Wrapper apiKey={googleApiKey} key="map-component-wrapper">
-        <Map
-          key="map-component-map"
-          center={{
-            lat: flightQuery.to.coordinates.latitude,
-            lng: flightQuery.to.coordinates.longitude,
-          }}
-          height="300px"
-          zoom={5}
-          markers={getFlightSearch([flightQuery.to, flightQuery.from])}
-        />
-      </Wrapper>
-    </div>
-  );
-};
-
-const FlightHotelBundle = ({
-  search,
-  searchHotel,
-}: {
-  search: SearchSDK | { error: string };
-  searchHotel?: SkyscannerAPIHotelSearchResponse;
-}) => {
-  return (
-    <div className="mb-2 p-4 text-white bg-blue-700 rounded-md text-lg">
-      {searchHotel?.results?.average_min_price ? (
-        <>
-          <span className="mr-4 font-bold">
-            🏷️ Hotel and Flight Bundle: £
-            {"error" in search
-              ? undefined
-              : (
-                  +search.stats.minPrice.replace("£", "") +
-                  +(searchHotel?.results?.average_min_price || 0)
-                ).toFixed(2)}
-          </span>
-          <span className="text-sm">
-            Flight: {"error" in search ? undefined : search.stats.minPrice}
-          </span>
-          <>
-            <span className="mx-2">+</span>
-            <span className="text-sm">
-              Hotel: £{searchHotel?.results?.average_min_price}
-            </span>
-          </>
-        </>
-      ) : (
-        <>
-          <span className="mr-4">
-            <Loading />
-          </span>
-          Loading Flight and Hotel Deal...
-        </>
-      )}
-    </div>
-  );
-};
-
-const ExploreDates = ({
-  search,
-  query,
-}: {
-  search?: SkyscannerAPIIndicativeResponse;
-  query: QueryPlace;
-}) => {
-  const sortByPrice = (quoteGroups: IndicitiveQuote[]) => {
-    const sorted = quoteGroups.sort(function (a, b) {
-      const quoteA: any = search?.content.results.quotes[a.quoteIds[0]];
-      const quoteB: any = search?.content.results.quotes[b.quoteIds[0]];
-
-      return quoteA.minPrice.amount - quoteB.minPrice.amount;
-    });
-
-    return sorted;
-  };
-
-  return (
-    <>
-      {search ? (
-        <div className="border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800">
-          Different Options:{" "}
-          {sortByPrice(search.content.groupingOptions.byRoute.quotesGroups).map(
-            (quoteKey) => {
-              const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
-              const getDateDisplay = (date: SkyscannerDateTimeObject) => {
-                const numberTwoDigits = (myNumber: number) => {
-                  return ("0" + myNumber).slice(-2);
-                };
-                return `${date.year}-${numberTwoDigits(
-                  date.month
-                )}-${numberTwoDigits(date.day)}`;
-              };
-              const getLink = (query: QueryPlace) => {
-                return `/search-flight/${query.from.iata}/${query.to.iata}/${
-                  query.depart
-                }${query.return ? `/${query.return}` : ""}`;
-              };
-              return (
-                <a
-                  className="bg-slate-50 font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-gray-800 text-slate-400"
-                  href={getLink({
-                    ...query,
-                    depart: getDateDisplay(quote.outboundLeg.departureDateTime),
-                    return: getDateDisplay(quote.inboundLeg.departureDateTime),
-                  })}
-                >
-                  {getDateDisplay(quote.outboundLeg.departureDateTime)} -{" "}
-                  {getDateDisplay(quote.inboundLeg.departureDateTime)} is{" "}
-                  {getPrice(quote.minPrice.amount, quote.minPrice.unit)}
-                </a>
-              );
-            }
-          )}
-        </div>
-      ) : (
-        ""
-      )}
-    </>
-  );
-};
-
-const ExplorePage = ({ country }: { country?: Place }) => {
-  return (
-    <>
-      {country ? (
-        <div className="mt-2 mb-2">
-          <Link
-            to={`/explore/${country.slug}`}
-            className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
-          >
-            Explore {country.name}{" "}
-          </Link>
-        </div>
-      ) : (
-        ""
-      )}
-    </>
-  );
-};
-
 export default function Search() {
   const {
     flightSearch,
@@ -268,7 +117,6 @@ export default function Search() {
     headerImage: string;
     country: Place;
   } = useLoaderData();
-  console.log("/search", flightSearch);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(flightSearch);
   const [searchHotel, setSearchHotel] =
@@ -310,7 +158,6 @@ export default function Search() {
     }
 
     setSearchHotel(hotelSearch.search);
-    console.log("/hotel", hotelSearch);
   };
 
   const runIndicative = async () => {
@@ -329,7 +176,6 @@ export default function Search() {
     if ("error" in indicativeSearch.search) return;
 
     setSearchIndicative(indicativeSearch.search);
-    console.log("/indicative", indicativeSearch);
   };
 
   const runPoll = async () => {
@@ -340,7 +186,7 @@ export default function Search() {
     });
 
     if ("error" in res) {
-      setError(res.error);
+      //setError(res.error);
       runPoll();
 
       return;
