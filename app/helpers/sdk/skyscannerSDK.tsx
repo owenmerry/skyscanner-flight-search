@@ -11,6 +11,10 @@ import type { SkyscannerAPIHotelSearchResponse } from "./hotel/hotel-response";
 import type { HotelSDK } from "./hotel/hotel-sdk";
 import { getHotelSDK } from "./hotel/hotel-sdk";
 import { FlightQuery } from "~/types/search";
+//indicative
+import type { SkyscannerAPIIndicativeResponse } from "./indicative/indicative-response";
+import type { IndicativeSDK } from "./indicative/indicative-sdk";
+import { getIndicativeSDK } from "./indicative/indicative-sdk";
 
 // types (Response)
 
@@ -146,6 +150,17 @@ interface DateTime {
 export interface SkyscannerSDK {
   search: (res: SkyscannerAPICreateResponse) => SearchSDK;
   geo: (res?: SkyscannerAPIGeoResponse) => GeoSDK;
+  indicative: ({
+    res,
+    query,
+    apiUrl,
+    month,
+  }: {
+    res?: SkyscannerAPIIndicativeResponse;
+    query?: FlightQuery;
+    apiUrl?: string;
+    month?: number;
+  }) => Promise<IndicativeSDK>;
   hotel: ({
     res,
     query,
@@ -244,6 +259,7 @@ export const skyscanner = (): SkyscannerSDK => {
     }),
     geo: (res?: SkyscannerAPIGeoResponse) => getGeoSDK(res),
     hotel: getHotelSDK,
+    indicative: getIndicativeSDK,
   };
 };
 

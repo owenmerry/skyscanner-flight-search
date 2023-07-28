@@ -19,7 +19,7 @@ export default function Index() {
     <Layout selectedUrl="/">
       <HeroDefault
         apiUrl={apiUrl}
-        newFeature="Added Map of location on search and Deals panel for Flight and Hotel. See New Features"
+        newFeature="Added Different options to search. See New Features"
         newFeatureURL="/news"
       />
       <NavigationWebsite />

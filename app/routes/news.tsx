@@ -18,12 +18,24 @@ export default function Index() {
   return (
     <Layout selectedUrl="/">
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-md lg:py-16 lg:px-12">
-        <div className="border-slate-700 pb-4 border-b-2">
-          <h2 className="text-lg">
+        <h2 className="text-2xl mb-6">Updates and new features</h2>
+        <p className="mb-10">
+          This is a list of all the latest updates and features added to the
+          website.
+        </p>
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">Added Different options to search</h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-07-28 at 13.33.22.png"
+          />
+        </div>
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
             Added Map of location on search and Deals panel for Flight and Hotel
           </h2>
           <img
-            className="object-scale-down"
+            className="object-scale-down my-4"
             src="/images/news/Screenshot%202023-07-27%20at%2000.46.50.png"
           />
         </div>

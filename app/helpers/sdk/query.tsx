@@ -3,6 +3,7 @@ import type { FlightQuery } from "~/types/search";
 import { skyscanner } from "./skyscannerSDK";
 import { waitSeconds } from "~/helpers/utils";
 import { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
+import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 
 export const getFlightLiveCreate = async ({
   apiUrl,
@@ -120,4 +121,33 @@ export const getHotelSearch = async ({
   } catch (ex) {}
 
   return hotels || { error };
+};
+
+export const getIndicative = async ({
+  apiUrl,
+  query,
+  month = new Date().getMonth() + 1,
+}: {
+  apiUrl: string;
+  query?: FlightQuery;
+  month?: number;
+}): Promise<SkyscannerAPIIndicativeResponse | { error: string }> => {
+  let indicative,
+    error = "";
+  if (!query) return { error: "Query is required" };
+  try {
+    const res = await fetch(
+      `${apiUrl}/price?from=${query.from}&to=${query.to}&month=${month}&groupType=month`
+    );
+    const json: SkyscannerAPIIndicativeResponse = await res.json();
+
+    if (!json) {
+      error =
+        "Sorry, something happened and we couldnt do this search, maybe try a differnt search";
+    } else {
+      indicative = json;
+    }
+  } catch (ex) {}
+
+  return indicative || { error };
 };

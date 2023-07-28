@@ -31,13 +31,19 @@ export const getPlaceFromSlug = (slug: string, type: string): Place | false => {
 };
 
 export const getPlaceFromEntityId = (entityId: string): Place | false => {
-  const list = getGeoList();
-  const found = list.filter((item) => item.entityId === entityId);
-  return found.length > 0 ? found[0] : false;
+  const list = getGeoObject();
+  const found = list[entityId];
+  return found ? found : false;
 };
 
 export const getGeoList = (): Place[] => {
   const list = skyscanner().geo().places;
+
+  return list;
+};
+
+export const getGeoObject = (): { [key: string]: Place } => {
+  const list = geoAll.places as unknown as { [key: string]: Place };
 
   return list;
 };
