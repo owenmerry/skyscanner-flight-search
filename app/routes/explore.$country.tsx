@@ -93,11 +93,11 @@ export default function SEOAnytime() {
       query: {
         from: from ? from.entityId : "",
         to: country.entityId,
-        depart: "2023-08-01",
-        return: "2023-08-20",
+        depart: "2023-09-01",
+        return: "2023-09-20",
         tripType: "return",
       },
-      month: Number("2023-08-01".split("-")[1]),
+      month: Number("2023-09-01".split("-")[1]),
     });
 
     if ("error" in indicativeSearch.search) return;
