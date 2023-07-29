@@ -149,3 +149,57 @@ export const getIndicative = async ({
 
   return indicative || { error };
 };
+
+export const getSearchWithCreateAndPoll = async (
+  updateQuery: {
+    from: string;
+    to: string;
+    depart: string;
+    return?: string;
+  },
+  {
+    apiUrl = "",
+    sessionToken = "",
+  }: {
+    apiUrl?: string;
+    sessionToken?: string;
+  } = {}
+): Promise<string | undefined> => {
+  if (!sessionToken) {
+    const flightSearch = await getFlightLiveCreate({
+      apiUrl,
+      query: {
+        from: updateQuery.from,
+        to: updateQuery.to,
+        depart: updateQuery.depart,
+        return: updateQuery.return,
+        tripType: "return",
+      },
+    });
+    if ("error" in flightSearch) return;
+    sessionToken = flightSearch.sessionToken;
+  }
+
+  const flightPoll = await getFlightLivePoll({
+    apiUrl,
+    token: sessionToken || "",
+    wait: 5,
+  });
+  //check status
+  if ("error" in flightPoll) {
+    console.log("got error, retry");
+    return await getSearchWithCreateAndPoll(updateQuery, {
+      apiUrl,
+      sessionToken,
+    });
+  } else if (flightPoll.status === "RESULT_STATUS_COMPLETE") {
+    console.log("got complete", flightPoll.stats.minPrice);
+    return flightPoll.stats.minPrice;
+  } else {
+    console.log(`got ${flightPoll.status}, retry`);
+    return await getSearchWithCreateAndPoll(updateQuery, {
+      apiUrl,
+      sessionToken,
+    });
+  }
+};

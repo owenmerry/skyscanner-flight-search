@@ -173,7 +173,9 @@ const ButtonColumn = ({
       <div>
         <Button
           className="ml-2"
-          href={`/search-flight/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}/${flight.itineraryId}`}
+          href={`/booking/${query.fromIata}/${query.toIata}/${query.depart}${
+            query.return ? `/${query.return}` : ``
+          }/${flight.itineraryId}`}
         >
           Select
         </Button>

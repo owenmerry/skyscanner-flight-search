@@ -29,7 +29,7 @@ export interface Query {
   toIata: string;
   toText: string;
   depart: string;
-  return: string;
+  return?: string;
   tripType: string;
 }
 

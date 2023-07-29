@@ -11,8 +11,6 @@ import { useEffect, useState } from "react";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { AllCountries, ExploreEverywhere } from "~/components/ui/page/explore";
-import Calendar from "~/components/ui/calender/calender";
-import moment from "moment";
 
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -29,7 +27,6 @@ export const loader: LoaderFunction = async ({}) => {
 export default function SEOAnytime() {
   const { countries, googleApiKey, apiUrl } = useLoaderData();
   const [countryShow, setCountryShow] = useState(false);
-  const [calenderDate, setCalenderDate] = useState("2023-08-01");
   const [searchIndicative, setSearchIndicative] =
     useState<SkyscannerAPIIndicativeResponse>();
   const from = getFromPlaceLocalOrDefault() || getPlaceFromIata("LHR");
@@ -59,18 +56,18 @@ export default function SEOAnytime() {
 
   return (
     <Layout selectedUrl="/explore">
-      <AllCountries
-        countries={countries}
-        showAll={countryShow}
-        onShowToggle={() => setCountryShow(!countryShow)}
-      />
-      <ExploreEverywhere
-        title={`${from.name} to Everywhere`}
-        from={from}
-        search={searchIndicative}
-        apiUrl={apiUrl}
-      />
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <AllCountries
+          countries={countries}
+          showAll={countryShow}
+          onShowToggle={() => setCountryShow(!countryShow)}
+        />
+        <ExploreEverywhere
+          title={`${from.name} to Everywhere`}
+          from={from}
+          search={searchIndicative}
+          apiUrl={apiUrl}
+        />
         <Wrapper apiKey={googleApiKey}>
           <Map
             center={{ lat: 0, lng: 0 }}
@@ -78,32 +75,6 @@ export default function SEOAnytime() {
             markers={getMarkersWorld(countries)}
           />
         </Wrapper>
-      </div>
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <button
-          className="p-4 hover:bg-slate-700"
-          onClick={() =>
-            setCalenderDate(
-              moment(calenderDate).subtract(1, "M").format("YYYY-MM-DD")
-            )
-          }
-        >
-          -
-        </button>
-        <button
-          className="p-4 hover:bg-slate-700"
-          onClick={() =>
-            setCalenderDate(
-              moment(calenderDate).add(1, "M").format("YYYY-MM-DD")
-            )
-          }
-        >
-          +
-        </button>
-        <Calendar
-          displayMonth={calenderDate}
-          onDateChange={() => console.log("date changed")}
-        />
       </div>
     </Layout>
   );

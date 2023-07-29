@@ -11,7 +11,11 @@ import { getPrice } from "~/helpers/sdk/price";
 import { QueryPlace } from "~/types/search";
 import { formatDistance, format, addDays } from "date-fns";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { getFlightLiveCreate, getFlightLivePoll } from "~/helpers/sdk/query";
+import {
+  getFlightLiveCreate,
+  getFlightLivePoll,
+  getSearchWithCreateAndPoll,
+} from "~/helpers/sdk/query";
 import { useState } from "react";
 
 export const ExploreEverywhere = ({
@@ -67,7 +71,7 @@ export const ExploreEverywhere = ({
                 quote.inboundLeg.departureDateTime
               );
               const getLink = (query: QueryPlace) => {
-                return `/search-flight/${query.from.iata}/${query.to.iata}/${
+                return `/search/${query.from.iata}/${query.to.iata}/${
                   query.depart
                 }${query.return ? `/${query.return}` : ""}`;
               };
@@ -101,50 +105,20 @@ export const ExploreEverywhere = ({
                   addSuffix: true,
                 });
               };
-              const checkPrice = async (
-                updateQuery: {
-                  from: string;
-                  to: string;
-                  depart: string;
-                  return: string;
-                },
-                sessionToken?: string
-              ) => {
+              const handleSearchPrice = async () => {
                 setPriceUpdated("loading");
-
-                if (!sessionToken) {
-                  const flightSearch = await getFlightLiveCreate({
-                    apiUrl: apiUrl || "",
-                    query: {
-                      from: updateQuery.from,
-                      to: updateQuery.to,
-                      depart: updateQuery.depart,
-                      return: updateQuery.return,
-                      tripType: "return",
-                    },
-                  });
-                  if ("error" in flightSearch) return;
-                  sessionToken = flightSearch.sessionToken;
-                }
-
-                const flightPoll = await getFlightLivePoll({
-                  apiUrl: apiUrl || "",
-                  token: sessionToken || "",
-                  wait: 5,
-                });
-                //error run again
-                if ("error" in flightPoll) {
-                  checkPrice(updateQuery, sessionToken);
-
-                  return;
-                }
-
-                //check status
-                if (flightPoll.status === "RESULT_STATUS_COMPLETE") {
-                  setPriceUpdated(flightPoll.stats.minPrice);
-                } else {
-                  checkPrice(updateQuery, sessionToken);
-                }
+                const priceChecked = await getSearchWithCreateAndPoll(
+                  {
+                    from: from.entityId,
+                    to: destinationPlace ? destinationPlace.entityId : "",
+                    depart: departDateYYYYMMDD,
+                    return: returnDateYYYYMMDD,
+                  },
+                  {
+                    apiUrl,
+                  }
+                );
+                setPriceUpdated(priceChecked);
               };
 
               if (!destinationPlace)
@@ -187,14 +161,7 @@ export const ExploreEverywhere = ({
                   </a>
                   <div
                     className="text-xs text-right mt-4 text-slate-400 cursor-pointer underline"
-                    onClick={() =>
-                      checkPrice({
-                        from: from.entityId,
-                        to: destinationPlace ? destinationPlace.entityId : "",
-                        depart: departDateYYYYMMDD,
-                        return: returnDateYYYYMMDD,
-                      })
-                    }
+                    onClick={() => handleSearchPrice()}
                   >
                     {priceUpdated === "loading"
                       ? `Loading Price...`
@@ -221,13 +188,27 @@ export const AllCountries = ({
   showAll: boolean;
   onShowToggle: () => void;
 }) => {
+  const [filter, setFilter] = useState<string>();
+  const countriesFiltered = countries.filter(
+    (country) =>
+      !filter ||
+      (filter && country.name.toLowerCase().includes(filter.toLowerCase()))
+  );
   return (
     <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
       <div>
         <h2 className="text-3xl mb-6">Countries</h2>
       </div>
+      <div className="my-4">
+        <input
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="inline-block bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 pl-4 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+          placeholder="Search Country..."
+        />
+      </div>
       <div className="grid gap-2 sm:grid-cols-5 grid-cols-2">
-        {countries
+        {countriesFiltered
           .slice(0, showAll ? 999 : 30)
           .map((country: Place, key: number) => {
             return (
@@ -248,14 +229,18 @@ export const AllCountries = ({
             );
           })}
       </div>
-      <div className="text-center mt-4">
-        <div
-          className="inline-block justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 cursor-pointer"
-          onClick={onShowToggle}
-        >
-          {showAll ? "Show Less Countries" : "Show All Countries"}
+      {countriesFiltered.length >= 30 ? (
+        <div className="text-center mt-4">
+          <div
+            className="inline-block justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 cursor-pointer"
+            onClick={onShowToggle}
+          >
+            {showAll ? "Show Less Countries" : "Show All Countries"}
+          </div>
         </div>
-      </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

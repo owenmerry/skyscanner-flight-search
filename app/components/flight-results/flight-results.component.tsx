@@ -28,16 +28,24 @@ export const FlightResults = ({
   const [retry, setRetry] = useState(0);
   const maxRetry = 10;
   const sessionTokenSaved = useRef<string>("");
+  console.log("FLIGHT RESULTS");
 
   const pollFlights = useCallback(
     async (token: string) => {
       await waitSeconds(1);
+      console.log("run poll");
       try {
         const res = await fetch(`${apiUrl}/poll/${token}`);
         const json = await res.json();
 
-        if (!json || json.statusCode === 500 || json.statusCode && json.statusCode !== 200 || json.code) {
+        if (
+          !json ||
+          json.statusCode === 500 ||
+          (json.statusCode && json.statusCode !== 200) ||
+          json.code
+        ) {
           setSearching(false);
+          console.log("error block", json);
           if (retry < maxRetry) {
             setRetry(retry + 1);
             pollFlights(token);
@@ -47,6 +55,7 @@ export const FlightResults = ({
             );
           }
         } else {
+          console.log("run search", json);
           setSearch(skyscanner().search(json));
 
           // run again until is complete
@@ -81,12 +90,18 @@ export const FlightResults = ({
 
       try {
         const res = await fetch(
-          `${apiUrl}/create?from=${query.from}&to=${query.to}&depart=${query.depart
+          `${apiUrl}/create?from=${query.from}&to=${query.to}&depart=${
+            query.depart
           }${query?.return ? `&return=${query.return}` : ""}`
         );
         const json = await res.json();
 
-        if (!json || json.statusCode === 500 || json.statusCode && json.statusCode !== 200 || json.code) {
+        if (
+          !json ||
+          json.statusCode === 500 ||
+          (json.statusCode && json.statusCode !== 200) ||
+          json.code
+        ) {
           setSearching(false);
           setError(
             `Sorry, something happened and we couldnt do this search, maybe try a differnt (code:${retry}|3)`
@@ -183,20 +198,22 @@ export const FlightResults = ({
                               {leg.duration} minutes (
                               {leg.direct
                                 ? "Direct"
-                                : `${leg.stops} Stop${leg.stops > 1 ? "s" : ""
-                                }`}
+                                : `${leg.stops} Stop${
+                                    leg.stops > 1 ? "s" : ""
+                                  }`}
                               )
                             </div>
                             <div className="flight-carrier">
                               {leg.carriers.map((carrier, key) => (
                                 <>
-                                  {carrier.imageUrl && carrier.imageUrl !== '' && (
-                                    <img
-                                      src={carrier.imageUrl}
-                                      alt={``}
-                                      height="13px"
-                                    />
-                                  )}
+                                  {carrier.imageUrl &&
+                                    carrier.imageUrl !== "" && (
+                                      <img
+                                        src={carrier.imageUrl}
+                                        alt={``}
+                                        height="13px"
+                                      />
+                                    )}
                                   <>{`${key > 0 ? ", " : ""}${carrier.name}`}</>
                                 </>
                               ))}
@@ -231,8 +248,9 @@ export const FlightResults = ({
                   </div>
                   <Prices url={url} flight={itinerary} query={query} />
                   <Link
-                    to={`/booking/${url?.from}/${url?.to}/${url?.depart}${url?.return ? `/${url?.return}` : ""
-                      }/${itinerary.itineraryId}`}
+                    to={`/booking/${url?.from}/${url?.to}/${url?.depart}${
+                      url?.return ? `/${url?.return}` : ""
+                    }/${itinerary.itineraryId}`}
                   >
                     View Details
                   </Link>

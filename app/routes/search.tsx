@@ -1,91 +1,14 @@
-import { useState } from 'react';
+import { Outlet, useLocation } from "@remix-run/react";
+import { Layout } from "~/components/ui/layout/layout";
 
-import { searchAutoSuggest } from '~/helpers/sdk/autosuggest';
-import type { LoaderFunction, LinksFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useLoaderData, Link, Outlet, useLocation, useParams } from '@remix-run/react';
-import globalStyles from '~/styles/global.css';
-import flightStyles from '~/styles/flight.css';
-import { getDateFormated } from '~/helpers/date';
-
-import { FlightSearchControls } from '~/components/flight-search-controls';
-import type { FlightQuery } from '~/types/search';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: globalStyles },
-    { rel: 'stylesheet', href: flightStyles },
-  ];
-}
-
-export const loader: LoaderFunction = async ({ request, context, params }) => {
-  const apiUrl = process.env.SKYSCANNER_APP_API_URL || '';
-  let fromText = 'London Heathrow';
-  let toText = 'Dublin';
-  let fromEnityId = '95565050';
-  let toEnityId = '95673529';
-  let fromIata = 'LHR';
-  let toIata = 'DUB';
-
-  if (params.from) {
-    const fromPlaces = await searchAutoSuggest(params.from, apiUrl);
-    fromText = fromPlaces[0].name;
-    fromEnityId = fromPlaces[0].entityId;
-    fromIata = fromPlaces[0].iataCode;
-  }
-  if (params.to) {
-    const toPlaces = await searchAutoSuggest(params.to, apiUrl);
-    toText = toPlaces[0].name;
-    toEnityId = toPlaces[0].entityId;
-    toIata = toPlaces[0].iataCode;
-  }
-
-
-  return json({
-    params,
-    apiUrl,
-    fromText,
-    toText,
-    fromIata,
-    toIata,
-    fromEnityId,
-    toEnityId,
-  });
-};
-
-export default function Search() {
-  const { apiUrl, params, fromText, toText, fromIata, toIata, fromEnityId, toEnityId } = useLoaderData();
-  const { pathname } = useLocation()
-  const isResultsPage = fromIata;
-  const [search, setSearch] = useState<FlightQuery>({
-    from: fromEnityId,
-    to: toEnityId,
-    depart: params.depart || getDateFormated(1),
-    return: params.return ? params.return : getDateFormated(2),
-    tripType: params.depart ? params.return ? 'return' : 'single' : 'return',
-  });
-
-  const handleSearch = async (query: FlightQuery) => {
-    setSearch(query);
-  };
+export default function SearchFlight() {
+  const { pathname } = useLocation();
 
   return (
     <div>
-      <div className='banner'>
-        <Link className='link-light' to="/">Back</Link>
-      </div>
-      <div className='wrapper'>
-        <FlightSearchControls
-          defaultQuery={isResultsPage ? search : undefined}
-          onSubmit={handleSearch}
-          apiUrl={apiUrl}
-          fromText={fromText}
-          toText={toText}
-          defaultFrom={fromIata}
-          defaultTo={toIata}
-        />
-        <Outlet key={pathname} />
-      </div>
+      <Layout selectedUrl="/search">
+        <Outlet key={`outlet-${pathname}`} />
+      </Layout>
     </div>
   );
 }

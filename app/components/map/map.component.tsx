@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { isMobile } from "react-device-detect";
 
 interface MapProps {
   center: google.maps.LatLngLiteral;
@@ -21,6 +22,7 @@ export const Map = ({ center, zoom, markers, height = "600px" }: MapProps) => {
     const googleMap = new window.google.maps.Map(ref.current, {
       center,
       zoom,
+      ...(isMobile ? { gestureHandling: "greedy" } : {}),
     });
 
     const locationSvg = {

@@ -192,7 +192,7 @@ export const FlightForm = ({
             )}
           </div>
           <Link
-            to={`/search-flight/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
+            to={`/search/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
             className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
             onClick={handleSearchClicked}
           >
@@ -229,7 +229,7 @@ export const FlightForm = ({
           {previousSearches.map((previousSearch, key) => (
             <Link
               key={`${previousSearch.fromIata}-${previousSearch.toIata}-${key}`}
-              to={`/search-flight/${previousSearch.fromIata}/${previousSearch.toIata}/${previousSearch.depart}/${previousSearch.return}`}
+              to={`/search/${previousSearch.fromIata}/${previousSearch.toIata}/${previousSearch.depart}/${previousSearch.return}`}
               className="mr-2 mb-2 md:mb-0 lg:col-span-2 justify-center md:w-auto text-slate-600 bg-slate-100 hover:bg-slate-200 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:text-white dark:bg-slate-600 dark:hover:bg-slate-700 dark:focus:ring-slate-800 inline-flex items-center"
               onClick={() => setLoading(true)}
             >

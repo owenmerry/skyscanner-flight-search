@@ -16,20 +16,38 @@ export default function Index() {
   const { apiUrl } = useLoaderData();
 
   return (
-    <Layout selectedUrl="/">
+    <Layout selectedUrl="/news">
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-md lg:py-16 lg:px-12">
         <h2 className="text-2xl mb-6">Updates and new features</h2>
-        <p className="mb-10">
+        <p className="mb-16">
           This is a list of all the latest updates and features added to the
           website.
         </p>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
+            Added Check Price Feature With calender for single flights on
+            country page
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-07-29 at 20.10.54.png"
+          />
+        </div>
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">Added search on countries</h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-07-29 at 20.12.18.png"
+          />
+        </div>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">
             Added Check Price Feature for Cached prices
           </h2>
           <img
             className="object-scale-down my-4"
-            src="/images/news/public/images/news/Screenshot 2023-07-28 at 19.01.42.png"
+            src="/images/news/Screenshot 2023-07-28 at 19.01.42.png"
           />
         </div>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">

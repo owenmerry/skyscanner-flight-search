@@ -1,46 +1,44 @@
 import { useState } from "react";
-import { searchAutoSuggest } from "~/helpers/sdk/autosuggest";
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { useLoaderData, useOutlet } from "@remix-run/react";
-import globalStyles from "~/styles/global.css";
-import flightStyles from "~/styles/flight.css";
-import hotelStyles from "~/styles/hotel.css";
-
+import type { LoaderArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { HeroPage } from "~/components/ui/hero/hero-page";
+import { HotelList } from "~/components/hotels-list";
+import { getPlaceFromIata } from "~/helpers/sdk/place";
+import type { Place } from "~/helpers/sdk/geo/geo-sdk";
 import type { FlightQuery, FlightUrl } from "~/types/search";
 import { FlightDetails } from "~/components/flight-details";
-import { HotelList } from "~/components/hotels-list";
+import { getImages } from "~/helpers/sdk/query";
+import type { Query as OldQuery, QueryPlace } from "~/types/search";
 
-export const links: LinksFunction = () => {
-  return [
-    { rel: "stylesheet", href: globalStyles },
-    { rel: "stylesheet", href: flightStyles },
-    { rel: "stylesheet", href: hotelStyles },
-  ];
-};
-
-export const loader: LoaderFunction = async ({ request, context, params }) => {
+export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
-  const url = new URL(request.url);
-  let fromEnityId = "95565050";
-  let toEnityId = "95673529";
-
-  if (params.from) {
-    const fromPlaces = await searchAutoSuggest(params.from, apiUrl);
-    fromEnityId = fromPlaces[0].entityId;
-  }
-  if (params.to) {
-    const toPlaces = await searchAutoSuggest(params.to, apiUrl);
-    toEnityId = toPlaces[0].entityId;
-  }
-
-  return json({
+  const from = getPlaceFromIata(params.from || "");
+  const to = getPlaceFromIata(params.to || "");
+  const headerImage = await getImages({
     apiUrl,
-    params,
-    context,
-    query: Object.fromEntries(url.searchParams.entries()),
-    fromEnityId,
-    toEnityId,
+    query: to ? to.name : "",
+  });
+  const oldQuery: OldQuery = {
+    from: params.from || "",
+    fromIata: from ? from.iata : "",
+    fromText: from ? from.name : "",
+    to: params.to || "",
+    toIata: to ? to.iata : "",
+    toText: to ? to.name : "",
+    depart: params.depart || "",
+    return: params.return || "",
+    tripType: "return",
+  };
+
+  return {
+    apiUrl,
+    headerImage: headerImage[0],
+    query: {
+      from,
+      to,
+      depart: params.depart || "",
+      return: params.return || "",
+    },
     url: {
       from: params.from,
       to: params.to,
@@ -48,22 +46,40 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
       return: params.return,
       itineraryId: params.itineraryId,
     },
-  });
+    oldQuery,
+  };
 };
 
 export default function Search() {
-  const { apiUrl, params, context, fromEnityId, toEnityId, url } =
-    useLoaderData();
+  const {
+    apiUrl,
+    query,
+    url,
+    headerImage,
+    oldQuery,
+  }: {
+    apiUrl: string;
+    query: QueryPlace;
+    url: FlightUrl;
+    headerImage: string;
+    oldQuery: OldQuery;
+  } = useLoaderData();
   const [search, setSearch] = useState<FlightQuery>({
-    from: fromEnityId,
-    to: toEnityId,
-    depart: params.depart,
-    return: params.return || params.depart,
-    tripType: params.return ? "return" : "single",
+    from: query.from.entityId,
+    to: query.to.entityId,
+    depart: query.depart,
+    return: query.return,
+    tripType: query.return ? "return" : "single",
   });
 
   return (
     <div>
+      <HeroPage
+        apiUrl={apiUrl}
+        backgroundImage={headerImage}
+        flightDefault={oldQuery}
+        showFlightForm={false}
+      />
       <FlightDetails
         url={url}
         query={search}

@@ -19,8 +19,10 @@ import { ImagesDefault } from "~/components/ui/images/images-default";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { ExploreEverywhere } from "~/components/ui/page/explore";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import Calendar from "~/components/ui/calender/calender";
+import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -82,10 +84,17 @@ export default function SEOAnytime() {
   const defaultSearch = getDefualtFlightQuery();
   const [searchIndicative, setSearchIndicative] =
     useState<SkyscannerAPIIndicativeResponse>();
+  const [prices, setPrices] = useState<{ price: string; date: string }[]>([]);
+  const [airport, setAirport] = useState<Place>(airports[0]);
+  const previousInputValue = useRef<{ price: string; date: string }[]>([]);
 
   useEffect(() => {
     runIndicative();
   }, []);
+
+  useEffect(() => {
+    previousInputValue.current = prices;
+  }, [prices]);
 
   const runIndicative = async () => {
     const indicativeSearch = await skyscanner().indicative({
@@ -105,6 +114,43 @@ export default function SEOAnytime() {
     setSearchIndicative(indicativeSearch.search);
   };
   if (!from) return;
+
+  const handlePriceAdd = async (dateSelected: string) => {
+    const updatedPricesLoading = [
+      ...prices.filter((price) => price.price !== dateSelected),
+      {
+        price: "loading...",
+        date: dateSelected,
+      },
+    ];
+    setPrices(updatedPricesLoading);
+
+    const priceChecked = await getSearchWithCreateAndPoll(
+      {
+        from: from ? from.entityId : "",
+        to: airport.entityId,
+        depart: dateSelected,
+      },
+      {
+        apiUrl,
+      }
+    );
+    if (!priceChecked) return;
+    const updatedPrices = [
+      ...previousInputValue.current.filter(
+        (price) => price.date !== dateSelected
+      ),
+      {
+        price: priceChecked,
+        date: dateSelected,
+      },
+    ];
+    setPrices(updatedPrices);
+  };
+  const handleAirportChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setPrices([]);
+    setAirport(airports[Number(e.target.value)]);
+  };
 
   return (
     <Layout selectedUrl="/explore">
@@ -134,9 +180,9 @@ export default function SEOAnytime() {
                 <div className="">
                   <Link
                     className="hover:underline"
-                    to={`/search-flight/${from ? from.iata : ""}/${
-                      place.iata
-                    }/${defaultSearch.depart}/${defaultSearch.return}`}
+                    to={`/search/${from ? from.iata : ""}/${place.iata}/${
+                      defaultSearch.depart
+                    }/${defaultSearch.return}`}
                   >
                     {place.name}
                   </Link>
@@ -160,6 +206,18 @@ export default function SEOAnytime() {
             markers={getMarkersCountry([...airports], from, defaultSearch)}
           />
         </Wrapper>
+
+        <div className="py-10">
+          <select className="text-black" onChange={handleAirportChange}>
+            {airports.map((airport, key) => {
+              return <option value={key}>{airport.name}</option>;
+            })}
+          </select>
+          <Calendar
+            onDateSelected={(dateSelected) => handlePriceAdd(dateSelected)}
+            prices={prices}
+          />
+        </div>
       </div>
     </Layout>
   );

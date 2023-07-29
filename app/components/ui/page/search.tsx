@@ -117,7 +117,7 @@ export const ExploreDates = ({
                 )}-${numberTwoDigits(date.day)}`;
               };
               const getLink = (query: QueryPlace) => {
-                return `/search-flight/${query.from.iata}/${query.to.iata}/${
+                return `/search/${query.from.iata}/${query.to.iata}/${
                   query.depart
                 }${query.return ? `/${query.return}` : ""}`;
               };
