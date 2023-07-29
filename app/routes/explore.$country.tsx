@@ -1,18 +1,16 @@
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData, Link } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
 import {
   getPlaceFromSlug,
   getGeoList,
-  getGeo,
   getPlaceFromIata,
 } from "~/helpers/sdk/place";
 import { Layout } from "~/components/ui/layout/layout";
 import { Map } from "~/components/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { getMarkersCountry } from "~/helpers/map";
-import { SEO } from "~/components/SEO";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { HeroExplore } from "~/components/ui/hero/hero-explore";
 import { ImagesDefault } from "~/components/ui/images/images-default";
@@ -23,6 +21,7 @@ import { useEffect, useState, useRef } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import Calendar from "~/components/ui/calender/calender";
 import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
+import { CalenderSearch } from "~/components/ui/calender-search/calender-search";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -74,27 +73,13 @@ export default function SEOAnytime() {
     googleApiKey: string;
   } = useLoaderData();
   const from = getFromPlaceLocalOrDefault() || getPlaceFromIata("LHR");
-  const query = {
-    from: from ? from.entityId : "",
-    to: country.entityId,
-    month: String(new Date().getMonth() + 1),
-    endMonth: new Date().getMonth() + 1,
-    groupType: "month",
-  };
   const defaultSearch = getDefualtFlightQuery();
   const [searchIndicative, setSearchIndicative] =
     useState<SkyscannerAPIIndicativeResponse>();
-  const [prices, setPrices] = useState<{ price: string; date: string }[]>([]);
-  const [airport, setAirport] = useState<Place>(airports[0]);
-  const previousInputValue = useRef<{ price: string; date: string }[]>([]);
 
   useEffect(() => {
     runIndicative();
   }, []);
-
-  useEffect(() => {
-    previousInputValue.current = prices;
-  }, [prices]);
 
   const runIndicative = async () => {
     const indicativeSearch = await skyscanner().indicative({
@@ -114,43 +99,6 @@ export default function SEOAnytime() {
     setSearchIndicative(indicativeSearch.search);
   };
   if (!from) return;
-
-  const handlePriceAdd = async (dateSelected: string) => {
-    const updatedPricesLoading = [
-      ...prices.filter((price) => price.price !== dateSelected),
-      {
-        price: "loading...",
-        date: dateSelected,
-      },
-    ];
-    setPrices(updatedPricesLoading);
-
-    const priceChecked = await getSearchWithCreateAndPoll(
-      {
-        from: from ? from.entityId : "",
-        to: airport.entityId,
-        depart: dateSelected,
-      },
-      {
-        apiUrl,
-      }
-    );
-    if (!priceChecked) return;
-    const updatedPrices = [
-      ...previousInputValue.current.filter(
-        (price) => price.date !== dateSelected
-      ),
-      {
-        price: priceChecked,
-        date: dateSelected,
-      },
-    ];
-    setPrices(updatedPrices);
-  };
-  const handleAirportChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setPrices([]);
-    setAirport(airports[Number(e.target.value)]);
-  };
 
   return (
     <Layout selectedUrl="/explore">
@@ -206,19 +154,8 @@ export default function SEOAnytime() {
             markers={getMarkersCountry([...airports], from, defaultSearch)}
           />
         </Wrapper>
-
-        <div className="py-10">
-          <select className="text-black" onChange={handleAirportChange}>
-            {airports.map((airport, key) => {
-              return <option value={key}>{airport.name}</option>;
-            })}
-          </select>
-          <Calendar
-            onDateSelected={(dateSelected) => handlePriceAdd(dateSelected)}
-            prices={prices}
-          />
-        </div>
       </div>
+      <CalenderSearch airports={airports} from={from} apiUrl={apiUrl} />
     </Layout>
   );
 }

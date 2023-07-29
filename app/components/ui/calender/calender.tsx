@@ -1,11 +1,12 @@
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
-  prices?: { price: string; date: string }[];
+  prices?: { price: string; date: string; link?: string }[];
   displayDate?: string;
   selectedDate?: string;
   onDateSelected?: (date: string) => void;
+  onPriceCheck?: (date: string) => void;
 }
 
 type CalendarItemProps = {
@@ -13,7 +14,9 @@ type CalendarItemProps = {
   price?: string;
   isDisabled?: boolean;
   isSelected: boolean;
-  onClick: Function;
+  link?: string;
+  onClick?: Function;
+  onPriceCheck: Function;
 };
 
 function CalendarItem({
@@ -22,14 +25,32 @@ function CalendarItem({
   isDisabled,
   isSelected,
   onClick,
+  onPriceCheck,
+  link,
 }: CalendarItemProps) {
   return (
     <div
-      className="border-slate-600 border-2 p-4 hover:bg-slate-700"
-      onClick={() => !isDisabled && onClick(date)}
+      className={` border-2 p-4 hover:bg-slate-700 ${
+        isSelected ? `border-blue-600` : `border-slate-600`
+      }`}
+      onClick={() => !isDisabled && onClick && onClick(date)}
     >
       <div className="">{date.getDate()}</div>
-      <div className="">{price ? `${price}` : "-"}</div>
+      <div
+        className="cursor-pointer"
+        onClick={() => !isDisabled && onPriceCheck(date)}
+      >
+        {price ? `${price}` : "-"}
+      </div>
+      {link ? (
+        <div>
+          <a href={link} target="_blank">
+            Go to Search
+          </a>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
@@ -37,6 +58,7 @@ function CalendarItem({
 export default function Calendar({
   displayDate = moment(new Date()).format("YYYY-MM-DD"),
   onDateSelected,
+  onPriceCheck,
   selectedDate,
   prices = [],
 }: Props) {
@@ -50,6 +72,10 @@ export default function Calendar({
   const items = [];
   const currentDate = startOfGrid.clone();
 
+  useEffect(() => {
+    setCalenderDate(displayDate);
+  }, [displayDate]);
+
   while (currentDate.isSameOrBefore(endOfGrid)) {
     const currentStringDate = currentDate.format("YYYY-MM-DD");
 
@@ -59,6 +85,10 @@ export default function Calendar({
         prices.filter((price) => price.date === currentStringDate)[0]?.price ||
         "",
       //isDisabled: currentDate.month() !== monthDate.month(),
+      link:
+        prices.filter(
+          (price) => price.date === currentStringDate && price.link
+        )[0]?.link || undefined,
       isSelected: currentStringDate === selectedDate,
     });
 
@@ -69,9 +99,13 @@ export default function Calendar({
     const stringDate = moment(clickedDate).format("YYYY-MM-DD");
     onDateSelected && onDateSelected(stringDate);
   };
+  const handlePriceCheck = (clickedDate: Date) => {
+    const stringDate = moment(clickedDate).format("YYYY-MM-DD");
+    onPriceCheck && onPriceCheck(stringDate);
+  };
 
   return (
-    <div className="relative z-10 mx-auto max-w-screen-xl">
+    <div className="">
       <button
         className="p-4 hover:bg-slate-700"
         onClick={() =>
@@ -116,6 +150,7 @@ export default function Calendar({
             <CalendarItem
               key={item.date.toISOString()}
               onClick={handleDateSelected}
+              onPriceCheck={handlePriceCheck}
               {...item}
             />
           ))}
