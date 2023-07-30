@@ -1,0 +1,2 @@
+Get activties data, airport and months: 
+Get me the top 10 places in the world to go freediving and put it into a json, with location name (call it location_name), description (call it description), nearest airport IATA code (call it airport_iata), best 3 months to visit (call it best_months_to_visit) in the json file place it all inside a key of the sports name

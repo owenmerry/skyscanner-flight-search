@@ -8,16 +8,28 @@ import {
   getImages,
 } from "~/helpers/sdk/query";
 import { useLoaderData } from "@remix-run/react";
-import { getEntityIdFromIata } from "~/helpers/sdk/place";
+import {
+  Place,
+  getEntityIdFromIata,
+  getPlaceFromEntityId,
+} from "~/helpers/sdk/place";
 import { Spinner } from "flowbite-react";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getImagesFromParents } from "~/helpers/sdk/images";
 import { HeroPage } from "~/components/ui/hero/hero-page";
-import { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
-import { Query } from "~/types/search";
+import { SearchSDK, skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import { Query, QueryPlace } from "~/types/search";
+import {
+  ExploreDates,
+  ExplorePage,
+  MapComponent,
+} from "~/components/ui/page/search";
+import { getCountryEntityId } from "~/helpers/sdk/data";
+import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
 
   //exit
   if (!params.from || !params.to) return;
@@ -31,16 +43,27 @@ export const loader = async ({ params }: LoaderArgs) => {
   const toPlace = getPlaceFromIata(params.to);
   if (!fromPlace || !toPlace) return {};
   const flightParams: Query = {
-    from: params.from || "",
+    from: fromPlace.entityId || "",
     fromIata: fromPlace.iata,
     fromText: fromPlace.name,
-    to: params.to || "",
+    to: toPlace.entityId || "",
     toIata: toPlace.iata,
     toText: toPlace.name,
     depart: params.depart || "",
     return: "",
     tripType: "",
   };
+
+  //explore
+  const flightQuery: QueryPlace = {
+    from: fromPlace,
+    to: toPlace,
+    depart: params.depart || "",
+    return: params.return || "",
+  };
+  const country = getPlaceFromEntityId(
+    getCountryEntityId(flightQuery.to.entityId)
+  );
 
   //images
   const parentImages = getImagesFromParents(toPlace.entityId);
@@ -63,8 +86,11 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   return {
     apiUrl,
+    googleApiKey,
     params,
+    country,
     flightSearch,
+    flightQuery,
     flightParams,
     parentImages,
     headerImage: fromImage[0] || parentImages[0] || "",
@@ -75,13 +101,19 @@ export default function Search() {
   const {
     flightSearch,
     apiUrl,
+    googleApiKey,
+    country,
     flightParams,
     parentImages,
+    flightQuery,
     headerImage,
   }: {
     apiUrl: string;
+    googleApiKey: string;
     flightParams: Query;
+    country: Place;
     parentImages: string[];
+    flightQuery: QueryPlace;
     flightSearch: SearchSDK | { error: string };
     headerImage: string;
   } = useLoaderData();
@@ -89,6 +121,8 @@ export default function Search() {
   const [search, setSearch] = useState(flightSearch);
   const [filters, setFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
+  const [searchIndicative, setSearchIndicative] =
+    useState<SkyscannerAPIIndicativeResponse>();
   const [error, setError] = useState(
     "error" in flightSearch ? flightSearch.error : ""
   );
@@ -99,6 +133,7 @@ export default function Search() {
   useEffect(() => {
     setLoading(true);
     runPoll();
+    runIndicative();
   }, []);
 
   const runPoll = async () => {
@@ -123,6 +158,23 @@ export default function Search() {
       setSearch(res);
       setLoading(false);
     }
+  };
+
+  const runIndicative = async () => {
+    const indicativeSearch = await skyscanner().indicative({
+      apiUrl,
+      query: {
+        from: query.from,
+        to: query.to,
+        depart: query.depart,
+        tripType: "return",
+      },
+      month: Number(query.depart.split("-")[1]),
+    });
+
+    if ("error" in indicativeSearch.search) return;
+
+    setSearchIndicative(indicativeSearch.search);
   };
 
   return (
@@ -153,6 +205,13 @@ export default function Search() {
               <div className="dark:text-white"> {error}</div>
             ) : (
               <>
+                <MapComponent
+                  flightQuery={flightQuery}
+                  googleApiKey={googleApiKey}
+                  key="map-component"
+                />
+                <ExplorePage country={country} />
+                <ExploreDates search={searchIndicative} query={flightQuery} />
                 {loading ? (
                   <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
                     <Spinner className="mr-2" /> Loading More Prices &

@@ -1,0 +1,252 @@
+[
+  {
+    "priority": 1,
+    "country": "France",
+    "iata": "CDG"
+  },
+  {
+    "priority": 2,
+    "country": "Spain",
+    "iata": "MAD"
+  },
+  {
+    "priority": 3,
+    "country": "United States",
+    "iata": "ATL"
+  },
+  {
+    "priority": 4,
+    "country": "China",
+    "iata": "PEK"
+  },
+  {
+    "priority": 5,
+    "country": "Italy",
+    "iata": "FCO"
+  },
+  {
+    "priority": 6,
+    "country": "Turkey",
+    "iata": "IST"
+  },
+  {
+    "priority": 7,
+    "country": "Mexico",
+    "iata": "MEX"
+  },
+  {
+    "priority": 8,
+    "country": "Germany",
+    "iata": "FRA"
+  },
+  {
+    "priority": 9,
+    "country": "Thailand",
+    "iata": "BKK"
+  },
+  {
+    "priority": 10,
+    "country": "United Kingdom",
+    "iata": "LHR"
+  },
+  {
+    "priority": 11,
+    "country": "Japan",
+    "iata": "HND"
+  },
+  {
+    "priority": 12,
+    "country": "Austria",
+    "iata": "VIE"
+  },
+  {
+    "priority": 13,
+    "country": "Greece",
+    "iata": "ATH"
+  },
+  {
+    "priority": 14,
+    "country": "Russia",
+    "iata": "SVO"
+  },
+  {
+    "priority": 15,
+    "country": "Canada",
+    "iata": "YYZ"
+  },
+  {
+    "priority": 16,
+    "country": "Poland",
+    "iata": "WAW"
+  },
+  {
+    "priority": 17,
+    "country": "Netherlands",
+    "iata": "AMS"
+  },
+  {
+    "priority": 18,
+    "country": "Saudi Arabia",
+    "iata": "JED"
+  },
+  {
+    "priority": 19,
+    "country": "Croatia",
+    "iata": "ZAG"
+  },
+  {
+    "priority": 20,
+    "country": "India",
+    "iata": "DEL"
+  },
+  {
+    "priority": 21,
+    "country": "Malaysia",
+    "iata": "KUL"
+  },
+  {
+    "priority": 22,
+    "country": "Portugal",
+    "iata": "LIS"
+  },
+  {
+    "priority": 23,
+    "country": "Singapore",
+    "iata": "SIN"
+  },
+  {
+    "priority": 24,
+    "country": "South Korea",
+    "iata": "ICN"
+  },
+  {
+    "priority": 25,
+    "country": "Vietnam",
+    "iata": "SGN"
+  },
+  {
+    "priority": 26,
+    "country": "Australia",
+    "iata": "SYD"
+  },
+  {
+    "priority": 27,
+    "country": "Brazil",
+    "iata": "GRU"
+  },
+  {
+    "priority": 28,
+    "country": "Egypt",
+    "iata": "CAI"
+  },
+  {
+    "priority": 29,
+    "country": "Indonesia",
+    "iata": "CGK"
+  },
+  {
+    "priority": 30,
+    "country": "South Africa",
+    "iata": "JNB"
+  },
+  {
+    "priority": 31,
+    "country": "Morocco",
+    "iata": "CMN"
+  },
+  {
+    "priority": 32,
+    "country": "Switzerland",
+    "iata": "ZRH"
+  },
+  {
+    "priority": 33,
+    "country": "Belgium",
+    "iata": "BRU"
+  },
+  {
+    "priority": 34,
+    "country": "Argentina",
+    "iata": "EZE"
+  },
+  {
+    "priority": 35,
+    "country": "Sweden",
+    "iata": "ARN"
+  },
+  {
+    "priority": 36,
+    "country": "Hungary",
+    "iata": "BUD"
+  },
+  {
+    "priority": 37,
+    "country": "Hong Kong",
+    "iata": "HKG"
+  },
+  {
+    "priority": 38,
+    "country": "Ireland",
+    "iata": "DUB"
+  },
+  {
+    "priority": 39,
+    "country": "Denmark",
+    "iata": "CPH"
+  },
+  {
+    "priority": 40,
+    "country": "Czech Republic",
+    "iata": "PRG"
+  },
+  {
+    "priority": 41,
+    "country": "Norway",
+    "iata": "OSL"
+  },
+  {
+    "priority": 42,
+    "country": "Finland",
+    "iata": "HEL"
+  },
+  {
+    "priority": 43,
+    "country": "Chile",
+    "iata": "SCL"
+  },
+  {
+    "priority": 44,
+    "country": "Romania",
+    "iata": "OTP"
+  },
+  {
+    "priority": 45,
+    "country": "New Zealand",
+    "iata": "AKL"
+  },
+  {
+    "priority": 46,
+    "country": "Israel",
+    "iata": "TLV"
+  },
+  {
+    "priority": 47,
+    "country": "UAE",
+    "iata": "DXB"
+  },
+  {
+    "priority": 48,
+    "country": "Philippines",
+    "iata": "MNL"
+  },
+  {
+    "priority": 49,
+    "country": "Peru",
+    "iata": "LIM"
+  },
+  {
+    "priority": 50,
+    "country": "Sri Lanka",
+    "iata": "CMB"
+  }
+]

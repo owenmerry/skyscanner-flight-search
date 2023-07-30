@@ -1,0 +1,182 @@
+[
+    {
+        "airport": "London Heathrow Airport",
+        "iata": "LHR",
+        "country": "United Kingdom",
+        "activities": ["Sightseeing", "Cycling", "Theatre", "Museum visits"]
+    },
+    {
+        "airport": "Charles de Gaulle Airport",
+        "iata": "CDG",
+        "country": "France",
+        "activities": ["Sightseeing", "Wine tasting", "Museum visits", "Cycling"]
+    },
+    {
+        "airport": "Amsterdam Airport Schiphol",
+        "iata": "AMS",
+        "country": "Netherlands",
+        "activities": ["Cycling", "Museum visits", "Boat tours", "Sightseeing"]
+    },
+    {
+        "airport": "Frankfurt Airport",
+        "iata": "FRA",
+        "country": "Germany",
+        "activities": ["Hiking", "Museum visits", "Sightseeing", "Wine tasting"]
+    },
+    {
+        "airport": "Adolfo Suárez Madrid–Barajas Airport",
+        "iata": "MAD",
+        "country": "Spain",
+        "activities": ["Sightseeing", "Cycling", "Museum visits", "Wine tasting"]
+    },
+    {
+        "airport": "Istanbul Airport",
+        "iata": "IST",
+        "country": "Turkey",
+        "activities": ["Sightseeing", "Museum visits", "Boat tours", "Food tasting"]
+    },
+    {
+        "airport": "Barcelona–El Prat Airport",
+        "iata": "BCN",
+        "country": "Spain",
+        "activities": ["Sightseeing", "Cycling", "Beach activities", "Food tasting"]
+    },
+    {
+        "airport": "Munich Airport",
+        "iata": "MUC",
+        "country": "Germany",
+        "activities": ["Hiking", "Museum visits", "Sightseeing", "Beer tasting"]
+    },
+    {
+        "airport": "Leonardo da Vinci–Fiumicino Airport",
+        "iata": "FCO",
+        "country": "Italy",
+        "activities": ["Sightseeing", "Food tasting", "Museum visits", "Cycling"]
+    },
+    {
+        "airport": "Sheremetyevo International Airport",
+        "iata": "SVO",
+        "country": "Russia",
+        "activities": ["Sightseeing", "Museum visits", "Theatre", "Ice skating"]
+    },
+    {
+        "airport": "Dublin Airport",
+        "iata": "DUB",
+        "country": "Ireland",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Pub tours"]
+    },
+    {
+        "airport": "Zurich Airport",
+        "iata": "ZRH",
+        "country": "Switzerland",
+        "activities": ["Hiking", "Skiing", "Museum visits", "Lake activities"]
+    },
+    {
+        "airport": "Copenhagen Airport",
+        "iata": "CPH",
+        "country": "Denmark",
+        "activities": ["Sightseeing", "Cycling", "Museum visits", "Boat tours"]
+    },
+    {
+        "airport": "Oslo Airport",
+        "iata": "OSL",
+        "country": "Norway",
+        "activities": ["Hiking", "Skiing", "Museum visits", "Boat tours"]
+    },
+    {
+        "airport": "Vienna International Airport",
+        "iata": "VIE",
+        "country": "Austria",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Wine tasting"]
+    },
+    {
+        "airport": "Brussels Airport",
+        "iata": "BRU",
+        "country": "Belgium",
+        "activities": ["Sightseeing", "Cycling", "Museum visits", "Beer tasting"]
+    },
+    {
+        "airport": "Helsinki Airport",
+        "iata": "HEL",
+        "country": "Finland",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Sauna experience"]
+    },
+    {
+        "airport": "Warsaw Chopin Airport",
+        "iata": "WAW",
+        "country": "Poland",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Food tasting"]
+    },
+    {
+        "airport": "Lisbon Airport",
+        "iata": "LIS",
+        "country": "Portugal",
+        "activities": ["Sightseeing", "Cycling", "Beach activities", "Wine tasting"]
+    },
+    {
+        "airport": "Budapest Ferenc Liszt International Airport",
+        "iata": "BUD",
+        "country": "Hungary",
+        "activities": ["Sightseeing", "Cycling", "Museum visits", "Thermal baths"]
+    },
+    {
+        "airport": "Stockholm Arlanda Airport",
+        "iata": "ARN",
+        "country": "Sweden",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Boat tours"]
+    },
+    {
+        "airport": "Athens International Airport",
+        "iata": "ATH",
+        "country": "Greece",
+        "activities": ["Sightseeing", "Cycling", "Beach activities", "Food tasting"]
+    },
+    {
+        "airport": "Prague Airport",
+        "iata": "PRG",
+        "country": "Czech Republic",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Beer tasting"]
+    },
+    {
+        "airport": "Belgrade Nikola Tesla Airport",
+        "iata": "BEG",
+        "country": "Serbia",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Food tasting"]
+    },
+    {
+        "airport": "Sofia Airport",
+        "iata": "SOF",
+        "country": "Bulgaria",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Food tasting"]
+    },
+    {
+        "airport": "Larnaca International Airport",
+        "iata": "LCA",
+        "country": "Cyprus",
+        "activities": ["Sightseeing", "Cycling", "Beach activities", "Food tasting"]
+    },
+    {
+        "airport": "Riga International Airport",
+        "iata": "RIX",
+        "country": "Latvia",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Food tasting"]
+    },
+    {
+        "airport": "Vilnius Airport",
+        "iata": "VNO",
+        "country": "Lithuania",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Food tasting"]
+    },
+    {
+        "airport": "Tallinn Airport",
+        "iata": "TLL",
+        "country": "Estonia",
+        "activities": ["Sightseeing", "Hiking", "Museum visits", "Food tasting"]
+    },
+    {
+        "airport": "Tirana International Airport",
+        "iata": "TIA",
+        "country": "Albania",
+        "activities": ["Sightseeing", "Hiking", "Beach activities", "Food tasting"]
+    }
+]

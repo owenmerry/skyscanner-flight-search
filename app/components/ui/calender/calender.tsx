@@ -44,7 +44,7 @@ function CalendarItem({
       </div>
       {link ? (
         <div>
-          <a href={link} target="_blank">
+          <a className="text-sm underline" href={link} target="_blank">
             Go to Search
           </a>
         </div>

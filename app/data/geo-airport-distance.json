@@ -1,0 +1,182 @@
+[
+    {
+        "iata": "PSA",
+        "airport_name": "Pisa International Airport",
+        "city": "Pisa",
+        "distance_to_city_km": 1
+    },
+    {
+        "iata": "GVA",
+        "airport_name": "Geneva Airport",
+        "city": "Geneva",
+        "distance_to_city_km": 4
+    },
+    {
+        "iata": "TLL",
+        "airport_name": "Tallinn Airport",
+        "city": "Tallinn",
+        "distance_to_city_km": 4
+    },
+    {
+        "iata": "LIS",
+        "airport_name": "Lisbon Portela Airport",
+        "city": "Lisbon",
+        "distance_to_city_km": 7
+    },
+    {
+        "iata": "LIN",
+        "airport_name": "Linate Airport",
+        "city": "Milan",
+        "distance_to_city_km": 8
+    },
+    {
+        "iata": "NCE",
+        "airport_name": "Nice Côte d'Azur Airport",
+        "city": "Nice",
+        "distance_to_city_km": 6
+    },
+    {
+        "iata": "VCE",
+        "airport_name": "Venice Marco Polo Airport",
+        "city": "Venice",
+        "distance_to_city_km": 8
+    },
+    {
+        "iata": "LCY",
+        "airport_name": "London City Airport",
+        "city": "London",
+        "distance_to_city_km": 9
+    },
+    {
+        "iata": "TXL",
+        "airport_name": "Berlin Tegel Airport",
+        "city": "Berlin",
+        "distance_to_city_km": 8
+    },
+    {
+        "iata": "HAM",
+        "airport_name": "Hamburg Airport",
+        "city": "Hamburg",
+        "distance_to_city_km": 9
+    },
+    {
+        "iata": "DUS",
+        "airport_name": "Düsseldorf Airport",
+        "city": "Düsseldorf",
+        "distance_to_city_km": 7
+    },
+    {
+        "iata": "LUX",
+        "airport_name": "Luxembourg Airport",
+        "city": "Luxembourg",
+        "distance_to_city_km": 6
+    },
+    {
+        "iata": "VNO",
+        "airport_name": "Vilnius Airport",
+        "city": "Vilnius",
+        "distance_to_city_km": 6
+    },
+    {
+        "iata": "ORY",
+        "airport_name": "Orly Airport",
+        "city": "Paris",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "VIE",
+        "airport_name": "Vienna International Airport",
+        "city": "Vienna",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "WAW",
+        "airport_name": "Warsaw Chopin Airport",
+        "city": "Warsaw",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "ZAG",
+        "airport_name": "Zagreb Airport",
+        "city": "Zagreb",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "BEG",
+        "airport_name": "Belgrade Nikola Tesla Airport",
+        "city": "Belgrade",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "PRG",
+        "airport_name": "Václav Havel Airport Prague",
+        "city": "Prague",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "BUD",
+        "airport_name": "Budapest Ferenc Liszt International Airport",
+        "city": "Budapest",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "BRU",
+        "airport_name": "Brussels Airport",
+        "city": "Brussels",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "SOF",
+        "airport_name": "Sofia Airport",
+        "city": "Sofia",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "HEL",
+        "airport_name": "Helsinki Airport",
+        "city": "Helsinki",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "ARN",
+        "airport_name": "Stockholm Arlanda Airport",
+        "city": "Stockholm",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "TLS",
+        "airport_name": "Toulouse–Blagnac Airport",
+        "city": "Toulouse",
+        "distance_to_city_km": 7
+    },
+    {
+        "iata": "STR",
+        "airport_name": "Stuttgart Airport",
+        "city": "Stuttgart",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "LYS",
+        "airport_name": "Lyon–Saint Exupéry Airport",
+        "city": "Lyon",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "MRS",
+        "airport_name": "Marseille Provence Airport",
+        "city": "Marseille",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "RIX",
+        "airport_name": "Riga International Airport",
+        "city": "Riga",
+        "distance_to_city_km": 10
+    },
+    {
+        "iata": "CPH",
+        "airport_name": "Copenhagen Airport",
+        "city": "Copenhagen",
+        "distance_to_city_km": 8
+    }
+]

@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { AllCountries, ExploreEverywhere } from "~/components/ui/page/explore";
+import { AllActivities } from "~/components/ui/activities/activities";
 
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -62,6 +63,7 @@ export default function SEOAnytime() {
           showAll={countryShow}
           onShowToggle={() => setCountryShow(!countryShow)}
         />
+        <AllActivities />
         <ExploreEverywhere
           title={`${from.name} to Everywhere`}
           from={from}

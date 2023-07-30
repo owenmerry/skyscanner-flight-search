@@ -1,0 +1,881 @@
+{
+    "Freediving" : [
+        {
+            "location_name": "Blue Hole, Dahab, Egypt",
+            "description": "The Blue Hole in Dahab is one of the most famous freediving spots in the world. It's a sinkhole with a depth of over 100 meters, providing a unique and challenging environment for freedivers.",
+            "nearest_airport": "SSH",
+            "best_months_to_visit": ["April", "May", "October"]
+        },
+        {
+            "location_name": "Dean's Blue Hole, Bahamas",
+            "description": "The deepest known salt water blue hole with an entrance below the sea level. It plunges 202 meters and is a hotspot for international freediving competitions.",
+            "nearest_airport": "GHB",
+            "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+            "location_name": "Great Barrier Reef, Australia",
+            "description": "The world's largest coral reef system. Freedivers can explore a rich biodiversity including numerous species of colourful fish, coral, and other marine life.",
+            "nearest_airport": "CNS",
+            "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+            "location_name": "Tulum, Mexico",
+            "description": "Known for its cenotes, natural sinkholes that offer a unique freediving experience. The visibility in the crystal clear water is incredible.",
+            "nearest_airport": "CUN",
+            "best_months_to_visit": ["December", "January", "February"]
+        },
+        {
+            "location_name": "Amorgos, Greece",
+            "description": "The location of the famous shipwreck from the film 'The Big Blue.' The clear, deep waters offer excellent visibility.",
+            "nearest_airport": "JMK",
+            "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+            "location_name": "Bali, Indonesia",
+            "description": "Known for its rich marine life and excellent visibility. The USAT Liberty wreck in Tulamben is a popular freediving site.",
+            "nearest_airport": "DPS",
+            "best_months_to_visit": ["May", "June", "July"]
+        },
+        {
+            "location_name": "Kona, Hawaii, USA",
+            "description": "Known for its clear waters and marine life, including a unique opportunity to freedive with manta rays at night.",
+            "nearest_airport": "KOA",
+            "best_months_to_visit": ["May", "June", "July"]
+        },
+        {
+            "location_name": "Nice, France",
+            "description": "Offers a variety of freediving experiences, from deep dives to exploring marine life and underwater caves.",
+            "nearest_airport": "NCE",
+            "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+            "location_name": "Roatán, Honduras",
+            "description": "Known for its beautiful coral reefs and clear waters. The island's West Bay is a popular spot for freediving.",
+            "nearest_airport": "RTB",
+            "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+            "location_name": "Tofo, Mozambique",
+            "description": "Known for its rich marine life, including manta rays and whale sharks. The clear, warm waters make it a great spot for freediving.",
+            "nearest_airport": "INH",
+            "best_months_to_visit": ["June", "July", "August"]
+        }
+
+    ],
+    "Road Cycling" : [
+        {
+            "location_name": "Tour de Mont Blanc, Europe",
+            "description": "A challenging route that takes you through France, Italy, and Switzerland, offering stunning views of the Alps.",
+            "nearest_airport": "GVA",
+            "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+            "location_name": "Mallorca, Spain",
+            "description": "Known for its smooth roads, challenging climbs, and beautiful coastal views. It's a popular training location for professional cyclists.",
+            "nearest_airport": "PMI",
+            "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+            "location_name": "Great Ocean Road, Australia",
+            "description": "Offers stunning coastal views, rolling hills, and the chance to see local wildlife. The road is well-maintained and has plenty of places to stop and rest.",
+            "nearest_airport": "MEL",
+            "best_months_to_visit": ["February", "March", "April"]
+        },
+        {
+            "location_name": "Tuscany, Italy",
+            "description": "Known for its beautiful landscapes, quiet roads, and challenging hills. The region is also famous for its food and wine.",
+            "nearest_airport": "FLR",
+            "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+            "location_name": "California Wine Country, USA",
+            "description": "Offers a mix of flat roads and steep climbs, with the added bonus of wine tasting along the way. The scenery is beautiful, with vineyards, forests, and the Pacific coastline.",
+            "nearest_airport": "SFO",
+            "best_months_to_visit": ["April", "May", "October"]
+        },
+        {
+            "location_name": "Cape Town, South Africa",
+            "description": "Offers a variety of routes, from challenging mountain climbs to flat coastal roads. The scenery is stunning, with views of the ocean, mountains, and vineyards.",
+            "nearest_airport": "CPT",
+            "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+            "location_name": "French Pyrenees, France",
+            "description": "Offers challenging climbs and stunning views. It's a popular location for Tour de France stages.",
+            "nearest_airport": "TLS",
+            "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+            "location_name": "Girona, Spain",
+            "description": "A popular location for professional cyclists due to its mix of flat roads, mountain climbs, and beautiful scenery.",
+            "nearest_airport": "GRO",
+            "best_months_to_visit": ["April", "May", "June"]
+        },
+        {
+            "location_name": "Kyoto, Japan",
+            "description": "Offers a mix of city and countryside cycling. The city's many bike paths and the surrounding countryside provide a variety of experiences.",
+            "nearest_airport": "KIX",
+            "best_months_to_visit": ["March", "April", "November"]
+        },
+        {
+            "location_name": "Yorkshire Dales, UK",
+            "description": "Known for its rolling hills, quiet roads, and beautiful landscapes. The region has hosted stages of the Tour de France.",
+            "nearest_airport": "LBA",
+            "best_months_to_visit": ["June", "July", "August"]
+        }
+    ],
+    "Cycle Touring": [
+        {
+            "location_name": "Danube River Cycle Path, Europe",
+            "description": "This route follows the Danube River from Germany to the Black Sea, passing through 10 countries. It's a well-marked, relatively flat route with plenty of cultural and historical sites along the way.",
+            "nearest_airport": "MUC",
+            "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+            "location_name": "The Silk Road, Asia",
+            "description": "A historic trade route that stretches from China to Europe. The entire route is over 4,000 miles and takes you through diverse landscapes and cultures.",
+            "nearest_airport": "PEK",
+            "best_months_to_visit": ["May", "September", "October"]
+        },
+        {
+            "location_name": "The Pan-American Highway, Americas",
+            "description": "The world's longest 'motorable road,' according to Guinness World Records. It offers a variety of landscapes, from deserts in Mexico to the rainforests of Costa Rica.",
+            "nearest_airport": "SAN",
+            "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+            "location_name": "The Carretera Austral, Chile and Argentina",
+            "description": "A scenic route that takes you through the remote landscapes of Patagonia, including forests, mountains, and glaciers.",
+            "nearest_airport": "PMC",
+            "best_months_to_visit": ["December", "January", "February"]
+        },
+        {
+            "location_name": "The TransAmerica Trail, USA",
+            "description": "A cross-country route that takes you from the Atlantic to the Pacific, passing through a variety of landscapes and small towns.",
+            "nearest_airport": "ORF",
+            "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+            "location_name": "EuroVelo 6, Europe",
+            "description": "This route takes you from the Atlantic Ocean to the Black Sea, passing through 10 countries and a variety of landscapes.",
+            "nearest_airport": "NTE",
+            "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+            "location_name": "The Great Divide Mountain Bike Route, USA and Canada",
+            "description": "The world's longest off-pavement cycling route, featuring dirt roads, gravel, and trails. It's a challenging route with stunning mountain scenery.",
+            "nearest_airport": "YYC",
+            "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+            "location_name": "North Sea Cycle Route, Europe",
+            "description": "A circular route that takes you through the UK, the Netherlands, Germany, Denmark, Sweden, and Norway. It offers a mix of landscapes, including coastline, forests, and farmland.",
+            "nearest_airport": "LHR",
+            "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+            "location_name": "The Mekong River, Asia",
+            "description": "This route follows the Mekong River through six countries: China, Myanmar, Laos, Thailand, Cambodia, and Vietnam. It offers a mix of landscapes and cultural experiences.",
+            "nearest_airport": "PEK",
+            "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+            "location_name": "Cairo to Cape Town, Africa",
+            "description": "A challenging route that takes you the length of Africa, from Egypt to South Africa. It offers a variety of landscapes, including deserts, mountains, and savannah.",
+            "nearest_airport": "CAI",
+            "best_months_to_visit": ["October", "November", "December"]
+        }
+    ],
+    "Hiking": [
+        {
+          "location_name": "Inca Trail, Peru",
+          "description": "The Inca Trail is a hiking trail in Peru that terminates at Machu Picchu. It consists of three overlapping trails: Mollepata, Classic, and One Day.",
+          "nearest_airport": "CUZ",
+          "best_months_to_visit": ["May", "June", "July"]
+        },
+        {
+          "location_name": "Mount Kilimanjaro, Tanzania",
+          "description": "Mount Kilimanjaro is a dormant volcano in Tanzania. It has three volcanic cones: Kibo, Mawenzi, and Shira. It is the highest mountain in Africa and the highest single free-standing mountain in the world.",
+          "nearest_airport": "JRO",
+          "best_months_to_visit": ["January", "February", "September"]
+        },
+        {
+          "location_name": "Everest Base Camp, Nepal",
+          "description": "Everest Base Camp is either of two base camps on opposite sides of Mount Everest. South Base Camp is in Nepal at an altitude of 5,364 metres, and North Base Camp is in Tibet at 5,150 metres.",
+          "nearest_airport": "KTM",
+          "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+          "location_name": "Pacific Crest Trail, USA",
+          "description": "The Pacific Crest Trail is a long-distance hiking and equestrian trail closely aligned with the highest portion of the Sierra Nevada and Cascade mountain ranges.",
+          "nearest_airport": "LAX",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Tour du Mont Blanc, France, Italy, Switzerland",
+          "description": "The Tour du Mont Blanc is a unique trek of approximately 200km around Mont Blanc that can be completed in between 7 and 10 days passing through Italy, Switzerland and France.",
+          "nearest_airport": "GVA",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Overland Track, Australia",
+          "description": "The Overland Track is an Australian bushwalking track, traversing Cradle Mountain-Lake St Clair National Park, within the Tasmanian Wilderness World Heritage Area.",
+          "nearest_airport": "LST",
+          "best_months_to_visit": ["October", "November", "December"]
+        },
+        {
+          "location_name": "Fitz Roy Trek, Argentina",
+          "description": "The Fitz Roy Trek is a trail that passes through glacial valleys, forests, and lakes, with stunning views of the jagged granite peaks of Mount Fitz Roy.",
+          "nearest_airport": "FTE",
+          "best_months_to_visit": ["December", "January", "February"]
+        },
+        {
+          "location_name": "Kungsleden, Sweden",
+          "description": "Kungsleden is a hiking trail in northern Sweden, approximately 440-kilometre long, between Abisko in the north and Hemavan in the south.",
+          "nearest_airport": "ARN",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "West Coast Trail, Canada",
+          "description": "The West Coast Trail is a 75 km (47 mi) long backpacking trail following the southwestern edge of Vancouver Island in British Columbia, Canada.",
+          "nearest_airport": "YYJ",
+          "best_months_to_visit": ["July", "August", "September"]
+        },
+        {
+          "location_name": "Milford Track, New Zealand",
+          "description": "The Milford Track is a widely known hiking route in New Zealand – located amidst mountains and temperate rain forest in Fiordland National Park in the southwest of the South Island.",
+          "nearest_airport": "ZQN",
+          "best_months_to_visit": ["February", "March", "April"]
+        }
+      ],
+      "ThruHiking": [
+        {
+          "location_name": "Appalachian Trail, USA",
+          "description": "The Appalachian Trail is a marked hiking trail in the Eastern United States extending between Springer Mountain in Georgia and Mount Katahdin in Maine.",
+          "nearest_airport": "ATL",
+          "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+          "location_name": "Pacific Crest Trail, USA",
+          "description": "The Pacific Crest Trail is a long-distance hiking and equestrian trail closely aligned with the highest portion of the Sierra Nevada and Cascade mountain ranges.",
+          "nearest_airport": "LAX",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Continental Divide Trail, USA",
+          "description": "The Continental Divide National Scenic Trail is a United States National Scenic Trail running 3,100 miles between Mexico and Canada.",
+          "nearest_airport": "DEN",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Te Araroa Trail, New Zealand",
+          "description": "Te Araroa is New Zealand's long distance tramping route, stretching circa 3,000 kilometres along the length of the country's two main islands from Cape Reinga to Bluff.",
+          "nearest_airport": "AKL",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "Great Himalaya Trail, Nepal",
+          "description": "The Great Himalaya Trail is a route across the Himalayas from east to west. The original concept of the trail was to establish a single long distance trekking trail from the east end to the west end of Nepal.",
+          "nearest_airport": "KTM",
+          "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+          "location_name": "Camino de Santiago, Spain",
+          "description": "The Camino de Santiago is a network of pilgrims' ways or pilgrimages leading to the shrine of the apostle Saint James the Great in the cathedral of Santiago de Compostela in Galicia in northwestern Spain.",
+          "nearest_airport": "SCQ",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "The GR20, Corsica",
+          "description": "The GR 20 is a GR footpath that crosses the Mediterranean island of Corsica running approximately north-south, described by the outdoor writer Paddy Dillon as 'one of the top trails in the world'.",
+          "nearest_airport": "AJA",
+          "best_months_to_visit": ["June", "September", "October"]
+        },
+        {
+          "location_name": "The Via Dinarica, Western Balkans",
+          "description": "The Via Dinarica is a mega trail that extends from Albania to Slovenia. The trail is approximately 2,000 kilometers long and spans seven different countries.",
+          "nearest_airport": "TIA",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "The Jordan Trail, Jordan",
+          "description": "The Jordan Trail is a long distance hiking trail in Jordan connecting the length of Jordan from Um Qais in the north to Aqaba in the south.",
+          "nearest_airport": "AMM",
+          "best_months_to_visit": ["March", "April", "May"]
+        },
+        {
+          "location_name": "The Hayduke Trail, USA",
+          "description": "The Hayduke Trail is an extremely challenging, 800-mile backcountry route through some of the most rugged and breathtaking landscapes on earth.",
+          "nearest_airport": "LAS",
+          "best_months_to_visit": ["April", "May", "October"]
+        }
+      ],
+      "ScubaDiving": [
+        {
+          "location_name": "Great Barrier Reef, Australia",
+          "description": "The Great Barrier Reef is the world's largest coral reef system composed of over 2,900 individual reefs and 900 islands stretching for over 2,300 kilometres.",
+          "nearest_airport": "CNS",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Blue Hole, Belize",
+          "description": "The Great Blue Hole is a giant marine sinkhole off the coast of Belize. It lies near the center of Lighthouse Reef, a small atoll 70 km from the mainland and Belize City.",
+          "nearest_airport": "BZE",
+          "best_months_to_visit": ["April", "May", "June"]
+        },
+        {
+          "location_name": "Thistlegorm, Egyptian Red Sea",
+          "description": "The SS Thistlegorm was a British armed Merchant Navy ship built in 1940. She was sunk on 6 October 1941 near Ras Muhammad in the Red Sea and is now a well known diving site.",
+          "nearest_airport": "SSH",
+          "best_months_to_visit": ["May", "June", "July"]
+        },
+        {
+          "location_name": "Barracuda Point, Sipadan Island, Malaysia",
+          "description": "Barracuda Point is a world-famous dive site known for its teeming marine life. Divers can expect to see large schools of barracuda, turtles, and reef sharks.",
+          "nearest_airport": "TWU",
+          "best_months_to_visit": ["April", "May", "June"]
+        },
+        {
+          "location_name": "Yongala, Australia",
+          "description": "The SS Yongala was a passenger ship that sank off Cape Bowling Green, Queensland, Australia on 23 March 1911. The shipwreck, which is a major tourist attraction for the diving industry, is protected under the Historic Shipwrecks Act.",
+          "nearest_airport": "TSV",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Liberty, Bali, Indonesia",
+          "description": "The USAT Liberty was a United States Army cargo ship torpedoed by Japanese submarine I-166 in January 1942 and beached on the island of Bali. She was scuttled by her own crew, so her cargo and fuel oil would not fall into the hands of the enemy. It is now a popular dive site.",
+          "nearest_airport": "DPS",
+          "best_months_to_visit": ["April", "May", "June"]
+        },
+        {
+          "location_name": "Richelieu Rock, Thailand",
+          "description": "Richelieu Rock is a dive site in the Andaman Sea near the Surin Islands, Thailand. It is famous among divers for its variety of marine life, from small fish and harlequin shrimp to large pelagics like whale sharks and manta rays.",
+          "nearest_airport": "HKT",
+          "best_months_to_visit": ["February", "March", "April"]
+        },
+        {
+          "location_name": "President Coolidge, Vanuatu",
+          "description": "The SS President Coolidge was a luxury ocean liner that was completed in 1931. She was sunk by mines during the Second World War. The wreck is now a popular dive site.",
+          "nearest_airport": "VLI",
+          "best_months_to_visit": ["April", "May", "June"]
+        },
+        {
+          "location_name": "Navy Pier, Western Australia",
+          "description": "Navy Pier is considered one of the top shore dives in Australia, if not the world. The pier's pylons are covered in soft corals and sponges, and the site is teeming with marine life.",
+          "nearest_airport": "LEA",
+          "best_months_to_visit": ["April", "May", "June"]
+        },
+        {
+          "location_name": "Manta Ray Night Dive, Kailua Kona, Hawaii",
+          "description": "The Manta Ray Night Dive in Kailua Kona, Hawaii is a popular dive spot where divers can see manta rays feeding on plankton attracted by underwater lights.",
+          "nearest_airport": "KOA",
+          "best_months_to_visit": ["January", "February", "March"]
+        }
+      ],
+      "Photography": [
+        {
+          "location_name": "Iceland",
+          "description": "Iceland is known for its stunning landscapes, including waterfalls, geysers, and northern lights.",
+          "nearest_airport": "KEF",
+          "best_months_to_visit": ["September", "October", "November"]
+        },
+        {
+          "location_name": "Banff National Park, Canada",
+          "description": "Banff National Park is Canada's oldest national park, known for its stunning mountain scenery and beautiful turquoise glacier-fed lakes.",
+          "nearest_airport": "YYC",
+          "best_months_to_visit": ["July", "August", "September"]
+        },
+        {
+          "location_name": "Machu Picchu, Peru",
+          "description": "Machu Picchu is an Incan citadel set high in the Andes Mountains in Peru, above the Urubamba River valley.",
+          "nearest_airport": "CUZ",
+          "best_months_to_visit": ["May", "June", "July"]
+        },
+        {
+          "location_name": "Santorini, Greece",
+          "description": "Santorini is one of the Cyclades islands in the Aegean Sea, known for its stunning sunsets, white-washed buildings, and blue-domed churches.",
+          "nearest_airport": "JTR",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Yosemite National Park, USA",
+          "description": "Yosemite National Park is in California’s Sierra Nevada mountains, known for its waterfalls, deep valleys, grand meadows, and ancient giant sequoias.",
+          "nearest_airport": "FAT",
+          "best_months_to_visit": ["May", "June", "July"]
+        },
+        {
+          "location_name": "Kyoto, Japan",
+          "description": "Kyoto, once the capital of Japan, is a city on the island of Honshu, famous for its numerous classical Buddhist temples, gardens, imperial palaces, and traditional wooden houses.",
+          "nearest_airport": "KIX",
+          "best_months_to_visit": ["March", "April", "November"]
+        },
+        {
+          "location_name": "Paris, France",
+          "description": "Paris, France's capital, is a major European city and a global center for art, fashion, gastronomy and culture. Its landmarks such as the Eiffel Tower and Notre-Dame are renowned worldwide.",
+          "nearest_airport": "CDG",
+          "best_months_to_visit": ["April", "May", "June"]
+        },
+        {
+          "location_name": "Antarctica",
+          "description": "Antarctica, the southernmost continent and site of the South Pole, is a virtually uninhabited, ice-covered landmass, known for its stunning icy landscapes and penguin colonies.",
+          "nearest_airport": "USH",
+          "best_months_to_visit": ["December", "January", "February"]
+        },
+        {
+          "location_name": "Serengeti National Park, Tanzania",
+          "description": "The Serengeti National Park is a Tanzanian national park in the Serengeti ecosystem in the Mara and Simiyu regions, known for its annual migration of over 1.5 million white-bearded wildebeest and 250,000 zebra.",
+          "nearest_airport": "JRO",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "New Zealand",
+          "description": "New Zealand is a country in the southwestern Pacific Ocean consisting of two main islands, both marked by volcanoes and glaciation, known for its stunning landscapes.",
+          "nearest_airport": "AKL",
+          "best_months_to_visit": ["December", "January", "February"]
+        }
+      ],
+      "Marathons": [
+        {
+          "location_name": "Berlin Marathon, Germany",
+          "description": "The Berlin Marathon is a major running and sporting event held annually in Berlin, Germany. The official marathon distance of 42.195 kilometers is set up as a citywide road race where professional athletes and amateur runners jointly participate.",
+          "nearest_airport": "TXL",
+          "best_months_to_visit": ["September"]
+        },
+        {
+          "location_name": "Boston Marathon, USA",
+          "description": "The Boston Marathon is an annual marathon race hosted by several cities in greater Boston in eastern Massachusetts, United States. It is traditionally held on Patriots' Day, the third Monday of April.",
+          "nearest_airport": "BOS",
+          "best_months_to_visit": ["April"]
+        },
+        {
+          "location_name": "London Marathon, United Kingdom",
+          "description": "The London Marathon is a long-distance running event held in London, United Kingdom, part of the World Marathon Majors. The event was first run on 29 March 1981 and has been held in the spring of every year since.",
+          "nearest_airport": "LHR",
+          "best_months_to_visit": ["April"]
+        },
+        {
+          "location_name": "New York City Marathon, USA",
+          "description": "The New York City Marathon is an annual marathon that courses through the five boroughs of New York City. It is the largest marathon in the world.",
+          "nearest_airport": "JFK",
+          "best_months_to_visit": ["November"]
+        },
+        {
+          "location_name": "Chicago Marathon, USA",
+          "description": "The Chicago Marathon is a marathon held yearly in Chicago, Illinois, United States. Alongside the Boston, New York, London, Berlin, and Tokyo Marathons, it is one of the six World Marathon Majors.",
+          "nearest_airport": "ORD",
+          "best_months_to_visit": ["October"]
+        },
+        {
+          "location_name": "Tokyo Marathon, Japan",
+          "description": "The Tokyo Marathon is an annual marathon sporting event in Tokyo, the capital of Japan. It is an IAAF Gold Label marathon and one of the six World Marathon Majors.",
+          "nearest_airport": "HND",
+          "best_months_to_visit": ["March"]
+        },
+        {
+          "location_name": "Paris Marathon, France",
+          "description": "The Paris Marathon is an annual marathon which takes place from the Champs-Élysées heading towards the Place de la Concorde and continuing through the city to finish at Foch Avenue.",
+          "nearest_airport": "CDG",
+          "best_months_to_visit": ["April"]
+        },
+        {
+          "location_name": "Athens Marathon, Greece",
+          "description": "The Athens Classic Marathon is an annual marathon road race held in Athens, Greece, normally in early November. The course is based on the myth from which the race gained its name: Pheidippides, a messenger in Ancient Greece, ran from the Battle of Marathon to Athens to announce the Greeks' victory.",
+          "nearest_airport": "ATH",
+          "best_months_to_visit": ["November"]
+        },
+        {
+          "location_name": "Great Wall Marathon, China",
+          "description": "The Great Wall Marathon is an annual marathon race, traditionally held on the third Saturday of May along and on the Huangyaguan or Huangya Pass, Tianjin, China, east of Beijing. Despite the challenging course on the Great Wall of China, participants will enjoy the magnificent surroundings and views.",
+          "nearest_airport": "PEK",
+          "best_months_to_visit": ["May"]
+        },
+        {
+          "location_name": "Big Five Marathon, South Africa",
+          "description": "The Big Five Marathon is an annual marathon race held in the Entabeni Game Reserve in Limpopo Province, South Africa within the Waterberg Biosphere. The race gets its name from the famous animals of Africa referred to as the Big Five game: lion, leopard, elephant, rhino and buffalo.",
+          "nearest_airport": "JNB",
+          "best_months_to_visit": ["June"]
+        }
+      ],
+      "trail_running": [
+        {
+          "location_name": "Chamonix, France",
+          "description": "Chamonix is a picturesque town nestled in the French Alps, offering stunning trails with breathtaking views of Mont Blanc and the surrounding mountains.",
+          "nearest_airport": "GVA",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Boulder, Colorado, USA",
+          "description": "Boulder, Colorado, is a trail runner's paradise, featuring an extensive network of scenic trails amidst the Rocky Mountains.",
+          "nearest_airport": "DEN",
+          "best_months_to_visit": ["April", "May", "September"]
+        },
+        {
+          "location_name": "Cape Town, South Africa",
+          "description": "Cape Town boasts stunning coastal and mountain trails, offering a unique trail running experience with a mix of challenging terrain and beautiful landscapes.",
+          "nearest_airport": "CPT",
+          "best_months_to_visit": ["March", "April", "October"]
+        },
+        {
+          "location_name": "Interlaken, Switzerland",
+          "description": "Interlaken is a trail runner's dream, surrounded by the Swiss Alps and nestled between two stunning lakes, Brienz and Thun.",
+          "nearest_airport": "ZRH",
+          "best_months_to_visit": ["June", "July", "September"]
+        },
+        {
+          "location_name": "Queenstown, New Zealand",
+          "description": "Queenstown offers diverse trail running options, from lakeside tracks to challenging mountain routes, showcasing the beauty of the South Island's landscapes.",
+          "nearest_airport": "ZQN",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "Zermatt, Switzerland",
+          "description": "Zermatt is a world-renowned trail running destination with scenic trails around the iconic Matterhorn, providing an unforgettable alpine experience.",
+          "nearest_airport": "GVA",
+          "best_months_to_visit": ["July", "August", "September"]
+        },
+        {
+          "location_name": "Squamish, British Columbia, Canada",
+          "description": "Squamish is a mecca for trail runners, offering a diverse range of trails through lush forests, along rugged coastline, and up challenging mountain ascents.",
+          "nearest_airport": "YVR",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Glen Coe, Scotland",
+          "description": "Glen Coe's dramatic landscape provides a fantastic backdrop for trail running, with challenging routes that take you through scenic valleys and majestic peaks.",
+          "nearest_airport": "GLA",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Sedona, Arizona, USA",
+          "description": "Sedona offers a unique red rock desert trail running experience, with striking geological formations and a variety of trails for all levels.",
+          "nearest_airport": "PHX",
+          "best_months_to_visit": ["March", "April", "October"]
+        },
+        {
+          "location_name": "The Dolomites, Italy",
+          "description": "The Dolomites boast some of the most scenic and challenging trail running routes in the world, surrounded by stunning peaks and picturesque alpine villages.",
+          "nearest_airport": "VCE",
+          "best_months_to_visit": ["July", "August", "September"]
+        }
+      ],
+      "road_trip": [
+        {
+          "location_name": "California, USA",
+          "description": "California offers iconic road trip routes like the Pacific Coast Highway, with stunning coastal views, as well as scenic drives through national parks like Yosemite and Sequoia.",
+          "nearest_airport": "LAX",
+          "best_months_to_visit": ["September", "October", "April"]
+        },
+        {
+          "location_name": "Ring Road, Iceland",
+          "description": "Iceland's Ring Road takes you on an unforgettable journey around the island, showcasing otherworldly landscapes, including waterfalls, glaciers, volcanoes, and hot springs.",
+          "nearest_airport": "KEF",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "South Island, New Zealand",
+          "description": "New Zealand's South Island is a road tripper's dream, featuring breathtaking fjords, mountains, lakes, and picturesque landscapes from Queenstown to Milford Sound.",
+          "nearest_airport": "CHC",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "The Amalfi Coast, Italy",
+          "description": "The Amalfi Coast offers a spectacular coastal road trip with stunning views of the Mediterranean Sea, picturesque cliffside towns, and delicious Italian cuisine.",
+          "nearest_airport": "NAP",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Wild Atlantic Way, Ireland",
+          "description": "The Wild Atlantic Way is a scenic coastal route along Ireland's west coast, offering dramatic cliffs, charming villages, and a chance to experience Irish culture.",
+          "nearest_airport": "DUB",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Great Ocean Road, Australia",
+          "description": "Australia's Great Ocean Road takes you along the southern coast, offering stunning ocean views, the Twelve Apostles rock formations, and lush rainforests.",
+          "nearest_airport": "MEL",
+          "best_months_to_visit": ["February", "March", "April"]
+        },
+        {
+          "location_name": "Scottish Highlands, Scotland",
+          "description": "The Scottish Highlands provide a picturesque road trip with rugged mountains, serene lochs, and historic castles, offering a taste of Scotland's natural beauty.",
+          "nearest_airport": "GLA",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Cape Town to Garden Route, South Africa",
+          "description": "The road trip from Cape Town to the Garden Route is a diverse journey, featuring coastal drives, stunning landscapes, and opportunities to spot wildlife.",
+          "nearest_airport": "CPT",
+          "best_months_to_visit": ["March", "April", "October"]
+        },
+        {
+          "location_name": "Route 66, USA",
+          "description": "Route 66 is an iconic American road trip, taking you through historic towns, quirky roadside attractions, and scenic landscapes from Chicago to Santa Monica.",
+          "nearest_airport": "ORD",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Croatian Coastline",
+          "description": "The Croatian Coastline road trip offers stunning views of the Adriatic Sea, historic towns like Dubrovnik, and beautiful national parks along the way.",
+          "nearest_airport": "DBV",
+          "best_months_to_visit": ["June", "July", "August"]
+        }
+      ],
+      "motorbiking": [
+        {
+          "location_name": "Himalayas, India",
+          "description": "Motorbiking in the Himalayas offers a thrilling adventure with breathtaking mountain landscapes, high-altitude passes, and a chance to experience the unique cultures of the region.",
+          "nearest_airport": "DEL",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Route 66, USA",
+          "description": "Route 66 is an iconic motorbiking route, taking you through historic American towns, wide-open landscapes, and a taste of Americana.",
+          "nearest_airport": "LAX",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "North Island, New Zealand",
+          "description": "New Zealand's North Island offers fantastic motorbiking roads, from winding coastal routes to scenic rides through lush forests and volcanic landscapes.",
+          "nearest_airport": "AKL",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "Andalusia, Spain",
+          "description": "Andalusia is a motorbiker's paradise with its diverse landscapes, including mountainous regions, coastal roads, and charming white-washed villages.",
+          "nearest_airport": "AGP",
+          "best_months_to_visit": ["April", "May", "October"]
+        },
+        {
+          "location_name": "Tuscany, Italy",
+          "description": "Tuscany offers picturesque motorbiking routes through rolling hills, vineyards, and ancient towns, providing a true taste of Italy's beauty.",
+          "nearest_airport": "FLR",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "The Scottish Highlands, Scotland",
+          "description": "The Scottish Highlands provide a rugged and scenic motorbiking experience with winding roads, majestic mountains, and serene lochs.",
+          "nearest_airport": "GLA",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Sardinia, Italy",
+          "description": "Sardinia offers diverse motorbiking routes along its pristine coastline, through rugged mountains, and past ancient ruins, providing an unforgettable Mediterranean adventure.",
+          "nearest_airport": "CAG",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "The Mae Hong Son Loop, Thailand",
+          "description": "The Mae Hong Son Loop is a fantastic motorbiking route in northern Thailand, featuring twisty mountain roads, picturesque villages, and lush landscapes.",
+          "nearest_airport": "CNX",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "Cape Town to Cape Agulhas, South Africa",
+          "description": "This South African motorbiking route takes you from Cape Town to Cape Agulhas, the southernmost tip of Africa, with scenic coastal roads and stunning landscapes.",
+          "nearest_airport": "CPT",
+          "best_months_to_visit": ["March", "April", "October"]
+        },
+        {
+          "location_name": "The French Alps, France",
+          "description": "The French Alps offer thrilling motorbiking routes through winding mountain passes, picturesque alpine villages, and stunning vistas.",
+          "nearest_airport": "GVA",
+          "best_months_to_visit": ["June", "July", "August"]
+        }
+      ],
+      "sailing": [
+        {
+          "location_name": "Greek Islands, Greece",
+          "description": "Sailing in the Greek Islands offers crystal-clear waters, stunning beaches, charming coastal towns, and a chance to explore ancient ruins.",
+          "nearest_airport": "ATH",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Whitsunday Islands, Australia",
+          "description": "The Whitsunday Islands provide a tropical paradise for sailing, with beautiful coral reefs, white sandy beaches, and a range of marine life.",
+          "nearest_airport": "HTI",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Croatian Coast, Croatia",
+          "description": "Sailing along the Croatian Coast offers a mix of historic towns, clear blue waters, and beautiful national parks, making it a popular sailing destination.",
+          "nearest_airport": "DBV",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "British Virgin Islands",
+          "description": "The British Virgin Islands are a sailor's paradise with calm waters, steady trade winds, and numerous sheltered anchorages, perfect for sailing enthusiasts.",
+          "nearest_airport": "EIS",
+          "best_months_to_visit": ["December", "January", "February"]
+        },
+        {
+          "location_name": "French Polynesia",
+          "description": "Sailing in French Polynesia offers a glimpse of paradise with its turquoise lagoons, atolls, and the famous islands of Bora Bora and Tahiti.",
+          "nearest_airport": "PPT",
+          "best_months_to_visit": ["May", "June", "July"]
+        },
+        {
+          "location_name": "Amalfi Coast, Italy",
+          "description": "The Amalfi Coast provides a picturesque sailing experience along the Mediterranean, with stunning cliffs, colorful coastal towns, and delicious Italian cuisine.",
+          "nearest_airport": "NAP",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Bay of Islands, New Zealand",
+          "description": "The Bay of Islands offers a fantastic sailing destination with its scenic bays, marine life, and a chance to explore New Zealand's natural beauty.",
+          "nearest_airport": "KKE",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "Seychelles",
+          "description": "Sailing in the Seychelles provides an idyllic experience with its pristine beaches, granite islands, and vibrant marine life in the Indian Ocean.",
+          "nearest_airport": "SEZ",
+          "best_months_to_visit": ["April", "May", "October"]
+        },
+        {
+          "location_name": "San Juan Islands, Washington, USA",
+          "description": "The San Juan Islands offer a beautiful sailing experience in the Pacific Northwest, with scenic views, wildlife encounters, and a laid-back island atmosphere.",
+          "nearest_airport": "SEA",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Galapagos Islands, Ecuador",
+          "description": "Sailing in the Galapagos Islands is a unique opportunity to witness incredible biodiversity, with close encounters with various species found nowhere else on Earth.",
+          "nearest_airport": "GPS",
+          "best_months_to_visit": ["June", "July", "August"]
+        }
+      ],
+      "rock_climbing": [
+        {
+          "location_name": "Yosemite National Park, California, USA",
+          "description": "Yosemite is a rock climbing mecca, offering granite cliffs like El Capitan and Half Dome, attracting climbers from around the world.",
+          "nearest_airport": "FAT",
+          "best_months_to_visit": ["April", "May", "October"]
+        },
+        {
+          "location_name": "Kalymnos, Greece",
+          "description": "Kalymnos is a paradise for sport climbing, featuring limestone cliffs with a wide range of routes and stunning views of the Aegean Sea.",
+          "nearest_airport": "JKL",
+          "best_months_to_visit": ["May", "June", "September"]
+        },
+        {
+          "location_name": "Fontainebleau, France",
+          "description": "Fontainebleau is a renowned bouldering destination, offering a vast forest filled with sandstone boulders and a great variety of climbing challenges.",
+          "nearest_airport": "CDG",
+          "best_months_to_visit": ["April", "May", "October"]
+        },
+        {
+          "location_name": "Joshua Tree National Park, California, USA",
+          "description": "Joshua Tree is a world-class rock climbing area, with its unique Joshua trees and granite rock formations, providing diverse climbing opportunities.",
+          "nearest_airport": "PSP",
+          "best_months_to_visit": ["March", "April", "October"]
+        },
+        {
+          "location_name": "Railay, Thailand",
+          "description": "Railay is a stunning beach destination with limestone cliffs, offering both sport climbing and deep water soloing opportunities.",
+          "nearest_airport": "KBV",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "El Potrero Chico, Mexico",
+          "description": "El Potrero Chico is a top-notch sport climbing destination, featuring massive limestone walls and a friendly climbing community.",
+          "nearest_airport": "MTY",
+          "best_months_to_visit": ["November", "December", "January"]
+        },
+        {
+          "location_name": "Margalef, Spain",
+          "description": "Margalef is a popular sport climbing spot in Catalonia, Spain, known for its conglomerate rock and challenging routes.",
+          "nearest_airport": "BCN",
+          "best_months_to_visit": ["March", "April", "October"]
+        },
+        {
+          "location_name": "Squamish, British Columbia, Canada",
+          "description": "Squamish is a world-class climbing destination, offering a variety of granite climbing routes in a beautiful coastal setting.",
+          "nearest_airport": "YVR",
+          "best_months_to_visit": ["June", "July", "August"]
+        },
+        {
+          "location_name": "Wadi Rum, Jordan",
+          "description": "Wadi Rum is a breathtaking desert landscape with sandstone cliffs, providing a unique and adventurous climbing experience.",
+          "nearest_airport": "AQJ",
+          "best_months_to_visit": ["March", "April", "October"]
+        },
+        {
+          "location_name": "Gorges du Verdon, France",
+          "description": "Verdon Gorge is one of the most beautiful canyons in the world, offering superb limestone climbing routes in a stunning natural setting.",
+          "nearest_airport": "NCE",
+          "best_months_to_visit": ["May", "June", "September"]
+        }
+      ],
+      "festivals": [
+        {
+          "location_name": "Rio Carnival",
+          "description": "Rio Carnival is one of the biggest and most famous festivals in the world, held annually in Rio de Janeiro, Brazil. It features vibrant parades, samba music, dance performances, and extravagant costumes.",
+          "location_name": "Rio de Janeiro, Brazil",
+          "nearest_airport": "GIG",
+          "best_months_to_visit": ["February"]
+        },
+        {
+          "location_name": "Oktoberfest",
+          "description": "Oktoberfest is a renowned beer festival held in Munich, Germany. Visitors can enjoy a wide variety of German beers, traditional Bavarian food, and lively music and dancing.",
+          "location_name": "Munich, Germany",
+          "nearest_airport": "MUC",
+          "best_months_to_visit": ["September", "October"]
+        },
+        {
+          "location_name": "Diwali",
+          "description": "Diwali, also known as the Festival of Lights, is a significant Hindu festival celebrated worldwide. It symbolizes the victory of light over darkness and includes colorful decorations, fireworks, and family gatherings.",
+          "location_name": "Various locations in India and other countries",
+          "nearest_airport": "DEL",
+          "best_months_to_visit": ["October", "November"]
+        },
+        {
+          "location_name": "Carnival of Venice",
+          "description": "The Carnival of Venice is a historic and elegant festival held in Venice, Italy. It features elaborate masks, elegant costumes, and a series of events, including masquerade balls and parades.",
+          "location_name": "Venice, Italy",
+          "nearest_airport": "VCE",
+          "best_months_to_visit": ["February"]
+        },
+        {
+          "location_name": "Holi",
+          "description": "Holi is a vibrant and joyous Hindu festival celebrated in India and other countries. It involves throwing colored powders and water at each other, symbolizing the triumph of good over evil and the arrival of spring.",
+          "location_name": "Various locations in India and other countries",
+          "nearest_airport": "DEL",
+          "best_months_to_visit": ["March"]
+        },
+        {
+          "location_name": "Mardi Gras",
+          "description": "Mardi Gras, also known as Fat Tuesday, is a lively carnival celebrated in various cities around the world, but most famously in New Orleans, USA. It features parades, music, and street parties.",
+          "location_name": "New Orleans, Louisiana, USA",
+          "nearest_airport": "MSY",
+          "best_months_to_visit": ["February"]
+        },
+        {
+          "location_name": "Songkran",
+          "description": "Songkran is the Thai New Year festival celebrated with water splashing and cleansing rituals. It's a fun and lively event, especially in cities like Bangkok and Chiang Mai.",
+          "location_name": "Various locations in Thailand",
+          "nearest_airport": "BKK",
+          "best_months_to_visit": ["April"]
+        },
+        {
+          "location_name": "La Tomatina",
+          "description": "La Tomatina is a unique and playful festival held in Buñol, Spain. Participants engage in a massive tomato fight, making it one of the world's messiest festivals.",
+          "location_name": "Buñol, Valencia, Spain",
+          "nearest_airport": "VLC",
+          "best_months_to_visit": ["August"]
+        },
+        {
+          "location_name": "Coachella Valley Music and Arts Festival",
+          "description": "Coachella is a famous music and arts festival held annually in California, USA. It attracts top artists from various genres and offers a unique blend of music, art installations, and cultural experiences.",
+          "location_name": "Indio, California, USA",
+          "nearest_airport": "PSP",
+          "best_months_to_visit": ["April"]
+        },
+        {
+          "location_name": "Glastonbury Festival",
+          "description": "Glastonbury is one of the world's most iconic music festivals, featuring a diverse lineup of musicians and artists. It takes place in Somerset, England, and is known for its vibrant atmosphere.",
+          "location_name": "Pilton, Somerset, England",
+          "nearest_airport": "BRS",
+          "best_months_to_visit": ["June"]
+        }
+      ]
+}
