@@ -117,7 +117,9 @@ export const CalenderSearch = ({
           Return
         </div>
       </div>
-      <div className={mode === "return" ? `grid grid-cols-2 gap-2` : ""}>
+      <div
+        className={mode === "return" ? `md:grid md:grid-cols-2 md:gap-2` : ""}
+      >
         {mode === "return" ? (
           <Calendar
             selectedDate={returnDepatureDate}
