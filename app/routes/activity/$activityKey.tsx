@@ -32,6 +32,7 @@ export default function SEOAnytime() {
     activityKey: string;
     activityImages: string[];
   }>();
+  console.log(activityImages);
   const from = getFromPlaceLocalOrDefault() || getPlaceFromIata("LHR");
   if (!from) return;
 
@@ -39,9 +40,7 @@ export default function SEOAnytime() {
     <Layout selectedUrl="/explore">
       <HeroExplore title={activityKey} backgroundImage={activityImages[0]} />
       <ImagesDefault images={activityImages} />
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <ActivityLocations name={activityKey} from={from} />
-      </div>
+      <ActivityLocations name={activityKey} from={from} />
     </Layout>
   );
 }

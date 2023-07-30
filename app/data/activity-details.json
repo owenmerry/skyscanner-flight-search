@@ -1,5 +1,18 @@
 {
-    "Freediving" : [
+    "Freediving" : {
+      "images": [
+        "https://images.unsplash.com/photo-1567628065080-ecdec09a7588?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1603259618142-2330101e3489?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1544551763-dbfcd20d8e6c?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1603259860985-5dfe6bf9a1fd?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1480962199508-01600d0263f5?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1549996990-0806de69c227?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1621432253242-09eece55193c?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1600044934231-f7b67d81b710?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1603258664907-caca01e2c111?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxGcmVlZGl2aW5nfGVufDB8MHx8fDE2OTA3Mjg3MzZ8MA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1544551763-808e05e86c26?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8RnJlZWRpdmluZ3xlbnwwfDB8fHwxNjkwNzI4NzM2fDA&ixlib=rb-4.0.3&w=1200"
+    ],
+      "locations": [
         {
             "location_name": "Blue Hole, Dahab, Egypt",
             "description": "The Blue Hole in Dahab is one of the most famous freediving spots in the world. It's a sinkhole with a depth of over 100 meters, providing a unique and challenging environment for freedivers.",
@@ -61,8 +74,21 @@
             "best_months_to_visit": ["June", "July", "August"]
         }
 
+    ]},
+    "Road Cycling" : {
+      "images": [
+        "https://images.unsplash.com/photo-1615845522846-02f89af04c2e?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1615845522103-82f98cd2a9de?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1534787238916-9ba6764efd4f?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1510005294384-c03e247f0542?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1560036092-8b98cadbee6c?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1541625602330-2277a4c46182?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1601625193660-86f2807b024b?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1605050825077-289f85b6cf43?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1470920456752-d50214d7ed59?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxSb2FkJTIwQ3ljbGluZ3xlbnwwfDB8fHwxNjkwNzI4ODEwfDA&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1605050825221-66a810cb6d36?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8Um9hZCUyMEN5Y2xpbmd8ZW58MHwwfHx8MTY5MDcyODgxMHww&ixlib=rb-4.0.3&w=1200"
     ],
-    "Road Cycling" : [
+      "locations": [
         {
             "location_name": "Tour de Mont Blanc, Europe",
             "description": "A challenging route that takes you through France, Italy, and Switzerland, offering stunning views of the Alps.",
@@ -123,8 +149,21 @@
             "nearest_airport": "LBA",
             "best_months_to_visit": ["June", "July", "August"]
         }
+    ]},
+    "Cycle Touring": {
+      "images": [
+        "https://images.unsplash.com/photo-1541474895321-545475541117?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1683111927674-3edda4049314?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1654482276870-d2c4aabc067a?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1683111588270-7dffe443f3c1?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1625715998148-2fcebd92a8e8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1649958428931-96dcd7974c94?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1542891953-799b566c9af7?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1519564337578-2598cfe4dc80?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1496150590317-f8d952453f93?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxDeWNsZSUyMFRvdXJpbmd8ZW58MHwwfHx8MTY5MDczMjQ1M3ww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1542893849-b14a2c62aacb?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8Q3ljbGUlMjBUb3VyaW5nfGVufDB8MHx8fDE2OTA3MzI0NTN8MA&ixlib=rb-4.0.3&w=1200"
     ],
-    "Cycle Touring": [
+      "locations": [
         {
             "location_name": "Danube River Cycle Path, Europe",
             "description": "This route follows the Danube River from Germany to the Black Sea, passing through 10 countries. It's a well-marked, relatively flat route with plenty of cultural and historical sites along the way.",
@@ -185,8 +224,21 @@
             "nearest_airport": "CAI",
             "best_months_to_visit": ["October", "November", "December"]
         }
+    ]},
+    "Hiking": {
+      "images": [
+        "https://images.unsplash.com/photo-1682687220198-88e9bdea9931?ixid=M3w0MjE3MjJ8MXwxfHNlYXJjaHwxfHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1476611338391-6f395a0ebc7b?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1551632811-561732d1e306?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1440186347098-386b7459ad6b?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1458442310124-dde6edb43d10?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/uploads/141148589884100082977/a816dbd7?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/uploads/1412533519888a485b488/bb9f9777?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1682685794761-c8e7b2347702?ixid=M3w0MjE3MjJ8MXwxfHNlYXJjaHw4fHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1599423423927-a2c777b40faa?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxIaWtpbmd8ZW58MHwwfHx8MTY5MDc1MjgzNnww&ixlib=rb-4.0.3&w=1200",
+        "https://images.unsplash.com/photo-1501389446297-06c4c50b5ee8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8SGlraW5nfGVufDB8MHx8fDE2OTA3NTI4MzZ8MA&ixlib=rb-4.0.3&w=1200"
     ],
-    "Hiking": [
+      "locations": [
         {
           "location_name": "Inca Trail, Peru",
           "description": "The Inca Trail is a hiking trail in Peru that terminates at Machu Picchu. It consists of three overlapping trails: Mollepata, Classic, and One Day.",
@@ -247,9 +299,22 @@
           "nearest_airport": "ZQN",
           "best_months_to_visit": ["February", "March", "April"]
         }
+      ]},
+      "ThruHiking": {
+        "images": [
+          "https://images.unsplash.com/photo-1586021923870-c02524607aad?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1559861211-3dc6a35944c8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586022045269-28fe5c497b46?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586021922911-a08a2d3744d8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1552605081-bfcd1b6f6f68?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586021924063-4aa1c5080c33?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586021923253-4bf74cfd8223?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586021923741-73201da698e0?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586021922964-ace7e2882e1b?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxUaHJ1SGlraW5nfGVufDB8MHx8fDE2OTA3NDExMzB8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1653390206455-9640f7844901?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8VGhydUhpa2luZ3xlbnwwfDB8fHwxNjkwNzQxMTMwfDA&ixlib=rb-4.0.3&w=1200"
       ],
-      "ThruHiking": [
-        {
+        "locations": [
+          {
           "location_name": "Appalachian Trail, USA",
           "description": "The Appalachian Trail is a marked hiking trail in the Eastern United States extending between Springer Mountain in Georgia and Mount Katahdin in Maine.",
           "nearest_airport": "ATL",
@@ -309,9 +374,22 @@
           "nearest_airport": "LAS",
           "best_months_to_visit": ["April", "May", "October"]
         }
+      ]},
+      "ScubaDiving": {
+        "images": [
+          "https://images.unsplash.com/photo-1607073521066-99ea925762c6?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1562053827-8a0c88cc36b0?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1544551763-8dd44758c2dd?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1588998677038-18287655a27e?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1603370671351-ce85bc0ec91e?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1544551763-92ab472cad5d?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1558328592-c073a4b95365?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1567628065080-ecdec09a7588?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1579981495073-ecb69d2df53d?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxTY3ViYURpdmluZ3xlbnwwfDB8fHwxNjkwNzQxMTQzfDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1573551701016-d173344231b0?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8U2N1YmFEaXZpbmd8ZW58MHwwfHx8MTY5MDc0MTE0M3ww&ixlib=rb-4.0.3&w=1200"
       ],
-      "ScubaDiving": [
-        {
+        "locations": [
+          {
           "location_name": "Great Barrier Reef, Australia",
           "description": "The Great Barrier Reef is the world's largest coral reef system composed of over 2,900 individual reefs and 900 islands stretching for over 2,300 kilometres.",
           "nearest_airport": "CNS",
@@ -371,9 +449,22 @@
           "nearest_airport": "KOA",
           "best_months_to_visit": ["January", "February", "March"]
         }
+      ]},
+      "Photography": {
+        "images": [
+          "https://images.unsplash.com/photo-1471341971476-ae15ff5dd4ea?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1554048612-b6a482bc67e5?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1502982720700-bfff97f2ecac?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1548502499-ef49e8cf98d4?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1506241537529-eefea1fbe44d?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1554080353-321e452ccf19?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1486916856992-e4db22c8df33?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxQaG90b2dyYXBoeXxlbnwwfDB8fHwxNjkwNzMxOTE2fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1505739998589-00fc191ce01d?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8UGhvdG9ncmFwaHl8ZW58MHwwfHx8MTY5MDczMTkxNnww&ixlib=rb-4.0.3&w=1200"
       ],
-      "Photography": [
-        {
+        "locations": [
+          {
           "location_name": "Iceland",
           "description": "Iceland is known for its stunning landscapes, including waterfalls, geysers, and northern lights.",
           "nearest_airport": "KEF",
@@ -433,9 +524,22 @@
           "nearest_airport": "AKL",
           "best_months_to_visit": ["December", "January", "February"]
         }
+      ]},
+      "Marathons": {
+        "images": [
+          "https://images.unsplash.com/photo-1581173674215-691f05495866?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1688760743341-f6f139e24c04?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1646175563797-c8f678a0e1b9?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1524646349956-1590eacfa324?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1461897104016-0b3b00cc81ee?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1638552903142-d4323d81eb8f?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1621269477269-cedb8da4b6fe?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1533690709187-e42a32914b8b?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxNYXJhdGhvbnN8ZW58MHwwfHx8MTY5MDczMTUzNHww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1628085040665-4c7be2316ea4?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8TWFyYXRob25zfGVufDB8MHx8fDE2OTA3MzE1MzR8MA&ixlib=rb-4.0.3&w=1200"
       ],
-      "Marathons": [
-        {
+        "locations": [
+          {
           "location_name": "Berlin Marathon, Germany",
           "description": "The Berlin Marathon is a major running and sporting event held annually in Berlin, Germany. The official marathon distance of 42.195 kilometers is set up as a citywide road race where professional athletes and amateur runners jointly participate.",
           "nearest_airport": "TXL",
@@ -495,9 +599,22 @@
           "nearest_airport": "JNB",
           "best_months_to_visit": ["June"]
         }
+      ]},
+      "trail_running": {
+        "images": [
+          "https://images.unsplash.com/photo-1530143311094-34d807799e8f?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1456613820599-bfe244172af5?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1588038265723-9bd2a2b03a82?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1504025468847-0e438279542c?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1580058572462-98e2c0e0e2f0?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1623390003553-4fa3f9fceb89?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1498581444814-7e44d2fbe0e2?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1465188162913-8fb5709d6d57?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1551992315-907fbf183932?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHx0cmFpbF9ydW5uaW5nfGVufDB8MHx8fDE2OTA3NTMwMjh8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1598702631024-b282c0fd96b2?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8dHJhaWxfcnVubmluZ3xlbnwwfDB8fHwxNjkwNzUzMDI4fDA&ixlib=rb-4.0.3&w=1200"
       ],
-      "trail_running": [
-        {
+        "locations": [
+          {
           "location_name": "Chamonix, France",
           "description": "Chamonix is a picturesque town nestled in the French Alps, offering stunning trails with breathtaking views of Mont Blanc and the surrounding mountains.",
           "nearest_airport": "GVA",
@@ -557,9 +674,22 @@
           "nearest_airport": "VCE",
           "best_months_to_visit": ["July", "August", "September"]
         }
+      ]},
+      "road_trip": {
+        "images": [
+          "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1468818438311-4bab781ab9b8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1578158335529-27b8d78cfea5?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1546489800-3f420ef6dca8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1526478512290-5397e7d2ca6a?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1605074262645-ac5f60b39c8d?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1473969631237-f466cf342b1f?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1532931899774-fbd4de0008fb?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/flagged/photo-1557772350-e6061e459264?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxyb2FkX3RyaXB8ZW58MHwwfHx8MTY5MDczMzExN3ww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1569916385763-5f248d0f04c8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8cm9hZF90cmlwfGVufDB8MHx8fDE2OTA3MzMxMTd8MA&ixlib=rb-4.0.3&w=1200"
       ],
-      "road_trip": [
-        {
+        "locations": [
+          {
           "location_name": "California, USA",
           "description": "California offers iconic road trip routes like the Pacific Coast Highway, with stunning coastal views, as well as scenic drives through national parks like Yosemite and Sequoia.",
           "nearest_airport": "LAX",
@@ -619,9 +749,22 @@
           "nearest_airport": "DBV",
           "best_months_to_visit": ["June", "July", "August"]
         }
+      ]},
+      "motorbiking": {
+        "images": [
+          "https://images.unsplash.com/photo-1534010593276-5a785a71e7b4?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1543134471-52488faa85af?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1535579386897-af3bfc73d110?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1525013066836-c6090f0ad9d8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1593278586141-e9bf6b0e8cef?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1590223357622-d7ba1d88d3f7?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1593278586067-afccfc50e17a?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1558980664-28d10ee9bb52?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1558981359-219d6364c9c8?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxtb3RvcmJpa2luZ3xlbnwwfDB8fHwxNjkwNzUzMDg4fDA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1558981852-426c6c22a060?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8bW90b3JiaWtpbmd8ZW58MHwwfHx8MTY5MDc1MzA4OHww&ixlib=rb-4.0.3&w=1200"
       ],
-      "motorbiking": [
-        {
+        "locations": [
+          {
           "location_name": "Himalayas, India",
           "description": "Motorbiking in the Himalayas offers a thrilling adventure with breathtaking mountain landscapes, high-altitude passes, and a chance to experience the unique cultures of the region.",
           "nearest_airport": "DEL",
@@ -681,9 +824,22 @@
           "nearest_airport": "GVA",
           "best_months_to_visit": ["June", "July", "August"]
         }
+      ]},
+      "sailing": {
+        "images": [
+          "https://images.unsplash.com/photo-1452065656801-6c60b6e7cbc5?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1499692190251-36a18d26e287?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1526761122248-c31c93f8b2b9?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1506527240747-720a3e17b910?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1499403474843-04e72c14df8e?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1605387202149-47169c4ea58a?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1561728130-afd430af0493?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1509295433237-4b4851f2ab67?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1602943554726-d8bebe914982?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxzYWlsaW5nfGVufDB8MHx8fDE2OTA3NTMxMjN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1442850557558-a774d7afb641?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8c2FpbGluZ3xlbnwwfDB8fHwxNjkwNzUzMTIzfDA&ixlib=rb-4.0.3&w=1200"
       ],
-      "sailing": [
-        {
+        "locations": [
+          {
           "location_name": "Greek Islands, Greece",
           "description": "Sailing in the Greek Islands offers crystal-clear waters, stunning beaches, charming coastal towns, and a chance to explore ancient ruins.",
           "nearest_airport": "ATH",
@@ -743,9 +899,22 @@
           "nearest_airport": "GPS",
           "best_months_to_visit": ["June", "July", "August"]
         }
+      ]},
+      "rock_climbing": {
+        "images": [
+          "https://images.unsplash.com/photo-1522163182402-834f871fd851?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586627161720-ee2849303aee?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1577434150790-3bfe143fe4f2?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1516592673884-4a382d1124c2?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1577580529485-d39b28695fdf?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1564769662533-4f00a87b4056?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1586887507406-3a1fde6dea04?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1516372048654-2e06f99e1382?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1502126324834-38f8e02d7160?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxyb2NrX2NsaW1iaW5nfGVufDB8MHx8fDE2OTA3MzE1NDN8MA&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1570030289513-f44af3cd0944?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8cm9ja19jbGltYmluZ3xlbnwwfDB8fHwxNjkwNzMxNTQzfDA&ixlib=rb-4.0.3&w=1200"
       ],
-      "rock_climbing": [
-        {
+        "locations": [
+          {
           "location_name": "Yosemite National Park, California, USA",
           "description": "Yosemite is a rock climbing mecca, offering granite cliffs like El Capitan and Half Dome, attracting climbers from around the world.",
           "nearest_airport": "FAT",
@@ -805,77 +974,80 @@
           "nearest_airport": "NCE",
           "best_months_to_visit": ["May", "June", "September"]
         }
+      ]},
+      "festivals": {
+        "images": [
+          "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1506157786151-b8491531f063?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwyfHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1603228254119-e6a4d095dc59?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwzfHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw0fHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1573055418049-c8e0b7e3403b?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw1fHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1472653431158-6364773b2a56?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw2fHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1585607344893-43a4bd91169a?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw3fHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1554138927-3058b7030d32?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw4fHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1493676304819-0d7a8d026dcf?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHw5fHxmZXN0aXZhbHN8ZW58MHwwfHx8MTY5MDc1MzE5Mnww&ixlib=rb-4.0.3&w=1200",
+          "https://images.unsplash.com/photo-1472653816316-3ad6f10a6592?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxMHx8ZmVzdGl2YWxzfGVufDB8MHx8fDE2OTA3NTMxOTJ8MA&ixlib=rb-4.0.3&w=1200"
       ],
-      "festivals": [
-        {
+        "locations": [
+          {
           "location_name": "Rio Carnival",
           "description": "Rio Carnival is one of the biggest and most famous festivals in the world, held annually in Rio de Janeiro, Brazil. It features vibrant parades, samba music, dance performances, and extravagant costumes.",
-          "location_name": "Rio de Janeiro, Brazil",
           "nearest_airport": "GIG",
           "best_months_to_visit": ["February"]
         },
         {
           "location_name": "Oktoberfest",
           "description": "Oktoberfest is a renowned beer festival held in Munich, Germany. Visitors can enjoy a wide variety of German beers, traditional Bavarian food, and lively music and dancing.",
-          "location_name": "Munich, Germany",
           "nearest_airport": "MUC",
           "best_months_to_visit": ["September", "October"]
         },
         {
           "location_name": "Diwali",
           "description": "Diwali, also known as the Festival of Lights, is a significant Hindu festival celebrated worldwide. It symbolizes the victory of light over darkness and includes colorful decorations, fireworks, and family gatherings.",
-          "location_name": "Various locations in India and other countries",
           "nearest_airport": "DEL",
           "best_months_to_visit": ["October", "November"]
         },
         {
           "location_name": "Carnival of Venice",
           "description": "The Carnival of Venice is a historic and elegant festival held in Venice, Italy. It features elaborate masks, elegant costumes, and a series of events, including masquerade balls and parades.",
-          "location_name": "Venice, Italy",
           "nearest_airport": "VCE",
           "best_months_to_visit": ["February"]
         },
         {
           "location_name": "Holi",
           "description": "Holi is a vibrant and joyous Hindu festival celebrated in India and other countries. It involves throwing colored powders and water at each other, symbolizing the triumph of good over evil and the arrival of spring.",
-          "location_name": "Various locations in India and other countries",
           "nearest_airport": "DEL",
           "best_months_to_visit": ["March"]
         },
         {
           "location_name": "Mardi Gras",
           "description": "Mardi Gras, also known as Fat Tuesday, is a lively carnival celebrated in various cities around the world, but most famously in New Orleans, USA. It features parades, music, and street parties.",
-          "location_name": "New Orleans, Louisiana, USA",
           "nearest_airport": "MSY",
           "best_months_to_visit": ["February"]
         },
         {
           "location_name": "Songkran",
           "description": "Songkran is the Thai New Year festival celebrated with water splashing and cleansing rituals. It's a fun and lively event, especially in cities like Bangkok and Chiang Mai.",
-          "location_name": "Various locations in Thailand",
           "nearest_airport": "BKK",
           "best_months_to_visit": ["April"]
         },
         {
           "location_name": "La Tomatina",
           "description": "La Tomatina is a unique and playful festival held in Buñol, Spain. Participants engage in a massive tomato fight, making it one of the world's messiest festivals.",
-          "location_name": "Buñol, Valencia, Spain",
           "nearest_airport": "VLC",
           "best_months_to_visit": ["August"]
         },
         {
           "location_name": "Coachella Valley Music and Arts Festival",
           "description": "Coachella is a famous music and arts festival held annually in California, USA. It attracts top artists from various genres and offers a unique blend of music, art installations, and cultural experiences.",
-          "location_name": "Indio, California, USA",
           "nearest_airport": "PSP",
           "best_months_to_visit": ["April"]
         },
         {
           "location_name": "Glastonbury Festival",
           "description": "Glastonbury is one of the world's most iconic music festivals, featuring a diverse lineup of musicians and artists. It takes place in Somerset, England, and is known for its vibrant atmosphere.",
-          "location_name": "Pilton, Somerset, England",
           "nearest_airport": "BRS",
           "best_months_to_visit": ["June"]
         }
-      ]
+      ]}
 }

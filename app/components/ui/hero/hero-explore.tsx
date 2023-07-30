@@ -1,11 +1,11 @@
 export const Overlay = () => {
   return (
-    <div className="opacity-50 bg-white dark:bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>
+    <div className="opacity-50 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>
   );
 };
 export const Gradient = () => {
   return (
-    <div className="bg-gradient-to-t from-white dark:from-gray-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>
+    <div className="bg-gradient-to-t from-gray-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>
   );
 };
 interface TextProps {
@@ -15,7 +15,7 @@ interface TextProps {
 export const Text = ({ title, description }: TextProps) => {
   return (
     <div>
-      <h1 className="mb-2 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-4xl dark:text-white">
+      <h1 className="mb-2 text-2xl font-bold tracking-tight leading-none md:text-2xl lg:text-4xl text-white">
         {title}
       </h1>
       <p className="mb-2">{description}</p>

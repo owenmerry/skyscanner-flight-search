@@ -17,13 +17,16 @@ export const ActivityLocations = ({
 }) => {
   const allActivities = activitiesJson as unknown as {
     [key: string]: {
-      location_name: string;
-      description: string;
-      nearest_airport: string;
-      best_months_to_visit: string[];
-    }[];
+      images: string[];
+      locations: {
+        location_name: string;
+        description: string;
+        nearest_airport: string;
+        best_months_to_visit: string[];
+      }[];
+    };
   };
-  const activites = allActivities[name];
+  const activites = allActivities[name].locations;
   function nextMonth(currentDate: string, month: string) {
     var input = moment(currentDate).add(1, "M");
     var output = input.clone().startOf("month").month(month);
@@ -33,7 +36,7 @@ export const ActivityLocations = ({
   }
 
   return (
-    <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+    <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:px-12">
       <div>
         <h2 className="text-3xl mb-6">{name} Locations</h2>
       </div>

@@ -6,11 +6,14 @@ export const AllActivities = () => {
   const [showAll, setShowAll] = useState(false);
   const allActivities = activitiesJson as unknown as {
     [key: string]: {
-      location_name: string;
-      description: string;
-      nearest_airport: string;
-      best_months_to_visit: string[];
-    }[];
+      images: string[];
+      locations: {
+        location_name: string;
+        description: string;
+        nearest_airport: string;
+        best_months_to_visit: string[];
+      }[];
+    };
   };
   const activites = Object.keys(allActivities);
   return (
@@ -31,7 +34,7 @@ export const AllActivities = () => {
                 >
                   <div
                     style={{
-                      backgroundImage: `url(&w=250)`,
+                      backgroundImage: `url(${activity.images[0]}&w=250)`,
                     }}
                     className={`h-[120px] bg-cover`}
                   ></div>
