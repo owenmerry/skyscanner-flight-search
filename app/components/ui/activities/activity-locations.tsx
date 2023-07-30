@@ -27,7 +27,9 @@ export const ActivityLocations = ({
   function nextMonth(currentDate: string, month: string) {
     var input = moment(currentDate).add(1, "M");
     var output = input.clone().startOf("month").month(month);
-    return output > input ? output : output.add(1, "years");
+    return output > input
+      ? output.subtract(1, "M")
+      : output.subtract(1, "M").add(1, "years");
   }
 
   return (
