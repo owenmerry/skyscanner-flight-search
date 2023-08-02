@@ -135,7 +135,7 @@ export const getIndicative = async ({
   if (!query) return { error: "Query is required" };
   try {
     const res = await fetch(
-      `${apiUrl}/price?from=${query.from}&to=${query.to}&month=${month}&groupType=month`
+      `${apiUrl}/price?from=${query.from}&to=${query.to}&month=${month}&tripType=${query.tripType}`
     );
     const json: SkyscannerAPIIndicativeResponse = await res.json();
 

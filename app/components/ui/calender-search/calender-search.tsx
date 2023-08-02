@@ -3,6 +3,7 @@ import Calendar from "../calender/calender";
 import { useEffect, useRef, useState } from "react";
 import { Place, getIataFromEntityId } from "~/helpers/sdk/place";
 import moment from "moment";
+import { ToggleSwitch } from "flowbite-react";
 
 interface CalenderSearchProps {
   airports: Place[];
@@ -93,28 +94,24 @@ export const CalenderSearch = ({
   };
 
   return (
-    <div className="relative z-10 mx-auto max-w-screen-xl py-10">
-      <select className="text-black" onChange={handleAirportChange}>
-        {airports.map((airport, key) => {
-          return <option value={key}>{airport.name}</option>;
-        })}
-      </select>
-      <div className="mt-2">
-        <div
-          className={`p-4 inline-block rounded-xl ${
-            mode === "oneway" ? `bg-slate-600` : ``
-          }`}
-          onClick={() => handleModeChange("oneway")}
+    <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+      <div className="mb-4 flex items-center">
+        <select
+          className="mr-2 inline-block bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 pl-4 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+          onChange={handleAirportChange}
         >
-          One way
-        </div>
-        <div
-          className={`p-4 inline-block rounded-xl ${
-            mode === "return" ? `bg-slate-600` : ``
-          }`}
-          onClick={() => handleModeChange("return")}
-        >
-          Return
+          {airports.map((airport, key) => {
+            return <option value={key}>{airport.name}</option>;
+          })}
+        </select>
+        <div>
+          <ToggleSwitch
+            checked={mode === "return"}
+            label="Return Flight"
+            onChange={(toggle) =>
+              handleModeChange(toggle ? "return" : "oneway")
+            }
+          />
         </div>
       </div>
       <div

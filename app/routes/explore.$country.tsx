@@ -15,7 +15,7 @@ import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { HeroExplore } from "~/components/ui/hero/hero-explore";
 import { ImagesDefault } from "~/components/ui/images/images-default";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
-import { ExploreEverywhere } from "~/components/ui/page/explore";
+import { ExploreEverywhere } from "~/components/ui/explore/explore-everywhere";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { useEffect, useState, useRef } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
@@ -111,8 +111,8 @@ export default function SEOAnytime() {
 
       <ExploreEverywhere
         title={`${from.name} to ${country.name}`}
-        from={from}
-        search={searchIndicative}
+        fromPlace={from}
+        toPlace={country}
         apiUrl={apiUrl}
       />
 

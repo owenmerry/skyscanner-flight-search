@@ -10,8 +10,10 @@ import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { useEffect, useState } from "react";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
-import { AllCountries, ExploreEverywhere } from "~/components/ui/page/explore";
+import { ExploreEverywhere } from "~/components/ui/explore/explore-everywhere";
+import { AllCountries } from "~/components/ui/page/explore";
 import { AllActivities } from "~/components/ui/activities/activities";
+import { HeroExplore } from "~/components/ui/hero/hero-explore";
 
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -28,48 +30,23 @@ export const loader: LoaderFunction = async ({}) => {
 export default function SEOAnytime() {
   const { countries, googleApiKey, apiUrl } = useLoaderData();
   const [countryShow, setCountryShow] = useState(false);
-  const [searchIndicative, setSearchIndicative] =
-    useState<SkyscannerAPIIndicativeResponse>();
-  const from = getFromPlaceLocalOrDefault() || getPlaceFromIata("LHR");
-
-  useEffect(() => {
-    runIndicative();
-  }, []);
-
-  const runIndicative = async () => {
-    const indicativeSearch = await skyscanner().indicative({
-      apiUrl,
-      query: {
-        from: from ? from.entityId : "",
-        to: "anywhere",
-        depart: "2023-08-01",
-        return: "2023-08-20",
-        tripType: "return",
-      },
-      month: Number("2023-08-01".split("-")[1]),
-    });
-
-    if ("error" in indicativeSearch.search) return;
-
-    setSearchIndicative(indicativeSearch.search);
-  };
-  if (!from) return;
 
   return (
     <Layout selectedUrl="/explore">
+      <HeroExplore
+        title={`Explore`}
+        backgroundImage={
+          "https://images.unsplash.com/photo-1601004435314-7300f4315c91?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxLb25hfGVufDB8MHx8fDE2OTEwMDIwMDV8MA&ixlib=rb-4.0.3&w=1200&w=1500"
+        }
+      />
+      <AllCountries
+        countries={countries}
+        showAll={countryShow}
+        onShowToggle={() => setCountryShow(!countryShow)}
+      />
+      <AllActivities />
+      <ExploreEverywhere apiUrl={apiUrl} />
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <AllCountries
-          countries={countries}
-          showAll={countryShow}
-          onShowToggle={() => setCountryShow(!countryShow)}
-        />
-        <AllActivities />
-        <ExploreEverywhere
-          title={`${from.name} to Everywhere`}
-          from={from}
-          search={searchIndicative}
-          apiUrl={apiUrl}
-        />
         <Wrapper apiKey={googleApiKey}>
           <Map
             center={{ lat: 0, lng: 0 }}
