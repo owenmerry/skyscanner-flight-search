@@ -5,6 +5,8 @@ interface Props {
   prices?: { price: string; date: string; link?: string }[];
   displayDate?: string;
   selectedDate?: string;
+  departDate?: string;
+  returnDate?: string;
   onDateSelected?: (date: string) => void;
   onPriceCheck?: (date: string) => void;
   showNoReturn?: boolean;
@@ -18,6 +20,8 @@ type CalendarItemProps = {
   link?: string;
   onClick?: Function;
   onPriceCheck: Function;
+  isDepartDate?: boolean;
+  isReturnDate?: boolean;
 };
 
 function CalendarItem({
@@ -28,16 +32,44 @@ function CalendarItem({
   onClick,
   onPriceCheck,
   link,
+  isDepartDate,
+  isReturnDate,
 }: CalendarItemProps) {
   return (
     <div
-      className={` p-4 hover:bg-slate-700 border-2 rounded-md ${
-        isSelected ? `border-blue-600` : `border-transparent`
+      className={`relative p-4 hover:bg-slate-700 border-2 rounded-md
+      ${isDisabled ? `text-gray-700` : ``}
+      ${isSelected ? `border-primary-600` : ``}
+      ${isDepartDate ? `border-primary-600` : ``}
+      ${isReturnDate ? `border-gray-200` : ``}
+      ${
+        !isSelected && !isDepartDate && !isReturnDate
+          ? `border-transparent`
+          : ``
       }
       ${onClick ? `cursor-pointer` : ``}
       `}
       onClick={() => !isDisabled && onClick && onClick(date)}
     >
+      {isDepartDate || isReturnDate ? (
+        <div
+          className={`absolute top-[-10px] left-0 
+        ${isDepartDate ? `bg-primary-600` : ``}
+        ${isReturnDate ? `bg-gray-200 text-black` : ``}
+         rounded-md text-xs text-center w-full`}
+        >
+          {isDepartDate && isReturnDate
+            ? "Same day"
+            : isDepartDate
+            ? "Depart"
+            : isReturnDate
+            ? "Return"
+            : ""}
+          {}
+        </div>
+      ) : (
+        ""
+      )}
       <div className="">{date.getDate()}</div>
       <div
         className="cursor-pointer"
@@ -63,6 +95,8 @@ export default function Calendar({
   onDateSelected,
   onPriceCheck,
   selectedDate,
+  departDate,
+  returnDate,
   prices = [],
   showNoReturn,
 }: Props) {
@@ -164,14 +198,25 @@ export default function Calendar({
           <li className="p-2">SAT</li>
         </ul>
         <div className="grid grid-cols-7">
-          {items.map((item) => (
-            <CalendarItem
-              key={item.date.toISOString()}
-              onClick={handleDateSelected}
-              onPriceCheck={handlePriceCheck}
-              {...item}
-            />
-          ))}
+          {items.map((item) => {
+            const itemsDateMoment = moment(item.date);
+            const itemsDateString = itemsDateMoment.format("YYYY-MM-DD");
+            const isDepartDate = itemsDateString === departDate;
+            const isReturnDate = itemsDateString === returnDate;
+            const isPast = moment().diff(itemsDateMoment) >= 0;
+            const isDisabled = isPast;
+            return (
+              <CalendarItem
+                key={item.date.toISOString()}
+                onClick={handleDateSelected}
+                onPriceCheck={handlePriceCheck}
+                isDepartDate={isDepartDate}
+                isReturnDate={isReturnDate}
+                isDisabled={isDisabled}
+                {...item}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

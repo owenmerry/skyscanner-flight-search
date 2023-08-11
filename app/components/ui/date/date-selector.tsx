@@ -35,6 +35,7 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
     setShowCalender(!showCalender);
   };
   const handleDateChange = (date: string) => {
+    const departselected = showCalender && selectedDate === "depart";
     onDateChange &&
       onDateChange({
         ...dates,
@@ -46,7 +47,11 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
               return: date,
             }),
       });
-    setShowCalender(false);
+    if (departselected) {
+      setSelectedDate("return");
+      return;
+    }
+    //setShowCalender(false);
   };
   return (
     <>
@@ -113,9 +118,10 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
           <div className="bg-white border border-gray-100 w-full mt-2 absolute dark:bg-gray-800 dark:border-gray-600">
             <Calendar
               onDateSelected={handleDateChange}
-              selectedDate={isDepart ? dates.depart : dates.return}
               displayDate={isDepart ? dates.depart : dates.return}
               showNoReturn={isReturn}
+              departDate={dates.depart}
+              returnDate={dates.return}
             />
           </div>
         </div>
