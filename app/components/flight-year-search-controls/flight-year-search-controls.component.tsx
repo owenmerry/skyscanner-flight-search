@@ -1,5 +1,5 @@
-import { Location } from '~/components/location';
-import type { FlightCheckQuery } from '~/types/search';
+import { Location } from "~/components/ui/location";
+import type { FlightCheckQuery } from "~/types/search";
 
 interface FlightYearSearchControlsProps {
   onChange?: (query: FlightCheckQuery) => void;
@@ -8,14 +8,14 @@ interface FlightYearSearchControlsProps {
 
 export const FlightYearSearchControls = ({
   onChange,
-  apiUrl = '',
+  apiUrl = "",
 }: FlightYearSearchControlsProps): JSX.Element => {
-
   const handleQueryChange = (value: string) => {
-    onChange && onChange({
-      from: '95565050', // London Heathrow
-      to: value,
-    });
+    onChange &&
+      onChange({
+        from: "95565050", // London Heathrow
+        to: value,
+      });
   };
 
   return (

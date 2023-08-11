@@ -7,6 +7,7 @@ interface Props {
   selectedDate?: string;
   onDateSelected?: (date: string) => void;
   onPriceCheck?: (date: string) => void;
+  showNoReturn?: boolean;
 }
 
 type CalendarItemProps = {
@@ -30,9 +31,11 @@ function CalendarItem({
 }: CalendarItemProps) {
   return (
     <div
-      className={` border-2 p-4 hover:bg-slate-700 ${
+      className={` p-4 hover:bg-slate-700 ${
         isSelected ? `border-blue-600` : `border-slate-600`
-      }`}
+      }
+      ${onClick ? `cursor-pointer` : ``}
+      `}
       onClick={() => !isDisabled && onClick && onClick(date)}
     >
       <div className="">{date.getDate()}</div>
@@ -61,6 +64,7 @@ export default function Calendar({
   onPriceCheck,
   selectedDate,
   prices = [],
+  showNoReturn,
 }: Props) {
   //controls
   const [calenderDate, setCalenderDate] = useState(displayDate);
@@ -106,35 +110,49 @@ export default function Calendar({
 
   return (
     <div className="">
-      <button
-        className="p-4 hover:bg-slate-700"
-        onClick={() =>
-          setCalenderDate(
-            moment(calenderDate).subtract(1, "M").format("YYYY-MM-DD")
-          )
-        }
-      >
-        -
-      </button>
-      <button
-        className="p-4 hover:bg-slate-700"
-        onClick={() =>
-          setCalenderDate(
-            moment(new Date()).subtract(1, "M").format("YYYY-MM-DD")
-          )
-        }
-      >
-        Today
-      </button>
-      <button
-        className="p-4 hover:bg-slate-700"
-        onClick={() =>
-          setCalenderDate(moment(calenderDate).add(1, "M").format("YYYY-MM-DD"))
-        }
-      >
-        +
-      </button>
-      <div className="border-slate-600 rounded-md border-2">
+      <div className="flex">
+        <div
+          className="p-4 hover:bg-slate-700 cursor-pointer"
+          onClick={() =>
+            setCalenderDate(
+              moment(calenderDate).subtract(1, "M").format("YYYY-MM-DD")
+            )
+          }
+        >
+          -
+        </div>
+        <div
+          className="p-4 hover:bg-slate-700 cursor-pointer"
+          onClick={() =>
+            setCalenderDate(moment(new Date()).format("YYYY-MM-DD"))
+          }
+        >
+          Today
+        </div>
+        <div
+          className="p-4 hover:bg-slate-700 cursor-pointer"
+          onClick={() =>
+            setCalenderDate(
+              moment(calenderDate).add(1, "M").format("YYYY-MM-DD")
+            )
+          }
+        >
+          +
+        </div>
+        {showNoReturn ? (
+          <div
+            className="p-4 hover:bg-slate-700 cursor-pointer"
+            onClick={() => {
+              onDateSelected && onDateSelected("");
+            }}
+          >
+            No Return
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
+      <div className="border-slate-600">
         <div className="p-2">{monthDate.format("MMMM YYYY")}</div>
         <ul className="grid grid-cols-7">
           <li className="p-2">SUN</li>

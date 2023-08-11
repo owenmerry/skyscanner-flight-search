@@ -1,8 +1,12 @@
-import { useState } from 'react';
-import { Location } from '~/components/location';
-import type { FlightQuery } from '~/types/search';
+import { useState } from "react";
+import { Location } from "~/components/ui/location";
+import type { FlightQuery } from "~/types/search";
 
-import { getWeekendDates, convertDateToYYYMMDDFormat, addWeeksToDate } from '~/helpers/date';
+import {
+  getWeekendDates,
+  convertDateToYYYMMDDFormat,
+  addWeeksToDate,
+} from "~/helpers/date";
 
 interface FlightWeekendSearchControlsProps {
   onChange?: (query: FlightQuery) => void;
@@ -11,40 +15,49 @@ interface FlightWeekendSearchControlsProps {
 
 export const FlightWeekendSearchControls = ({
   onChange,
-  apiUrl = '',
+  apiUrl = "",
 }: FlightWeekendSearchControlsProps): JSX.Element => {
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const [week, setWeek] = useState(0);
   const displayDates = {
-    friday: getWeekendDates(addWeeksToDate(new Date(), week)).friday.toDateString(),
-    sunday: getWeekendDates(addWeeksToDate(new Date(), week)).sunday.toDateString(),
+    friday: getWeekendDates(
+      addWeeksToDate(new Date(), week)
+    ).friday.toDateString(),
+    sunday: getWeekendDates(
+      addWeeksToDate(new Date(), week)
+    ).sunday.toDateString(),
   };
-
 
   const handleQueryChange = (value: string, week: number) => {
     const weekend = getWeekendDates(addWeeksToDate(new Date(), week));
     const datesCalculated = {
       depart: convertDateToYYYMMDDFormat(weekend.friday),
       return: convertDateToYYYMMDDFormat(weekend.sunday),
-    }
-    onChange && onChange({
-      from: '95565050', // London Heathrow
-      to: value,
-      depart: datesCalculated.depart,
-      return: datesCalculated.return,
-      tripType: 'return',
-    });
+    };
+    onChange &&
+      onChange({
+        from: "95565050", // London Heathrow
+        to: value,
+        depart: datesCalculated.depart,
+        return: datesCalculated.return,
+        tripType: "return",
+      });
 
     setLocation(value);
   };
 
-  const handleWeekChange = (method: 'add' | 'minus') => {
-    const currentWeek = method === 'add' ? week + 1 : method === 'minus' && week !== 0 ? week - 1 : week;
+  const handleWeekChange = (method: "add" | "minus") => {
+    const currentWeek =
+      method === "add"
+        ? week + 1
+        : method === "minus" && week !== 0
+        ? week - 1
+        : week;
     setWeek(currentWeek);
-    if (location !== '') {
+    if (location !== "") {
       handleQueryChange(location, currentWeek);
     }
-  }
+  };
 
   return (
     <div className="flight-weekend-search">
@@ -54,10 +67,12 @@ export const FlightWeekendSearchControls = ({
         onSelect={(value) => handleQueryChange(value, week)}
         apiUrl={apiUrl}
       />
-      <div>{displayDates.friday} - {displayDates.sunday}</div>
-      <div className='weekend-buttons'>
-        <button onClick={() => handleWeekChange('minus')}>-1 week</button>
-        <button onClick={() => handleWeekChange('add')}>+1 week</button>
+      <div>
+        {displayDates.friday} - {displayDates.sunday}
+      </div>
+      <div className="weekend-buttons">
+        <button onClick={() => handleWeekChange("minus")}>-1 week</button>
+        <button onClick={() => handleWeekChange("add")}>+1 week</button>
       </div>
     </div>
   );
