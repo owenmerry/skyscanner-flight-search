@@ -38,6 +38,7 @@ export default function SEOAnytime() {
         backgroundImage={
           "https://images.unsplash.com/photo-1601004435314-7300f4315c91?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxLb25hfGVufDB8MHx8fDE2OTEwMDIwMDV8MA&ixlib=rb-4.0.3&w=1200&w=1500"
         }
+        apiUrl={apiUrl}
       />
       <AllCountries
         countries={countries}

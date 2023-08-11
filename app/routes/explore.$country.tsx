@@ -17,10 +17,8 @@ import { ImagesDefault } from "~/components/ui/images/images-default";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { ExploreEverywhere } from "~/components/ui/explore/explore-everywhere";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import Calendar from "~/components/ui/calender/calender";
-import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
 import { CalenderSearch } from "~/components/ui/calender-search/calender-search";
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -105,6 +103,7 @@ export default function SEOAnytime() {
       <HeroExplore
         title={`Explore ${country.name}`}
         backgroundImage={country.images[0]}
+        apiUrl={apiUrl}
       />
 
       <ImagesDefault images={country.images} />
@@ -116,7 +115,7 @@ export default function SEOAnytime() {
         apiUrl={apiUrl}
       />
 
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+      <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
           <h2 className="text-3xl mb-6">Airports in {country.name}</h2>
         </div>
@@ -140,7 +139,7 @@ export default function SEOAnytime() {
         </div>
       </div>
 
-      <div className="relative z-10 py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+      <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
           <h2 className="text-3xl mb-6">Map</h2>
         </div>

@@ -7,7 +7,7 @@ interface ImagesDefaultProps {
 export const ImagesDefault = ({ images }: ImagesDefaultProps) => {
   const [imageNumber, setImageNumber] = useState(0);
   return (
-    <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+    <div className="relative py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
       <div>
         <h2 className="text-3xl mb-6">Images</h2>
       </div>

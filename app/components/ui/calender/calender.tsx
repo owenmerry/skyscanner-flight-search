@@ -31,8 +31,8 @@ function CalendarItem({
 }: CalendarItemProps) {
   return (
     <div
-      className={` p-4 hover:bg-slate-700 ${
-        isSelected ? `border-blue-600` : `border-slate-600`
+      className={` p-4 hover:bg-slate-700 border-2 rounded-md ${
+        isSelected ? `border-blue-600` : `border-transparent`
       }
       ${onClick ? `cursor-pointer` : ``}
       `}
