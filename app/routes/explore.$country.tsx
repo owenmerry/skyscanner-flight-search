@@ -8,18 +8,19 @@ import {
   getPlaceFromIata,
 } from "~/helpers/sdk/place";
 import { Layout } from "~/components/ui/layout/layout";
-import { Map } from "~/components/map";
+import { Map } from "~/components/ui/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { getMarkersCountry } from "~/helpers/map";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
-import { HeroExplore } from "~/components/ui/hero/hero-explore";
-import { ImagesDefault } from "~/components/ui/images/images-default";
+import { HeroExplore } from "~/components/section/hero/hero-explore";
+import { ImagesDefault } from "~/components/section/images/images-default";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
-import { ExploreEverywhere } from "~/components/ui/explore/explore-everywhere";
+import { ExploreEverywhere } from "~/components/section/explore/explore-everywhere";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { useEffect, useState } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { CalenderSearch } from "~/components/ui/calender-search/calender-search";
+import { CalenderSearch } from "~/components/section/calender-search/calender-search";
+import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -105,6 +106,15 @@ export default function SEOAnytime() {
         backgroundImage={country.images[0]}
         apiUrl={apiUrl}
       />
+      <Breadcrumbs
+        items={[
+          {
+            name: "Explore",
+            link: "/explore",
+          },
+          { name: country.name },
+        ]}
+      />
 
       <ImagesDefault images={country.images} />
 
@@ -117,7 +127,9 @@ export default function SEOAnytime() {
 
       <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
-          <h2 className="text-3xl mb-6">Airports in {country.name}</h2>
+          <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+            Airports in {country.name}
+          </h2>
         </div>
         <div className="grid sm:grid-cols-5 grid-cols-2">
           {airports
@@ -141,7 +153,9 @@ export default function SEOAnytime() {
 
       <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
-          <h2 className="text-3xl mb-6">Map</h2>
+          <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+            Map Of {country.name}
+          </h2>
         </div>
         <Wrapper apiKey={googleApiKey}>
           <Map

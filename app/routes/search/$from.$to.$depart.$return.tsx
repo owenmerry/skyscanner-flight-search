@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import type { LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
-import { FlightResultsDefault } from "~/components/ui/flight-results/flight-results-default";
+import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import {
   getFlightLiveCreate,
   getFlightLivePoll,
@@ -12,7 +12,7 @@ import { getEntityIdFromIata, getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { Spinner } from "flowbite-react";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getImagesFromParents } from "~/helpers/sdk/images";
-import { HeroPage } from "~/components/ui/hero/hero-page";
+import { HeroPage } from "~/components/section/hero/hero-page";
 import { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { Query, QueryPlace } from "~/types/search";
@@ -26,7 +26,9 @@ import {
   ExplorePage,
   FlightHotelBundle,
   MapComponent,
-} from "~/components/ui/page/search";
+} from "~/components/section/page/search";
+import { Layout } from "~/components/ui/layout/layout";
+import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -209,6 +211,17 @@ export default function Search() {
         buttonLoading={false}
         flightDefault={query}
         backgroundImage={image}
+      />
+      <Breadcrumbs
+        items={[
+          {
+            name: "Flight Search",
+            link: "/search",
+          },
+          {
+            name: `${flightQuery.from.name} to ${flightQuery.to.name}`,
+          },
+        ]}
       />
       <div className="bg-white dark:bg-gray-900">
         <div className="md:flex justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">

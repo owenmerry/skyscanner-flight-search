@@ -2,18 +2,18 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
-import { getPlaceFromIata, type Place } from "~/helpers/sdk/place";
-import { Map } from "~/components/map";
+import { Map } from "~/components/ui/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { getMarkersWorld } from "~/helpers/map";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { useEffect, useState } from "react";
-import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
-import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
-import { ExploreEverywhere } from "~/components/ui/explore/explore-everywhere";
-import { AllCountries } from "~/components/ui/page/explore";
-import { AllActivities } from "~/components/ui/activities/activities";
-import { HeroExplore } from "~/components/ui/hero/hero-explore";
+import { useState } from "react";
+import { ExploreEverywhere } from "~/components/section/explore/explore-everywhere";
+import { AllCountries } from "~/components/section/page/explore";
+import { AllActivities } from "~/components/section/activities/activities";
+import { HeroExplore } from "~/components/section/hero/hero-explore";
+import { getRandomNumber } from "~/helpers/utils";
+import { Place } from "~/helpers/sdk/place";
+import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -28,17 +28,32 @@ export const loader: LoaderFunction = async ({}) => {
 };
 
 export default function SEOAnytime() {
-  const { countries, googleApiKey, apiUrl } = useLoaderData();
+  const { countries, googleApiKey, apiUrl } = useLoaderData<{
+    countries: Place[];
+    googleApiKey: string;
+    apiUrl: string;
+  }>();
   const [countryShow, setCountryShow] = useState(false);
+
+  const randomCountry =
+    countries[getRandomNumber(countries.length)] || countries[0];
 
   return (
     <Layout selectedUrl="/explore">
       <HeroExplore
-        title={`Explore`}
+        title={`Explore Everywhere`}
+        imagePlace={randomCountry}
         backgroundImage={
-          "https://images.unsplash.com/photo-1601004435314-7300f4315c91?ixid=M3w0MjE3MjJ8MHwxfHNlYXJjaHwxfHxLb25hfGVufDB8MHx8fDE2OTEwMDIwMDV8MA&ixlib=rb-4.0.3&w=1200&w=1500"
+          randomCountry.images[getRandomNumber(randomCountry.images.length)]
         }
         apiUrl={apiUrl}
+      />
+      <Breadcrumbs
+        items={[
+          {
+            name: "Explore",
+          },
+        ]}
       />
       <AllCountries
         countries={countries}
@@ -48,6 +63,9 @@ export default function SEOAnytime() {
       <AllActivities />
       <ExploreEverywhere apiUrl={apiUrl} />
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+          Explore By Map
+        </h2>
         <Wrapper apiKey={googleApiKey}>
           <Map
             center={{ lat: 0, lng: 0 }}

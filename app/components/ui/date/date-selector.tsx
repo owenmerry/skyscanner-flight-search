@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useRef, useState } from "react";
 import { Query } from "~/types/search";
 import Calendar from "../calender/calender";
+import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
+import moment from "moment";
 
 interface DateSelectorProps {
   query: Query;
@@ -13,6 +15,10 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
   const [dates, setDates] = useState<DatesQuery>({
     depart: query.depart,
     ...(query.return ? { return: query.return } : {}),
+  });
+
+  const refDate = useOutsideClick(() => {
+    setShowCalender(false);
   });
 
   const isDepart = selectedDate === "depart";
@@ -35,23 +41,24 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
     setShowCalender(!showCalender);
   };
   const handleDateChange = (date: string) => {
-    const departselected = showCalender && selectedDate === "depart";
+    let selectedDateUpdated = selectedDate === "return" ? "depart" : "return";
+    const returnSelected = showCalender && selectedDate === "return";
+    const returnIsBeforeDepart =
+      returnSelected && moment(date).isBefore(dates.depart);
+    if (returnIsBeforeDepart) selectedDateUpdated = "return";
     onDateChange &&
       onDateChange({
         ...dates,
-        ...(isDepart
+        ...(isDepart || returnIsBeforeDepart
           ? {
               depart: date,
+              return: "",
             }
           : {
               return: date,
             }),
       });
-    if (departselected) {
-      setSelectedDate("return");
-      return;
-    }
-    //setShowCalender(false);
+    setSelectedDate(selectedDateUpdated);
   };
   return (
     <>
@@ -114,11 +121,11 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
         </div>
       </div>
       {showCalender && (
-        <div className="relative z-20">
+        <div ref={refDate} className="relative z-20">
           <div className="bg-white border border-gray-100 w-full mt-2 absolute dark:bg-gray-800 dark:border-gray-600">
             <Calendar
               onDateSelected={handleDateChange}
-              displayDate={isDepart ? dates.depart : dates.return}
+              displayDate={dates.depart}
               showNoReturn={isReturn}
               departDate={dates.depart}
               returnDate={dates.return}

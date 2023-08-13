@@ -1,22 +1,38 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { HeroDefault } from "~/components/ui/hero/hero-default";
+import { HeroDefault } from "~/components/section/hero/hero-default";
 import { NavigationWebsite } from "~/components/ui/navigation/navigation-website";
 import { Layout } from "~/components/ui/layout/layout";
+import { getImages } from "~/helpers/sdk/query";
+import { HeroNews } from "~/components/section/hero/hero-news";
+import { getRandomNumber } from "~/helpers/utils";
 
-export const loader: LoaderFunction = async ({ request, context, params }) => {
+export const loader: LoaderFunction = async () => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+
+  const backgroundImage = await getImages({
+    apiUrl,
+    query: "flight",
+  });
 
   return {
     apiUrl,
+    backgroundImage,
   };
 };
 
 export default function Index() {
-  const { apiUrl } = useLoaderData();
+  const { apiUrl, backgroundImage } = useLoaderData();
+  const randomHeroImage =
+    backgroundImage[getRandomNumber(backgroundImage.length)];
 
   return (
     <Layout selectedUrl="/news">
+      <HeroNews
+        apiUrl={apiUrl}
+        newFeatureURL="/news"
+        backgroundImage={randomHeroImage}
+      />
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-md lg:py-16 lg:px-12">
         <h2 className="text-2xl mb-6">Updates and new features</h2>
         <p className="mb-16">

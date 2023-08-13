@@ -1,6 +1,6 @@
 import type { Place } from "~/helpers/sdk/geo/geo-sdk";
 export type { Place } from "~/helpers/sdk/geo/geo-sdk";
-import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import { skyscanner } from "./skyscannerSDK";
 
 const geoData = skyscanner().geo();
 

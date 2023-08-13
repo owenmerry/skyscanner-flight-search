@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { HeroDefault } from "~/components/ui/hero/hero-default";
+import { HeroDefault } from "~/components/section/hero/hero-default";
 import { NavigationWebsite } from "~/components/ui/navigation/navigation-website";
 import { Layout } from "~/components/ui/layout/layout";
 

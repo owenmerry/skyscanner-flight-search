@@ -22,6 +22,7 @@ type CalendarItemProps = {
   onPriceCheck: Function;
   isDepartDate?: boolean;
   isReturnDate?: boolean;
+  isInTripRange?: boolean;
 };
 
 function CalendarItem({
@@ -34,12 +35,14 @@ function CalendarItem({
   link,
   isDepartDate,
   isReturnDate,
+  isInTripRange,
 }: CalendarItemProps) {
   return (
     <div
-      className={`relative p-4 hover:bg-slate-700 border-2 rounded-md
-      ${isDisabled ? `text-gray-700` : ``}
+      className={`relative p-4 hover:bg-slate-500 text-center border-2 rounded-md
+      ${isDisabled ? `text-gray-700 hover:bg-none` : ``}
       ${isSelected ? `border-primary-600` : ``}
+      ${isInTripRange ? `bg-gray-700 rounded-none` : ``}
       ${isDepartDate ? `border-primary-600` : ``}
       ${isReturnDate ? `border-gray-200` : ``}
       ${
@@ -188,7 +191,7 @@ export default function Calendar({
       </div>
       <div className="border-slate-600">
         <div className="p-2">{monthDate.format("MMMM YYYY")}</div>
-        <ul className="grid grid-cols-7">
+        <ul className="grid grid-cols-7 text-center">
           <li className="p-2">SUN</li>
           <li className="p-2">MON</li>
           <li className="p-2">TUE</li>
@@ -203,7 +206,12 @@ export default function Calendar({
             const itemsDateString = itemsDateMoment.format("YYYY-MM-DD");
             const isDepartDate = itemsDateString === departDate;
             const isReturnDate = itemsDateString === returnDate;
-            const isPast = moment().diff(itemsDateMoment) >= 0;
+            const isPast = itemsDateMoment.isBefore(
+              moment().format("YYYY-MM-DD")
+            );
+            const isBeforeReturn = itemsDateMoment.isBefore(returnDate);
+            const isAfterDepart = itemsDateMoment.isAfter(departDate);
+            const isInTripRange = isAfterDepart && isBeforeReturn;
             const isDisabled = isPast;
             return (
               <CalendarItem
@@ -213,6 +221,7 @@ export default function Calendar({
                 isDepartDate={isDepartDate}
                 isReturnDate={isReturnDate}
                 isDisabled={isDisabled}
+                isInTripRange={isInTripRange}
                 {...item}
               />
             );

@@ -1,14 +1,15 @@
 import { useState } from "react";
 import type { LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { HeroPage } from "~/components/ui/hero/hero-page";
-import { HotelList } from "~/components/hotels-list";
+import { HeroPage } from "~/components/section/hero/hero-page";
+import { HotelList } from "~/components/section/hotels-list";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import type { Place } from "~/helpers/sdk/geo/geo-sdk";
 import type { FlightQuery, FlightUrl } from "~/types/search";
-import { FlightDetails } from "~/components/flight-details";
+import { FlightDetails } from "~/components/section/flight-details";
 import { getImages } from "~/helpers/sdk/query";
 import type { Query as OldQuery, QueryPlace } from "~/types/search";
+import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -79,6 +80,21 @@ export default function Search() {
         backgroundImage={headerImage}
         flightDefault={oldQuery}
         showFlightForm={false}
+      />
+      <Breadcrumbs
+        items={[
+          {
+            name: "Flight Search",
+            link: "/search",
+          },
+          {
+            name: `${query.from.name} to ${query.to.name}`,
+            link: `/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}`,
+          },
+          {
+            name: `Flight Details`,
+          },
+        ]}
       />
       <FlightDetails
         url={url}

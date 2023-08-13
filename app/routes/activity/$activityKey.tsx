@@ -4,10 +4,10 @@ import { useLoaderData } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
 import { getPlaceFromIata, type Place } from "~/helpers/sdk/place";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
-import { ActivityLocations } from "~/components/ui/activities/activity-locations";
-import { HeroExplore } from "~/components/ui/hero/hero-explore";
+import { ActivityLocations } from "~/components/section/activities/activity-locations";
+import { HeroExplore } from "~/components/section/hero/hero-explore";
 import { getImages } from "~/helpers/sdk/query";
-import { ImagesDefault } from "~/components/ui/images/images-default";
+import { ImagesDefault } from "~/components/section/images/images-default";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
