@@ -5,7 +5,10 @@ import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import type { Query, QueryPlace } from "~/types/search";
 import { addSearchResultFilters } from "~/helpers/sdk/filters";
-import { getSkyscannerLink } from "~/helpers/sdk/skyscanner-website";
+import {
+  getSkyscannerLink,
+  getSkyscannerSearchLink,
+} from "~/helpers/sdk/skyscanner-website";
 
 interface SegmentsProps {
   flight: FlightSDK;
@@ -354,7 +357,7 @@ export const FlightResultsDefault = ({
         <a
           target="_blank"
           className="ml-4 text-slate-400 text-xs hover:underline"
-          href={getSkyscannerLink(query)}
+          href={getSkyscannerSearchLink(query)}
         >
           See Search On Skyscanner
         </a>
