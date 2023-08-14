@@ -98,7 +98,7 @@ export default function Search() {
       />
       <FlightDetails
         url={url}
-        query={search}
+        query={query}
         apiUrl={apiUrl}
         itineraryId={url.itineraryId}
       />

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback, Fragment } from "react";
-import type { FlightQuery, FlightUrl } from "~/types/search";
+import type { FlightQuery, FlightUrl, QueryPlace } from "~/types/search";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { SearchSDK, FlightSDK, LegSDK } from "~/helpers/sdk/skyscannerSDK";
 import { waitSeconds } from "~/helpers/utils";
@@ -7,9 +7,10 @@ import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import { Timeline } from "flowbite-react";
 import { Button } from "flowbite-react";
 import { Loading } from "~/components/ui/loading";
+import moment from "moment";
 
 interface FlightDetailsProps {
-  query?: FlightQuery;
+  query?: QueryPlace;
   apiUrl?: string;
   url?: FlightUrl;
   itineraryId?: string;
@@ -33,6 +34,16 @@ export const FlightDetails = ({
     search &&
     search[sort].filter((item) => item.itineraryId === itineraryId).length > 0
   );
+
+  const getSkyscannerBookingLink = (query: QueryPlace) => {
+    const getBookingDate = (dateString: string) =>
+      moment(dateString).format("YYMMDD");
+    return `https://www.skyscanner.net/transport/flights/${query.from.iata}/${
+      query.to.iata
+    }/${getBookingDate(query.depart)}${
+      query.return ? `/${getBookingDate(query.return)}` : ""
+    }/config/${itineraryId ? encodeURIComponent(itineraryId) : ""}`;
+  };
 
   const pollFlights = useCallback(
     async (token: string) => {
@@ -83,7 +94,7 @@ export const FlightDetails = ({
   );
 
   const handleSearch = useCallback(
-    async (query: FlightQuery) => {
+    async (query: QueryPlace) => {
       setSearch(false);
       setSearching(true);
       setError("");
@@ -91,9 +102,11 @@ export const FlightDetails = ({
 
       try {
         const res = await fetch(
-          `${apiUrl}/create?from=${query.from}&to=${query.to}&depart=${
-            query.depart
-          }${query?.return ? `&return=${query.return}` : ""}`
+          `${apiUrl}/create?from=${query.from.entityId}&to=${
+            query.to.entityId
+          }&depart=${query.depart}${
+            query?.return ? `&return=${query.return}` : ""
+          }`
         );
         const json = await res.json();
 
@@ -179,6 +192,23 @@ export const FlightDetails = ({
                       );
                     })}
                   </div>
+
+                  {query ? (
+                    <div>
+                      {/* Deals */}
+                      <div>
+                        <a
+                          target="_blank"
+                          className="mt-4 p-4 text-white bg-blue-700 border border-transparent hover:bg-blue-800 focus:ring-blue-300 disabled:hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:disabled:hover:bg-blue-600 text-center font-medium rounded-md"
+                          href={getSkyscannerBookingLink(query)}
+                        >
+                          See on Skyscanner
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   <div className="flight-layout">
                     {/* Deals */}
