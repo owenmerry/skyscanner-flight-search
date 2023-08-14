@@ -92,7 +92,6 @@ export default function Search() {
           },
         ]}
       />
-      check this:{query.from.iata} to {query.to.iata}
       <FlightDetails
         url={url}
         query={query}

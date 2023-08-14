@@ -267,7 +267,7 @@ export default function Search() {
                 <FlightResultsDefault
                   flights={"error" in search ? undefined : search}
                   filters={filters}
-                  query={query}
+                  query={flightQuery}
                 />
               </>
             )}

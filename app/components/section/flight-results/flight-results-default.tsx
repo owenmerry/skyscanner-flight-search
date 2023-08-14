@@ -3,8 +3,9 @@ import { Button } from "flowbite-react";
 import { FlightSDK, SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import type { SearchFilters } from "~/helpers/sdk/filters";
-import type { Query } from "~/types/search";
+import type { Query, QueryPlace } from "~/types/search";
 import { addSearchResultFilters } from "~/helpers/sdk/filters";
+import { getSkyscannerLink } from "~/helpers/sdk/skyscanner-website";
 
 interface SegmentsProps {
   flight: FlightSDK;
@@ -154,7 +155,7 @@ interface ButtonColumnProps {
   flight: FlightSDK;
   showDeals: boolean;
   onButtonSelect: () => void;
-  query: Query;
+  query: QueryPlace;
 }
 const ButtonColumn = ({
   flight,
@@ -172,8 +173,9 @@ const ButtonColumn = ({
       </div>
       <div>
         <Button
+          target="_blank"
           className="ml-2"
-          href={`/booking/${query.fromIata}/${query.toIata}/${query.depart}${
+          href={`/booking/${query.from.iata}/${query.to.iata}/${query.depart}${
             query.return ? `/${query.return}` : ``
           }/${flight.itineraryId}`}
         >
@@ -182,6 +184,17 @@ const ButtonColumn = ({
         <Button outline className="ml-2 mt-2" onClick={onButtonSelect}>
           {showDeals ? "Hide Details" : "Show Details"}
         </Button>
+        <div>
+          <div className="mt-4 text-center">
+            <a
+              target="_blank"
+              className="text-slate-400 text-xs hover:underline"
+              href={getSkyscannerLink(query, flight.itineraryId)}
+            >
+              See Flight On Skyscanner
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -223,7 +236,7 @@ const Label = ({ text = "Label", color = "purple" }: LabelProps) => {
 interface FlightProps {
   flight: FlightSDK;
   flights: SearchSDK;
-  query: Query;
+  query: QueryPlace;
 }
 const Flight = ({ flight, flights, query }: FlightProps) => {
   const [showDeals, setShowDeals] = useState(false);
@@ -316,7 +329,7 @@ const Paging = ({
 interface FlightResultsDefaultProps {
   flights?: SearchSDK;
   filters?: SearchFilters;
-  query?: Query;
+  query?: QueryPlace;
 }
 
 export const FlightResultsDefault = ({
@@ -338,6 +351,13 @@ export const FlightResultsDefault = ({
       <div className="border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800">
         Showing<b className="px-1">1-{results}</b>of
         <b className="px-1">{filteredResults().total}</b>
+        <a
+          target="_blank"
+          className="ml-4 text-slate-400 text-xs hover:underline"
+          href={getSkyscannerLink(query)}
+        >
+          See Search On Skyscanner
+        </a>
       </div>
       {filteredResults().results.map((flight) => {
         return (
