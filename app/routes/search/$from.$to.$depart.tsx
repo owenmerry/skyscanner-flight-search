@@ -169,7 +169,7 @@ export default function Search() {
         from: query.from,
         to: query.to,
         depart: query.depart,
-        tripType: "return",
+        tripType: "single",
       },
       month: Number(query.depart.split("-")[1]),
     });
