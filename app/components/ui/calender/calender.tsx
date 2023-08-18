@@ -76,21 +76,26 @@ function CalendarItem({
       )}
       <div className="">{date.getDate()}</div>
       <div
-        className="cursor-pointer"
+        className="cursor-pointer text-xs md:text-base"
         onClick={() => !isDisabled && onPriceCheck(date)}
       >
         {price === "loading..." ? (
           <Spinner className="mt-2" />
         ) : price ? (
-          `${price}`
+          <span>{price}</span>
         ) : (
           "-"
         )}
       </div>
       {link ? (
         <div>
-          <a className="text-sm underline" href={link} target="_blank">
-            Go to Search
+          <a
+            className="text-xs md:text-sm underline"
+            href={link}
+            target="_blank"
+          >
+            <span className="hidden md:visible">Go to Search</span>
+            <span className="md:hidden visible">See</span>
           </a>
         </div>
       ) : (

@@ -292,11 +292,23 @@ const Flight = ({ flight, flights, query }: FlightProps) => {
               Journey Details
             </h2>
             <div className="mb-4 px-4 py-2 border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600">
-              {flight.legs.map((leg) => (
-                <LegTimeline leg={leg} />
+              {flight.legs.map((leg, key) => (
+                <>
+                  {key === 0 && (
+                    <h3 className="my-2 text-lg font-bold leading-none">
+                      {query?.from.name} to {query?.to.name} Flight
+                    </h3>
+                  )}
+                  {key === 1 && (
+                    <h3 className="my-2 text-xl font-bold leading-none">
+                      {query?.to.name} to {query?.from.name} Flight
+                    </h3>
+                  )}
+                  <LegTimeline leg={leg} />
+                </>
               ))}
             </div>
-            <h2 className="mb-2 text-xl font-bold tracking-tight leading-none">
+            <h2 className="mb-2 text-lg font-bold tracking-tight leading-none">
               Prices
             </h2>
             <Deals flight={flight} />
