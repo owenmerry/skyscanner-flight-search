@@ -105,7 +105,7 @@ export const HeroPage = ({
   return (
     <section
       style={{ backgroundImage: `url(${backgroundImage}&w=1500)` }}
-      className={`relative bg-cover bg-center`}
+      className={`relative bg-top md:bg-center bg-contain md:bg-cover bg-no-repeat`}
     >
       <Overlay />
       <Gradient />

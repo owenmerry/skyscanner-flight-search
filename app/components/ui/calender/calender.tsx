@@ -1,3 +1,4 @@
+import { Spinner } from "flowbite-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
 
@@ -78,7 +79,13 @@ function CalendarItem({
         className="cursor-pointer"
         onClick={() => !isDisabled && onPriceCheck(date)}
       >
-        {price ? `${price}` : "-"}
+        {price === "loading..." ? (
+          <Spinner className="mt-2" />
+        ) : price ? (
+          `${price}`
+        ) : (
+          "-"
+        )}
       </div>
       {link ? (
         <div>

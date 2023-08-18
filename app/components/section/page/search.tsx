@@ -135,16 +135,20 @@ export const ExploreDates = ({
 
               return (
                 <a
-                  className="bg-slate-50 font-semibold mr-2 p-2 rounded dark:bg-gray-800 text-slate-400"
+                  className="bg-slate-50 font-semibold mr-2 p-2 rounded dark:bg-gray-800 text-slate-400 hover:dark:bg-gray-700"
                   href={getLink({
                     ...query,
                     depart: departDateYYYYMMDD,
                     return: returnDateYYYYMMDD,
                   })}
                 >
-                  {getDateFormatted(departDateYYYYMMDD)} to{" "}
-                  {getDateFormatted(returnDateYYYYMMDD)} from{" "}
-                  {getPrice(quote.minPrice.amount, quote.minPrice.unit)}
+                  {getDateFormatted(departDateYYYYMMDD)}
+                  {query.return ? (
+                    <> to {getDateFormatted(returnDateYYYYMMDD)}</>
+                  ) : (
+                    ""
+                  )}{" "}
+                  from {getPrice(quote.minPrice.amount, quote.minPrice.unit)}
                 </a>
               );
             }

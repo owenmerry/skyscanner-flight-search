@@ -9,6 +9,7 @@ import {
   getSkyscannerLink,
   getSkyscannerSearchLink,
 } from "~/helpers/sdk/skyscanner-website";
+import { LegTimeline } from "../flight-details/flight-details.component";
 
 interface SegmentsProps {
   flight: FlightSDK;
@@ -286,7 +287,18 @@ const Flight = ({ flight, flights, query }: FlightProps) => {
           />
         </div>
         {showDeals ? (
-          <div>
+          <div className="mt-4 border-t-2 border-slate-100 dark:border-gray-800 pt-2">
+            <h2 className="mt-4 mb-4 text-xl font-bold tracking-tight leading-none">
+              Journey Details
+            </h2>
+            <div className="mb-4 px-4 py-2 border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600">
+              {flight.legs.map((leg) => (
+                <LegTimeline leg={leg} />
+              ))}
+            </div>
+            <h2 className="mb-2 text-xl font-bold tracking-tight leading-none">
+              Prices
+            </h2>
             <Deals flight={flight} />
           </div>
         ) : (

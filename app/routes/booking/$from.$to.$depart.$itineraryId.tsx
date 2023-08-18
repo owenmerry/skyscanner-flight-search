@@ -81,7 +81,7 @@ export default function Search() {
         items={[
           {
             name: "Flight Search",
-            link: "/search",
+            link: "/flight-search",
           },
           {
             name: `${query.from.name} to ${query.to.name}`,
@@ -98,7 +98,7 @@ export default function Search() {
         apiUrl={apiUrl}
         itineraryId={url.itineraryId}
       />
-      <HotelList query={search} apiUrl={apiUrl} />
+      <HotelList query={query} apiUrl={apiUrl} />
     </div>
   );
 }

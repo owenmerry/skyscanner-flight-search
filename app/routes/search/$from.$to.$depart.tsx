@@ -191,7 +191,7 @@ export default function Search() {
         items={[
           {
             name: "Flight Search",
-            link: "/search",
+            link: "/flight-search",
           },
           {
             name: `${flightQuery.from.name} to ${flightQuery.to.name}`,

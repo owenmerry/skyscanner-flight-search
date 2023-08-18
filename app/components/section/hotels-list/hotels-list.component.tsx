@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import type { FlightQuery, FlightUrl } from "~/types/search";
+import type { FlightQuery, FlightUrl, QueryPlace } from "~/types/search";
 import { format } from "date-fns";
 import { Button } from "flowbite-react";
 
@@ -36,7 +36,7 @@ interface SkyscannerAPIHotelSearchResponse {
 }
 
 interface HotelListProps {
-  query?: FlightQuery;
+  query?: QueryPlace;
   apiUrl?: string;
 }
 
@@ -56,21 +56,24 @@ export const HotelList = ({
   };
 
   const handleSearch = useCallback(
-    async (query: FlightQuery) => {
+    async (query: QueryPlace) => {
       try {
         const res = await fetch(
-          `${apiUrl}/hotel/search?from=${query.from}&to=${query.to}&depart=${query.depart}&return=${query.return}&entityId=${query.to}`
+          `${apiUrl}/hotel/search?from=${query.from.entityId}&to=${query.to.entityId}&depart=${query.depart}&return=${query.return}&entityId=${query.to.entityId}`
         );
         const json: SkyscannerAPIHotelSearchResponse = await res.json();
 
         if (!json) {
+          console.log("nothing found");
         } else {
           setSearch(json);
           if (json.meta.final_status !== "COMPLETED") {
             handleSearch(query);
           }
         }
-      } catch (ex) {}
+      } catch (ex) {
+        console.log("error found");
+      }
     },
     [apiUrl]
   );
@@ -85,37 +88,41 @@ export const HotelList = ({
         ""
       ) : (
         <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-          <h2 className="text-xl mt-6 mb-2">
-            Hotels ({numbeOfResults} Results)
+          <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+            Hotels in {query?.to.name}
           </h2>
-          <div className="grid grid-cols-1 gap-6 sm:gap-2 md:grid-cols-3 items-center">
+          <div className="grid grid-cols-2 gap-6 sm:gap-2 md:grid-cols-4">
             {search?.results.hotels
               .sort((a, b) => a.offers[0].price - b.offers[0].price)
               .map((hotel) => (
                 <div
-                  className="bg-white text-black rounded-md overflow-hidden"
+                  className="rounded-lg border-2 border-slate-100 dark:border-gray-800 pt-2 overflow-hidden"
                   key={hotel.hotel_id}
                 >
                   <div
-                    className="h-[300px] bg-cover"
+                    className="h-[200px] bg-cover"
                     style={{
                       backgroundImage: `url(${hotel.images[0]?.dynamic})`,
                     }}
                   ></div>
                   <div className="p-4">
-                    <h2>{hotel.name}</h2>
+                    <h2 className="mb-4 text-xl font-bold leading-none">
+                      {hotel.name}
+                    </h2>
                     <div className="hotel-rating">
                       <div>
                         <b>{hotel.review_summary.score.toFixed(1)}</b>
                       </div>
-                      <div>
-                        <img
-                          style={{ height: "1rem" }}
-                          src={hotel.review_summary.score_image_url.replace(
-                            ".png",
-                            ".svg"
-                          )}
-                        />
+                      <div className="">
+                        <div className="inline-block bg-white rounded-md">
+                          <img
+                            style={{ height: "1rem" }}
+                            src={hotel.review_summary.score_image_url.replace(
+                              ".png",
+                              ".svg"
+                            )}
+                          />
+                        </div>
                       </div>
                       <div className="hotel-reviews">
                         {hotel.reviews_count.toLocaleString()} reviews
@@ -126,24 +133,24 @@ export const HotelList = ({
                     </div>
                   </div>
 
-                  <div className="p-4 border-t-2 border-gray-100">
+                  <div className="p-4 border-t-2 border-slate-100 dark:border-gray-800">
                     <div className="hotel-stay">
                       <div>
                         <b>
                           {checkIn} - {checkOut}
                         </b>
                       </div>
-                      <div className="hotel-price-room">1 adult, 1 room</div>
+                      <div className="text-xs">1 adult, 1 room</div>
                     </div>
-                    <div className="hotel-price">
+                    <div className="">
                       <div>
                         <b>£{hotel.offers[0].price.toLocaleString()}</b>
+                        <span className="ml-2 text-xs">Total Stay</span>
                       </div>
-                      <div className="hotel-price-per">Total Stay</div>
                     </div>
                   </div>
 
-                  <div className="p-4 border-t-2 border-gray-100">
+                  <div className="p-4 border-t-2 border-slate-100 dark:border-gray-800">
                     <div className="mb-2">
                       <Button
                         href={`http://${hotel.offers[0].deeplink}`}
@@ -152,13 +159,14 @@ export const HotelList = ({
                         View Deal
                       </Button>
                     </div>
-                    <div className="hotel-buttons-to-skyscanner">
-                      <Button
+                    <div>
+                      <a
                         href={`https://www.skyscanner.net/hotels/location/hotels/place/ht-${hotel.hotel_id}?checkin=${query?.depart}&checkout=${query?.return}&adults=1&rooms=1`}
                         target="_blank"
+                        className="text-slate-400 text-xs hover:underline"
                       >
-                        View on Skyscanner
-                      </Button>
+                        See on Skyscanner
+                      </a>
                     </div>
                   </div>
                 </div>

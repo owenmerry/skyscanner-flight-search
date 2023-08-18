@@ -148,7 +148,7 @@ export const FlightDetails = ({
   return (
     <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
       {(searching || !foundFlight) && (
-        <div className="loading">
+        <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
           Loading Flight Details and Prices <Loading />
         </div>
       )}
@@ -169,15 +169,25 @@ export const FlightDetails = ({
                       return (
                         <div>
                           <div className="mb-6">
-                            {key === 0 && <h3 className="text-xl">Outbound</h3>}
-                            {key === 1 && <h3 className="text-xl">Return</h3>}
+                            {key === 0 && (
+                              <h3 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+                                {query?.from.name} to {query?.to.name} Flight
+                              </h3>
+                            )}
+                            {key === 1 && (
+                              <h3 className="mt-8 mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+                                {query?.to.name} to {query?.from.name} Flight
+                              </h3>
+                            )}
                           </div>
                           <div
                             key={leg.id}
                             className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-800"
                           >
                             <SegmentsColumn flight={itinerary} number={key} />
-                            <LegTimeline leg={leg} />
+                            <div className="mt-6">
+                              <LegTimeline leg={leg} />
+                            </div>
                           </div>
                         </div>
                       );
@@ -186,7 +196,7 @@ export const FlightDetails = ({
 
                   {query ? (
                     <div>
-                      <div>
+                      <div className="mt-4">
                         <a
                           target="_blank"
                           className="ml-4 text-slate-400 text-xs hover:underline"
@@ -203,11 +213,13 @@ export const FlightDetails = ({
                   <div className="flight-layout">
                     {/* Deals */}
                     <div>
-                      <h2 className="text-xl mb-2 mt-6">Deals </h2>
+                      <h2 className="mt-8 mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+                        Deals{" "}
+                      </h2>
                       {search.status !== "RESULT_STATUS_COMPLETE" && (
-                        <>
+                        <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
                           Checking prices and availability... <Loading />
-                        </>
+                        </div>
                       )}
                       <Deals flight={itinerary} />
                       {/* <Prices
@@ -231,9 +243,9 @@ export const FlightDetails = ({
 interface LegTimelineProps {
   leg: LegSDK;
 }
-const LegTimeline = ({ leg }: LegTimelineProps) => {
+export const LegTimeline = ({ leg }: LegTimelineProps) => {
   return (
-    <div className="mt-6">
+    <div>
       <Timeline>
         {leg.segments.map((leg) => {
           const duration = toHoursAndMinutes(leg.duration);
