@@ -57,7 +57,9 @@ export const HeaderDefault = ({
             </span>
           </Link>
           <div className="flex items-center lg:order-2">
-            <div>{/* <Search /> */}</div>
+            <div>
+              <Search />
+            </div>
             <div className="cursor-pointer p-3" onClick={onDarkModeClick}>
               {" "}
               {isDarkMode ? (
