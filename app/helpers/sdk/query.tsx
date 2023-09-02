@@ -125,17 +125,23 @@ export const getIndicative = async ({
   apiUrl,
   query,
   month = new Date().getMonth() + 1,
+  groupType,
 }: {
   apiUrl: string;
   query?: FlightQuery;
   month?: number;
+  groupType?: string;
 }): Promise<SkyscannerAPIIndicativeResponse | { error: string }> => {
   let indicative,
     error = "";
   if (!query) return { error: "Query is required" };
   try {
     const res = await fetch(
-      `${apiUrl}/price?from=${query.from}&to=${query.to}&month=${month}&tripType=${query.tripType}`
+      `${apiUrl}/price?from=${query.from}&to=${
+        query.to
+      }&month=${month}&tripType=${query.tripType}${
+        groupType ? `&groupType=${groupType}` : ``
+      }`
     );
     const json: SkyscannerAPIIndicativeResponse = await res.json();
 

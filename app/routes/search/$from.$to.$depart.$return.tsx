@@ -173,6 +173,7 @@ export default function Search() {
         tripType: "return",
       },
       month: Number(query.depart.split("-")[1]),
+      groupType: "date",
     });
 
     if ("error" in indicativeSearch.search) return;

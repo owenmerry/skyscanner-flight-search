@@ -155,11 +155,13 @@ export interface SkyscannerSDK {
     query,
     apiUrl,
     month,
+    groupType,
   }: {
     res?: SkyscannerAPIIndicativeResponse;
     query?: FlightQuery;
     apiUrl?: string;
     month?: number;
+    groupType?: string;
   }) => Promise<IndicativeSDK>;
   hotel: ({
     res,

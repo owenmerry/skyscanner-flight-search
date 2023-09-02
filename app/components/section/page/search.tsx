@@ -11,6 +11,7 @@ import {
   SkyscannerAPIIndicativeResponse,
   IndicitiveQuote,
   SkyscannerDateTimeObject,
+  IndicitiveQuoteDate,
 } from "~/helpers/sdk/indicative/indicative-response";
 import { getPrice } from "~/helpers/sdk/price";
 import { format } from "date-fns";
@@ -89,7 +90,9 @@ export const ExploreDates = ({
   search?: SkyscannerAPIIndicativeResponse;
   query: QueryPlace;
 }) => {
-  const sortByPrice = (quoteGroups: IndicitiveQuote[]) => {
+  const sortByPrice = (
+    quoteGroups: IndicitiveQuote[] | IndicitiveQuoteDate[]
+  ) => {
     const sorted = quoteGroups.sort(function (a, b) {
       const quoteA: any = search?.content.results.quotes[a.quoteIds[0]];
       const quoteB: any = search?.content.results.quotes[b.quoteIds[0]];
@@ -105,54 +108,54 @@ export const ExploreDates = ({
       {search ? (
         <div className="border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800">
           Options:{" "}
-          {sortByPrice(search.content.groupingOptions.byRoute.quotesGroups).map(
-            (quoteKey) => {
-              const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
-              const getDateDisplay = (date: SkyscannerDateTimeObject) => {
-                const numberTwoDigits = (myNumber: number) => {
-                  return ("0" + myNumber).slice(-2);
-                };
-                return `${date.year}-${numberTwoDigits(
-                  date.month
-                )}-${numberTwoDigits(date.day)}`;
+          {sortByPrice(
+            search.content.groupingOptions.byDate.quotesOutboundGroups
+          ).map((quoteKey) => {
+            const quote = search.content.results.quotes[quoteKey.quoteIds[0]];
+            const getDateDisplay = (date: SkyscannerDateTimeObject) => {
+              const numberTwoDigits = (myNumber: number) => {
+                return ("0" + myNumber).slice(-2);
               };
-              const getLink = (query: QueryPlace) => {
-                return `/search/${query.from.iata}/${query.to.iata}/${
-                  query.depart
-                }${query.return ? `/${query.return}` : ""}`;
-              };
-              const getDateFormatted = (date: string) => {
-                const dateObject = new Date(date);
+              return `${date.year}-${numberTwoDigits(
+                date.month
+              )}-${numberTwoDigits(date.day)}`;
+            };
+            const getLink = (query: QueryPlace) => {
+              return `/search/${query.from.iata}/${query.to.iata}/${
+                query.depart
+              }${query.return ? `/${query.return}` : ""}`;
+            };
+            const getDateFormatted = (date: string) => {
+              const dateObject = new Date(date);
 
-                return format(dateObject, "EEE,d MMM");
-              };
-              const departDateYYYYMMDD = getDateDisplay(
-                quote.outboundLeg.departureDateTime
-              );
-              const returnDateYYYYMMDD = getDateDisplay(
-                quote.inboundLeg.departureDateTime
-              );
+              return format(dateObject, "EEE,d MMM");
+            };
+            const departDateYYYYMMDD = getDateDisplay(
+              quote.outboundLeg.departureDateTime
+            );
+            const returnDateYYYYMMDD = getDateDisplay(
+              quote.inboundLeg.departureDateTime
+            );
 
-              return (
-                <a
-                  className="bg-slate-50 font-semibold mr-2 p-2 rounded dark:bg-gray-800 text-slate-400 hover:dark:bg-gray-700"
-                  href={getLink({
-                    ...query,
-                    depart: departDateYYYYMMDD,
-                    return: returnDateYYYYMMDD,
-                  })}
-                >
-                  {getDateFormatted(departDateYYYYMMDD)}
-                  {query.return ? (
-                    <> to {getDateFormatted(returnDateYYYYMMDD)}</>
-                  ) : (
-                    ""
-                  )}{" "}
-                  from {getPrice(quote.minPrice.amount, quote.minPrice.unit)}
-                </a>
-              );
-            }
-          )}
+            return (
+              <a
+                className="inline-block bg-slate-50 font-semibold mr-2 mb-2 p-2 rounded dark:bg-gray-800 text-slate-400 hover:dark:bg-gray-700"
+                href={getLink({
+                  ...query,
+                  depart: departDateYYYYMMDD,
+                  ...(query.return ? { return: returnDateYYYYMMDD } : {}),
+                })}
+              >
+                {getDateFormatted(departDateYYYYMMDD)}
+                {query.return ? (
+                  <> to {getDateFormatted(returnDateYYYYMMDD)}</>
+                ) : (
+                  ""
+                )}{" "}
+                from {getPrice(quote.minPrice.amount, quote.minPrice.unit)}
+              </a>
+            );
+          })}
         </div>
       ) : (
         ""

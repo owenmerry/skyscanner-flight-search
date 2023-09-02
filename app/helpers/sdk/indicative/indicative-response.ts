@@ -6,6 +6,9 @@ export interface SkyscannerAPIIndicativeResponse {
       byRoute: {
         quotesGroups: IndicitiveQuote[];
       };
+      byDate: {
+        quotesOutboundGroups: IndicitiveQuoteDate[];
+      };
     };
   };
 }
@@ -13,6 +16,14 @@ export interface SkyscannerAPIIndicativeResponse {
 export interface IndicitiveQuote {
   originPlaceId: string;
   destinationPlaceId: string;
+  quoteIds: string[];
+}
+export interface IndicitiveQuoteDate {
+  monthYearDate: {
+    day: number;
+    month: number;
+    year: number;
+  };
   quoteIds: string[];
 }
 export interface IndicitiveQuoteResult {
