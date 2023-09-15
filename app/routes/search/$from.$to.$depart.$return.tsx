@@ -74,7 +74,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const parentImages = getImagesFromParents(toPlace.entityId);
   const fromImage = await getImages({
     apiUrl,
-    query: toPlace.name,
+    query: `${toPlace.name}${country ? `, ${country.name}` : ""}`,
   });
 
   //get search

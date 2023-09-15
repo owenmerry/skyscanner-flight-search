@@ -94,8 +94,7 @@ function CalendarItem({
             href={link}
             target="_blank"
           >
-            <span className="hidden md:visible">Go to Search</span>
-            <span className="md:hidden visible">See</span>
+            <span className="">See</span>
           </a>
         </div>
       ) : (

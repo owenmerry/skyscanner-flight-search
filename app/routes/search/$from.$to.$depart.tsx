@@ -19,15 +19,12 @@ import { getImagesFromParents } from "~/helpers/sdk/images";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { SearchSDK, skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { Query, QueryPlace } from "~/types/search";
-import {
-  ExploreDates,
-  ExplorePage,
-  MapComponent,
-} from "~/components/section/page/search";
+import { ExplorePage, MapComponent } from "~/components/section/page/search";
 import { getCountryEntityId } from "~/helpers/sdk/data";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 import { Layout } from "~/components/ui/layout/layout";
+import { DatesGraph } from "~/components/section/dates-graph/dates-graph";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -71,7 +68,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const parentImages = getImagesFromParents(toPlace.entityId);
   const fromImage = await getImages({
     apiUrl,
-    query: toPlace.name,
+    query: `${toPlace.name} ${country ? country.name : ""}`,
   });
 
   //get search
@@ -225,7 +222,7 @@ export default function Search() {
                   key="map-component"
                 />
                 <ExplorePage country={country} />
-                <ExploreDates search={searchIndicative} query={flightQuery} />
+                <DatesGraph search={searchIndicative} query={flightQuery} />
                 {loading ? (
                   <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
                     <Spinner className="mr-2" /> Loading More Prices &
