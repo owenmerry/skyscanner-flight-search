@@ -29,6 +29,7 @@ import {
 } from "~/components/section/page/search";
 import { Layout } from "~/components/ui/layout/layout";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
+import { DatesGraph } from "~/components/section/dates-graph/dates-graph";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -255,7 +256,12 @@ export default function Search() {
                     key="map-component"
                   />
                   <ExplorePage country={country} />
-                  <ExploreDates search={searchIndicative} query={flightQuery} />
+                  <DatesGraph search={searchIndicative} query={flightQuery} />
+                  <DatesGraph
+                    search={searchIndicative}
+                    query={flightQuery}
+                    isReturn
+                  />
                 </div>
                 {loading ? (
                   <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">

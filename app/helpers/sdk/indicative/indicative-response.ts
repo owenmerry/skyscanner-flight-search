@@ -8,6 +8,7 @@ export interface SkyscannerAPIIndicativeResponse {
       };
       byDate: {
         quotesOutboundGroups: IndicitiveQuoteDate[];
+        quotesInboundGroups: IndicitiveQuoteDate[];
       };
     };
   };
