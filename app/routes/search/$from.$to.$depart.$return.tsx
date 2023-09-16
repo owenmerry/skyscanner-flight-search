@@ -256,7 +256,11 @@ export default function Search() {
                     key="map-component"
                   />
                   <ExplorePage country={country} />
-                  <DatesGraph search={searchIndicative} query={flightQuery} />
+                  <DatesGraph
+                    search={searchIndicative}
+                    query={flightQuery}
+                    hasMaxWidth
+                  />
                   <DatesGraph
                     search={searchIndicative}
                     query={flightQuery}

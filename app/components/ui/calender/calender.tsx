@@ -44,8 +44,7 @@ function CalendarItem({
       ${isDisabled ? `text-gray-700 hover:bg-none` : ``}
       ${isSelected ? `border-primary-600` : ``}
       ${isInTripRange ? `bg-gray-700 rounded-none` : ``}
-      ${isDepartDate ? `border-primary-600` : ``}
-      ${isReturnDate ? `border-gray-200` : ``}
+      ${isDepartDate || isReturnDate ? `border-primary-600` : ``}
       ${
         !isSelected && !isDepartDate && !isReturnDate
           ? `border-transparent`
@@ -58,8 +57,7 @@ function CalendarItem({
       {isDepartDate || isReturnDate ? (
         <div
           className={`absolute top-[-10px] left-0 
-        ${isDepartDate ? `bg-primary-600` : ``}
-        ${isReturnDate ? `bg-gray-200 text-black` : ``}
+        ${isDepartDate || isReturnDate ? `bg-primary-600` : ``}
          rounded-md text-xs text-center w-full`}
         >
           {isDepartDate && isReturnDate

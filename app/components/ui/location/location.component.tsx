@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
 
 import { searchAutoSuggest } from "~/helpers/sdk/autosuggest";
@@ -25,6 +25,10 @@ export const Location = ({
   const refAutoSuggest = useOutsideClick(() => {
     setShowAutoSuggest(false);
   });
+
+  useEffect(() => {
+    setSearchTerm(defaultValue);
+  }, [defaultValue]);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

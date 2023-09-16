@@ -222,7 +222,11 @@ export default function Search() {
                   key="map-component"
                 />
                 <ExplorePage country={country} />
-                <DatesGraph search={searchIndicative} query={flightQuery} />
+                <DatesGraph
+                  search={searchIndicative}
+                  query={flightQuery}
+                  hasMaxWidth
+                />
                 {loading ? (
                   <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
                     <Spinner className="mr-2" /> Loading More Prices &

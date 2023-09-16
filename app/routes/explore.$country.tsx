@@ -21,6 +21,8 @@ import { useEffect, useState } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { CalenderSearch } from "~/components/section/calender-search/calender-search";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
+import { QueryPlace } from "~/types/search";
+import { ExploreGraph } from "~/components/section/explore/explore-graph";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -75,9 +77,12 @@ export default function SEOAnytime() {
   const defaultSearch = getDefualtFlightQuery();
   const [searchIndicative, setSearchIndicative] =
     useState<SkyscannerAPIIndicativeResponse>();
+  const [searchIndicativeDates, setSearchIndicativeDates] =
+    useState<SkyscannerAPIIndicativeResponse>();
 
   useEffect(() => {
     runIndicative();
+    runIndicativeDates();
   }, []);
 
   const runIndicative = async () => {
@@ -99,6 +104,31 @@ export default function SEOAnytime() {
   };
   if (!from) return;
 
+  const runIndicativeDates = async () => {
+    const indicativeSearch = await skyscanner().indicative({
+      apiUrl,
+      query: {
+        from: from ? from.entityId : "",
+        to: airports[0].entityId,
+        depart: "2023-09-01",
+        return: "2023-09-20",
+        tripType: "single",
+      },
+      month: Number("2023-10-01".split("-")[1]),
+      groupType: "date",
+    });
+
+    if ("error" in indicativeSearch.search) return;
+
+    setSearchIndicativeDates(indicativeSearch.search);
+  };
+
+  const flightQuery: QueryPlace = {
+    from: from,
+    to: airports[0],
+    depart: "2023-10-01",
+  };
+
   return (
     <Layout selectedUrl="/explore">
       <HeroExplore
@@ -117,6 +147,8 @@ export default function SEOAnytime() {
       />
 
       <ImagesDefault images={country.images} />
+
+      <ExploreGraph airports={airports} apiUrl={apiUrl} from={from} />
 
       <ExploreEverywhere
         title={`${from.name} to ${country.name}`}

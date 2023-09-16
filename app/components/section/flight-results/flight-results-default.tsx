@@ -137,7 +137,7 @@ const Deals = ({ flight }: DealsProps) => {
                     strokeWidth={2}
                     stroke="currentColor"
                     aria-hidden="true"
-                    className="w-4 h-4"
+                    className="w-4 h-4 ml-1"
                   >
                     <path
                       strokeLinecap="round"
@@ -183,7 +183,19 @@ const ButtonColumn = ({
             query.return ? `/${query.return}` : ``
           }/${flight.itineraryId}`}
         >
-          Select
+          Select{" "}
+          <svg
+            width="13.5"
+            height="13.5"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="ml-1 inline-block"
+          >
+            <path
+              fill="currentColor"
+              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+            ></path>
+          </svg>
         </Button>
         <Button outline className="ml-2 mt-2" onClick={onButtonSelect}>
           {showDeals ? "Hide Details" : "Show Details"}
@@ -195,7 +207,19 @@ const ButtonColumn = ({
               className="text-slate-400 text-xs hover:underline"
               href={getSkyscannerLink(query, flight.itineraryId)}
             >
-              See Flight On Skyscanner
+              View On Skyscanner{" "}
+              <svg
+                width="13.5"
+                height="13.5"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="ml-1 inline-block"
+              >
+                <path
+                  fill="currentColor"
+                  d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+                ></path>
+              </svg>
             </a>
           </div>
         </div>
@@ -383,7 +407,19 @@ export const FlightResultsDefault = ({
           className="ml-4 text-slate-400 text-xs hover:underline"
           href={getSkyscannerSearchLink(query)}
         >
-          See Search On Skyscanner
+          See Search On Skyscanner{" "}
+          <svg
+            width="13.5"
+            height="13.5"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="ml-1 inline-block"
+          >
+            <path
+              fill="currentColor"
+              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+            ></path>
+          </svg>
         </a>
       </div>
       {filteredResults().results.map((flight) => {

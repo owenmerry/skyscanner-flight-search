@@ -32,10 +32,12 @@ export const DatesGraph = ({
   search,
   query,
   isReturn = false,
+  hasMaxWidth = false,
 }: {
   search?: SkyscannerAPIIndicativeResponse;
   query: QueryPlace;
   isReturn?: boolean;
+  hasMaxWidth?: boolean;
 }) => {
   const sortByPrice = (
     quoteGroups: IndicitiveQuote[] | IndicitiveQuoteDate[]
@@ -45,7 +47,7 @@ export const DatesGraph = ({
       const quoteB = search?.content.results.quotes[b.quoteIds[0]];
 
       return quoteA && quoteB
-        ? Number(quoteA.minPrice.amount) - Number(quoteB.minPrice.amount)
+        ? Number(quoteA?.minPrice.amount) - Number(quoteB?.minPrice.amount)
         : 0;
     });
 
@@ -114,8 +116,8 @@ export const DatesGraph = ({
 
   const quotesSorted = Object.keys(search?.content.results.quotes || {}).sort(
     (a, b) => {
-      const quoteAPrice = search?.content.results.quotes[a].minPrice.amount;
-      const quoteBPrice = search?.content.results.quotes[b].minPrice.amount;
+      const quoteAPrice = search?.content.results.quotes[a]?.minPrice.amount;
+      const quoteBPrice = search?.content.results.quotes[b]?.minPrice.amount;
 
       return quoteAPrice && quoteBPrice
         ? Number(quoteAPrice) - Number(quoteBPrice)
@@ -123,7 +125,7 @@ export const DatesGraph = ({
     }
   );
   const topPrice =
-    search?.content.results.quotes[quotesSorted.reverse()[0]].minPrice.amount;
+    search?.content.results.quotes[quotesSorted.reverse()[0]]?.minPrice.amount;
   var resultsDisplayed = 0;
 
   return (
@@ -131,7 +133,7 @@ export const DatesGraph = ({
       {search ? (
         <div
           className="border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800 overflow-x-auto"
-          style={{ maxWidth: "900px" }}
+          style={{ maxWidth: hasMaxWidth ? "900px" : "" }}
         >
           <div className="flex items-end">
             {sortByDate(quotesGroup, isReturn).map((quoteKey) => {
@@ -171,8 +173,8 @@ export const DatesGraph = ({
                 ? moment(returnDateYYYYMMDD)
                 : moment(departDateYYYYMMDD);
               const selectedDateMoment = moment(query.depart);
-              const startDate = moment(departDateYYYYMMDD).subtract(12, "d");
-              const endDate = moment(departDateYYYYMMDD).add(12, "d");
+              const startDate = moment(departDateYYYYMMDD).subtract(14, "d");
+              const endDate = moment(departDateYYYYMMDD).add(14, "d");
               const inRange = selectedDateMoment.isBetween(startDate, endDate);
               //if (!inRange) return;
               ++resultsDisplayed;
@@ -188,7 +190,7 @@ export const DatesGraph = ({
                       } hover:bg-slate-600 p-1 w-full`}
                       style={{
                         height: `${getPercentageBar(
-                          Number(quote.minPrice.amount),
+                          Number(quote?.minPrice.amount),
                           Number(topPrice)
                         )}%`,
                       }}
@@ -198,7 +200,7 @@ export const DatesGraph = ({
                         ...(query.return ? { return: returnDateYYYYMMDD } : {}),
                       })}
                     >
-                      <div>£{quote.minPrice.amount}</div>
+                      <div>£{quote?.minPrice.amount}</div>
                     </a>
                   </div>
                   <div className="w-full">{dateMoment.format("dd")}</div>
