@@ -12,12 +12,14 @@ export const getIndicativeSDK = async ({
   query,
   apiUrl,
   month,
+  year,
   groupType,
 }: {
   res?: SkyscannerAPIIndicativeResponse;
   query?: FlightQuery;
   apiUrl?: string;
   month?: number;
+  year?: number;
   groupType?: string;
 }): Promise<IndicativeSDK> => {
   const search = res
@@ -26,6 +28,7 @@ export const getIndicativeSDK = async ({
         apiUrl: apiUrl ? apiUrl : "",
         query,
         month,
+        year,
         groupType,
       });
 

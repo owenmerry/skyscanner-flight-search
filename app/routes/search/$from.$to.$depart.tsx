@@ -169,6 +169,7 @@ export default function Search() {
         tripType: "single",
       },
       month: Number(query.depart.split("-")[1]),
+      year: Number(query.depart.split("-")[0]),
       groupType: "date",
     });
 

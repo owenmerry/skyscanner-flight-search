@@ -174,6 +174,7 @@ export default function Search() {
         tripType: "return",
       },
       month: Number(query.depart.split("-")[1]),
+      year: Number(query.depart.split("-")[0]),
       groupType: "date",
     });
 
@@ -264,6 +265,7 @@ export default function Search() {
                   <DatesGraph
                     search={searchIndicative}
                     query={flightQuery}
+                    hasMaxWidth
                     isReturn
                   />
                 </div>

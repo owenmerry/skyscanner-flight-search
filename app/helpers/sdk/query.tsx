@@ -125,11 +125,13 @@ export const getIndicative = async ({
   apiUrl,
   query,
   month = new Date().getMonth() + 1,
+  year = new Date().getFullYear(),
   groupType,
 }: {
   apiUrl: string;
   query?: FlightQuery;
   month?: number;
+  year?: number;
   groupType?: string;
 }): Promise<SkyscannerAPIIndicativeResponse | { error: string }> => {
   let indicative,
@@ -139,7 +141,7 @@ export const getIndicative = async ({
     const res = await fetch(
       `${apiUrl}/price?from=${query.from}&to=${
         query.to
-      }&month=${month}&tripType=${query.tripType}${
+      }&month=${month}&year=${year}&tripType=${query.tripType}${
         groupType ? `&groupType=${groupType}` : ``
       }`
     );

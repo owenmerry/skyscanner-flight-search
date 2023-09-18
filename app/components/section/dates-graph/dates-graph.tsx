@@ -110,8 +110,8 @@ export const DatesGraph = ({
   };
 
   const quotesGroup = isReturn
-    ? search?.content.groupingOptions.byDate.quotesInboundGroups
-    : search?.content.groupingOptions.byDate.quotesOutboundGroups;
+    ? search?.content?.groupingOptions.byDate.quotesInboundGroups
+    : search?.content?.groupingOptions.byDate.quotesOutboundGroups;
   if (!quotesGroup) return <></>;
 
   const quotesSorted = Object.keys(search?.content.results.quotes || {}).sort(
