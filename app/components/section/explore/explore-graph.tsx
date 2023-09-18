@@ -37,6 +37,7 @@ export const ExploreGraph = ({
         tripType: "single",
       },
       month: Number(moment(month).startOf("month").format("MM")),
+      year: Number(moment(month).startOf("month").format("YYYY")),
       groupType: "date",
     });
 
@@ -57,6 +58,7 @@ export const ExploreGraph = ({
         displayMonthText: month.format("MMMM YYYY"),
         firstDay: monthFirstDay.format("YYYY-MM-DD"),
         lastDay: monthLastDay.format("YYYY-MM-DD"),
+        year: monthLastDay.format("YYYY"),
       });
     }
 
@@ -93,7 +95,7 @@ export const ExploreGraph = ({
         value={month}
         onChange={(e) => setMonth(e.target.value)}
       >
-        {getNextXMonthsStartDayAndEndDay(6).map((month) => (
+        {getNextXMonthsStartDayAndEndDay(10).map((month) => (
           <option value={month.firstDay}>{month.displayMonthText}</option>
         ))}
       </select>

@@ -91,6 +91,7 @@ export const ExploreEverywhere = ({
         tripType: returnFlight ? "return" : "single",
       },
       month: Number(moment(month).startOf("month").format("MM")),
+      year: Number(moment(month).startOf("month").format("YYYY")),
     });
 
     if ("error" in indicativeSearch.search) return;
@@ -113,7 +114,7 @@ export const ExploreEverywhere = ({
               value={month}
               onChange={(e) => setMonth(e.target.value)}
             >
-              {getNextXMonthsStartDayAndEndDay(6).map((month) => (
+              {getNextXMonthsStartDayAndEndDay(10).map((month) => (
                 <option value={month.firstDay}>{month.displayMonthText}</option>
               ))}
             </select>
