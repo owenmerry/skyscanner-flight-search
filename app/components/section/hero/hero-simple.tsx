@@ -39,7 +39,7 @@ export const HeroSimple = ({ text, title, backgroundImage }: HeroNewsProps) => {
     >
       <Overlay />
       <Gradient />
-      <div className="relative z-10 py-16 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
+      <div className="relative z-10 py-16 pb-0 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
         <Text title={title} text={text} />
       </div>
     </section>

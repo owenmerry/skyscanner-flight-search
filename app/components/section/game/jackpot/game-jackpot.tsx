@@ -1,3 +1,4 @@
+import { addDays, formatDistance } from "date-fns";
 import { after } from "lodash";
 import moment from "moment";
 import { type } from "os";
@@ -11,6 +12,7 @@ import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { getRandomNumber } from "~/helpers/utils";
+import { QueryPlace } from "~/types/search";
 
 type Answers = "higher" | "lower" | "same";
 
@@ -34,7 +36,7 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
     display?: string
   ) => {
     return moment(`${dateTime.year}-${dateTime.month}-${dateTime.day}`).format(
-      display || "MMM Do YYYY"
+      display || "MMM Do"
     );
   };
 
@@ -72,6 +74,23 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
     return arRet;
   };
 
+  const getTripDays = (departDate: string, returnDate: string) => {
+    const departDateObject = new Date(departDate);
+    const returnDateObject = addDays(new Date(returnDate), 1);
+
+    return formatDistance(departDateObject, returnDateObject, {});
+  };
+
+  const getLink = (quote: IndicitiveQuoteResult) => {
+    const from = getPlaceFromEntityId(quote.outboundLeg.originPlaceId);
+    const to = getPlaceFromEntityId(quote.inboundLeg.originPlaceId);
+    if (!from || !to) return;
+    return `/search/${from.iata}/${to.iata}/${getDateDisplay(
+      quote.outboundLeg.departureDateTime,
+      "YYYY-MM-DD"
+    )}/${getDateDisplay(quote.inboundLeg.departureDateTime, "YYYY-MM-DD")}`;
+  };
+
   const runCachedPrices = async ({ start }: { start?: boolean }) => {
     const destinationLocations = [
       "95673529",
@@ -93,7 +112,7 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
         ],
         depart: moment(date).startOf("month").format("YYYY-MM-DD"),
         return: moment(date).endOf("month").format("YYYY-MM-DD"),
-        tripType: "single",
+        tripType: "return",
       },
       month: Number(moment(date).format("MM")),
       year: Number(moment(date).format("YYYY")),
@@ -128,6 +147,10 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
           cachedSelected.outboundLeg.departureDateTime,
           "YYYY-MM-DD"
         ),
+        return: getDateDisplay(
+          cachedSelected.inboundLeg.departureDateTime,
+          "YYYY-MM-DD"
+        ),
       },
       {
         apiUrl,
@@ -154,7 +177,6 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
         : beforePrice > afterPrice
         ? "lower"
         : "same";
-    debugger;
     setLiveSelected(price);
     if (isChoiceCorrect) setScore(score + 1);
     setIsCorrect(isChoiceCorrect);
@@ -183,15 +205,34 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
           </div>
           {cachedSelected ? (
             <div>
-              <div>
-                {getPlaceDisplay(cachedSelected.outboundLeg.originPlaceId)} to{" "}
-                {getPlaceDisplay(cachedSelected.outboundLeg.destinationPlaceId)}
-              </div>
-              <div className="mt-2">
-                {getDateDisplay(cachedSelected.outboundLeg.departureDateTime)}
-              </div>
-              <div className="text-5xl mt-2">
-                £{cachedSelected.minPrice.amount}
+              <div className="border-4 p-5 px-10 rounded-2xl mb-5 border-slate-700">
+                <div className="text-4xl mb-3">
+                  {getPlaceDisplay(cachedSelected.outboundLeg.originPlaceId)} to{" "}
+                  {getPlaceDisplay(
+                    cachedSelected.outboundLeg.destinationPlaceId
+                  )}
+                </div>
+                <div className="mt-2 text-slate-400">
+                  {getDateDisplay(cachedSelected.outboundLeg.departureDateTime)}{" "}
+                  to{" "}
+                  {getDateDisplay(cachedSelected.inboundLeg.departureDateTime)}
+                </div>
+                <div className="mt-2 text-slate-400">
+                  Trip is{" "}
+                  {getTripDays(
+                    getDateDisplay(
+                      cachedSelected.outboundLeg.departureDateTime,
+                      "YYYY-MM-DD"
+                    ),
+                    getDateDisplay(
+                      cachedSelected.inboundLeg.departureDateTime,
+                      "YYYY-MM-DD"
+                    )
+                  )}
+                </div>
+                <div className="text-5xl mt-2">
+                  £{cachedSelected.minPrice.amount}
+                </div>
               </div>
               {mode === "loading" ? (
                 <div className="mt-5">
@@ -201,36 +242,57 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
                   <div
                     className={`inline-block flex-1 p-5 m-5 px-10 bg-blue-700 rounded-2xl`}
                   >
-                    {getSelectionDisplay(yourSelection)}
+                    Your Selection: {getSelectionDisplay(yourSelection)}
                   </div>
                 </div>
               ) : (
                 ""
               )}
               {mode === "result" ? (
-                <div>
+                <div className="border-4 p-5 px-10 rounded-2xl mb-5 border-slate-700">
                   <div
                     className={`
                     ${isCorrect ? `text-green-700` : `text-red-700`}`}
                   >
-                    <div className="text-5xl mt-5">{liveSelected}</div>
-                    <div className="mt-5">
-                      {answer === "same" ? `Its the Same Price 🧑‍🤝‍🧑` : ``}
-                      {answer === "higher" ? `Its a Higher Price 📈` : ``}
-                      {answer === "lower" ? `Its a Lower Price 📉` : ``}
-                    </div>
                     <div className="mt-5">
                       {isCorrect
                         ? `Your Correct 🥳`
                         : `Better Luck Next Time 😔`}
                     </div>
+                    <div className="mt-5">
+                      {answer === "same" ? `Its the Same Price 🧑‍🤝‍🧑` : ``}
+                      {answer === "higher" ? `Its a Higher Price 📈` : ``}
+                      {answer === "lower" ? `Its a Lower Price 📉` : ``}
+                    </div>
+                    <div className="text-5xl mt-5">{liveSelected}</div>
+                  </div>
+                  <div>
+                    <a
+                      className="underline text-blue-600"
+                      target="_blank"
+                      href={getLink(cachedSelected)}
+                    >
+                      See Flight{" "}
+                      <svg
+                        width="13.5"
+                        height="13.5"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        className="ml-1 inline-block"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+                        ></path>
+                      </svg>
+                    </a>
                   </div>
                   <div
                     className={`inline-block p-5 m-5 ${
                       isCorrect ? `bg-green-700` : `bg-red-700`
                     } rounded-2xl`}
                   >
-                    {getSelectionDisplay(yourSelection)}
+                    Your Selection: {getSelectionDisplay(yourSelection)}
                   </div>
                 </div>
               ) : (
@@ -249,12 +311,12 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
                 ""
               )}
               {mode === "choose" ? (
-                <div className="flex mt-5">
+                <div className="flex mb:mt-5">
                   <div
                     onClick={() =>
                       handleHigherLowerButton({ selected: "lower" })
                     }
-                    className="flex-1 p-5 m-5 bg-slate-600 hover:bg-slate-500 rounded-2xl cursor-pointer"
+                    className="flex-1 p-5 m-1 mt-5 md:m-5 bg-slate-600 hover:bg-slate-500 rounded-2xl cursor-pointer"
                   >
                     Lower
                   </div>
@@ -262,7 +324,7 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
                     onClick={() =>
                       handleHigherLowerButton({ selected: "same" })
                     }
-                    className="flex-1 p-5 m-5 bg-slate-600 hover:bg-slate-500 rounded-2xl cursor-pointer"
+                    className="flex-1 p-5 m-1 mt-5 md:m-5 bg-slate-600 hover:bg-slate-500 rounded-2xl cursor-pointer"
                   >
                     Same
                   </div>
@@ -270,7 +332,7 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
                     onClick={() =>
                       handleHigherLowerButton({ selected: "higher" })
                     }
-                    className="flex-1 p-5 m-5 bg-slate-600 hover:bg-slate-500 rounded-2xl cursor-pointer"
+                    className="flex-1 p-5 m-1 mt-5 md:m-5 bg-slate-600 hover:bg-slate-500 rounded-2xl cursor-pointer"
                   >
                     Higher
                   </div>
