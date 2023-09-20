@@ -178,7 +178,7 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
     <>
       <div className="relative z-10 py-16 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
         <div className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-          <div className=" inline-block border-4 p-5 px-10 rounded-2xl mb-5 border-slate-700">
+          <div className="inline-block border-4 p-5 px-10 rounded-2xl mb-5 border-slate-700">
             Your Score: {score}
           </div>
           {cachedSelected ? (
@@ -210,11 +210,10 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
               {mode === "result" ? (
                 <div>
                   <div
-                    className={`${
-                      isCorrect ? `text-green-700` : `text-red-700`
-                    }`}
+                    className={`
+                    ${isCorrect ? `text-green-700` : `text-red-700`}`}
                   >
-                    <div className="mt-5">{liveSelected}</div>
+                    <div className="text-5xl mt-5">{liveSelected}</div>
                     <div className="mt-5">
                       {answer === "same" ? `Its the Same Price 🧑‍🤝‍🧑` : ``}
                       {answer === "higher" ? `Its a Higher Price 📈` : ``}
