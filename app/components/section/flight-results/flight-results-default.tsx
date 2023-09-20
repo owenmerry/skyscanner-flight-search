@@ -183,7 +183,7 @@ const ButtonColumn = ({
             query.return ? `/${query.return}` : ``
           }/${flight.itineraryId}`}
         >
-          Select{" "}
+          Details{" "}
           <svg
             width="13.5"
             height="13.5"
@@ -198,7 +198,7 @@ const ButtonColumn = ({
           </svg>
         </Button>
         <Button outline className="ml-2 mt-2" onClick={onButtonSelect}>
-          {showDeals ? "Hide Details" : "Show Details"}
+          {showDeals ? "Hide Details" : "Quick Details"}
         </Button>
         <div>
           <div className="mt-4 text-center">
