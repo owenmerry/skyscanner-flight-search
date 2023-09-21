@@ -1,7 +1,5 @@
 import { addDays, formatDistance } from "date-fns";
-import { after } from "lodash";
 import moment from "moment";
-import { type } from "os";
 import { useEffect, useState } from "react";
 import { Loading } from "~/components/ui/loading";
 import {
@@ -12,7 +10,6 @@ import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { getRandomNumber } from "~/helpers/utils";
-import { QueryPlace } from "~/types/search";
 
 type Answers = "higher" | "lower" | "same";
 
