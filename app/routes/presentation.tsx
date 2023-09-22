@@ -51,6 +51,8 @@ export default function Index() {
 
     if ("error" in data.search) return;
 
+    console.log(data);
+
     const flight = await getFlightLiveCreate({
       apiUrl,
       query: {

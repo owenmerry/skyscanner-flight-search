@@ -15,6 +15,7 @@ import { FlightQuery } from "~/types/search";
 import type { SkyscannerAPIIndicativeResponse } from "./indicative/indicative-response";
 import type { IndicativeSDK } from "./indicative/indicative-sdk";
 import { getIndicativeSDK } from "./indicative/indicative-sdk";
+import { getRefreshSDK } from "./refresh/refresh-sdk";
 
 // types (Response)
 
