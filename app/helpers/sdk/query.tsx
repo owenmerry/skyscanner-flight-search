@@ -29,7 +29,7 @@ export const getFlightLiveCreate = async ({
       search = skyscanner().search(json);
     }
   } catch (ex) {
-    error = `Sorry, something happened and we couldnt do this (code:3catch)`;
+    //error = `Sorry, something happened and we couldnt do this (code:3catch)`;
   }
 
   return search ? search : { error };
@@ -68,7 +68,7 @@ export const getFlightLivePoll = async ({
       search = skyscanner().search(json);
     }
   } catch (ex) {
-    error = `Sorry, something happened and we couldnt do this (code: 3catch)`;
+    //error = `Sorry, something happened and we couldnt do this (code: 3catch)`;
     console.error("Flight Poll - Error code (3catch)", token);
   }
 
