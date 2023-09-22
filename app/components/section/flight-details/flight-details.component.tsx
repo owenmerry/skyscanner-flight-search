@@ -220,7 +220,7 @@ export const FlightDetails = ({
                         <a
                           target="_blank"
                           className="ml-4 text-slate-400 text-xs hover:underline"
-                          href={`http://localhost:3000/refresh?itineraryId=${itineraryId}&token=${search.sessionToken}`}
+                          href={`${apiUrl}/refresh?itineraryId=${itineraryId}&token=${search.sessionToken}`}
                         >
                           {" "}
                           See Refresh Data
