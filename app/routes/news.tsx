@@ -42,6 +42,27 @@ export default function Index() {
 
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">
+            Added Graphs to Country pages and search pages to see options of
+            flights
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-09-27 at 18.50.00.png"
+          />
+        </div>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
+            Added a swap button to quickly reverse the to and from location
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-09-27 at 18.39.10.png"
+          />
+        </div>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
             Added Check Price Feature With calender for single flights on
             country page
           </h2>

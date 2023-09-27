@@ -19,7 +19,7 @@ export default function Index() {
     <Layout selectedUrl="/">
       <HeroDefault
         apiUrl={apiUrl}
-        newFeature="Added Check Price Feature With Calander. See New Features"
+        newFeature="We are always adding features. See All New Features"
         newFeatureURL="/news"
       />
       <NavigationWebsite />
