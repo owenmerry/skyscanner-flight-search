@@ -12,6 +12,7 @@ import {
   removeAllSearchFromLocalStorage,
 } from "~/helpers/local-storage";
 import { DateSelector } from "../date/date-selector";
+import { getPlaceFromIata } from "~/helpers/sdk/place";
 
 interface FlightControlsProps {
   apiUrl?: string;
@@ -44,7 +45,7 @@ export const FlightControls = ({
     });
   };
   const handleLocationSwap = () => {
-    console.log("swap");
+    console.log("swap", query);
     setQuery({
       ...query,
       from: query.to,
@@ -61,8 +62,10 @@ export const FlightControls = ({
     iataCode: string
   ) => {
     if (key === "from") setFromLocationLocalStorage(iataCode);
+    const place = getPlaceFromIata(iataCode);
     handleQueryChange(value, key);
     handleQueryChange(iataCode, `${key}Iata`);
+    handleQueryChange(place && "iata" in place ? place.name : "", `${key}Text`);
   };
   const handleSearchClicked = () => {
     setLoading(true);
@@ -101,7 +104,7 @@ export const FlightControls = ({
               viewBox="0 0 489.698 489.698"
               xmlSpace="preserve"
               className="cursor-pointer"
-              onClick={handleLocationSwap}
+              onClick={() => handleLocationSwap()}
             >
               <g>
                 <g>
