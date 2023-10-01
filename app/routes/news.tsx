@@ -42,6 +42,16 @@ export default function Index() {
 
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">
+            Added days (1 day, 2 days and 3 days) for stop over's
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-10-01 at 23.39.27.png"
+          />
+        </div>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
             Added Graphs to Country pages and search pages to see options of
             flights
           </h2>
