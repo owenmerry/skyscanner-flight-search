@@ -317,7 +317,7 @@ const Flight = ({ flight, flights, query }: FlightProps) => {
             </h2>
             <div className="mb-4 px-4 py-2 border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600">
               {flight.legs.map((leg, key) => (
-                <>
+                <div>
                   {key === 0 && (
                     <h3 className="my-2 text-lg font-bold leading-none">
                       {query?.from.name} to {query?.to.name} Flight
@@ -328,8 +328,8 @@ const Flight = ({ flight, flights, query }: FlightProps) => {
                       {query?.to.name} to {query?.from.name} Flight
                     </h3>
                   )}
-                  <LegTimeline leg={leg} />
-                </>
+                  <LegTimeline leg={leg} query={query} isReturn={key === 1} />
+                </div>
               ))}
             </div>
             <h2 className="mb-2 text-lg font-bold tracking-tight leading-none">

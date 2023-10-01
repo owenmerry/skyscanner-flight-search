@@ -217,7 +217,9 @@ interface StatsSDK {
 interface SegmentSDK {
   id: string;
   from: string;
+  fromIata: string;
   to: string;
+  toIata: string;
   duration: number;
   departure: string;
   arrival: string;
@@ -289,7 +291,9 @@ export const getSortingOptions = (
         return {
           id: segmentRef,
           from: res.content.results.places[segment.originPlaceId].name,
+          fromIata: res.content.results.places[segment.originPlaceId].iata,
           to: res.content.results.places[segment.destinationPlaceId].name,
+          toIata: res.content.results.places[segment.destinationPlaceId].iata,
           duration: segment.durationInMinutes,
           departure: getDateTime(
             segment.departureDateTime.day,

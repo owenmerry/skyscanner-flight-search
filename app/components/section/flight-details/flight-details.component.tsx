@@ -8,7 +8,10 @@ import { Timeline } from "flowbite-react";
 import { Button } from "flowbite-react";
 import { Loading } from "~/components/ui/loading";
 import moment from "moment";
-import { getSkyscannerLink } from "~/helpers/sdk/skyscanner-website";
+import {
+  getSkyscannerLink,
+  getSkyscannerMultiCityLink,
+} from "~/helpers/sdk/skyscanner-website";
 
 interface FlightDetailsProps {
   query?: QueryPlace;
@@ -142,6 +145,7 @@ export const FlightDetails = ({
   };
 
   useEffect(() => {
+    if (!query) return;
     query && handleSearch(query);
   }, [query, handleSearch]);
 
@@ -153,7 +157,7 @@ export const FlightDetails = ({
         </div>
       )}
       {error !== "" && <div className="error">{error}</div>}
-      {search && (
+      {query && search && (
         <div>
           {search[sort]
             .filter((item) => item.itineraryId === itineraryId)
@@ -186,7 +190,11 @@ export const FlightDetails = ({
                           >
                             <SegmentsColumn flight={itinerary} number={key} />
                             <div className="mt-6">
-                              <LegTimeline leg={leg} />
+                              <LegTimeline
+                                leg={leg}
+                                query={query}
+                                isReturn={key === 1}
+                              />
                             </div>
                           </div>
                         </div>
@@ -275,23 +283,34 @@ export const FlightDetails = ({
 
 interface LegTimelineProps {
   leg: LegSDK;
+  query: QueryPlace;
+  isReturn?: boolean;
 }
-export const LegTimeline = ({ leg }: LegTimelineProps) => {
+export const LegTimeline = ({
+  leg,
+  query,
+  isReturn = true,
+}: LegTimelineProps) => {
   return (
     <div>
       <Timeline>
-        {leg.segments.map((leg) => {
-          const duration = toHoursAndMinutes(leg.duration);
+        {leg.segments.map((segment) => {
+          const duration = toHoursAndMinutes(segment.duration);
           const durationShow = `${duration.hours > 0 && `${duration.hours}h `}${
             duration.minutes
           }m`;
+          const isLastSegment =
+            segment.id === leg.segments[leg.segments.length - 1].id;
+          const notLastSegment = !isLastSegment;
           return (
-            <>
+            <div>
               <Timeline.Item>
                 <Timeline.Point />
                 <Timeline.Content>
-                  <Timeline.Time>{leg.departure}</Timeline.Time>
-                  <Timeline.Title>{leg.from}</Timeline.Title>
+                  <Timeline.Time>{segment.departure}</Timeline.Time>
+                  <Timeline.Title>
+                    {segment.from} ({segment.fromIata})
+                  </Timeline.Title>
                   <Timeline.Body>
                     <p>Journey time: {durationShow}</p>
                   </Timeline.Body>
@@ -300,11 +319,57 @@ export const LegTimeline = ({ leg }: LegTimelineProps) => {
               <Timeline.Item>
                 <Timeline.Point />
                 <Timeline.Content>
-                  <Timeline.Time>{leg.arrival}</Timeline.Time>
-                  <Timeline.Title>{leg.to}</Timeline.Title>
+                  <Timeline.Time>{segment.arrival}</Timeline.Time>
+                  <Timeline.Title>
+                    <div>
+                      {segment.to} ({segment.toIata})
+                    </div>
+                    {!isReturn && notLastSegment ? (
+                      <div className="text-xs">
+                        <a
+                          target="_blank"
+                          className="mr-2 underline text-slate-400"
+                          href={getSkyscannerMultiCityLink(
+                            leg,
+                            query,
+                            segment.toIata,
+                            1
+                          )}
+                        >
+                          + 1 day
+                        </a>
+                        <a
+                          target="_blank"
+                          className="mr-2 underline text-slate-400"
+                          href={getSkyscannerMultiCityLink(
+                            leg,
+                            query,
+                            segment.toIata,
+                            2
+                          )}
+                        >
+                          + 2 days
+                        </a>
+                        <a
+                          target="_blank"
+                          className="mr-2 underline text-slate-400"
+                          href={getSkyscannerMultiCityLink(
+                            leg,
+                            query,
+                            segment.toIata,
+                            3
+                          )}
+                        >
+                          + 3 days
+                        </a>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+                  </Timeline.Title>
                 </Timeline.Content>
               </Timeline.Item>
-            </>
+            </div>
           );
         })}
       </Timeline>
