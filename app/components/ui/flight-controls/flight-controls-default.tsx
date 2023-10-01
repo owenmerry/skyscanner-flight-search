@@ -63,9 +63,12 @@ export const FlightControls = ({
   ) => {
     if (key === "from") setFromLocationLocalStorage(iataCode);
     const place = getPlaceFromIata(iataCode);
-    handleQueryChange(value, key);
-    handleQueryChange(iataCode, `${key}Iata`);
-    handleQueryChange(place && "iata" in place ? place.name : "", `${key}Text`);
+    setQuery({
+      ...query,
+      [`${key}`]: value,
+      [`${key}Iata`]: iataCode,
+      [`${key}Text`]: place && "iata" in place ? place.name : "",
+    });
   };
   const handleSearchClicked = () => {
     setLoading(true);
