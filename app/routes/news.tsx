@@ -35,19 +35,19 @@ export default function Index() {
       />
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-md lg:py-16 lg:px-12">
         <h2 className="text-2xl mb-6">Updates and new features</h2>
-        <p className="mb-16">
+        <p className="pb-16 border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           This is a list of all the latest updates and features added to the
           website.
         </p>
 
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">
-            Added days (1 day, 2 days and 3 days) for stop over's, which links
-            to a multi city search on skyscanner
+            Added stop over days (1 day, 2 days, 3 days and 5 days) for stop
+            over's, which links to a multi city search on skyscanner
           </h2>
           <img
             className="object-scale-down my-4"
-            src="/images/news/Screenshot 2023-10-01 at 23.39.27.png"
+            src="/images/news/Screenshot 2023-10-02 at 17.58.45.png"
           />
           <img
             className="object-scale-down my-4"
