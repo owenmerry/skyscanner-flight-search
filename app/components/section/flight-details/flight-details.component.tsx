@@ -330,7 +330,7 @@ export const LegTimeline = ({
                         {[1, 2, 3, 5].map((days) => (
                           <a
                             target="_blank"
-                            className="mr-2 underline text-slate-400"
+                            className="mr-2 underline text-slate-400 hover:text-white"
                             href={getSkyscannerMultiCityLink(
                               leg,
                               query,
