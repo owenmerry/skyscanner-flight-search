@@ -325,7 +325,8 @@ export const LegTimeline = ({
                       {segment.to} ({segment.toIata})
                     </div>
                     {!isReturn && notLastSegment ? (
-                      <div className="text-xs">
+                      <div className="text-xs text-slate-400">
+                        <span className="mr-2">Add a stop over:</span>
                         {[1, 2, 3, 5].map((days) => (
                           <a
                             target="_blank"
