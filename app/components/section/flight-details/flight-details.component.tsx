@@ -326,42 +326,20 @@ export const LegTimeline = ({
                     </div>
                     {!isReturn && notLastSegment ? (
                       <div className="text-xs">
-                        <a
-                          target="_blank"
-                          className="mr-2 underline text-slate-400"
-                          href={getSkyscannerMultiCityLink(
-                            leg,
-                            query,
-                            segment.toIata,
-                            1
-                          )}
-                        >
-                          + 1 day
-                        </a>
-                        <a
-                          target="_blank"
-                          className="mr-2 underline text-slate-400"
-                          href={getSkyscannerMultiCityLink(
-                            leg,
-                            query,
-                            segment.toIata,
-                            2
-                          )}
-                        >
-                          + 2 days
-                        </a>
-                        <a
-                          target="_blank"
-                          className="mr-2 underline text-slate-400"
-                          href={getSkyscannerMultiCityLink(
-                            leg,
-                            query,
-                            segment.toIata,
-                            3
-                          )}
-                        >
-                          + 3 days
-                        </a>
+                        {[1, 2, 3, 5].map((days) => (
+                          <a
+                            target="_blank"
+                            className="mr-2 underline text-slate-400"
+                            href={getSkyscannerMultiCityLink(
+                              leg,
+                              query,
+                              segment.toIata,
+                              days
+                            )}
+                          >
+                            + {days} day{days === 1 ? "" : "s"}
+                          </a>
+                        ))}
                       </div>
                     ) : (
                       ""

@@ -42,11 +42,16 @@ export default function Index() {
 
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">
-            Added days (1 day, 2 days and 3 days) for stop over's
+            Added days (1 day, 2 days and 3 days) for stop over's, which links
+            to a multi city search on skyscanner
           </h2>
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-10-01 at 23.39.27.png"
+          />
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2023-10-02 at 17.27.38.png"
           />
         </div>
 

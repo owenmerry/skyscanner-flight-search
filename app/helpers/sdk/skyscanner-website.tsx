@@ -24,9 +24,11 @@ export const getSkyscannerMultiCityLink = (
   iata: string,
   addDate: number
 ) => {
+  let dateUpdated = false;
   const locations = leg.segments.map((segment) => {
     const date = moment(segment.departure.split(" ")[0], ["DD/MM/YYYY"]);
-    const isDateChange = segment.fromIata == iata;
+    const isDateChange = segment.fromIata == iata || dateUpdated === true;
+    if (isDateChange) dateUpdated = true;
     return {
       origin: segment.fromIata,
       destination: segment.toIata,
@@ -35,11 +37,13 @@ export const getSkyscannerMultiCityLink = (
         : date.format("YYYY-MM-DD"),
     };
   });
-  locations.push({
-    origin: query.to.iata,
-    destination: query.from.iata,
-    date: query.return ? query.return : locations[locations.length - 1].date,
-  });
+  if (query.return) {
+    locations.push({
+      origin: locations[locations.length - 1].destination,
+      destination: locations[0].origin,
+      date: query.return,
+    });
+  }
   const getLocationsString = (
     locations: {
       origin: string;
