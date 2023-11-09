@@ -163,9 +163,9 @@ export const ExploreEverywhere = ({
                   quote.inboundLeg.destinationPlaceId === "";
                 const isReturnSearch = !isSingleSearch;
                 const getLink = (query: QueryPlace) => {
-                  return `/search//${
-                    destinationPlace ? destinationPlace.iata : ""
-                  }/${query.depart}${query.return ? `/${query.return}` : ""}`;
+                  return `/search///${query.depart}${
+                    query.return ? `/${query.return}` : ""
+                  }`;
                 };
                 const getTripDays = (
                   departDate: string,
