@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "@googlemaps/react-wrapper": "^1.1.35",
-    "@remix-run/node": "^1.15.0",
-    "@remix-run/react": "^1.15.0",
-    "@remix-run/serve": "^1.15.0",
+    "@remix-run/node": "^1.16.0",
+    "@remix-run/react": "^1.16.0",
+    "@remix-run/serve": "^1.16.0",
     "date-fns": "^2.29.3",
     "flowbite": "^1.6.5",
     "flowbite-react": "^0.4.3",
@@ -26,8 +26,8 @@
     "slugify": "^1.6.6"
   },
   "devDependencies": {
-    "@remix-run/dev": "^1.15.0",
-    "@remix-run/eslint-config": "^1.15.0",
+    "@remix-run/dev": "^1.16.0",
+    "@remix-run/eslint-config": "^1.16.0",
     "@types/google.maps": "^3.52.1",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.15.11",

@@ -135,9 +135,9 @@ export const ExploreEverywhere = ({
                 const destinationPlace = getPlaceFromEntityId(
                   quote.outboundLeg.destinationPlaceId
                 );
-                // const originPlace = getPlaceFromEntityId(
-                //   quote.outboundLeg.originPlaceId
-                // );
+                const originPlace = getPlaceFromEntityId(
+                  quote.outboundLeg.originPlaceId
+                );
                 const updatedPriceObject = priceUpdated.filter(
                   (price) => price.quoteId === quoteKey.quoteIds[0]
                 );
@@ -163,9 +163,9 @@ export const ExploreEverywhere = ({
                   quote.inboundLeg.destinationPlaceId === "";
                 const isReturnSearch = !isSingleSearch;
                 const getLink = (query: QueryPlace) => {
-                  return `/search///${query.depart}${
-                    query.return ? `/${query.return}` : ""
-                  }`;
+                  return `/search/${originPlace ? originPlace.iata : ""}/${
+                    destinationPlace ? destinationPlace.iata : ""
+                  }/${query.depart}${query.return ? `/${query.return}` : ""}`;
                 };
                 const getTripDays = (
                   departDate: string,
