@@ -157,6 +157,12 @@ export default function SEOAnytime() {
         apiUrl={apiUrl}
       />
 
+      <ExploreEverywhere
+        title={`${country.name} to Everywhere`}
+        fromPlace={country}
+        apiUrl={apiUrl}
+      />
+
       <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
           <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
