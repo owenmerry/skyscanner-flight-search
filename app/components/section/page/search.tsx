@@ -18,15 +18,18 @@ import { format } from "date-fns";
 
 export const MapComponent = ({
   googleApiKey,
+  googleMapId,
   flightQuery,
 }: {
   googleApiKey: string;
+  googleMapId: string;
   flightQuery: QueryPlace;
 }) => {
   return (
     <div className="mb-2">
       <Wrapper apiKey={googleApiKey} key="map-component-wrapper">
         <Map
+          googleMapId={googleMapId}
           key="map-component-map"
           center={{
             lat: flightQuery.to.coordinates.latitude,

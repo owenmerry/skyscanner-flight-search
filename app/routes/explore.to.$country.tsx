@@ -10,7 +10,7 @@ import {
 import { Layout } from "~/components/ui/layout/layout";
 import { Map } from "~/components/ui/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
-import { getMarkersCountry } from "~/helpers/map";
+import { getMarkersCountryTo } from "~/helpers/map";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { HeroExplore } from "~/components/section/hero/hero-explore";
 import { ImagesDefault } from "~/components/section/images/images-default";
@@ -143,9 +143,10 @@ export default function SEOAnytime() {
   return (
     <Layout selectedUrl="/explore">
       <HeroExplore
-        title={`Explore ${country.name}`}
+        title={`Travel to ${country.name}`}
         backgroundImage={country.images[0]}
         apiUrl={apiUrl}
+        showFlightControls={false}
       />
       <Breadcrumbs
         items={[
@@ -153,38 +154,30 @@ export default function SEOAnytime() {
             name: "Explore",
             link: "/explore",
           },
-          { name: country.name },
+          {
+            name: country.name,
+            link: `/explore/${country.slug}`,
+          },
+          { name: `Travel to ${country.name}` },
         ]}
       />
 
-      <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div className="grid grid-cols-2 gap-2">
-          <a
-            href={`/explore/to/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel To {country.name}
-          </a>
-          <a
-            href={`/explore/from/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel From {country.name}
-          </a>
+      <div className="relative z-100 py-2 px-4 mx-auto max-w-screen-xl lg:py-4 lg:px-10">
+        <div>From</div>
+        <div className="inline-block">
+          <Location
+            name="From"
+            defaultValue={from.name}
+            apiUrl={apiUrl}
+            onSelect={(value, iataCode) => setFrom(getPlaceFromIata(iataCode))}
+          />
         </div>
       </div>
-
-      <ImagesDefault
-        images={country.images}
-        title={`Photos of ${country.name}`}
-      />
-
-      <ExploreGraph airports={airports} apiUrl={apiUrl} from={from} />
 
       <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
           <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-            Locations in {country.name}
+            Flights to {country.name}
           </h2>
         </div>
         <Wrapper apiKey={googleApiKey}>
@@ -195,7 +188,7 @@ export default function SEOAnytime() {
               lng: country.coordinates.longitude,
             }}
             zoom={5}
-            markers={getMarkersCountry(
+            markers={getMarkersCountryTo(
               [...airports],
               searchIndicative,
               from,
@@ -204,6 +197,17 @@ export default function SEOAnytime() {
           />
         </Wrapper>
       </div>
+
+      <ExploreGraph airports={airports} apiUrl={apiUrl} from={from} />
+
+      <ExploreEverywhere
+        title={`${from.name} to ${country.name}`}
+        fromPlace={from}
+        toPlace={country}
+        apiUrl={apiUrl}
+      />
+
+      <CalenderSearch airports={airports} from={from} apiUrl={apiUrl} />
 
       <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
@@ -230,6 +234,11 @@ export default function SEOAnytime() {
             })}
         </div>
       </div>
+
+      <ImagesDefault
+        images={country.images}
+        title={`Photos of ${country.name}`}
+      />
     </Layout>
   );
 }

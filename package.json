@@ -8,6 +8,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@googlemaps/markermanager": "^1.0.29",
+    "@googlemaps/markerwithlabel": "^2.0.25",
     "@googlemaps/react-wrapper": "^1.1.35",
     "@remix-run/node": "^1.16.0",
     "@remix-run/react": "^1.16.0",
@@ -28,7 +30,7 @@
   "devDependencies": {
     "@remix-run/dev": "^1.16.0",
     "@remix-run/eslint-config": "^1.16.0",
-    "@types/google.maps": "^3.52.1",
+    "@types/google.maps": "^3.54.8",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.15.11",
     "@types/react": "^18.0.25",

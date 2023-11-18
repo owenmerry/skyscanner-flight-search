@@ -96,7 +96,7 @@ export const CalenderSearch = ({
   return (
     <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
       <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-        Flight Prices By Date
+        Search {from.name} Flight Prices
       </h2>
       <div className="mb-4 flex items-center">
         <select

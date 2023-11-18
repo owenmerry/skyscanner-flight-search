@@ -46,6 +46,7 @@ interface HeroPageProps {
   description?: string;
   apiUrl?: string;
   imagePlace?: Place;
+  showFlightControls?: boolean;
 }
 
 export const HeroExplore = ({
@@ -54,6 +55,7 @@ export const HeroExplore = ({
   backgroundImage = "",
   apiUrl,
   imagePlace,
+  showFlightControls = true,
 }: HeroPageProps) => {
   return (
     <section
@@ -67,7 +69,7 @@ export const HeroExplore = ({
           <Text title={title} description={description} />
           {imagePlace ? <ImageDetails place={imagePlace} /> : ""}
         </div>
-        <FlightControls apiUrl={apiUrl} />
+        {showFlightControls ? <FlightControls apiUrl={apiUrl} /> : ""}
       </div>
     </section>
   );

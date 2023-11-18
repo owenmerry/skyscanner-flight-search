@@ -10,7 +10,7 @@ import {
 import { Layout } from "~/components/ui/layout/layout";
 import { Map } from "~/components/ui/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
-import { getMarkersCountry } from "~/helpers/map";
+import { getMarkersCountryFrom } from "~/helpers/map";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { HeroExplore } from "~/components/section/hero/hero-explore";
 import { ImagesDefault } from "~/components/section/images/images-default";
@@ -98,8 +98,8 @@ export default function SEOAnytime() {
     const indicativeSearch = await skyscanner().indicative({
       apiUrl,
       query: {
-        from: from ? from.entityId : "",
-        to: country.entityId,
+        from: country ? country.entityId : "",
+        to: "anywhere",
         depart: "2023-12-01",
         return: "2023-12-20",
         tripType: "return",
@@ -143,9 +143,10 @@ export default function SEOAnytime() {
   return (
     <Layout selectedUrl="/explore">
       <HeroExplore
-        title={`Explore ${country.name}`}
+        title={`Travel from ${country.name}`}
         backgroundImage={country.images[0]}
         apiUrl={apiUrl}
+        showFlightControls={false}
       />
       <Breadcrumbs
         items={[
@@ -153,38 +154,18 @@ export default function SEOAnytime() {
             name: "Explore",
             link: "/explore",
           },
-          { name: country.name },
+          {
+            name: country.name,
+            link: `/explore/${country.slug}`,
+          },
+          { name: `Travel from ${country.name}` },
         ]}
       />
-
-      <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div className="grid grid-cols-2 gap-2">
-          <a
-            href={`/explore/to/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel To {country.name}
-          </a>
-          <a
-            href={`/explore/from/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel From {country.name}
-          </a>
-        </div>
-      </div>
-
-      <ImagesDefault
-        images={country.images}
-        title={`Photos of ${country.name}`}
-      />
-
-      <ExploreGraph airports={airports} apiUrl={apiUrl} from={from} />
 
       <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <div>
           <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-            Locations in {country.name}
+            Flights From {country.name}
           </h2>
         </div>
         <Wrapper apiKey={googleApiKey}>
@@ -195,7 +176,7 @@ export default function SEOAnytime() {
               lng: country.coordinates.longitude,
             }}
             zoom={5}
-            markers={getMarkersCountry(
+            markers={getMarkersCountryFrom(
               [...airports],
               searchIndicative,
               from,
@@ -205,31 +186,13 @@ export default function SEOAnytime() {
         </Wrapper>
       </div>
 
-      <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div>
-          <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-            Airports in {country.name}
-          </h2>
-        </div>
-        <div className="grid sm:grid-cols-5 grid-cols-2">
-          {airports
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map((place) => {
-              return (
-                <div className="">
-                  <Link
-                    className="hover:underline"
-                    to={`/search/${from ? from.iata : ""}/${place.iata}/${
-                      defaultSearch.depart
-                    }/${defaultSearch.return}`}
-                  >
-                    {place.name}
-                  </Link>
-                </div>
-              );
-            })}
-        </div>
-      </div>
+      <ExploreEverywhere
+        title={`${country.name} to Everywhere`}
+        fromPlace={country}
+        apiUrl={apiUrl}
+      />
+
+      <CalenderSearch airports={airports} from={from} apiUrl={apiUrl} />
     </Layout>
   );
 }

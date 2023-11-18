@@ -24,7 +24,7 @@ export const ExploreGraph = ({
 
   useEffect(() => {
     runIndicativeDates();
-  }, [airport, month]);
+  }, [airport, month, from]);
 
   const runIndicativeDates = async () => {
     const indicativeSearch = await skyscanner().indicative({
@@ -80,7 +80,7 @@ export const ExploreGraph = ({
   return (
     <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
       <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-        Flight Prices
+        {from.name} to {airport.name}
       </h2>
       <select
         className="mr-2 mb-2 inline-block bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 pl-4 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"

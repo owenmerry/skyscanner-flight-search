@@ -76,7 +76,7 @@ export const ExploreEverywhere = ({
 
   useEffect(() => {
     runIndicative();
-  }, [month, returnFlight]);
+  }, [month, returnFlight, fromPlace]);
 
   const runIndicative = async () => {
     const indicativeSearch = await skyscanner().indicative({

@@ -3,8 +3,10 @@ import type {
   IndicitiveQuote,
 } from "~/types/geo";
 import { getSEODateDetails } from "~/helpers/date";
-import type { Place } from "~/helpers/sdk/place";
+import { getPlaceFromEntityId, type Place } from "~/helpers/sdk/place";
 import type { Query } from "~/types/search";
+import { SkyscannerAPIIndicativeResponse } from "./sdk/indicative/indicative-response";
+import { getPrice } from "./sdk/price";
 
 export const filterNonCordItems = (
   quoteGroups: IndicitiveQuote[],
@@ -34,11 +36,24 @@ export const getMarkersWorld = (places: Place[]): Markers[] | null => {
         lat: place.coordinates.latitude,
         lng: place.coordinates.longitude,
       },
-      label: `<div>${
-        place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ""
-      }</div><div class='mt-2 dark:text-black'><a href='/explore/${
-        place.slug
-      }'>${place.name}</a></div>`,
+      label: `
+      <div class="relative bg-white p-2 border border-indigo-500 rounded-lg">
+      
+      <div class="text-gray-800 text-sm">
+      <a href='/explore/${place.slug}'>
+      <div>${
+        place.images[0]
+          ? `<img width="100px" src='${place.images[0]}&w=100' />`
+          : ""
+      }</div>
+      <div>${place.name}</div>
+      </a>
+      </div>
+
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-white border-r border-b border-indigo-500"></div>
+      </div>
+
+     `,
       icon: "\ue153",
     };
   });
@@ -47,22 +62,30 @@ export const getMarkersWorld = (places: Place[]): Markers[] | null => {
 
 export const getMarkersCountry = (
   places: Place[],
+  indicativeSearch: SkyscannerAPIIndicativeResponse | undefined,
   from: Place | false,
   defaultSearch: Query
 ): Markers[] | null => {
+  if (!indicativeSearch) return [];
   const markers = places.map((place) => {
     return {
       location: {
         lat: place.coordinates.latitude,
         lng: place.coordinates.longitude,
       },
-      label: `<div>${
-        place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ""
-      }</div><div class='mt-2 dark:text-black'><a href='/search/${
-        from ? from.iata : ""
-      }/${place.iata}/${defaultSearch.depart}/${defaultSearch.return}'>${
-        place.name
-      }</a></div>`,
+      label: `
+      <div class="relative bg-white p-2 border border-indigo-500 rounded-lg">
+      
+      <div class="text-gray-800 text-sm">
+        <a href='/search/${from ? from.iata : ""}/${place.iata}/${
+        defaultSearch.depart
+      }/${defaultSearch.return}'>
+        <div>${place.name}</div>
+        </a>
+      </div>
+        
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-white border-r border-b border-indigo-500"></div>
+      </div>`,
       icon: place.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
     };
   });
@@ -76,11 +99,118 @@ export const getFlightSearch = (places: Place[]): Markers[] | null => {
         lat: place.coordinates.latitude,
         lng: place.coordinates.longitude,
       },
-      label: `<div>${
-        place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ""
-      }</div><div class='mt-2 dark:text-black'>${place.name} </div>`,
+      // label: `<div>${
+      //   place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ""
+      // }</div><div class='mt-2 dark:text-black'>${place.name} </div>`,
+      label: `
+      <div class="relative bg-primary-700 p-2 rounded-lg">
+
+      <div class="text-white text-sm">
+        <div>${place.name}</div>
+      </div>
+        
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
+      </div>`,
+
       icon: place.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
     };
   });
+  return markers;
+};
+
+export const getMarkersCountryTo = (
+  places: Place[],
+  indicativeSearch: SkyscannerAPIIndicativeResponse | undefined,
+  from: Place | false,
+  defaultSearch: Query
+): Markers[] | null => {
+  if (!indicativeSearch) return [];
+  const markers = places.map((place) => {
+    let priceLowest = "";
+    Object.keys(indicativeSearch.content.results.quotes).map((quote) => {
+      if (
+        indicativeSearch.content.results.quotes[quote].outboundLeg
+          .destinationPlaceId === place.entityId
+      ) {
+        priceLowest = getPrice(
+          indicativeSearch.content.results.quotes[quote].minPrice.amount,
+          indicativeSearch.content.results.quotes[quote].minPrice.unit
+        );
+      }
+    });
+
+    return {
+      location: {
+        lat: place.coordinates.latitude,
+        lng: place.coordinates.longitude,
+      },
+      label: `
+      <div class="relative bg-primary-700 p-2 rounded-lg ">
+      
+      <div class="text-white text-sm">
+        <a href='/search/${from ? from.iata : ""}/${place.iata}/${
+        defaultSearch.depart
+      }/${defaultSearch.return}'>
+        <div>${place.name}</div>
+        <div className='font-bold'>${priceLowest}</div>
+        </a>
+      </div>
+        
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
+      </div>`,
+      icon: place.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
+    };
+  });
+  return markers;
+};
+
+export const getMarkersCountryFrom = (
+  places: Place[],
+  indicativeSearch: SkyscannerAPIIndicativeResponse | undefined,
+  from: Place | false,
+  defaultSearch: Query
+): Markers[] | null => {
+  if (!indicativeSearch) return [];
+  let markers: Markers[] = [];
+  indicativeSearch.content.groupingOptions.byRoute.quotesGroups.forEach(
+    (quote) => {
+      // quote.quoteIds.map((quoteId) => {
+      //   const quoteFlight = indicativeSearch.content.results.quotes[quoteId];
+      //   quoteFlight.minPrice.amount
+      // })
+
+      const quoteFlight =
+        indicativeSearch.content.results.quotes[quote.quoteIds[0]];
+      const destinationPlaceId = getPlaceFromEntityId(quote.destinationPlaceId);
+      if (!destinationPlaceId) return;
+
+      markers.push({
+        location: {
+          lat: destinationPlaceId.coordinates.latitude,
+          lng: destinationPlaceId.coordinates.longitude,
+        },
+        label: `
+      <div class="relative bg-primary-700 p-2 rounded-lg ">
+      
+      <div class="text-white text-sm">
+        <a>
+        <div>${destinationPlaceId.name}</div>
+        <div className='font-bold'>${getPrice(
+          quoteFlight.minPrice.amount,
+          quoteFlight.minPrice.unit
+        )}</div>
+        </a>
+      </div>
+        
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
+      </div>`,
+        icon:
+          destinationPlaceId.type === "PLACE_TYPE_AIRPORT"
+            ? "\ue539"
+            : "\ue7f1",
+      });
+    }
+  );
+
   return markers;
 };

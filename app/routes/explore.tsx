@@ -18,19 +18,22 @@ import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.compon
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
   const placesSDK = skyscanner().geo();
 
   return json({
     countries: placesSDK.countries,
     apiUrl,
     googleApiKey,
+    googleMapId,
   });
 };
 
 export default function SEOAnytime() {
-  const { countries, googleApiKey, apiUrl } = useLoaderData<{
+  const { countries, googleApiKey, googleMapId, apiUrl } = useLoaderData<{
     countries: Place[];
     googleApiKey: string;
+    googleMapId: string;
     apiUrl: string;
   }>();
   const [countryShow, setCountryShow] = useState(false);
@@ -55,6 +58,19 @@ export default function SEOAnytime() {
           },
         ]}
       />
+      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+          Explore By Map
+        </h2>
+        <Wrapper apiKey={googleApiKey}>
+          <Map
+            googleMapId={googleMapId}
+            center={{ lat: 0, lng: 0 }}
+            zoom={2}
+            markers={getMarkersWorld(countries)}
+          />
+        </Wrapper>
+      </div>
       <AllCountries
         countries={countries}
         showAll={countryShow}
@@ -62,18 +78,6 @@ export default function SEOAnytime() {
       />
       <AllActivities />
       <ExploreEverywhere apiUrl={apiUrl} />
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-          Explore By Map
-        </h2>
-        <Wrapper apiKey={googleApiKey}>
-          <Map
-            center={{ lat: 0, lng: 0 }}
-            zoom={2}
-            markers={getMarkersWorld(countries)}
-          />
-        </Wrapper>
-      </div>
     </Layout>
   );
 }

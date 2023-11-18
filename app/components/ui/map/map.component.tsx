@@ -1,7 +1,11 @@
 import { useEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
+import { MarkerWithLabel } from "@googlemaps/markerwithlabel";
+import { MarkerManager } from "@googlemaps/markermanager";
+import { waitSeconds } from "~/helpers/utils";
 
 interface MapProps {
+  googleMapId: string;
   center: google.maps.LatLngLiteral;
   zoom: number;
   height?: string;
@@ -14,14 +18,27 @@ interface MapProps {
     | null;
 }
 
-export const Map = ({ center, zoom, markers, height = "600px" }: MapProps) => {
+export const Map = ({
+  center,
+  zoom,
+  markers,
+  height = "600px",
+  googleMapId,
+}: MapProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const buildMarkersAndMap = async () => {
     if (!ref.current) return;
-    const googleMap = new window.google.maps.Map(ref.current, {
+    const { Map } = (await google.maps.importLibrary(
+      "maps"
+    )) as google.maps.MapsLibrary;
+    const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+      "marker"
+    )) as google.maps.MarkerLibrary;
+    const googleMap = new Map(ref.current, {
       center,
       zoom,
+      mapId: googleMapId,
       ...(isMobile ? { gestureHandling: "greedy" } : {}),
     });
 
@@ -35,45 +52,186 @@ export const Map = ({ center, zoom, markers, height = "600px" }: MapProps) => {
       anchor: new google.maps.Point(0, 20),
     };
 
-    // new window.google.maps.Marker({
-    //   position: center,
-    //   map: googleMap,
-    //   title: "Location From",
-    //   clickable: false,
-    //   icon: locationSvg,
-    // });
-
     if (markers) {
-      markers.map((marker) => {
-        const googleMarker = new google.maps.Marker({
+      //setup marker manager
+      // const googleMarkerManager = new MarkerManager(googleMap, {
+      //   borderPadding: 20,
+      // });
+
+      const markersAdvanced = markers.map((marker) => {
+        const container = document.createElement("div");
+        container.innerHTML = marker.label;
+
+        new AdvancedMarkerElement({
           position: marker.location,
+          title: "Weather marker",
+          content: container,
           map: googleMap,
-          clickable: true,
-          ...(marker.icon
-            ? {
-                label: {
-                  text: marker.icon,
-                  fontFamily: "Material Icons",
-                  color: "#ffffff",
-                  fontSize: "18px",
-                },
-              }
-            : {}),
+          collisionBehavior:
+            google.maps.CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY,
         });
 
-        const infowindow = new google.maps.InfoWindow({
-          content: marker.label,
+        //fit zoom to markers
+        var bounds = new google.maps.LatLngBounds();
+        markers.forEach((marker) => {
+          bounds.extend(marker.location);
         });
+        if (markers.length > 1) {
+          googleMap.fitBounds(bounds);
+        }
 
-        googleMarker.addListener("click", () => {
-          infowindow.open({
-            anchor: googleMarker,
-            map: googleMap,
-          });
-        });
+        // if (!google.maps?.marker?.AdvancedMarkerElement) {
+        //   console.log("Normal markers used");
+        //   new google.maps.Marker({
+        //     position: marker.location,
+        //     title: "Weather marker",
+        //     map: googleMap,
+        //   });
+        // } else {
+        //   console.log("Advanced markers used");
+        //   new google.maps.marker.AdvancedMarkerElement({
+        //     position: marker.location,
+        //     title: "Weather marker",
+        //     content: container,
+        //     map: googleMap,
+        //   });
+        // }
       });
     }
+  };
+
+  useEffect(() => {
+    buildMarkersAndMap();
+
+    // const getMarkers = () => {
+    //
+
+    //   const batch = markers.map((marker) => {
+    //     return new google.maps.marker.AdvancedMarkerElement({
+    //       position: marker.location,
+    //       title: "Weather marker",
+    //       content: container,
+    //       map: googleMap,
+    //     });
+    //   });
+
+    //   return batch;
+    // };
+
+    // google.maps.event.addListener(googleMarkerManager, "loaded", function () {
+    //   //setup markers
+    //   googleMarkerManager.addMarkers(getMarkers(), 3, 10);
+    //   // const container = document.createElement("div");
+    //   // container.innerHTML = "Hello";
+    //   // container.className = "dark:text-black";
+
+    //   // markers.map((marker) => {
+    //   //   const markerAdvanced = new google.maps.marker.AdvancedMarkerElement({
+    //   //     position: marker.location,
+    //   //     content: container,
+    //   //     map: googleMap,
+    //   //     // collisionBehavior:
+    //   //     //   google.maps.CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY,
+    //   //   });
+    //   // });
+
+    //   googleMarkerManager.refresh();
+    // });
   }, []);
+
+  //   function Marker({ map, position, children, onClick }) {
+  //     const rootRef = useRef();
+  //     const markerRef = useRef();
+
+  //     useEffect(() => {
+  //       if (!rootRef.current) {
+  //         const container = document.createElement("div");
+  //         rootRef.current = createRoot(container);
+
+  //         markerRef.current = new google.maps.marker.AdvancedMarkerView({
+  //           position,
+  //           content: container,
+  //         });
+  //       }
+
+  //       return () => (markerRef.current.map = null);
+  //     }, []);
+
+  //     useEffect(() => {
+  //       rootRef.current.render(children);
+  //       markerRef.current.position = position;
+  //       markerRef.current.map = map;
+  //       const listener = markerRef.current.addListener("click", onClick);
+  //       return () => listener.remove();
+  //     }, [map, position, children, onClick]);
+  //   }
 
   return <div ref={ref} id="map" style={{ height }} />;
 };
+
+// const MapFeatures = ({ map } : {}) => {
+
+// }
+
+// function Weather({ map }) {
+//   const [data, setData] = useState(weatherData);
+//   const [highlight, setHighlight] = useState();
+//   const [editing, setEditing] = useState();
+
+//   return (
+//     <>
+//       {editing && (
+//         <Editing
+//           weather={data[editing]}
+//           update={(newWeather) => {
+//             setData((existing) => {
+//               return { ...existing, [editing]: { ...newWeather } };
+//             });
+//           }}
+//           close={() => setEditing(null)}
+//         />
+//       )}
+//       {Object.entries(data).map(([key, weather]) => (
+//         <Marker
+//           key={key}
+//           map={map}
+//           position={weather.position}
+//           onClick={() => setEditing(key)}
+//         >
+//           <div
+//             className={`marker ${weather.climate.toLowerCase()} ${
+//               highlight === key || editing === key ? "highlight" : ""
+//             }`}
+//             onMouseEnter={() => setHighlight(key)}
+//             onMouseLeave={() => setHighlight(null)}
+//           >
+//             <h2>{weather.climate}</h2>
+//             <div>{weather.temp}c</div>
+//             {highlight === key || editing === key ? (
+//               <div className="five-day">
+//                 <p>Next 5</p>
+//                 <p>{weather.fiveDay.join(", ")}</p>
+//               </div>
+//             ) : null}
+//           </div>
+//         </Marker>
+//       ))}
+//     </>
+//   );
+// }
+
+// function MyMap() {
+//   const [map, setMap] = useState();
+//   const ref = useRef();
+
+//   useEffect(() => {
+//     setMap(new window.google.maps.Map(ref.current, mapOptions));
+//   }, []);
+
+//   return (
+//     <>
+//       <div ref={ref} id="map" />
+//       {map && <Weather map={map} />}
+//     </>
+//   );
+// }

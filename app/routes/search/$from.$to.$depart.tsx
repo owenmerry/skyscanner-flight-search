@@ -29,6 +29,7 @@ import { DatesGraph } from "~/components/section/dates-graph/dates-graph";
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
 
   //exit
   if (!params.from || !params.to) return;
@@ -86,6 +87,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   return {
     apiUrl,
     googleApiKey,
+    googleMapId,
     params,
     country,
     flightSearch,
@@ -101,6 +103,7 @@ export default function Search() {
     flightSearch,
     apiUrl,
     googleApiKey,
+    googleMapId,
     country,
     flightParams,
     parentImages,
@@ -109,6 +112,7 @@ export default function Search() {
   }: {
     apiUrl: string;
     googleApiKey: string;
+    googleMapId: string;
     flightParams: Query;
     country: Place;
     parentImages: string[];
@@ -219,6 +223,7 @@ export default function Search() {
               <>
                 <MapComponent
                   flightQuery={flightQuery}
+                  googleMapId={googleMapId}
                   googleApiKey={googleApiKey}
                   key="map-component"
                 />
