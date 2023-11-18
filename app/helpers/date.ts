@@ -1,6 +1,8 @@
 import { addDays } from "date-fns";
 import { formatDistance } from "date-fns";
 import { IndicitiveResults } from "~/types/geo";
+import { SkyscannerDateTimeObject } from "./sdk/indicative/indicative-response";
+import moment from "moment";
 
 export const getNextDay = (date = new Date(), dayNumber: number) => {
   const dateCopy = new Date(date.getTime());
@@ -127,4 +129,13 @@ export const getSEODateDetails = (
     dateInboundFlight,
     tripDays,
   };
+};
+
+export const getDateDisplay = (
+  dateTime: SkyscannerDateTimeObject,
+  display?: string
+) => {
+  return moment(`${dateTime.year}-${dateTime.month}-${dateTime.day}`).format(
+    display || "MMM Do"
+  );
 };

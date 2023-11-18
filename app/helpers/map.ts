@@ -2,11 +2,13 @@ import type {
   SkyscannerAPIIndicitiveResponse,
   IndicitiveQuote,
 } from "~/types/geo";
-import { getSEODateDetails } from "~/helpers/date";
+import { getDateDisplay, getSEODateDetails } from "~/helpers/date";
 import { getPlaceFromEntityId, type Place } from "~/helpers/sdk/place";
 import type { Query } from "~/types/search";
 import { SkyscannerAPIIndicativeResponse } from "./sdk/indicative/indicative-response";
 import { getPrice } from "./sdk/price";
+
+const websiteURL = "http://flights.owenmerry.com";
 
 export const filterNonCordItems = (
   quoteGroups: IndicitiveQuote[],
@@ -27,6 +29,7 @@ export interface Markers {
   location: google.maps.LatLngLiteral;
   label: string;
   icon?: string;
+  link?: string;
 }
 
 export const getMarkersWorld = (places: Place[]): Markers[] | null => {
@@ -55,6 +58,7 @@ export const getMarkersWorld = (places: Place[]): Markers[] | null => {
 
      `,
       icon: "\ue153",
+      link: `http://localhost:3000/explore/${place.slug}`,
     };
   });
   return markers;
@@ -87,6 +91,9 @@ export const getMarkersCountry = (
       <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-white border-r border-b border-indigo-500"></div>
       </div>`,
       icon: place.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
+      link: `${websiteURL}/search/${from ? from.iata : ""}/${place.iata}/${
+        defaultSearch.depart
+      }/${defaultSearch.return}`,
     };
   });
   return markers;
@@ -159,6 +166,9 @@ export const getMarkersCountryTo = (
       <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
       </div>`,
       icon: place.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
+      link: `${websiteURL}/search/${from ? from.iata : ""}/${place.iata}/${
+        defaultSearch.depart
+      }/${defaultSearch.return}`,
     };
   });
   return markers;
@@ -181,20 +191,26 @@ export const getMarkersCountryFrom = (
 
       const quoteFlight =
         indicativeSearch.content.results.quotes[quote.quoteIds[0]];
-      const destinationPlaceId = getPlaceFromEntityId(quote.destinationPlaceId);
-      if (!destinationPlaceId) return;
+      const destinationPlace = getPlaceFromEntityId(
+        quoteFlight.outboundLeg.destinationPlaceId
+      );
+      const originPlace = getPlaceFromEntityId(
+        quoteFlight.outboundLeg.originPlaceId
+      );
+      if (!destinationPlace) return;
+      if (!originPlace) return;
 
       markers.push({
         location: {
-          lat: destinationPlaceId.coordinates.latitude,
-          lng: destinationPlaceId.coordinates.longitude,
+          lat: destinationPlace.coordinates.latitude,
+          lng: destinationPlace.coordinates.longitude,
         },
         label: `
       <div class="relative bg-primary-700 p-2 rounded-lg ">
       
       <div class="text-white text-sm">
         <a>
-        <div>${destinationPlaceId.name}</div>
+        <div>${destinationPlace.name}</div>
         <div className='font-bold'>${getPrice(
           quoteFlight.minPrice.amount,
           quoteFlight.minPrice.unit
@@ -204,10 +220,17 @@ export const getMarkersCountryFrom = (
         
       <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
       </div>`,
+        link: `${websiteURL}/search/${originPlace.iata}/${
+          destinationPlace.iata
+        }/${getDateDisplay(
+          quoteFlight.outboundLeg.departureDateTime,
+          "YYYY-MM-DD"
+        )}/${getDateDisplay(
+          quoteFlight.inboundLeg.departureDateTime,
+          "YYYY-MM-DD"
+        )}`,
         icon:
-          destinationPlaceId.type === "PLACE_TYPE_AIRPORT"
-            ? "\ue539"
-            : "\ue7f1",
+          destinationPlace.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
       });
     }
   );

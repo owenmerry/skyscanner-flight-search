@@ -162,29 +162,33 @@ export default function SEOAnytime() {
         ]}
       />
 
-      <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div>
-          <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-            Flights From {country.name}
-          </h2>
+      {searchIndicative ? (
+        <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+          <div>
+            <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+              Flights From {country.name}
+            </h2>
+          </div>
+          <Wrapper apiKey={googleApiKey}>
+            <Map
+              googleMapId={googleMapId}
+              center={{
+                lat: country.coordinates.latitude,
+                lng: country.coordinates.longitude,
+              }}
+              zoom={5}
+              markers={getMarkersCountryFrom(
+                [...airports],
+                searchIndicative,
+                from,
+                defaultSearch
+              )}
+            />
+          </Wrapper>
         </div>
-        <Wrapper apiKey={googleApiKey}>
-          <Map
-            googleMapId={googleMapId}
-            center={{
-              lat: country.coordinates.latitude,
-              lng: country.coordinates.longitude,
-            }}
-            zoom={5}
-            markers={getMarkersCountryFrom(
-              [...airports],
-              searchIndicative,
-              from,
-              defaultSearch
-            )}
-          />
-        </Wrapper>
-      </div>
+      ) : (
+        ""
+      )}
 
       <ExploreEverywhere
         title={`${country.name} to Everywhere`}

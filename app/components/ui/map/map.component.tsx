@@ -14,6 +14,7 @@ interface MapProps {
         location: google.maps.LatLngLiteral;
         label: string;
         icon?: string;
+        link?: string;
       }[]
     | null;
 }
@@ -62,7 +63,7 @@ export const Map = ({
         const container = document.createElement("div");
         container.innerHTML = marker.label;
 
-        new AdvancedMarkerElement({
+        const googleMarker = new AdvancedMarkerElement({
           position: marker.location,
           title: "Weather marker",
           content: container,
@@ -70,6 +71,13 @@ export const Map = ({
           collisionBehavior:
             google.maps.CollisionBehavior.OPTIONAL_AND_HIDES_LOWER_PRIORITY,
         });
+
+        const googleLink = marker.link;
+        if (googleLink) {
+          googleMarker.addListener("click", () => {
+            window.location.href = googleLink;
+          });
+        }
 
         //fit zoom to markers
         var bounds = new google.maps.LatLngBounds();
