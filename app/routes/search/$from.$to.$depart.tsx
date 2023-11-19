@@ -228,6 +228,7 @@ export default function Search() {
                   key="map-component"
                 />
                 <ExplorePage country={country} />
+                <h2 className="font-bold mb-2 text-lg">Departure Dates</h2>
                 <DatesGraph
                   search={searchIndicative}
                   query={flightQuery}

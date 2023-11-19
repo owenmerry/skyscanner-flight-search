@@ -124,9 +124,31 @@ export const DatesGraph = ({
         : 0;
     }
   );
-  const topPrice =
-    search?.content.results.quotes[quotesSorted.reverse()[0]]?.minPrice.amount;
+  let topPrice = 0;
+  sortByDate(quotesGroup, isReturn).map((quoteKey) => {
+    const quotesFilteredFirst = query.return
+      ? getQuoteNumberFromDate(
+          quoteKey.quoteIds,
+          ((isReturn ? query.depart : query.return) || "").replace(/-/g, ""),
+          isReturn
+        )[0]
+      : quoteKey.quoteIds[0];
+    if (!quotesFilteredFirst) return <></>;
+    const quotePrice = Number(
+      search?.content.results.quotes[quotesFilteredFirst]?.minPrice.amount
+    );
+    if (topPrice > quotePrice) return;
+    topPrice = quotePrice;
+  });
   var resultsDisplayed = 0;
+
+  console.log(
+    "top price",
+    topPrice,
+    quotesSorted.reverse()[0],
+    search?.content.results.quotes[quotesSorted.reverse()[0]],
+    search
+  );
 
   return (
     <>

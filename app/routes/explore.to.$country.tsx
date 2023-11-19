@@ -11,7 +11,10 @@ import { Layout } from "~/components/ui/layout/layout";
 import { Map } from "~/components/ui/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { getMarkersCountryTo } from "~/helpers/map";
-import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
+import {
+  getFromPlaceLocalOrDefault,
+  setFromLocationLocalStorage,
+} from "~/helpers/local-storage";
 import { HeroExplore } from "~/components/section/hero/hero-explore";
 import { ImagesDefault } from "~/components/section/images/images-default";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
@@ -169,34 +172,41 @@ export default function SEOAnytime() {
             name="From"
             defaultValue={from.name}
             apiUrl={apiUrl}
-            onSelect={(value, iataCode) => setFrom(getPlaceFromIata(iataCode))}
+            onSelect={(value, iataCode) => {
+              setFromLocationLocalStorage(iataCode);
+              setFrom(getPlaceFromIata(iataCode));
+            }}
           />
         </div>
       </div>
 
-      <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div>
-          <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-            Flights to {country.name}
-          </h2>
+      {searchIndicative ? (
+        <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+          <div>
+            <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+              Flights to {country.name}
+            </h2>
+          </div>
+          <Wrapper apiKey={googleApiKey}>
+            <Map
+              googleMapId={googleMapId}
+              center={{
+                lat: country.coordinates.latitude,
+                lng: country.coordinates.longitude,
+              }}
+              zoom={5}
+              markers={getMarkersCountryTo(
+                [...airports],
+                searchIndicative,
+                from,
+                defaultSearch
+              )}
+            />
+          </Wrapper>
         </div>
-        <Wrapper apiKey={googleApiKey}>
-          <Map
-            googleMapId={googleMapId}
-            center={{
-              lat: country.coordinates.latitude,
-              lng: country.coordinates.longitude,
-            }}
-            zoom={5}
-            markers={getMarkersCountryTo(
-              [...airports],
-              searchIndicative,
-              from,
-              defaultSearch
-            )}
-          />
-        </Wrapper>
-      </div>
+      ) : (
+        ""
+      )}
 
       <ExploreGraph airports={airports} apiUrl={apiUrl} from={from} />
 
