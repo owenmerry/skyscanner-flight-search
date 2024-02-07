@@ -135,7 +135,7 @@ export default function Index() {
             <>
               <div className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white">
                 <div>Your Valentine is </div>
-                <div className="text-8xl my-5 text-pink-300">
+                <div className="text-8xl my-5 text-pink-300 break-words">
                   {randomCountry.name}
                 </div>
                 <div>You lucky person</div>
