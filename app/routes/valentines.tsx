@@ -47,18 +47,6 @@ export const Gradient = () => {
     <div className="bg-gradient-to-t from-gray-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[20%] z-0"></div>
   );
 };
-export const Text = ({ title, text }: { title?: string; text?: string }) => {
-  return (
-    <div>
-      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white">
-        {title}
-      </h1>
-      <p className="mb-8 text-lg font-extrabold lg:text-2xl sm:px-16 xl:px-48 text-pink-300">
-        {text}
-      </p>
-    </div>
-  );
-};
 
 export default function Index() {
   const { apiUrl, googleApiKey, googleMapId, randomCountry } = useLoaderData<{
@@ -114,10 +102,17 @@ export default function Index() {
         <Gradient />
         <div className="relative z-10 py-16 pb-0 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
           {!showValentine ? (
-            <Text
-              title={"💖💖 Who's Your Valentine 💖💖"}
-              text={"What country is your secret admirer?"}
-            />
+            <div>
+              <div className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white">
+                <div>💖💖💖💖</div>
+                <div className="text-8xl my-5 text-white break-words">
+                  Who's Your Valentine
+                </div>
+              </div>
+              <p className="mb-8 text-lg font-extrabold lg:text-5xl sm:px-16 xl:px-48 text-pink-300">
+                What country is your secret admirer?
+              </p>
+            </div>
           ) : (
             ""
           )}
