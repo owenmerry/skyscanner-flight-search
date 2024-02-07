@@ -235,6 +235,7 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
                 <div className="mt-5">
                   <div>
                     <Loading />
+                    <span className="ml-2">Getting Live Price...</span>
                   </div>
                   <div
                     className={`inline-block flex-1 p-5 m-5 px-10 bg-blue-700 rounded-2xl`}
@@ -299,9 +300,9 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
                 <div>
                   <div
                     onClick={handleTryAgainButton}
-                    className="inline-block p-5 m-5 px-10 bg-slate-600 rounded-2xl cursor-pointer"
+                    className="inline-block p-5 m-5 px-10 bg-blue-700 rounded-2xl cursor-pointer"
                   >
-                    Try Again
+                    Next Question
                   </div>
                 </div>
               ) : (

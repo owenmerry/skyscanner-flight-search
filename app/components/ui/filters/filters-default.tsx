@@ -57,7 +57,7 @@ export const FiltersDefault = ({ onFilterChange }: FiltersDefaultProps) => {
         action="#"
         method="get"
         id="drawer-example"
-        className=""
+        className="sticky top-0 py-2"
         tabIndex={-1}
         aria-labelledby="drawer-label"
       >

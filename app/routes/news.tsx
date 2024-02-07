@@ -40,6 +40,32 @@ export default function Index() {
           website.
         </p>
 
+        {/* 
+        Add news Below
+        */}
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
+            Added Valentines APP to choose your Valentine country
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2024-02-07 at 21.36.37.png"
+          />
+        </div>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">Updated homepage with more info and maps</h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2024-02-07 at 19.06.23.png"
+          />
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2024-02-07 at 19.07.25.png"
+          />
+        </div>
+
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">
             Added stop over days (1 day, 2 days, 3 days and 5 days) for stop

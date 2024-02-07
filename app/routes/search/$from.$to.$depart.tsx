@@ -235,7 +235,7 @@ export default function Search() {
                   hasMaxWidth
                 />
                 {loading ? (
-                  <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
+                  <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
                     <Spinner className="mr-2" /> Loading More Prices &
                     Flights...
                   </div>

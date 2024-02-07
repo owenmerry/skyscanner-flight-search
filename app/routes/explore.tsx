@@ -15,6 +15,14 @@ import { getRandomNumber } from "~/helpers/utils";
 import { Place } from "~/helpers/sdk/place";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 
+import { getPlaceFromIata } from "~/helpers/sdk/place";
+import { getMarkersCountryFrom } from "~/helpers/map";
+import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
+import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
+import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
+import { useEffect } from "react";
+import { NavigationMiniApps } from "~/components/ui/navigation/navigation-mini-apps";
+
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
@@ -37,9 +45,41 @@ export default function SEOAnytime() {
     apiUrl: string;
   }>();
   const [countryShow, setCountryShow] = useState(false);
+  const [searchIndicative, setSearchIndicative] =
+    useState<SkyscannerAPIIndicativeResponse>();
+  const [from, setFrom] = useState(
+    getFromPlaceLocalOrDefault() || getPlaceFromIata("LHR")
+  );
+  const defaultSearch = getDefualtFlightQuery();
 
   const randomCountry =
     countries[getRandomNumber(countries.length)] || countries[0];
+
+  if (!from) return;
+
+  useEffect(() => {
+    runIndicative();
+  }, []);
+
+  const runIndicative = async () => {
+    const indicativeSearch = await skyscanner().indicative({
+      apiUrl,
+      query: {
+        from: from.entityId,
+        to: "anywhere",
+        depart: "2023-12-01",
+        return: "2023-12-20",
+        tripType: "return",
+      },
+      month: Number("2023-12-01".split("-")[1]),
+    });
+
+    if ("error" in indicativeSearch.search) return;
+
+    console.log(indicativeSearch.search);
+
+    setSearchIndicative(indicativeSearch.search);
+  };
 
   return (
     <Layout selectedUrl="/explore">
@@ -58,6 +98,46 @@ export default function SEOAnytime() {
           },
         ]}
       />
+
+      {searchIndicative ? (
+        <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+          <div>
+            <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
+              Flights From {from.name} to Everywhere
+            </h2>
+          </div>
+          <Wrapper apiKey={googleApiKey}>
+            <Map
+              googleMapId={googleMapId}
+              center={{
+                lat: from.coordinates.latitude,
+                lng: from.coordinates.longitude,
+              }}
+              zoom={5}
+              markers={getMarkersCountryFrom(
+                [],
+                searchIndicative,
+                from,
+                defaultSearch
+              )}
+              isFitZoomToMarkers={false}
+            />
+          </Wrapper>
+        </div>
+      ) : (
+        ""
+      )}
+
+      <NavigationMiniApps />
+
+      <AllCountries
+        countries={countries}
+        showAll={countryShow}
+        onShowToggle={() => setCountryShow(!countryShow)}
+      />
+      <AllActivities />
+      <ExploreEverywhere apiUrl={apiUrl} />
+
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
           Explore By Map
@@ -71,13 +151,6 @@ export default function SEOAnytime() {
           />
         </Wrapper>
       </div>
-      <AllCountries
-        countries={countries}
-        showAll={countryShow}
-        onShowToggle={() => setCountryShow(!countryShow)}
-      />
-      <AllActivities />
-      <ExploreEverywhere apiUrl={apiUrl} />
     </Layout>
   );
 }

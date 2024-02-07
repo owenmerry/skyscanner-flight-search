@@ -27,7 +27,7 @@ export default function Index() {
   const randomHeroImage = backgroundImage[1];
 
   return (
-    <Layout selectedUrl="/news">
+    <Layout>
       <HeroSimple
         title="Skyscanner Jackpot"
         text="Can you beat the Skyscanner price accuracy"

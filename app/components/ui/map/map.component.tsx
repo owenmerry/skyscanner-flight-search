@@ -9,6 +9,7 @@ interface MapProps {
   center: google.maps.LatLngLiteral;
   zoom: number;
   height?: string;
+  isFitZoomToMarkers?: boolean;
   markers?:
     | {
         location: google.maps.LatLngLiteral;
@@ -23,6 +24,7 @@ export const Map = ({
   center,
   zoom,
   markers,
+  isFitZoomToMarkers = true,
   height = "600px",
   googleMapId,
 }: MapProps) => {
@@ -80,12 +82,14 @@ export const Map = ({
         }
 
         //fit zoom to markers
-        var bounds = new google.maps.LatLngBounds();
-        markers.forEach((marker) => {
-          bounds.extend(marker.location);
-        });
-        if (markers.length > 1) {
-          googleMap.fitBounds(bounds);
+        if (isFitZoomToMarkers) {
+          var bounds = new google.maps.LatLngBounds();
+          markers.forEach((marker) => {
+            bounds.extend(marker.location);
+          });
+          if (markers.length > 1) {
+            googleMap.fitBounds(bounds);
+          }
         }
 
         // if (!google.maps?.marker?.AdvancedMarkerElement) {

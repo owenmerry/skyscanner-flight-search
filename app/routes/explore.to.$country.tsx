@@ -201,6 +201,7 @@ export default function SEOAnytime() {
                 from,
                 defaultSearch
               )}
+              isFitZoomToMarkers={false}
             />
           </Wrapper>
         </div>

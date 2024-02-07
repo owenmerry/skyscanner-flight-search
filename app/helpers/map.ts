@@ -163,7 +163,7 @@ export const getMarkersCountryTo = (
         </a>
       </div>
         
-      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700 hover:bg-primary-600"></div>
       </div>`,
       icon: place.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
       link: `${websiteURL}/search/${from ? from.iata : ""}/${place.iata}/${
@@ -218,7 +218,7 @@ export const getMarkersCountryFrom = (
         </a>
       </div>
         
-      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700 hover:bg-primary-600"></div>
       </div>`,
         link: `${websiteURL}/search/${originPlace.iata}/${
           destinationPlace.iata

@@ -120,7 +120,7 @@ export const FlightControls = ({
         </div>
         <div className="lg:col-span-2">
           <Location
-            name="From"
+            name="To"
             defaultValue={query.toText}
             apiUrl={apiUrl}
             onSelect={(value, iataCode) =>

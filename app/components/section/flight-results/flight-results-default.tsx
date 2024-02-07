@@ -399,7 +399,7 @@ export const FlightResultsDefault = ({
 
   return (
     <div>
-      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800">
+      <div className="sticky top-0 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800">
         Showing<b className="px-1">1-{results}</b>of
         <b className="px-1">{filteredResults().total}</b>
         <a
