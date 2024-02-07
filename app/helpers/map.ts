@@ -188,6 +188,7 @@ export const getMarkersCountryFrom = (
       //   const quoteFlight = indicativeSearch.content.results.quotes[quoteId];
       //   quoteFlight.minPrice.amount
       // })
+      console.log("quote");
 
       const quoteFlight =
         indicativeSearch.content.results.quotes[quote.quoteIds[0]];
@@ -199,6 +200,8 @@ export const getMarkersCountryFrom = (
       );
       if (!destinationPlace) return;
       if (!originPlace) return;
+
+      console.log("quote added");
 
       markers.push({
         location: {
@@ -234,6 +237,8 @@ export const getMarkersCountryFrom = (
       });
     }
   );
+
+  console.log(markers);
 
   return markers;
 };
