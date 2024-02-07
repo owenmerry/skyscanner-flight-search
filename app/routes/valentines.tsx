@@ -190,7 +190,7 @@ export default function Index() {
               <div>
                 <a
                   href={`/valentines`}
-                  className="inline-block p-4 m-2 px-5 text-white font-extrabold rounded-2xl cursor-pointer underline text-sm hover:bg-pink-500"
+                  className="inline-block p-4 m-2 px-5 text-white font-extrabold rounded-2xl cursor-pointer underline text-sm hover:no-underline"
                 >
                   Dump {randomCountry.name} your valentine 🗑️
                 </a>
