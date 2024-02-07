@@ -99,7 +99,7 @@ export const HeroDefault = ({
   flightDefault,
 }: HeroDefaultProps) => {
   return (
-    <section className="bg-[url('/images/hero/airport.jpg')] relative bg-contain bg-top md:bg-bottom md:bg-cover bg-no-repeat">
+    <section className="bg-[url('/images/hero/airport.jpg')] relative bg-top md:bg-bottom bg-cover bg-no-repeat">
       <Overlay />
       <Gradient />
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
