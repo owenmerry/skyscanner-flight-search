@@ -105,7 +105,7 @@ export default function Index() {
             <div>
               <div className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white">
                 <div>💖💖💖💖</div>
-                <div className="text-8xl my-5 text-white break-words">
+                <div className="text-5xl md:text-8xl my-5 text-white break-words">
                   Who's Your Valentine
                 </div>
               </div>
@@ -187,7 +187,7 @@ export default function Index() {
                   href={`/valentines`}
                   className="inline-block p-4 m-2 px-5 text-white font-extrabold rounded-2xl cursor-pointer underline text-sm hover:no-underline"
                 >
-                  Dump {randomCountry.name} your valentine 🗑️
+                  Dump {randomCountry.name} as your valentine 🗑️
                 </a>
               </div>
             </>
