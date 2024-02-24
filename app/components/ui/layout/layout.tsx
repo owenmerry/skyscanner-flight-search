@@ -39,7 +39,7 @@ export const Layout = ({ children, selectedUrl }: LayoutProps) => {
         isDarkMode={darkMode}
         onDarkModeClick={handleDarkModeChange}
       />
-      <div className="bg-white text-black dark:bg-gray-900 dark:text-white">
+      <div className="bg-white text-black dark:bg-gray-900 dark:text-white min-h-screen">
         {children}
       </div>
       <FooterDefault />

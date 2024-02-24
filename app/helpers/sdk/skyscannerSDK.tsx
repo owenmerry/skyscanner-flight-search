@@ -16,6 +16,9 @@ import type { SkyscannerAPIIndicativeResponse } from "./indicative/indicative-re
 import type { IndicativeSDK } from "./indicative/indicative-sdk";
 import { getIndicativeSDK } from "./indicative/indicative-sdk";
 import { getRefreshSDK } from "./refresh/refresh-sdk";
+//content
+import type { SkyscannerAPIContentPageResponse } from "./content/content-response";
+import { ContentSDK, getContentSDK } from "./content/content-sdk";
 
 // types (Response)
 
@@ -175,6 +178,15 @@ export interface SkyscannerSDK {
     query?: FlightQuery;
     apiUrl?: string;
   }) => Promise<HotelSDK>;
+  content: ({
+    res,
+    slug,
+    apiUrl,
+  }: {
+    res?: SkyscannerAPIContentPageResponse;
+    slug?: string;
+    apiUrl?: string;
+  }) => Promise<ContentSDK>;
 }
 
 export interface SearchSDK {
@@ -267,6 +279,7 @@ export const skyscanner = (): SkyscannerSDK => {
     geo: (res?: SkyscannerAPIGeoResponse) => getGeoSDK(res),
     hotel: getHotelSDK,
     indicative: getIndicativeSDK,
+    content: getContentSDK,
   };
 };
 
