@@ -11,6 +11,13 @@ export interface ContentfulComponent {
   fields: { [key: string]: string | boolean };
 }
 
+export interface ContentfulComponent {
+  sys: ContentfulSystem;
+  fields: { [key: string]: ContentfulField };
+}
+
+export type ContentfulField = string | boolean;
+
 export interface ContentfulSystem {
   space: {
     sys: {

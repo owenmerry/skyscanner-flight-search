@@ -4,25 +4,25 @@ import { ContentfulComponent } from "~/helpers/sdk/content/content-response";
 import { AllActivities } from "../activities/activities";
 import { AllCountries } from "../page/explore";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import { getBooleanOrDefault, getStringOrDefault } from "./helpers/check";
+import { HeroDynamic } from "../hero/hero-dynamic";
 
-const getComponent = (component: ContentfulComponent) => {
+const getComponent = (component: ContentfulComponent, apiUrl: string) => {
   // component does exist
   const componentType = component.sys.contentType.sys.id;
 
   //hero
   if (componentType === "heroComponent") {
     return (
-      <HeroSimple
-        title={
-          typeof component.fields["title"] === "string"
-            ? component.fields["title"]
-            : ""
-        }
-        text={
-          typeof component.fields["subtitle"] === "string"
-            ? component.fields["subtitle"]
-            : ""
-        }
+      <HeroDynamic
+        apiUrl={apiUrl}
+        title={getStringOrDefault(component.fields["title"])}
+        text={getStringOrDefault(component.fields["subtitle"])}
+        showGradient={getBooleanOrDefault(component.fields["gradient"])}
+        showOverlay={getBooleanOrDefault(component.fields["overlay"])}
+        imageSearchTerm={getStringOrDefault(
+          component.fields["imageSearchTerm"]
+        )}
       />
     );
   }
@@ -39,7 +39,7 @@ const getComponent = (component: ContentfulComponent) => {
     return (
       <AllCountries
         countries={placesSDK.countries}
-        showAll
+        showAll={getBooleanOrDefault(component.fields["showAll"])}
         onShowToggle={() => {}}
       />
     );
@@ -52,6 +52,12 @@ const getComponent = (component: ContentfulComponent) => {
   );
 };
 
-export const Components = ({ list }: { list: ContentfulComponent[] }) => {
-  return <>{list.map((component) => getComponent(component))}</>;
+export const Components = ({
+  apiUrl,
+  list,
+}: {
+  apiUrl: string;
+  list: ContentfulComponent[];
+}) => {
+  return <>{list.map((component) => getComponent(component, apiUrl))}</>;
 };

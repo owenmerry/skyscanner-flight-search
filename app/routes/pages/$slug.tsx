@@ -12,11 +12,6 @@ import { SkyscannerAPIContentPageResponse } from "~/helpers/sdk/content/content-
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
 
-  const backgroundImage = await getImages({
-    apiUrl,
-    query: params.slug?.split("-")[0] || "",
-  });
-
   const content = await skyscanner().content({
     apiUrl,
     slug: params.slug,
@@ -27,21 +22,19 @@ export const loader: LoaderFunction = async ({ params }) => {
 
   return json({
     apiUrl,
-    backgroundImage,
     page: content.page,
   });
 };
 
 export default function Index() {
-  const { backgroundImage, page } = useLoaderData<{
-    backgroundImage: string[];
+  const { page, apiUrl } = useLoaderData<{
     page: SkyscannerAPIContentPageResponse;
+    apiUrl: string;
   }>();
-  const randomHeroImage = backgroundImage[0];
 
   return (
     <Layout>
-      <Components list={page.fields.components} />
+      <Components apiUrl={apiUrl} list={page.fields.components} />
     </Layout>
   );
 }
