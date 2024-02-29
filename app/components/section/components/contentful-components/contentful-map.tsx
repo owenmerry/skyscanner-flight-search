@@ -1,6 +1,5 @@
-import { AllCountries } from "../../page/explore";
 import { ContentfulComponent } from "~/helpers/sdk/content/content-response";
-import { getBooleanOrDefault, getStringOrDefault } from "../helpers/check";
+import { getNumberOrDefault, getStringOrDefault } from "../helpers/check";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { useEffect, useState } from "react";
 import { MapSearch } from "../../map-search/map-search";
@@ -49,6 +48,7 @@ export const ContentfulMap = ({
           googleMapId={googleMapId}
           indicativeSearch={search}
           title={getStringOrDefault(component.fields["title"])}
+          zoom={getNumberOrDefault(component.fields["zoom"])}
         />
       ) : (
         ""

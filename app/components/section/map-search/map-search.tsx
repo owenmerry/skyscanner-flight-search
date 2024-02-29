@@ -8,11 +8,13 @@ export const MapSearch = ({
   googleMapId,
   indicativeSearch,
   title = "Explore By Map",
+  zoom = 2,
 }: {
   googleApiKey: string;
   googleMapId: string;
   title?: string;
   indicativeSearch: SkyscannerAPIIndicativeResponse | undefined;
+  zoom?: number;
 }) => {
   return (
     <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
@@ -23,7 +25,7 @@ export const MapSearch = ({
         <Map
           googleMapId={googleMapId}
           center={{ lat: 0, lng: 0 }}
-          zoom={2}
+          zoom={zoom}
           markers={getMarkersMapSearchComponent(indicativeSearch)}
         />
       </Wrapper>

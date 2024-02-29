@@ -13,3 +13,10 @@ export const getBooleanOrDefault = (
 ): boolean => {
   return typeof value === "boolean" ? value : defaultValue || true;
 };
+
+export const getNumberOrDefault = (
+  value: ContentfulField,
+  defaultValue?: number
+): number => {
+  return typeof value === "number" ? value : defaultValue || 0;
+};

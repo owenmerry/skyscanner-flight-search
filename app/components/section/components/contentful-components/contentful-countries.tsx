@@ -21,7 +21,7 @@ export const ContentfulCountries = ({
       countries={placesSDK.countries}
       showAll={countryShow}
       onShowToggle={() => {
-        setCountryShow(!!countryShow);
+        setCountryShow(!countryShow);
       }}
     />
   );
