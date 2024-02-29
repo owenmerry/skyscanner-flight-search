@@ -11,6 +11,8 @@ import { SkyscannerAPIContentPageResponse } from "~/helpers/sdk/content/content-
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
 
   const content = await skyscanner().content({
     apiUrl,
@@ -23,18 +25,27 @@ export const loader: LoaderFunction = async ({ params }) => {
   return json({
     apiUrl,
     page: content.page,
+    googleApiKey,
+    googleMapId,
   });
 };
 
 export default function Index() {
-  const { page, apiUrl } = useLoaderData<{
+  const { page, apiUrl, googleApiKey, googleMapId } = useLoaderData<{
     page: SkyscannerAPIContentPageResponse;
     apiUrl: string;
+    googleApiKey: string;
+    googleMapId: string;
   }>();
 
   return (
     <Layout>
-      <Components apiUrl={apiUrl} list={page.fields.components} />
+      <Components
+        apiUrl={apiUrl}
+        list={page.fields.components}
+        googleApiKey={googleApiKey}
+        googleMapId={googleMapId}
+      />
     </Layout>
   );
 }

@@ -1,30 +1,26 @@
-import { createElement } from "react";
+import { createElement, useState } from "react";
 import { HeroSimple } from "~/components/section/hero/hero-simple";
 import { ContentfulComponent } from "~/helpers/sdk/content/content-response";
 import { AllActivities } from "../activities/activities";
-import { AllCountries } from "../page/explore";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { getBooleanOrDefault, getStringOrDefault } from "./helpers/check";
 import { HeroDynamic } from "../hero/hero-dynamic";
+import { ContentfulHero } from "./contentful-components/contentful-hero";
+import { ContentfulCountries } from "./contentful-components/contentful-countries";
+import { ContentfulMap } from "./contentful-components/contentful-map";
 
-const getComponent = (component: ContentfulComponent, apiUrl: string) => {
+const getComponent = (
+  component: ContentfulComponent,
+  apiUrl: string,
+  googleApiKey: string,
+  googleMapId: string
+) => {
   // component does exist
   const componentType = component.sys.contentType.sys.id;
 
   //hero
   if (componentType === "heroComponent") {
-    return (
-      <HeroDynamic
-        apiUrl={apiUrl}
-        title={getStringOrDefault(component.fields["title"])}
-        text={getStringOrDefault(component.fields["subtitle"])}
-        showGradient={getBooleanOrDefault(component.fields["gradient"])}
-        showOverlay={getBooleanOrDefault(component.fields["overlay"])}
-        imageSearchTerm={getStringOrDefault(
-          component.fields["imageSearchTerm"]
-        )}
-      />
-    );
+    return <ContentfulHero component={component} apiUrl={apiUrl} />;
   }
 
   //activities
@@ -34,13 +30,17 @@ const getComponent = (component: ContentfulComponent, apiUrl: string) => {
 
   //countries
   if (componentType === "countriesComponent") {
-    const placesSDK = skyscanner().geo();
+    return <ContentfulCountries component={component} apiUrl={apiUrl} />;
+  }
 
+  //map
+  if (componentType === "mapComponent") {
     return (
-      <AllCountries
-        countries={placesSDK.countries}
-        showAll={getBooleanOrDefault(component.fields["showAll"])}
-        onShowToggle={() => {}}
+      <ContentfulMap
+        component={component}
+        apiUrl={apiUrl}
+        googleApiKey={googleApiKey}
+        googleMapId={googleMapId}
       />
     );
   }
@@ -55,9 +55,19 @@ const getComponent = (component: ContentfulComponent, apiUrl: string) => {
 export const Components = ({
   apiUrl,
   list,
+  googleApiKey,
+  googleMapId,
 }: {
   apiUrl: string;
   list: ContentfulComponent[];
+  googleApiKey: string;
+  googleMapId: string;
 }) => {
-  return <>{list.map((component) => getComponent(component, apiUrl))}</>;
+  return (
+    <>
+      {list.map((component) =>
+        getComponent(component, apiUrl, googleApiKey, googleMapId)
+      )}
+    </>
+  );
 };

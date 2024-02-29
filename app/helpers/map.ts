@@ -242,3 +242,69 @@ export const getMarkersCountryFrom = (
 
   return markers;
 };
+
+export const getMarkersMapSearchComponent = (
+  indicativeSearch: SkyscannerAPIIndicativeResponse | undefined
+): Markers[] | null => {
+  if (!indicativeSearch) return [];
+  let markers: Markers[] = [];
+  indicativeSearch.content.groupingOptions.byRoute.quotesGroups.forEach(
+    (quote) => {
+      // quote.quoteIds.map((quoteId) => {
+      //   const quoteFlight = indicativeSearch.content.results.quotes[quoteId];
+      //   quoteFlight.minPrice.amount
+      // })
+      console.log("quote");
+
+      const quoteFlight =
+        indicativeSearch.content.results.quotes[quote.quoteIds[0]];
+      const destinationPlace = getPlaceFromEntityId(
+        quoteFlight.outboundLeg.destinationPlaceId
+      );
+      const originPlace = getPlaceFromEntityId(
+        quoteFlight.outboundLeg.originPlaceId
+      );
+      if (!destinationPlace) return;
+      if (!originPlace) return;
+
+      console.log("quote added");
+
+      markers.push({
+        location: {
+          lat: destinationPlace.coordinates.latitude,
+          lng: destinationPlace.coordinates.longitude,
+        },
+        label: `
+      <div class="relative bg-primary-700 p-2 rounded-lg ">
+      
+      <div class="text-white text-sm">
+        <a>
+        <div>${destinationPlace.name}</div>
+        <div className='font-bold'>${getPrice(
+          quoteFlight.minPrice.amount,
+          quoteFlight.minPrice.unit
+        )}</div>
+        </a>
+      </div>
+        
+      <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700 hover:bg-primary-600"></div>
+      </div>`,
+        link: `${websiteURL}/search/${originPlace.iata}/${
+          destinationPlace.iata
+        }/${getDateDisplay(
+          quoteFlight.outboundLeg.departureDateTime,
+          "YYYY-MM-DD"
+        )}/${getDateDisplay(
+          quoteFlight.inboundLeg.departureDateTime,
+          "YYYY-MM-DD"
+        )}`,
+        icon:
+          destinationPlace.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
+      });
+    }
+  );
+
+  console.log(markers);
+
+  return markers;
+};
