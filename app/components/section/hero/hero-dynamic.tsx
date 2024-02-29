@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
 import { getImages } from "~/helpers/sdk/query";
 
 export const Overlay = () => {
@@ -30,6 +31,7 @@ interface HeroProps {
   text?: string;
   showGradient?: boolean;
   showOverlay?: boolean;
+  showFlightControls?: boolean;
   imageSearchTerm?: string;
 }
 
@@ -40,6 +42,7 @@ export const HeroDynamic = ({
   imageSearchTerm,
   showGradient = true,
   showOverlay = true,
+  showFlightControls = true,
 }: HeroProps) => {
   const [imageUrl, setImageUrl] = useState("");
 
@@ -66,6 +69,7 @@ export const HeroDynamic = ({
       {showGradient ? <Gradient /> : ""}
       <div className="relative z-10 py-16 pb-0 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
         <Text title={title} text={text} />
+        {showFlightControls ? <FlightControls apiUrl={apiUrl} /> : ""}
       </div>
     </section>
   );

@@ -20,7 +20,7 @@ export const ContentfulMap = ({
 
   useEffect(() => {
     runIndicative();
-  });
+  }, []);
 
   const runIndicative = async () => {
     const indicativeSearch = await skyscanner().indicative({
@@ -49,6 +49,10 @@ export const ContentfulMap = ({
           indicativeSearch={search}
           title={getStringOrDefault(component.fields["title"])}
           zoom={getNumberOrDefault(component.fields["zoom"])}
+          centerEntity={getStringOrDefault(
+            component.fields["center"],
+            "27544008"
+          )}
         />
       ) : (
         ""

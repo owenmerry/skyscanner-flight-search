@@ -8,15 +8,10 @@ export interface SkyscannerAPIContentPageResponse {
 
 export interface ContentfulComponent {
   sys: ContentfulSystem;
-  fields: { [key: string]: string | boolean };
-}
-
-export interface ContentfulComponent {
-  sys: ContentfulSystem;
   fields: { [key: string]: ContentfulField };
 }
 
-export type ContentfulField = string | boolean;
+export type ContentfulField = string | boolean | number;
 
 export interface ContentfulSystem {
   space: {

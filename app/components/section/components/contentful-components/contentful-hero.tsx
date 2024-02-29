@@ -17,6 +17,9 @@ export const ContentfulHero = ({
       showGradient={getBooleanOrDefault(component.fields["gradient"])}
       showOverlay={getBooleanOrDefault(component.fields["overlay"])}
       imageSearchTerm={getStringOrDefault(component.fields["imageSearchTerm"])}
+      showFlightControls={getBooleanOrDefault(
+        component.fields["flightControls"]
+      )}
     />
   );
 };

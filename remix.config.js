@@ -1,8 +1,13 @@
 /** @type {import('@remix-run/dev').AppConfig} */
 module.exports = {
-  ignoredRouteFiles: ['**/.*'],
+  ignoredRouteFiles: ["**/.*"],
   future: {
     unstable_tailwind: true,
+  },
+  routes(defineRoutes) {
+    return defineRoutes((route) => {
+      route("pages/*", "routes/pages/dynamic-route.tsx");
+    });
   },
   // appDirectory: "app",
   // assetsBuildDirectory: "public/build",

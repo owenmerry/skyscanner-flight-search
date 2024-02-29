@@ -188,7 +188,6 @@ export const getMarkersCountryFrom = (
       //   const quoteFlight = indicativeSearch.content.results.quotes[quoteId];
       //   quoteFlight.minPrice.amount
       // })
-      console.log("quote");
 
       const quoteFlight =
         indicativeSearch.content.results.quotes[quote.quoteIds[0]];
@@ -200,8 +199,6 @@ export const getMarkersCountryFrom = (
       );
       if (!destinationPlace) return;
       if (!originPlace) return;
-
-      console.log("quote added");
 
       markers.push({
         location: {
@@ -244,7 +241,8 @@ export const getMarkersCountryFrom = (
 };
 
 export const getMarkersMapSearchComponent = (
-  indicativeSearch: SkyscannerAPIIndicativeResponse | undefined
+  indicativeSearch: SkyscannerAPIIndicativeResponse | undefined,
+  fromLocation?: Place
 ): Markers[] | null => {
   if (!indicativeSearch) return [];
   let markers: Markers[] = [];
@@ -254,7 +252,6 @@ export const getMarkersMapSearchComponent = (
       //   const quoteFlight = indicativeSearch.content.results.quotes[quoteId];
       //   quoteFlight.minPrice.amount
       // })
-      console.log("quote");
 
       const quoteFlight =
         indicativeSearch.content.results.quotes[quote.quoteIds[0]];
@@ -266,8 +263,6 @@ export const getMarkersMapSearchComponent = (
       );
       if (!destinationPlace) return;
       if (!originPlace) return;
-
-      console.log("quote added");
 
       markers.push({
         location: {
@@ -304,7 +299,27 @@ export const getMarkersMapSearchComponent = (
     }
   );
 
-  console.log(markers);
+  //from location
+  if (fromLocation) {
+    markers.push({
+      location: {
+        lat: fromLocation.coordinates.latitude,
+        lng: fromLocation.coordinates.longitude,
+      },
+      label: `
+  <div class="relative bg-red-700 p-2 rounded-lg ">
+  
+  <div class="text-white text-sm">
+    <a>
+    <div>${fromLocation.name}</div>
+    </a>
+  </div>
+    
+  <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-red-700 hover:red-600"></div>
+  </div>`,
+      icon: fromLocation.type === "PLACE_TYPE_AIRPORT" ? "\ue539" : "\ue7f1",
+    });
+  }
 
   return markers;
 };
