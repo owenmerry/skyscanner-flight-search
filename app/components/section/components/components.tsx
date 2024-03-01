@@ -56,7 +56,11 @@ const getComponent = (
 
   // component doesn't exist yet
   return createElement(
-    () => <div>The component {componentType} has not been created yet.</div>,
+    () => (
+      <div className="text-center">
+        The component {componentType} has not been created yet.
+      </div>
+    ),
     { key: component.sys.id }
   );
 };
