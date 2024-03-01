@@ -22,15 +22,17 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   return json({
     apiUrl,
     page: content.page,
+    slug: params["*"],
     googleApiKey,
     googleMapId,
   });
 };
 
 export default function Index() {
-  const { page, apiUrl, googleApiKey, googleMapId } = useLoaderData<{
+  const { page, apiUrl, googleApiKey, googleMapId, slug } = useLoaderData<{
     page: SkyscannerAPIContentPageResponse;
     apiUrl: string;
+    slug: string;
     googleApiKey: string;
     googleMapId: string;
   }>();
@@ -42,6 +44,7 @@ export default function Index() {
         list={page.fields.components}
         googleApiKey={googleApiKey}
         googleMapId={googleMapId}
+        slug={slug}
       />
     </Layout>
   );

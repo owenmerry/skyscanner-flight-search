@@ -1,6 +1,5 @@
 import type { SkyscannerAPIIndicativeResponse } from "./indicative-response";
-import { getIndicative } from "../query";
-import { FlightQuery } from "~/types/search";
+import { FlightQuery, FlightQueryIndicative } from "~/types/search";
 
 // SDK Types
 export interface IndicativeSDK {
@@ -16,7 +15,7 @@ export const getIndicativeSDK = async ({
   groupType,
 }: {
   res?: SkyscannerAPIIndicativeResponse;
-  query?: FlightQuery;
+  query?: FlightQueryIndicative;
   apiUrl?: string;
   month?: number;
   year?: number;
@@ -35,4 +34,41 @@ export const getIndicativeSDK = async ({
   return {
     search,
   };
+};
+
+export const getIndicative = async ({
+  apiUrl,
+  query,
+  month = new Date().getMonth() + 1,
+  year = new Date().getFullYear(),
+  groupType,
+}: {
+  apiUrl: string;
+  query?: FlightQueryIndicative;
+  month?: number;
+  year?: number;
+  groupType?: string;
+}): Promise<SkyscannerAPIIndicativeResponse | { error: string }> => {
+  let indicative,
+    error = "";
+  if (!query) return { error: "Query is required" };
+  try {
+    const res = await fetch(
+      `${apiUrl}/price?from=${query.from}&to=${
+        query.to
+      }&month=${month}&year=${year}&tripType=${query.tripType}${
+        groupType ? `&groupType=${groupType}` : ``
+      }`
+    );
+    const json: SkyscannerAPIIndicativeResponse = await res.json();
+
+    if (!json) {
+      error =
+        "Sorry, something happened and we couldnt do this search, maybe try a differnt search";
+    } else {
+      indicative = json;
+    }
+  } catch (ex) {}
+
+  return indicative || { error };
 };

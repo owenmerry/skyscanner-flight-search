@@ -58,8 +58,6 @@ export default function Index() {
       query: {
         from: from.entityId,
         to: "anywhere",
-        depart: "2023-12-01",
-        return: "2023-12-20",
         tripType: "return",
       },
       month: Number("2023-12-01".split("-")[1]),

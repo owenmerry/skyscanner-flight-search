@@ -84,10 +84,6 @@ export const ExploreEverywhere = ({
       query: {
         from: from.entityId,
         to: toPlace?.entityId || "anywhere",
-        depart: moment(month).startOf("month").format("YYYY-MM-DD"),
-        ...(returnFlight
-          ? { return: moment(month).endOf("month").format("YYYY-MM-DD") }
-          : {}),
         tripType: returnFlight ? "return" : "single",
       },
       month: Number(moment(month).startOf("month").format("MM")),

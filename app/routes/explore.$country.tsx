@@ -100,8 +100,6 @@ export default function SEOAnytime() {
       query: {
         from: from ? from.entityId : "",
         to: country.entityId,
-        depart: "2023-12-01",
-        return: "2023-12-20",
         tripType: "return",
       },
       month: Number("2023-12-01".split("-")[1]),
@@ -121,8 +119,6 @@ export default function SEOAnytime() {
       query: {
         from: from ? from.entityId : "",
         to: airports[0].entityId,
-        depart: "2023-09-01",
-        return: "2023-09-20",
         tripType: "single",
       },
       month: Number("2023-10-01".split("-")[1]),

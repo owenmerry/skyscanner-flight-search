@@ -1,6 +1,5 @@
 import type { SkyscannerAPIRefreshResponse } from "./refresh-response";
-import { getIndicative } from "../query";
-import { FlightQuery } from "~/types/search";
+import { getIndicative } from "../indicative/indicative-sdk";
 
 // SDK Types
 export interface RefreshSDK {

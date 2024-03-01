@@ -10,7 +10,7 @@ import { getGeoSDK } from "./geo/geo-sdk";
 import type { SkyscannerAPIHotelSearchResponse } from "./hotel/hotel-response";
 import type { HotelSDK } from "./hotel/hotel-sdk";
 import { getHotelSDK } from "./hotel/hotel-sdk";
-import { FlightQuery } from "~/types/search";
+import { FlightQuery, FlightQueryIndicative } from "~/types/search";
 //indicative
 import type { SkyscannerAPIIndicativeResponse } from "./indicative/indicative-response";
 import type { IndicativeSDK } from "./indicative/indicative-sdk";
@@ -163,7 +163,7 @@ export interface SkyscannerSDK {
     groupType,
   }: {
     res?: SkyscannerAPIIndicativeResponse;
-    query?: FlightQuery;
+    query?: FlightQueryIndicative;
     apiUrl?: string;
     month?: number;
     year?: number;

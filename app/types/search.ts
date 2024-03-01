@@ -13,6 +13,12 @@ export interface FlightCheckQuery {
   to: string;
 }
 
+export interface FlightQueryIndicative {
+  from: string;
+  to: string;
+  tripType: string;
+}
+
 export interface FlightUrl {
   from: string;
   to: string;
