@@ -5,6 +5,7 @@ import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { json } from "@remix-run/node";
 import { Components } from "~/components/section/components/components";
 import { SkyscannerAPIContentPageResponse } from "~/helpers/sdk/content/content-response";
+import { replacePlaceholders } from "~/helpers/sdk/placeholders/placeholders";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -19,9 +20,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     return redirect("/not-found");
   }
 
+  const pageContent = replacePlaceholders(content.page, {
+    slug: params["*"],
+  });
+
   return json({
     apiUrl,
-    page: content.page,
+    page: pageContent,
     slug: params["*"],
     googleApiKey,
     googleMapId,
