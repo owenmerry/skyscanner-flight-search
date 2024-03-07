@@ -37,7 +37,7 @@ export const getContent = async ({
     error = "";
   if (!slug) return { error: "Slug is required" };
   try {
-    const res = await fetch(`${apiUrl}/seo-pages/pages/${slug}`);
+    const res = await fetch(`${apiUrl}/content/pages/${slug}`);
     const json: SkyscannerAPIContentPageResponse = await res.json();
 
     if (!json) {

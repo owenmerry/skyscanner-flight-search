@@ -1,5 +1,5 @@
 import type { SkyscannerAPIIndicativeResponse } from "./indicative-response";
-import { FlightQuery, FlightQueryIndicative } from "~/types/search";
+import { FlightQueryIndicative } from "~/types/search";
 
 // SDK Types
 export interface IndicativeSDK {
