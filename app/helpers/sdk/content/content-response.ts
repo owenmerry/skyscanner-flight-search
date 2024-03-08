@@ -1,7 +1,18 @@
+export interface SkyscannerAPIContentPagesResponse {
+  sys: {
+    type: string;
+  };
+  total: number;
+  skip: number;
+  limit: number;
+  items: SkyscannerAPIContentPageResponse[];
+}
+
 export interface SkyscannerAPIContentPageResponse {
   sys: ContentfulSystem;
   fields: {
     slug: string;
+    name: string;
     components: ContentfulComponent[];
   };
 }

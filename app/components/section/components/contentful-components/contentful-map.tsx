@@ -4,6 +4,7 @@ import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { useEffect, useState } from "react";
 import { MapSearch } from "../../map-search/map-search";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
+import moment from "moment";
 
 export const ContentfulMap = ({
   component,
@@ -30,7 +31,7 @@ export const ContentfulMap = ({
         to: getStringOrDefault(component.fields["to"], "anywhere"),
         tripType: "return",
       },
-      month: Number("2023-12-01".split("-")[1]),
+      month: Number(moment().add(1, "months").format("M")),
     });
 
     if ("error" in indicativeSearch.search) return;

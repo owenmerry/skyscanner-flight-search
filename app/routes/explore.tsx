@@ -22,6 +22,7 @@ import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { useEffect } from "react";
 import { NavigationMiniApps } from "~/components/ui/navigation/navigation-mini-apps";
+import { Pages } from "~/components/ui/navigation/pages";
 
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -127,6 +128,7 @@ export default function SEOAnytime() {
       )}
 
       <NavigationMiniApps />
+      <Pages apiUrl={apiUrl} />
 
       <AllCountries
         countries={countries}
