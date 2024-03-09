@@ -173,8 +173,6 @@ export default function Search() {
       query: {
         from: query.from,
         to: query.to,
-        depart: query.depart,
-        return: query.return,
         tripType: "return",
       },
       month: Number(query.depart.split("-")[1]),

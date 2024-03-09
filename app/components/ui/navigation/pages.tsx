@@ -33,7 +33,8 @@ export const Pages = ({ apiUrl }: { apiUrl: string }) => {
           {pages?.items.map((page, key) => (
             <Article
               key={key}
-              label={page.fields.slug.search("*") > 0 ? "Dynamic" : "Page"}
+              label={page.fields.slug.includes("*") ? "Dynamic" : "Page"}
+              labelBg={page.fields.slug.includes("*") ? "yellow" : undefined}
               title={page.fields.name}
               description="Try to guess if a Explore Price is still accurate by guessing higher, lower or the same."
               to={`/pages/${page.fields.slug}`}

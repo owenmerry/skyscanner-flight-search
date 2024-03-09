@@ -35,6 +35,7 @@ export const ContentfulMap = ({
     });
 
     if ("error" in indicativeSearch.search) return;
+    if (!indicativeSearch.search.content.groupingOptions) return;
 
     setSearch(indicativeSearch.search);
   };

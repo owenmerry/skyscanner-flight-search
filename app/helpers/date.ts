@@ -139,3 +139,34 @@ export const getDateDisplay = (
     display || "MMM Do"
   );
 };
+
+export const getDateYYYYMMDDToDisplay = (
+  dateTime?: string,
+  display?: string
+) => {
+  if (!dateTime) return "";
+  return moment(dateTime).format(display || "MMM Do");
+};
+
+export const getYYYYMMDDtoDateObject = (dateTime?: string) => {
+  if (!dateTime) return undefined;
+  return new Date(
+    Number(dateTime.split("-")[0]),
+    Number(dateTime.split("-")[0]),
+    Number(dateTime.split("-")[0])
+  );
+};
+
+export const getDaysBetweenYYYYMMDD = (
+  dateTimeStart?: string,
+  dateTimeEnd?: string
+) => {
+  if (!dateTimeStart || !dateTimeEnd) return "";
+
+  const start = moment(dateTimeStart);
+  const end = moment(dateTimeEnd);
+  const daysDiff = moment.duration(end.diff(start)).asDays();
+  if (daysDiff === 0) return "same day trip";
+
+  return `${daysDiff} day trip`;
+};

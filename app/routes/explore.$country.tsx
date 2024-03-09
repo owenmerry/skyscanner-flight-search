@@ -140,7 +140,7 @@ export default function SEOAnytime() {
     <Layout selectedUrl="/explore">
       <HeroExplore
         title={`Explore ${country.name}`}
-        backgroundImage={country.images[0]}
+        backgroundImage={country.images}
         apiUrl={apiUrl}
       />
       <Breadcrumbs
@@ -151,28 +151,6 @@ export default function SEOAnytime() {
           },
           { name: country.name },
         ]}
-      />
-
-      <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div className="grid grid-cols-2 gap-2">
-          <a
-            href={`/explore/to/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel To {country.name}
-          </a>
-          <a
-            href={`/explore/from/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel From {country.name}
-          </a>
-        </div>
-      </div>
-
-      <ImagesDefault
-        images={country.images}
-        title={`Photos of ${country.name}`}
       />
 
       <ExploreGraph airports={airports} apiUrl={apiUrl} from={from} />
@@ -230,6 +208,28 @@ export default function SEOAnytime() {
             })}
         </div>
       </div>
+
+      <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+        <div className="grid grid-cols-2 gap-2">
+          <a
+            href={`/explore/to/${country.slug}`}
+            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
+          >
+            Travel To {country.name}
+          </a>
+          <a
+            href={`/explore/from/${country.slug}`}
+            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
+          >
+            Travel From {country.name}
+          </a>
+        </div>
+      </div>
+
+      <ImagesDefault
+        images={country.images}
+        title={`Photos of ${country.name}`}
+      />
     </Layout>
   );
 }

@@ -1,4 +1,8 @@
-import { getDateFormated } from "~/helpers/date";
+import {
+  getDateFormated,
+  getDateYYYYMMDDToDisplay,
+  getDaysBetweenYYYYMMDD,
+} from "~/helpers/date";
 import { Query } from "~/types/search";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { FlightControls } from "../../ui/flight-controls/flight-controls-default";
@@ -23,8 +27,20 @@ export const Text = ({ flightDefault }: TextProps) => {
         {flightDefault.fromText} to {flightDefault.toText}
       </h1>
       <p className="mb-2 text-white">
-        {flightDefault.depart}{" "}
-        {flightDefault.return ? <>to {flightDefault.return}</> : ""}
+        {getDateYYYYMMDDToDisplay(flightDefault.depart, "Do MMMM")}{" "}
+        {flightDefault.return ? (
+          <>
+            to {getDateYYYYMMDDToDisplay(flightDefault.return, "Do MMMM")}{" "}
+            <span className="italic text-sm">
+              {getDaysBetweenYYYYMMDD(
+                flightDefault.depart,
+                flightDefault.return
+              )}
+            </span>
+          </>
+        ) : (
+          ""
+        )}
       </p>
     </div>
   );

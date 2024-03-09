@@ -32,8 +32,6 @@ export const ExploreGraph = ({
       query: {
         from: from ? from.entityId : "",
         to: airport.entityId,
-        depart: "2023-09-01",
-        return: "2023-09-20",
         tripType: "single",
       },
       month: Number(moment(month).startOf("month").format("MM")),
@@ -75,7 +73,7 @@ export const ExploreGraph = ({
     depart: "2023-10-01",
   };
 
-  if (!searchIndicativeDates?.content.results.quotes) return <></>;
+  if (!searchIndicativeDates?.content?.results?.quotes) return <></>;
 
   return (
     <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
