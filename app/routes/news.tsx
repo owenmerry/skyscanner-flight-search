@@ -46,6 +46,36 @@ export default function Index() {
 
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
           <h2 className="text-xl">
+            Added Map with lines between all points on booking page
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2024-03-13 at 21.34.52.png"
+          />
+        </div>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
+            Added Map with lines between points on search
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2024-03-13 at 21.33.26.png"
+          />
+        </div>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
+            Added filter for time min (max coming when i have time 😂)
+          </h2>
+          <img
+            className="object-scale-down my-4"
+            src="/images/news/Screenshot 2024-03-13 at 21.30.17.png"
+          />
+        </div>
+
+        <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
+          <h2 className="text-xl">
             Added Valentines APP to choose your Valentine country
           </h2>
           <img

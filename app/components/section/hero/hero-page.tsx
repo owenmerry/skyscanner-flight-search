@@ -32,10 +32,12 @@ export const Text = ({ flightDefault }: TextProps) => {
           <>
             to {getDateYYYYMMDDToDisplay(flightDefault.return, "Do MMMM")}{" "}
             <span className="italic text-sm">
+              (
               {getDaysBetweenYYYYMMDD(
                 flightDefault.depart,
                 flightDefault.return
               )}
+              )
             </span>
           </>
         ) : (

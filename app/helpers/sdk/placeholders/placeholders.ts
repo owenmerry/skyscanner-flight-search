@@ -14,9 +14,11 @@ export const replacePlaceholders = (
   const pageString = JSON.stringify(page);
   let pageUpdated = pageString;
 
-  pageUpdated = replaceQuery(pageUpdated, slug);
-  pageUpdated = replaceEntity(pageUpdated, slug);
-  pageUpdated = replaceDate(pageUpdated, slug);
+  for (let num = 0; num < 5; num++) {
+    pageUpdated = replaceQuery(pageUpdated, slug);
+    pageUpdated = replaceEntity(pageUpdated, slug);
+    pageUpdated = replaceDate(pageUpdated, slug);
+  }
 
   const pageParsed = JSON.parse(
     pageUpdated
@@ -53,6 +55,31 @@ export const replaceEntity = (page: string, slug?: string): string => {
 export const replaceDate = (page: string, slug?: string): string => {
   if (!slug && !placeholderExists(page, "@@date.")) return page;
 
+  //month static
+  for (let num = 1; num < 13; num++) {
+    const date = moment(`${moment().format("YYYY")}/${num}/1`);
+    page = page.replaceAll(
+      `@@date.static.month.${num}.number@@`,
+      date.format("M") || ""
+    );
+    page = page.replaceAll(
+      `@@date.static.month.${num}.numberLong@@`,
+      date.format("MM") || ""
+    );
+    page = page.replaceAll(
+      `@@date.static.month.${num}.name@@`,
+      date.format("MMMM") || ""
+    );
+    page = page.replaceAll(
+      `@@date.static.month.${num}.nameLower@@`,
+      date.format("MMMM").toLowerCase() || ""
+    );
+    page = page.replaceAll(
+      `@@date.static.month.${num}.nameShort@@`,
+      date.format("MMM") || ""
+    );
+  }
+
   //month
   for (let num = 0; num < 12; num++) {
     const nextMonth = num === 0 ? `` : `${num}.`;
@@ -69,10 +96,15 @@ export const replaceDate = (page: string, slug?: string): string => {
       moment().add(num, "months").format("MMMM") || ""
     );
     page = page.replaceAll(
+      `@@date.month.${nextMonth}nameLower@@`,
+      moment().add(num, "months").format("MMMM").toLowerCase() || ""
+    );
+    page = page.replaceAll(
       `@@date.month.${nextMonth}nameShort@@`,
       moment().add(num, "months").format("MMM") || ""
     );
   }
+
   //day
   page = page.replaceAll(`@@date.day.number@@`, moment().format("D") || "");
   page = page.replaceAll(

@@ -1,6 +1,6 @@
 import moment from "moment";
 import { QueryPlace } from "~/types/search";
-import { LegSDK } from "./skyscannerSDK";
+import { LegSDK } from "./flight/flight-functions";
 
 export const getSkyscannerLink = (query: QueryPlace, bookingId?: string) => {
   const getBookingDate = (dateString: string) =>
