@@ -1,9 +1,9 @@
-import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
 import Calendar from "../../ui/calender/calender";
 import { useEffect, useRef, useState } from "react";
 import { Place, getIataFromEntityId } from "~/helpers/sdk/place";
 import moment from "moment";
 import { ToggleSwitch } from "flowbite-react";
+import { getSearchWithCreateAndPoll } from "~/helpers/sdk/flight/flight-sdk";
 
 interface CalenderSearchProps {
   airports: Place[];
@@ -49,20 +49,19 @@ export const CalenderSearch = ({
             depart: dateSelected,
           }),
     };
-    const priceChecked = await getSearchWithCreateAndPoll(
-      {
-        from: from ? from.entityId : "",
-        to: airport.entityId,
+    const priceSearch = await getSearchWithCreateAndPoll({
+      query: {
+        from: from,
+        to: airport,
         ...(mode === "return"
           ? { depart: returnDepatureDate, return: dateSelected }
           : {
               depart: dateSelected,
             }),
       },
-      {
-        apiUrl,
-      }
-    );
+      apiUrl,
+    });
+    const priceChecked = priceSearch?.stats.minPrice;
     if (!priceChecked) return;
     const updatedPrices = [
       ...previousInputValue.current.filter(

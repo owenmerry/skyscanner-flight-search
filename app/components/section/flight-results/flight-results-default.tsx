@@ -1,6 +1,5 @@
 import { useState, Fragment } from "react";
 import { Button } from "flowbite-react";
-import { FlightSDK, SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import type { Query, QueryPlace } from "~/types/search";
@@ -10,6 +9,7 @@ import {
   getSkyscannerSearchLink,
 } from "~/helpers/sdk/skyscanner-website";
 import { LegTimeline } from "../flight-details/flight-details.component";
+import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 
 interface SegmentsProps {
   flight: FlightSDK;
@@ -128,7 +128,7 @@ const Deals = ({ flight }: DealsProps) => {
                 )}
               </div>
               <div className="self-end">
-                <Button href={deepLink.link} target="_blank">
+                <Button href={deepLink.link} target="_blank" color="blue">
                   Book{" "}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -176,9 +176,9 @@ const ButtonColumn = ({
         </span>
       </div>
       <div>
-        <Button
+        <a
           target="_blank"
-          className="ml-2"
+          className="ml-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
           href={`/booking/${query.from.iata}/${query.to.iata}/${query.depart}${
             query.return ? `/${query.return}` : ``
           }/${flight.itineraryId}`}
@@ -196,10 +196,14 @@ const ButtonColumn = ({
               d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
             ></path>
           </svg>
-        </Button>
-        <Button outline className="ml-2 mt-2" onClick={onButtonSelect}>
+        </a>
+        <button
+          className="ml-2 mt-2text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+          onClick={onButtonSelect}
+          color="blue"
+        >
           {showDeals ? "Hide Details" : "Quick Details"}
-        </Button>
+        </button>
         <div>
           <div className="mt-4 text-center">
             <a

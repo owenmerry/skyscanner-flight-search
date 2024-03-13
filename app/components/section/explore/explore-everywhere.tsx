@@ -11,11 +11,11 @@ import { getPrice } from "~/helpers/sdk/price";
 import { QueryPlace } from "~/types/search";
 import { formatDistance, format, addDays } from "date-fns";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import moment from "moment";
 import { ToggleSwitch } from "flowbite-react";
 import { getCountryEntityId } from "~/helpers/sdk/data";
+import { getSearchWithCreateAndPoll } from "~/helpers/sdk/flight/flight-sdk";
 
 export const ExploreEverywhere = ({
   fromPlace,
@@ -205,17 +205,17 @@ export const ExploreEverywhere = ({
                     price: "loading",
                   });
                   setPriceUpdated(loadingPriceUpdated);
-                  const priceChecked = await getSearchWithCreateAndPoll(
-                    {
-                      from: from.entityId,
-                      to: destinationPlace ? destinationPlace.entityId : "",
+                  if (!destinationPlace) return;
+                  const priceSearch = await getSearchWithCreateAndPoll({
+                    query: {
+                      from: from,
+                      to: destinationPlace,
                       depart: departDateYYYYMMDD,
                       return: isReturnSearch ? returnDateYYYYMMDD : undefined,
                     },
-                    {
-                      apiUrl,
-                    }
-                  );
+                    apiUrl,
+                  });
+                  const priceChecked = priceSearch?.stats.minPrice;
                   const updatedPriceUpdated =
                     previousPriceUpdated.current.filter(
                       (price) => price.quoteId !== quoteKey.quoteIds[0]

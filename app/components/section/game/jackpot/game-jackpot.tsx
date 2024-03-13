@@ -2,12 +2,12 @@ import { addDays, formatDistance } from "date-fns";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Loading } from "~/components/ui/loading";
+import { getSearchWithCreateAndPoll } from "~/helpers/sdk/flight/flight-sdk";
 import {
   IndicitiveQuoteResult,
   SkyscannerDateTimeObject,
 } from "~/helpers/sdk/indicative/indicative-response";
 import { getPlaceFromEntityId } from "~/helpers/sdk/place";
-import { getSearchWithCreateAndPoll } from "~/helpers/sdk/query";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { getRandomNumber } from "~/helpers/utils";
 
@@ -107,8 +107,6 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
         to: destinationLocations[
           getRandomNumber(destinationLocations.length - 1)
         ],
-        depart: moment(date).startOf("month").format("YYYY-MM-DD"),
-        return: moment(date).endOf("month").format("YYYY-MM-DD"),
         tripType: "return",
       },
       month: Number(moment(date).format("MM")),
@@ -133,13 +131,20 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
 
   const runLiveCheck = async (selected: Answers) => {
     if (!cachedSelected) return;
+    const originPlace = getPlaceFromEntityId(
+      cachedSelected.outboundLeg.originPlaceId
+    );
+    const destinationPlace = getPlaceFromEntityId(
+      cachedSelected.outboundLeg.destinationPlaceId
+    );
+    if (!originPlace || !destinationPlace) return;
 
     setYourSelection(selected);
 
-    const liveResponse = await getSearchWithCreateAndPoll(
-      {
-        from: cachedSelected.outboundLeg.originPlaceId,
-        to: cachedSelected.outboundLeg.destinationPlaceId,
+    const liveResponse = await getSearchWithCreateAndPoll({
+      query: {
+        from: originPlace,
+        to: destinationPlace,
         depart: getDateDisplay(
           cachedSelected.outboundLeg.departureDateTime,
           "YYYY-MM-DD"
@@ -149,13 +154,12 @@ export const GameJackpot = ({ apiUrl }: { apiUrl: string }) => {
           "YYYY-MM-DD"
         ),
       },
-      {
-        apiUrl,
-      }
-    );
-    if (!liveResponse) return;
+      apiUrl,
+    });
+    const livePrice = liveResponse?.stats.minPrice;
+    if (!livePrice) return;
 
-    const price = liveResponse.split(".")[0];
+    const price = livePrice.split(".")[0];
     const beforePrice = Number(cachedSelected.minPrice.amount.replace("£", ""));
     const afterPrice = Number(price.replace("£", ""));
     const isChoiceCorrect =

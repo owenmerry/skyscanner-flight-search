@@ -155,6 +155,7 @@ export const HotelList = ({
                       <Button
                         href={`http://${hotel.offers[0].deeplink}`}
                         target="_blank"
+                        color="blue"
                       >
                         View Deal
                       </Button>

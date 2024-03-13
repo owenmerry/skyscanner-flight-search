@@ -10,9 +10,13 @@ import { FlightDetails } from "~/components/section/flight-details";
 import { getImages } from "~/helpers/sdk/query";
 import type { Query as OldQuery, QueryPlace } from "~/types/search";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
+import { MapComponent } from "~/components/section/page/search";
+import { MapRoute } from "~/components/section/map/map-route";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
   const from = getPlaceFromIata(params.from || "");
   const to = getPlaceFromIata(params.to || "");
   const headerImage = await getImages({
@@ -33,6 +37,8 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   return {
     apiUrl,
+    googleApiKey,
+    googleMapId,
     headerImage: headerImage[0],
     query: {
       from,
@@ -54,12 +60,16 @@ export const loader = async ({ params }: LoaderArgs) => {
 export default function Search() {
   const {
     apiUrl,
+    googleApiKey,
+    googleMapId,
     query,
     url,
     headerImage,
     oldQuery,
   }: {
     apiUrl: string;
+    googleApiKey: string;
+    googleMapId: string;
     query: QueryPlace;
     url: FlightUrl;
     headerImage: string;
@@ -96,6 +106,17 @@ export default function Search() {
           },
         ]}
       />
+      <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
+        <MapRoute
+          flightQuery={query}
+          googleMapId={googleMapId}
+          googleApiKey={googleApiKey}
+          key="map-component"
+          height={500}
+          itineraryId={url.itineraryId}
+          apiUrl={apiUrl}
+        />
+      </div>
       <FlightDetails
         url={url}
         query={query}

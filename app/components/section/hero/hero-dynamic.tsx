@@ -31,8 +31,10 @@ interface HeroProps {
   text?: string;
   showGradient?: boolean;
   showOverlay?: boolean;
-  showFlightControls?: boolean;
   imageSearchTerm?: string;
+  showFlightControls?: boolean;
+  showGallery?: boolean;
+  fullHeight?: boolean;
 }
 
 export const HeroDynamic = ({
@@ -43,8 +45,24 @@ export const HeroDynamic = ({
   showGradient = true,
   showOverlay = true,
   showFlightControls = true,
+  showGallery = true,
+  fullHeight = false,
 }: HeroProps) => {
-  const [imageUrl, setImageUrl] = useState("");
+  const [backgroundImage, setBackgroundImage] = useState<string[]>([]);
+  const [imageNum, setImageNum] = useState(0);
+
+  const nextImage = () => {
+    const newImageNum = imageNum + 1;
+    const isReset = newImageNum >= backgroundImage.length - 1;
+
+    setImageNum(isReset ? 0 : newImageNum);
+  };
+  const prevImage = () => {
+    const newImageNum = imageNum - 1;
+    const isReset = newImageNum <= 0;
+
+    setImageNum(isReset ? backgroundImage.length - 1 : newImageNum);
+  };
 
   useEffect(() => {
     runGetBackgroundImage(imageSearchTerm);
@@ -57,13 +75,15 @@ export const HeroDynamic = ({
       query: imageSearchTerm,
     });
 
-    setImageUrl(backgroundImage[0]);
+    setBackgroundImage(backgroundImage);
   };
 
   return (
     <section
-      style={{ backgroundImage: `url(${imageUrl}&w=1500)` }}
-      className="relative bg-top bg-cover bg-no-repeat"
+      style={{ backgroundImage: `url(${backgroundImage[imageNum]}&w=1500)` }}
+      className={`relative bg-top bg-cover bg-no-repeat ${
+        fullHeight ? "min-h-screen" : ""
+      }`}
     >
       {showOverlay ? <Overlay /> : ""}
       {showGradient ? <Gradient /> : ""}
@@ -71,6 +91,63 @@ export const HeroDynamic = ({
         <Text title={title} text={text} />
         {showFlightControls ? <FlightControls apiUrl={apiUrl} /> : ""}
       </div>
+      {showGallery ? (
+        <div className="">
+          <button
+            type="button"
+            className="sm:absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+            data-carousel-prev=""
+            ata-carousel-next=""
+            onClick={prevImage}
+          >
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-white-800/30 group-hover:bg-white/50 dark:group-hover:bg-white-800/60 group-focus:ring-4 group-focus:ring-white/80 dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+              <svg
+                className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 6 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 1 1 5l4 4"
+                />
+              </svg>
+              <span className="sr-only">Previous</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            className="sm:absolute top-0 end-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none"
+            data-carousel-next=""
+            onClick={nextImage}
+          >
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-white-800/30 group-hover:bg-white/50 dark:group-hover:bg-white-800/60 group-focus:ring-4 group-focus:ring-white/80 dark:group-focus:ring-white-800/70 group-focus:outline-none">
+              <svg
+                className="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 6 10"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="m1 9 4-4-4-4"
+                />
+              </svg>
+              <span className="sr-only">Next</span>
+            </span>
+          </button>
+        </div>
+      ) : (
+        ""
+      )}
     </section>
   );
 };

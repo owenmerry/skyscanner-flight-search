@@ -9,6 +9,8 @@ export interface SearchFilters {
     | "AGENT_TYPE_UNSPECIFIED"
   )[];
   mashup?: boolean;
+  outboundTime?: { min: number; max: number };
+  returnTime?: { min: number; max: number };
 }
 
 export const filterNumberOfResultsToShow = (
@@ -30,6 +32,25 @@ export const filterMashups = (flights: FlightSDK[], mashup: boolean) => {
   return flights.filter(
     (flight) =>
       flight.prices.filter((price) => price.deepLinks.length > 1).length > 0
+  );
+};
+
+export const filterOutbound = (
+  flights: FlightSDK[],
+  time: { min: number; max: number }
+) => {
+  return flights.filter(
+    (flight) => Number(flight.legs[0].departureTime.split(":")[0]) > time.max
+  );
+};
+export const filterReturn = (
+  flights: FlightSDK[],
+  time: { min: number; max: number }
+) => {
+  return flights.filter((flight) =>
+    flight.legs[1]
+      ? Number(flight.legs[1].departureTime.split(":")[0]) > time.max
+      : true
   );
 };
 
@@ -58,6 +79,8 @@ export const addSearchResultFilters = (
     numberOfStops = [],
     agentTypes = [],
     mashup,
+    outboundTime,
+    returnTime,
   }: SearchFilters
 ) => {
   let flightsFiltered = flights;
@@ -75,6 +98,21 @@ export const addSearchResultFilters = (
   // mashups
   if (mashup) {
     flightsFiltered = filterMashups(flightsFiltered, mashup);
+  }
+
+  // mashups
+  if (mashup) {
+    flightsFiltered = filterMashups(flightsFiltered, mashup);
+  }
+
+  // outbound time
+  if (outboundTime) {
+    flightsFiltered = filterOutbound(flightsFiltered, outboundTime);
+  }
+
+  // return time
+  if (returnTime) {
+    flightsFiltered = filterReturn(flightsFiltered, returnTime);
   }
 
   // numbeResultsToShow

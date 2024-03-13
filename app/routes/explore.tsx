@@ -85,9 +85,7 @@ export default function SEOAnytime() {
       <HeroExplore
         title={`Explore Everywhere`}
         imagePlace={randomCountry}
-        backgroundImage={
-          randomCountry.images[getRandomNumber(randomCountry.images.length)]
-        }
+        backgroundImage={randomCountry.images}
         apiUrl={apiUrl}
       />
       <Breadcrumbs

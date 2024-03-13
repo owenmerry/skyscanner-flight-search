@@ -1,16 +1,17 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
-import {
-  getFlightLiveCreate,
-  getFlightLivePoll,
-  getImages,
-} from "~/helpers/sdk/query";
+import { getImages } from "~/helpers/sdk/query";
 import { GameJackpot } from "~/components/section/game/jackpot/game-jackpot";
 import { HeroSimple } from "~/components/section/hero/hero-simple";
 import { useEffect } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { waitSeconds } from "~/helpers/utils";
+import {
+  getFlightLiveCreate,
+  getFlightLivePoll,
+} from "~/helpers/sdk/flight/flight-sdk";
+import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 
 export const loader: LoaderFunction = async () => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -40,27 +41,26 @@ export default function Index() {
       query: {
         from: "95565050",
         to: "95673529",
-        depart: "2023-12-01",
-        return: "2023-12-25",
         tripType: "return",
       },
       month: 12,
       year: 2023,
       groupType: "date",
     });
+    const fromPlace = getPlaceFromEntityId("95565050");
+    const toPlace = getPlaceFromEntityId("95673529");
 
-    if ("error" in data.search) return;
+    if ("error" in data.search || !fromPlace || !toPlace) return;
 
     console.log(data);
 
     const flight = await getFlightLiveCreate({
       apiUrl,
       query: {
-        from: "95565050",
-        to: "95673529",
+        from: fromPlace,
+        to: toPlace,
         depart: "2023-12-01",
         return: "2023-12-25",
-        tripType: "return",
       },
     });
 

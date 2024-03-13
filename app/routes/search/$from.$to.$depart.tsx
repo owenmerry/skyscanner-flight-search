@@ -2,11 +2,7 @@ import { useEffect, useState } from "react";
 import type { LoaderFunction, LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
-import {
-  getFlightLiveCreate,
-  getFlightLivePoll,
-  getImages,
-} from "~/helpers/sdk/query";
+import { getImages } from "~/helpers/sdk/query";
 import { useLoaderData } from "@remix-run/react";
 import {
   Place,
@@ -17,7 +13,7 @@ import { Spinner } from "flowbite-react";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getImagesFromParents } from "~/helpers/sdk/images";
 import { HeroPage } from "~/components/section/hero/hero-page";
-import { SearchSDK, skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { Query, QueryPlace } from "~/types/search";
 import { ExplorePage, MapComponent } from "~/components/section/page/search";
 import { getCountryEntityId } from "~/helpers/sdk/data";
@@ -25,6 +21,11 @@ import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indica
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 import { Layout } from "~/components/ui/layout/layout";
 import { DatesGraph } from "~/components/section/dates-graph/dates-graph";
+import {
+  getFlightLiveCreate,
+  getFlightLivePoll,
+} from "~/helpers/sdk/flight/flight-sdk";
+import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -75,13 +76,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   //get search
   const flightSearch = await getFlightLiveCreate({
     apiUrl,
-    query: {
-      from,
-      to,
-      depart: params.depart || "",
-      return: params.return,
-      tripType: "",
-    },
+    query: flightQuery,
   });
 
   return {
@@ -169,7 +164,6 @@ export default function Search() {
       query: {
         from: query.from,
         to: query.to,
-        depart: query.depart,
         tripType: "single",
       },
       month: Number(query.depart.split("-")[1]),

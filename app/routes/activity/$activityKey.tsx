@@ -38,9 +38,13 @@ export default function SEOAnytime() {
 
   return (
     <Layout selectedUrl="/explore">
-      <HeroExplore title={activityKey} backgroundImage={activityImages[0]} />
-      <ImagesDefault images={activityImages} />
+      <HeroExplore
+        title={activityKey}
+        backgroundImage={activityImages}
+        showFlightControls={false}
+      />
       <ActivityLocations name={activityKey} from={from} />
+      <ImagesDefault images={activityImages} />
     </Layout>
   );
 }

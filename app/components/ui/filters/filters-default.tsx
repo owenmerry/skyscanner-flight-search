@@ -1,11 +1,19 @@
 import { useState } from "react";
 import type { SearchFilters } from "~/helpers/sdk/filters";
+import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import { QueryPlace } from "~/types/search";
 
 interface FiltersDefaultProps {
+  flights?: SearchSDK;
+  query?: QueryPlace;
   onFilterChange: (filters: SearchFilters) => void;
 }
 
-export const FiltersDefault = ({ onFilterChange }: FiltersDefaultProps) => {
+export const FiltersDefault = ({
+  onFilterChange,
+  flights,
+  query,
+}: FiltersDefaultProps) => {
   const [filters, setFilters] = useState<SearchFilters>({});
   const showExtraFilters = false;
 
@@ -202,6 +210,68 @@ export const FiltersDefault = ({ onFilterChange }: FiltersDefaultProps) => {
                 </div>
               </div>
             </div>
+
+            <div className="w-full pr-3">
+              <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
+                Departure from {query?.from.iata}
+              </h6>
+              <div className="space-y-2">
+                <div className="">
+                  <div className="text-sm">
+                    {filters.outboundTime?.max || 0}:00 - 23:59
+                  </div>
+                  <div>
+                    <input
+                      id="min-price"
+                      type="range"
+                      min={0}
+                      max={24}
+                      defaultValue={0}
+                      step={1}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                      onChange={(e) =>
+                        updateFilters({
+                          outboundTime: { min: 0, max: Number(e.target.value) },
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {query?.return ? (
+              <div className="w-full pr-3">
+                <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
+                  Return from {query?.to.iata}
+                </h6>
+                <div className="space-y-2">
+                  <div className="">
+                    <div className="text-sm">
+                      {filters.returnTime?.max || 0}:00 - 23:59
+                    </div>
+                    <div>
+                      <input
+                        id="min-price"
+                        type="range"
+                        min={0}
+                        max={24}
+                        defaultValue={0}
+                        step={1}
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                        onChange={(e) =>
+                          updateFilters({
+                            returnTime: { min: 0, max: Number(e.target.value) },
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
 
             {showExtraFilters ? (
               <>

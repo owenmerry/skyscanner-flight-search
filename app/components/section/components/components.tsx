@@ -5,6 +5,7 @@ import { ContentfulHero } from "./contentful-components/contentful-hero";
 import { ContentfulCountries } from "./contentful-components/contentful-countries";
 import { ContentfulMap } from "./contentful-components/contentful-map";
 import { ContentfulContentBlock } from "./contentful-components/contentful-content";
+import { InternalLinkingDefault } from "../internal-linking/internal-linking-default";
 
 const getComponent = (
   component: ContentfulComponent,
@@ -52,6 +53,11 @@ const getComponent = (
         slug={slug}
       />
     );
+  }
+
+  //internal linking
+  if (componentType === "internalLinkingComponent") {
+    return <InternalLinkingDefault />;
   }
 
   // component doesn't exist yet

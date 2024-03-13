@@ -106,9 +106,6 @@ export const getFlightSearch = (places: Place[]): Markers[] | null => {
         lat: place.coordinates.latitude,
         lng: place.coordinates.longitude,
       },
-      // label: `<div>${
-      //   place.images[0] ? `<img src='${place.images[0]}&w=250' />` : ""
-      // }</div><div class='mt-2 dark:text-black'>${place.name} </div>`,
       label: `
       <div class="relative bg-primary-700 p-2 rounded-lg">
 

@@ -1,6 +1,5 @@
 import { Link } from "@remix-run/react";
 import { getFlightSearch } from "~/helpers/map";
-import { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import type { QueryPlace } from "~/types/search";
 import { Map } from "~/components/ui/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
@@ -15,15 +14,18 @@ import {
 } from "~/helpers/sdk/indicative/indicative-response";
 import { getPrice } from "~/helpers/sdk/price";
 import { format } from "date-fns";
+import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 
 export const MapComponent = ({
   googleApiKey,
   googleMapId,
   flightQuery,
+  height = 300,
 }: {
   googleApiKey: string;
   googleMapId: string;
   flightQuery: QueryPlace;
+  height?: number;
 }) => {
   return (
     <div className="mb-2">
@@ -35,8 +37,18 @@ export const MapComponent = ({
             lat: flightQuery.to.coordinates.latitude,
             lng: flightQuery.to.coordinates.longitude,
           }}
-          height="300px"
+          height={`${height}px`}
           zoom={5}
+          line={[
+            {
+              lat: flightQuery.from.coordinates.latitude,
+              lng: flightQuery.from.coordinates.longitude,
+            },
+            {
+              lat: flightQuery.to.coordinates.latitude,
+              lng: flightQuery.to.coordinates.longitude,
+            },
+          ]}
           markers={getFlightSearch([flightQuery.to, flightQuery.from])}
         />
       </Wrapper>

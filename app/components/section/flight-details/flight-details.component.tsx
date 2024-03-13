@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback, Fragment } from "react";
 import type { FlightQuery, FlightUrl, QueryPlace } from "~/types/search";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import type { SearchSDK, FlightSDK, LegSDK } from "~/helpers/sdk/skyscannerSDK";
 import { waitSeconds } from "~/helpers/utils";
 import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import { Timeline } from "flowbite-react";
@@ -12,6 +11,11 @@ import {
   getSkyscannerLink,
   getSkyscannerMultiCityLink,
 } from "~/helpers/sdk/skyscanner-website";
+import {
+  FlightSDK,
+  LegSDK,
+  SearchSDK,
+} from "~/helpers/sdk/flight/flight-functions";
 
 interface FlightDetailsProps {
   query?: QueryPlace;
@@ -62,7 +66,7 @@ export const FlightDetails = ({
             setSearching(false);
           }
         } else {
-          setSearch(skyscanner().search(json));
+          setSearch(skyscanner().flight().search(json));
 
           // run again until is complete
           if (
@@ -115,7 +119,7 @@ export const FlightDetails = ({
             `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:${retry}|3)`
           );
         } else {
-          setSearch(skyscanner().search(json));
+          setSearch(skyscanner().flight().search(json));
           sessionTokenSaved.current = json.sessionToken;
           setSearching(false);
 
@@ -135,14 +139,6 @@ export const FlightDetails = ({
     },
     [apiUrl, pollFlights]
   );
-
-  const handleSort = (sortType: "best" | "cheapest" | "fastest") => {
-    setSort(sortType);
-  };
-
-  const handleShowResults = (amount: number) => {
-    setResults(amount);
-  };
 
   useEffect(() => {
     if (!query) return;
@@ -263,13 +259,6 @@ export const FlightDetails = ({
                         </div>
                       )}
                       <Deals flight={itinerary} />
-                      {/* <Prices
-                        url={url}
-                        flight={itinerary}
-                        query={query}
-                        open
-                        showButton={false}
-                      /> */}
                     </div>
                   </div>
                 </div>
@@ -462,7 +451,7 @@ const Deals = ({ flight }: DealsProps) => {
                 )}
               </div>
               <div className="self-end">
-                <Button href={deepLink.link} target="_blank">
+                <Button href={deepLink.link} target="_blank" color="blue">
                   Book{" "}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -20,6 +20,8 @@ export const ContentfulHero = ({
       showFlightControls={getBooleanOrDefault(
         component.fields["flightControls"]
       )}
+      showGallery={getBooleanOrDefault(component.fields["gallery"])}
+      fullHeight={getBooleanOrDefault(component.fields["fullHeight"])}
     />
   );
 };

@@ -2,18 +2,13 @@ import { useEffect, useState } from "react";
 import type { LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
-import {
-  getFlightLiveCreate,
-  getFlightLivePoll,
-  getImages,
-} from "~/helpers/sdk/query";
+import { getImages } from "~/helpers/sdk/query";
 import { useLoaderData, Link } from "@remix-run/react";
 import { getEntityIdFromIata, getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { Spinner } from "flowbite-react";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getImagesFromParents } from "~/helpers/sdk/images";
 import { HeroPage } from "~/components/section/hero/hero-page";
-import { SearchSDK } from "~/helpers/sdk/skyscannerSDK";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { Query, QueryPlace } from "~/types/search";
 import { getCountryEntityId } from "~/helpers/sdk/data";
@@ -30,6 +25,11 @@ import {
 import { Layout } from "~/components/ui/layout/layout";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 import { DatesGraph } from "~/components/section/dates-graph/dates-graph";
+import {
+  getFlightLiveCreate,
+  getFlightLivePoll,
+} from "~/helpers/sdk/flight/flight-sdk";
+import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -70,8 +70,6 @@ export const loader = async ({ params }: LoaderArgs) => {
     getCountryEntityId(flightQuery.to.entityId)
   );
 
-  console.log("country", country);
-
   //images
   const parentImages = getImagesFromParents(toPlace.entityId);
   const fromImage = await getImages({
@@ -83,11 +81,10 @@ export const loader = async ({ params }: LoaderArgs) => {
   const flightSearch = await getFlightLiveCreate({
     apiUrl,
     query: {
-      from,
-      to,
+      from: fromPlace,
+      to: toPlace,
       depart: params.depart || "",
       return: params.return,
-      tripType: "return",
     },
   });
 
@@ -241,7 +238,11 @@ export default function Search() {
               showFilters ? "" : "hidden"
             } xl:w-[400px] md:block max-w-none`}
           >
-            <FiltersDefault onFilterChange={(filters) => setFilters(filters)} />
+            <FiltersDefault
+              flights={"error" in search ? undefined : search}
+              onFilterChange={(filters) => setFilters(filters)}
+              query={flightQuery}
+            />
           </div>
           <div className="w-full md:ml-2">
             {error !== "" ? (

@@ -2,7 +2,7 @@ import { ContentfulComponent } from "~/helpers/sdk/content/content-response";
 import { getNumberOrDefault, getStringOrDefault } from "../helpers/check";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { useEffect, useState } from "react";
-import { MapSearch } from "../../map-search/map-search";
+import { MapSearch } from "../../map/map-search";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import moment from "moment";
 
