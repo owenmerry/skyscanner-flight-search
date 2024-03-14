@@ -25,6 +25,7 @@ import { QueryPlace } from "~/types/search";
 import { ExploreGraph } from "~/components/section/explore/explore-graph";
 import { Location } from "~/components/ui/location";
 import { ToggleSwitch } from "flowbite-react";
+import { MapSearch } from "~/components/section/map/map-search";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -153,7 +154,12 @@ export default function SEOAnytime() {
         ]}
       />
 
-      <ExploreGraph airports={airports} apiUrl={apiUrl} from={from} />
+      <ExploreGraph
+        airports={airports}
+        apiUrl={apiUrl}
+        from={from}
+        showReturn
+      />
 
       {searchIndicative ? (
         <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
@@ -229,6 +235,20 @@ export default function SEOAnytime() {
       <ImagesDefault
         images={country.images}
         title={`Photos of ${country.name}`}
+      />
+      <ExploreEverywhere
+        title={`${country.name} to Everywhere`}
+        fromPlace={country}
+        apiUrl={apiUrl}
+      />
+
+      <MapSearch
+        googleApiKey={googleApiKey}
+        googleMapId={googleMapId}
+        indicativeSearch={searchIndicative}
+        title={`${from.name} to ${country.name}`}
+        centerEntity={country.entityId}
+        zoom={0}
       />
     </Layout>
   );

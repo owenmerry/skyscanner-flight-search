@@ -5,17 +5,23 @@ import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { QueryPlace } from "~/types/search";
 import { Place } from "~/helpers/sdk/place";
 import moment from "moment";
+import { ToggleSwitch } from "flowbite-react";
 
 export const ExploreGraph = ({
   airports,
   from,
   apiUrl,
+  showReturn,
 }: {
   airports: Place[];
   from: Place;
   apiUrl: string;
+  showReturn: boolean;
 }) => {
   const [searchIndicativeDates, setSearchIndicativeDates] =
+    useState<SkyscannerAPIIndicativeResponse>();
+  const [displayReturn, setDisplayReturn] = useState<boolean>(false);
+  const [searchIndicativeDatesReturn, setSearchIndicativeDatesReturn] =
     useState<SkyscannerAPIIndicativeResponse>();
   const [airport, setAirport] = useState<Place>(airports[0]);
   const [month, setMonth] = useState<string>(
@@ -42,6 +48,24 @@ export const ExploreGraph = ({
     if ("error" in indicativeSearch.search) return;
 
     setSearchIndicativeDates(indicativeSearch.search);
+
+    if (showReturn) {
+      const indicativeSearchReturn = await skyscanner().indicative({
+        apiUrl,
+        query: {
+          from: airport.entityId,
+          to: from ? from.entityId : "",
+          tripType: "single",
+        },
+        month: Number(moment(month).startOf("month").format("MM")),
+        year: Number(moment(month).startOf("month").format("YYYY")),
+        groupType: "date",
+      });
+
+      if ("error" in indicativeSearchReturn.search) return;
+
+      setSearchIndicativeDatesReturn(indicativeSearchReturn.search);
+    }
   };
 
   const getNextXMonthsStartDayAndEndDay = (months: number) => {
@@ -97,7 +121,25 @@ export const ExploreGraph = ({
           <option value={month.firstDay}>{month.displayMonthText}</option>
         ))}
       </select>
+      <div className="inline-block">
+        <ToggleSwitch
+          checked={displayReturn}
+          label="Return Flight"
+          onChange={(toggle) => setDisplayReturn(toggle)}
+        />
+      </div>
       <DatesGraph search={searchIndicativeDates} query={flightQuery} />
+      {showReturn && displayReturn ? (
+        <>
+          <div>Return</div>
+          <DatesGraph
+            search={searchIndicativeDatesReturn}
+            query={flightQuery}
+          />
+        </>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -31,10 +31,9 @@ export const ContentfulMap = ({
         to: getStringOrDefault(component.fields["to"], "anywhere"),
         tripType: "return",
       },
-      month: getNumberOrDefault(
-        Number(component.fields["month"]),
-        Number(moment().format("M"))
-      ),
+      month: component.fields["month"]
+        ? getNumberOrDefault(Number(component.fields["month"]))
+        : Number(moment().format("M")),
     });
 
     if ("error" in indicativeSearch.search) return;
