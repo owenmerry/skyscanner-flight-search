@@ -1,6 +1,10 @@
 import moment from "moment";
 import { SkyscannerAPIContentPageResponse } from "../content/content-response";
-import { getPlaceFromEntityId } from "../place";
+import {
+  getPlaceFromEntityId,
+  getPlaceFromIata,
+  getPlaceFromSlug,
+} from "../place";
 import { placeholderExists } from "./placeholder-utils";
 
 export const replacePlaceholders = (
@@ -43,10 +47,32 @@ export const replaceEntity = (page: string, slug?: string): string => {
   for (let num = 2; num < 10; num++) {
     const query = slug?.split("/")[num - 1];
     if (!query) continue;
-    const place = getPlaceFromEntityId(query);
+    let place = getPlaceFromEntityId(query);
+    if (!place) place = getPlaceFromIata(query);
+    if (!place) place = getPlaceFromSlug(query, "PLACE_TYPE_COUNTRY");
+    if (!place) place = getPlaceFromSlug(query, "PLACE_TYPE_CITY");
+    if (!place) place = getPlaceFromSlug(query, "PLACE_TYPE_AIRPORT");
     if (!place) continue;
+    page = page.replaceAll(`@@query${num}.entity.id@@`, place.entityId || "");
     page = page.replaceAll(`@@query${num}.entity.name@@`, place.name || "");
     page = page.replaceAll(`@@query${num}.entity.iata@@`, place.iata || "");
+    page = page.replaceAll(
+      `@@query${num}.entity.image@@`,
+      place.images[0] || ""
+    );
+    page = page.replaceAll(
+      `@@query${num}.entity.parentId@@`,
+      place.parentId || ""
+    );
+    page = page.replaceAll(`@@query${num}.entity.type@@`, place.type || "");
+    page = page.replaceAll(
+      `@@query${num}.entity.coordinates.latitude@@`,
+      String(place.coordinates.latitude) || ""
+    );
+    page = page.replaceAll(
+      `@@query${num}.entity.coordinates.longitude@@`,
+      String(place.coordinates.longitude) || ""
+    );
   }
 
   return page;

@@ -16,6 +16,7 @@ import moment from "moment";
 import { ToggleSwitch } from "flowbite-react";
 import { getCountryEntityId } from "~/helpers/sdk/data";
 import { getSearchWithCreateAndPoll } from "~/helpers/sdk/flight/flight-sdk";
+import { Loading } from "~/components/ui/loading";
 
 export const ExploreEverywhere = ({
   fromPlace,
@@ -205,16 +206,18 @@ export const ExploreEverywhere = ({
                     price: "loading",
                   });
                   setPriceUpdated(loadingPriceUpdated);
-                  if (!destinationPlace) return;
-                  const priceSearch = await getSearchWithCreateAndPoll({
-                    query: {
-                      from: from,
-                      to: destinationPlace,
-                      depart: departDateYYYYMMDD,
-                      return: isReturnSearch ? returnDateYYYYMMDD : undefined,
-                    },
-                    apiUrl,
-                  });
+                  if (!destinationPlace || !originPlace) return;
+                  const priceSearch = await skyscanner()
+                    .flight()
+                    .createAndPoll({
+                      query: {
+                        from: originPlace,
+                        to: destinationPlace,
+                        depart: departDateYYYYMMDD,
+                        return: isReturnSearch ? returnDateYYYYMMDD : undefined,
+                      },
+                      apiUrl,
+                    });
                   const priceChecked = priceSearch?.stats.minPrice;
                   const updatedPriceUpdated =
                     previousPriceUpdated.current.filter(
@@ -273,10 +276,10 @@ export const ExploreEverywhere = ({
                       <div>
                         From{" "}
                         {getPrice(quote.minPrice.amount, quote.minPrice.unit)}
-                        <div>
+                        <div className="text-white italic">
                           {updatedPriceString &&
                           updatedPriceString !== "loading"
-                            ? `(Now ${updatedPriceString})`
+                            ? `Price Now: ${updatedPriceString}`
                             : ""}
                         </div>
                       </div>
@@ -288,9 +291,11 @@ export const ExploreEverywhere = ({
                       className="text-xs text-right mt-4 text-slate-400 cursor-pointer underline"
                       onClick={() => handleSearchPrice()}
                     >
-                      {updatedPriceString === "loading"
-                        ? `Loading Price...`
-                        : `Check Price`}
+                      {updatedPriceString === "loading" ? (
+                        <Loading />
+                      ) : (
+                        `Check Price`
+                      )}
                     </div>
                   </div>
                 );

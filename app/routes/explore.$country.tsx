@@ -241,15 +241,18 @@ export default function SEOAnytime() {
         fromPlace={country}
         apiUrl={apiUrl}
       />
-
-      <MapSearch
-        googleApiKey={googleApiKey}
-        googleMapId={googleMapId}
-        indicativeSearch={searchIndicative}
-        title={`${from.name} to ${country.name}`}
-        centerEntity={country.entityId}
-        zoom={0}
-      />
+      {searchIndicative ? (
+        <MapSearch
+          googleApiKey={googleApiKey}
+          googleMapId={googleMapId}
+          indicativeSearch={searchIndicative}
+          title={`${from.name} to ${country.name}`}
+          centerEntity={country.entityId}
+          zoom={0}
+        />
+      ) : (
+        ""
+      )}
     </Layout>
   );
 }

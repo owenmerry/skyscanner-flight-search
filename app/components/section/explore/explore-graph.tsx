@@ -16,7 +16,7 @@ export const ExploreGraph = ({
   airports: Place[];
   from: Place;
   apiUrl: string;
-  showReturn: boolean;
+  showReturn?: boolean;
 }) => {
   const [searchIndicativeDates, setSearchIndicativeDates] =
     useState<SkyscannerAPIIndicativeResponse>();
@@ -97,8 +97,6 @@ export const ExploreGraph = ({
     depart: "2023-10-01",
   };
 
-  if (!searchIndicativeDates?.content?.results?.quotes) return <></>;
-
   return (
     <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
       <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
@@ -128,14 +126,20 @@ export const ExploreGraph = ({
           onChange={(toggle) => setDisplayReturn(toggle)}
         />
       </div>
-      <DatesGraph search={searchIndicativeDates} query={flightQuery} />
-      {showReturn && displayReturn ? (
+      {searchIndicativeDates?.content?.results?.quotes ? (
         <>
-          <div>Return</div>
-          <DatesGraph
-            search={searchIndicativeDatesReturn}
-            query={flightQuery}
-          />
+          <DatesGraph search={searchIndicativeDates} query={flightQuery} />
+          {showReturn && displayReturn ? (
+            <>
+              <div>Return</div>
+              <DatesGraph
+                search={searchIndicativeDatesReturn}
+                query={flightQuery}
+              />
+            </>
+          ) : (
+            ""
+          )}
         </>
       ) : (
         ""

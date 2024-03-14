@@ -128,7 +128,11 @@ const Deals = ({ flight }: DealsProps) => {
                 )}
               </div>
               <div className="self-end">
-                <Button href={deepLink.link} target="_blank" color="blue">
+                <a
+                  href={deepLink.link}
+                  target="_blank"
+                  className="inline-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                >
                   Book{" "}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +149,7 @@ const Deals = ({ flight }: DealsProps) => {
                       d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                     />
                   </svg>
-                </Button>
+                </a>
               </div>
             </div>
           ))}
@@ -198,7 +202,7 @@ const ButtonColumn = ({
           </svg>
         </a>
         <button
-          className="ml-2 mt-2text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+          className="ml-2 mt-2 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
           onClick={onButtonSelect}
           color="blue"
         >
