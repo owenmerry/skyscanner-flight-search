@@ -45,3 +45,9 @@ export interface QueryPlace {
   depart: string;
   return?: string;
 }
+export interface QueryPlaceString {
+  from: string;
+  to: string;
+  depart: string;
+  return?: string;
+}

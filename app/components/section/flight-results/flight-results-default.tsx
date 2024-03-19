@@ -389,12 +389,14 @@ interface FlightResultsDefaultProps {
   flights?: SearchSDK;
   filters?: SearchFilters;
   query?: QueryPlace;
+  headerSticky?: boolean;
 }
 
 export const FlightResultsDefault = ({
   flights,
   filters = {},
   query,
+  headerSticky = true,
 }: FlightResultsDefaultProps) => {
   if (!flights || !query) return <></>;
 
@@ -407,7 +409,11 @@ export const FlightResultsDefault = ({
 
   return (
     <div>
-      <div className="sticky top-0 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800">
+      <div
+        className={`${
+          headerSticky ? "sticky top-0" : ""
+        } border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800`}
+      >
         Showing<b className="px-1">1-{results}</b>of
         <b className="px-1">{filteredResults().total}</b>
         <a

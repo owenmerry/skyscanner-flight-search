@@ -99,6 +99,13 @@ export const NavigationWebsite = () => {
             description="Explore all the locations and be inspired"
             to="/explore"
           />
+          <Article
+            label="Live"
+            labelBg="yellow"
+            title="Holidays"
+            description="Explore holidays for the year"
+            to="/holidays"
+          />
           {/* <Article label="Live" title="Weekend Flight Search" description="Use our live search to make a your own search" to='/weekend' />
                     <Article label="Live" title="Week Flight Search" description="Use our live search to make a your own search" to='/week' />
                     <Article label="Live" title="Year Flight Search" description="Use our live search to make a your own search" to='/year' />
