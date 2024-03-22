@@ -183,6 +183,11 @@ export default function Search() {
   };
 
   const runPoll = async () => {
+    if ("status" in search && search.status === "RESULT_STATUS_COMPLETE") {
+      setLoading(false);
+      return;
+    }
+
     const res = await getFlightLivePoll({
       apiUrl,
       token: sessionToken,

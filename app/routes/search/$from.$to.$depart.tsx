@@ -79,6 +79,15 @@ export const loader = async ({ params }: LoaderArgs) => {
     query: flightQuery,
   });
 
+  if ("error" in flightSearch) {
+  } else {
+    console.log(
+      "got data",
+      flightSearch.sessionToken,
+      flightSearch.best.length
+    );
+  }
+
   return {
     apiUrl,
     googleApiKey,
@@ -135,6 +144,10 @@ export default function Search() {
   }, []);
 
   const runPoll = async () => {
+    if ("status" in search && search.status === "RESULT_STATUS_COMPLETE") {
+      setLoading(false);
+      return;
+    }
     const res = await getFlightLivePoll({
       apiUrl,
       token: sessionToken,
