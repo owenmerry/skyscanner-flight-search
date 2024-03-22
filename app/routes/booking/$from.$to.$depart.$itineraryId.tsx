@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
@@ -11,6 +11,9 @@ import type { Query as OldQuery, QueryPlace } from "~/types/search";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 import { MapComponent } from "~/components/section/page/search";
 import { MapRoute } from "~/components/section/map/map-route";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import { Loading } from "~/components/ui/loading";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -54,6 +57,8 @@ export const loader = async ({ params }: LoaderArgs) => {
 };
 
 export default function Search() {
+  const [search, setSearch] = useState<SearchSDK>();
+  const [flight, setFlight] = useState<FlightSDK>();
   const {
     apiUrl,
     googleApiKey,
@@ -71,6 +76,44 @@ export default function Search() {
     headerImage: string;
     oldQuery: OldQuery;
   } = useLoaderData();
+
+  useEffect(() => {
+    runSearch();
+  }, []);
+
+  const runSearch = async () => {
+    const res = await skyscanner().flight().create({
+      apiUrl,
+      query: query,
+    });
+    if ("error" in res) return;
+    const flight = res.best.filter(
+      (flight) => flight.itineraryId === url.itineraryId
+    );
+    if (flight.length === 0) {
+      runPoll({ sessionToken: res.sessionToken });
+      return;
+    }
+    setSearch(res);
+    setFlight(flight[0]);
+  };
+
+  const runPoll = async ({ sessionToken }: { sessionToken: string }) => {
+    const res = await skyscanner().flight().poll({
+      apiUrl,
+      token: sessionToken,
+    });
+    if ("error" in res) return;
+    const flight = res.best.filter(
+      (flight) => flight.itineraryId === url.itineraryId
+    );
+    if (flight.length === 0) {
+      runPoll({ sessionToken: res.sessionToken });
+      return;
+    }
+    setSearch(res);
+    setFlight(flight[0]);
+  };
 
   return (
     <div>
@@ -95,24 +138,37 @@ export default function Search() {
           },
         ]}
       />
-      <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-        <MapRoute
-          flightQuery={query}
-          googleMapId={googleMapId}
-          googleApiKey={googleApiKey}
-          key="map-component"
-          height={500}
-          itineraryId={url.itineraryId}
-          apiUrl={apiUrl}
-        />
-      </div>
-      <FlightDetails
-        url={url}
-        query={query}
-        apiUrl={apiUrl}
-        itineraryId={url.itineraryId}
-      />
-      <HotelList query={query} apiUrl={apiUrl} />
+      {search && flight ? (
+        <>
+          <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
+            <MapRoute
+              flightQuery={query}
+              googleMapId={googleMapId}
+              googleApiKey={googleApiKey}
+              key="map-component"
+              height={500}
+              itineraryId={url.itineraryId}
+              apiUrl={apiUrl}
+              flight={flight}
+            />
+          </div>
+          <FlightDetails
+            url={url}
+            query={query}
+            apiUrl={apiUrl}
+            itineraryId={url.itineraryId}
+            flight={flight}
+            sessionToken={search.sessionToken}
+          />
+          <HotelList query={query} apiUrl={apiUrl} />
+        </>
+      ) : (
+        <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
+          <div className="text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
+            Loading Flight Details and Prices... <Loading />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

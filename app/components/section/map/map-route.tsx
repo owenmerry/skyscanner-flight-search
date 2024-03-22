@@ -19,6 +19,7 @@ export const MapRoute = ({
   flightQuery,
   height = 300,
   itineraryId,
+  flight,
 }: {
   apiUrl: string;
   googleApiKey: string;
@@ -26,22 +27,43 @@ export const MapRoute = ({
   flightQuery: QueryPlace;
   height?: number;
   itineraryId?: string;
+  flight?: FlightSDK;
 }) => {
-  const [search, setSearch] = useState<FlightSDK>();
+  const [search, setSearch] = useState<FlightSDK | undefined>(flight);
   useEffect(() => {
-    runSearch();
-  });
+    if (!search) runSearch();
+  }, []);
 
   const runSearch = async () => {
-    const res = await skyscanner().flight().createAndPoll({
+    const res = await skyscanner().flight().create({
       apiUrl,
       query: flightQuery,
     });
-    if (!res) return;
+    if ("error" in res) return;
     const flight = res.best.filter(
       (flight) => flight.itineraryId === itineraryId
-    )[0];
-    setSearch(flight);
+    );
+    if (flight.length === 0) {
+      runPoll({ sessionToken: res.sessionToken });
+      return;
+    }
+    setSearch(flight[0]);
+  };
+
+  const runPoll = async ({ sessionToken }: { sessionToken: string }) => {
+    const res = await skyscanner().flight().poll({
+      apiUrl,
+      token: sessionToken,
+    });
+    if ("error" in res) return;
+    const flight = res.best.filter(
+      (flight) => flight.itineraryId === itineraryId
+    );
+    if (flight.length === 0) {
+      runPoll({ sessionToken: res.sessionToken });
+      return;
+    }
+    setSearch(flight[0]);
   };
 
   if (!search)

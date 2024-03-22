@@ -35,10 +35,6 @@ export const loader = async ({ params }: LoaderArgs) => {
   //exit
   if (!params.from || !params.to) return;
 
-  //get locations
-  const from = getEntityIdFromIata(params.from);
-  const to = getEntityIdFromIata(params.to);
-
   //query
   const fromPlace = getPlaceFromIata(params.from);
   const toPlace = getPlaceFromIata(params.to);
@@ -73,28 +69,12 @@ export const loader = async ({ params }: LoaderArgs) => {
     query: `${toPlace.name} ${country ? country.name : ""}`,
   });
 
-  //get search
-  const flightSearch = await getFlightLiveCreate({
-    apiUrl,
-    query: flightQuery,
-  });
-
-  if ("error" in flightSearch) {
-  } else {
-    console.log(
-      "got data",
-      flightSearch.sessionToken,
-      flightSearch.best.length
-    );
-  }
-
   return {
     apiUrl,
     googleApiKey,
     googleMapId,
     params,
     country,
-    flightSearch,
     flightQuery,
     flightParams,
     parentImages,
@@ -104,7 +84,6 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export default function Search() {
   const {
-    flightSearch,
     apiUrl,
     googleApiKey,
     googleMapId,
@@ -124,50 +103,48 @@ export default function Search() {
     flightSearch: SearchSDK | { error: string };
     headerImage: string;
   } = useLoaderData();
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(flightSearch);
+  const [search, setSearch] = useState<SearchSDK | { error: string }>();
   const [filters, setFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
   const [searchIndicative, setSearchIndicative] =
     useState<SkyscannerAPIIndicativeResponse>();
-  const [error, setError] = useState(
-    "error" in flightSearch ? flightSearch.error : ""
-  );
   const [query, setQuery] = useState(flightParams);
   const [image, setImage] = useState(headerImage);
-  const sessionToken = "sessionToken" in search ? search.sessionToken : "";
+  //const sessionToken = "sessionToken" in search ? search.sessionToken : "";
 
   useEffect(() => {
-    setLoading(true);
-    runPoll();
+    runCreate();
     runIndicative();
   }, []);
 
-  const runPoll = async () => {
-    if ("status" in search && search.status === "RESULT_STATUS_COMPLETE") {
-      setLoading(false);
-      return;
-    }
-    const res = await getFlightLivePoll({
+  const runCreate = async () => {
+    //get search
+    const searchCreate = await skyscanner().flight().create({
+      apiUrl,
+      query: flightQuery,
+    });
+    if ("error" in searchCreate) return;
+    setSearch(searchCreate);
+    if (searchCreate.status === "RESULT_STATUS_COMPLETE") return;
+    runPoll({ sessionToken: searchCreate.sessionToken });
+  };
+  const runPoll = async ({ sessionToken }: { sessionToken: string }) => {
+    const res = await skyscanner().flight().poll({
       apiUrl,
       token: sessionToken,
       wait: 1,
     });
 
     if ("error" in res) {
-      setError(res.error);
-      runPoll();
+      runPoll({ sessionToken });
 
       return;
     }
-    setError("");
-
     if (res.status === "RESULT_STATUS_INCOMPLETE") {
       setSearch(res);
-      runPoll();
+      runPoll({ sessionToken });
     } else {
       setSearch(res);
-      setLoading(false);
     }
   };
 
@@ -224,8 +201,8 @@ export default function Search() {
             <FiltersDefault onFilterChange={(filters) => setFilters(filters)} />
           </div>
           <div className="w-full md:ml-2">
-            {error !== "" ? (
-              <div className="dark:text-white"> {error}</div>
+            {search && "error" in search ? (
+              <div className="dark:text-white"> {search.error}</div>
             ) : (
               <>
                 <MapComponent
@@ -241,7 +218,7 @@ export default function Search() {
                   query={flightQuery}
                   hasMaxWidth
                 />
-                {loading ? (
+                {search?.status !== "RESULT_STATUS_COMPLETE" ? (
                   <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
                     <Spinner className="mr-2" /> Loading More Prices &
                     Flights...
@@ -250,7 +227,7 @@ export default function Search() {
                   ""
                 )}
                 <FlightResultsDefault
-                  flights={"error" in search ? undefined : search}
+                  flights={search && "error" in search ? undefined : search}
                   filters={filters}
                   query={flightQuery}
                 />
