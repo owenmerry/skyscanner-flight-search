@@ -15,6 +15,11 @@ import { FlightResultsDefault } from "~/components/section/flight-results/flight
 import { Query, QueryPlace, QueryPlaceString } from "~/types/search";
 import { useEffect, useRef, useState } from "react";
 import { Loading } from "~/components/ui/loading";
+import moment from "moment";
+import {
+  getDateYYYYMMDDToDisplay,
+  getNextXMonthsStartDayAndEndDay,
+} from "~/helpers/date";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -138,31 +143,58 @@ export default function Index() {
       />
       <div>
         <div className="justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-          {searches.map((search, key) => (
-            <div className="relative" key={`${search.search.sessionToken}`}>
-              <div className="sticky top-0 bg-white dark:bg-gray-900 py-4">
-                <h2 className=" mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white ">
-                  {search.query.from.name} to {search.query.to.name}
+          {getNextXMonthsStartDayAndEndDay(10).map((month) => (
+            <div className="relative border-b-2 border-gray-800">
+              <div className="sticky top-0 z-30 bg-white dark:bg-gray-900 py-2">
+                <h2 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-4xl lg:text-4xl text-white ">
+                  {month.displayMonthText}
                 </h2>
-                <p>
-                  {search.query.depart}{" "}
-                  {search.query.return ? `to ${search.query.return}` : ""}{" "}
-                  {search.search.status === "RESULT_STATUS_COMPLETE" ? (
-                    ""
-                  ) : (
-                    <div className="inline-block">
-                      <Loading />
-                    </div>
-                  )}{" "}
-                  {search.search.stats.total} Results
-                </p>
               </div>
-              <FlightResultsDefault
-                filters={{}}
-                flights={search.search}
-                query={search.query}
-                headerSticky={false}
-              />
+              {searches
+                .filter(
+                  (search) => search.query.depart.split("-")[1] === month.month
+                )
+                .map((search, key) => (
+                  <div
+                    className="relative"
+                    key={`${search.search.sessionToken}`}
+                  >
+                    <div className="sticky top-14 bg-white dark:bg-gray-900 py-4">
+                      <h2 className=" mb-4 text-3xl font-extrabold tracking-tight leading-none md:text-3xl lg:text-3xl text-gray-300 ">
+                        {search.query.from.name} to {search.query.to.name}{" "}
+                        <span className="text-md lg:text-md md:text-md">
+                          (from {search.search.cheapest[0].price})
+                        </span>
+                      </h2>
+                      <p>
+                        {getDateYYYYMMDDToDisplay(
+                          search.query.depart,
+                          "ddd, Do MMMM"
+                        )}{" "}
+                        {search.query.return
+                          ? `to ${getDateYYYYMMDDToDisplay(
+                              search.query.return,
+                              "ddd, Do MMMM"
+                            )}`
+                          : ""}{" "}
+                        {search.search.status === "RESULT_STATUS_COMPLETE" ? (
+                          ""
+                        ) : (
+                          <div className="inline-block">
+                            <Loading />
+                          </div>
+                        )}{" "}
+                      </p>
+                    </div>
+                    <FlightResultsDefault
+                      numberOfResultsToShow={3}
+                      filters={{}}
+                      flights={search.search}
+                      query={search.query}
+                      headerSticky={false}
+                    />
+                  </div>
+                ))}
             </div>
           ))}
         </div>

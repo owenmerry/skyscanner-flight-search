@@ -390,6 +390,7 @@ interface FlightResultsDefaultProps {
   filters?: SearchFilters;
   query?: QueryPlace;
   headerSticky?: boolean;
+  numberOfResultsToShow?: number;
 }
 
 export const FlightResultsDefault = ({
@@ -397,10 +398,13 @@ export const FlightResultsDefault = ({
   filters = {},
   query,
   headerSticky = true,
+  numberOfResultsToShow = 10,
 }: FlightResultsDefaultProps) => {
   if (!flights || !query) return <></>;
 
-  const [results, setResults] = useState(filters.numberOfResultsToShow || 10);
+  const [results, setResults] = useState(
+    filters.numberOfResultsToShow || numberOfResultsToShow
+  );
   const filteredResults = () =>
     addSearchResultFilters(flights.cheapest, {
       ...filters,

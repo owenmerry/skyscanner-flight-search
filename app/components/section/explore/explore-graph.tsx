@@ -6,6 +6,7 @@ import { QueryPlace } from "~/types/search";
 import { Place } from "~/helpers/sdk/place";
 import moment from "moment";
 import { ToggleSwitch } from "flowbite-react";
+import { getNextXMonthsStartDayAndEndDay } from "~/helpers/date";
 
 export const ExploreGraph = ({
   airports,
@@ -66,25 +67,6 @@ export const ExploreGraph = ({
 
       setSearchIndicativeDatesReturn(indicativeSearchReturn.search);
     }
-  };
-
-  const getNextXMonthsStartDayAndEndDay = (months: number) => {
-    let n = 0;
-    let arRet = [];
-
-    for (; n < months; n++) {
-      const month = moment().startOf("month").add(n, "months");
-      const monthFirstDay = month;
-      const monthLastDay = month.endOf("month");
-      arRet.push({
-        displayMonthText: month.format("MMMM YYYY"),
-        firstDay: monthFirstDay.format("YYYY-MM-DD"),
-        lastDay: monthLastDay.format("YYYY-MM-DD"),
-        year: monthLastDay.format("YYYY"),
-      });
-    }
-
-    return arRet;
   };
 
   const handleAirportChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

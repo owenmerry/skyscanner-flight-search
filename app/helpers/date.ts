@@ -170,3 +170,23 @@ export const getDaysBetweenYYYYMMDD = (
 
   return `${daysDiff} day trip`;
 };
+
+export const getNextXMonthsStartDayAndEndDay = (months: number) => {
+  let n = 0;
+  let arRet = [];
+
+  for (; n < months; n++) {
+    const month = moment().startOf("month").add(n, "months");
+    const monthFirstDay = month;
+    const monthLastDay = month.endOf("month");
+    arRet.push({
+      displayMonthText: month.format("MMMM YYYY"),
+      firstDay: monthFirstDay.format("YYYY-MM-DD"),
+      lastDay: monthLastDay.format("YYYY-MM-DD"),
+      year: monthLastDay.format("YYYY"),
+      month: monthLastDay.format("MM"),
+    });
+  }
+
+  return arRet;
+};
