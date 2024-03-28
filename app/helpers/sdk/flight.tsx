@@ -1,8 +1,9 @@
 import type { LegSDK } from "~/helpers/sdk/flight/flight-functions";
 import { getDateFormated } from "~/helpers/date";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
-import { Query } from "~/types/search";
+import { Query, QueryPlace, QueryPlaceString } from "~/types/search";
 import { SkyscannerAPICreateResponse } from "./flight/flight-response";
+import { getPlaceFromEntityId, getPlaceFromIata } from "./place";
 
 export const isDirectFlights = (legs: LegSDK[]): boolean => {
   return legs.filter((leg) => !!leg.direct).length === legs.length;
@@ -22,5 +23,18 @@ export const getDefualtFlightQuery = (): Query => {
     depart: getDateFormated(1),
     return: getDateFormated(3),
     tripType: "return",
+  };
+};
+
+export const getQueryPlaceFromQuery = (
+  query: QueryPlaceString
+): QueryPlace | undefined => {
+  const fromPlace = getPlaceFromIata(query.from);
+  const toPlace = getPlaceFromIata(query.to);
+  if (!fromPlace || !toPlace) return;
+  return {
+    ...query,
+    from: fromPlace,
+    to: toPlace,
   };
 };

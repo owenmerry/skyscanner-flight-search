@@ -10,6 +10,7 @@ import {
 } from "~/helpers/sdk/skyscanner-website";
 import { LegTimeline } from "../flight-details/flight-details.component";
 import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import { MapRoute } from "../map/map-route";
 
 interface SegmentsProps {
   flight: FlightSDK;

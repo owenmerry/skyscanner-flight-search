@@ -23,6 +23,12 @@ import {
 } from "~/helpers/date";
 import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
 import { waitSeconds } from "~/helpers/utils";
+import { getQueryPlaceFromQuery } from "~/helpers/sdk/flight";
+
+interface Holiday {
+  query: QueryPlace;
+  search?: SearchSDK;
+}
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -32,25 +38,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     query: "beach",
   });
 
-  return json({
-    apiUrl,
-    backgroundImage,
-  });
-};
-
-interface Holiday {
-  query: QueryPlace;
-  search: SearchSDK;
-}
-
-export default function Index() {
-  const { backgroundImage, apiUrl } = useLoaderData<{
-    backgroundImage: string[];
-    apiUrl: string;
-  }>();
-  const randomHeroImage = backgroundImage[1];
-  const [searches, setSearches] = useState<Holiday[]>([]);
-  const holidaysDefault: QueryPlaceString[] = [
+  const holidays: QueryPlaceString[] = [
     {
       from: "LHR",
       to: "DUB",
@@ -64,37 +52,67 @@ export default function Index() {
       return: "2024-12-14",
     },
   ];
-  const [holidays, setHolidays] = useState<QueryPlaceString[]>(holidaysDefault);
+
+  const holidaysPlace: Holiday[] = [];
+  holidays.forEach((holiday) => {
+    const holidayAdd = getQueryPlaceFromQuery(holiday);
+    if (!holidayAdd) return;
+    holidaysPlace.push({ query: holidayAdd });
+  });
+
+  return json({
+    apiUrl,
+    backgroundImage,
+    holidaysPlace,
+  });
+};
+
+export default function Index() {
+  const { backgroundImage, apiUrl, holidaysPlace } = useLoaderData<{
+    backgroundImage: string[];
+    apiUrl: string;
+    holidaysPlace: Holiday[];
+  }>();
+  const randomHeroImage = backgroundImage[1];
+  const [holidays, setHolidays] = useState<Holiday[]>(holidaysPlace);
 
   useEffect(() => {
     runSearches();
-  }, [holidays]);
+  }, []);
 
   const runSearches = async () => {
-    holidays.map(async (holiday) => {
-      const from = getPlaceFromIata(holiday.from);
-      const to = getPlaceFromIata(holiday.to);
-      if (!from || !to) return;
-      const query = {
-        from,
-        to,
-        depart: holiday.depart,
-        return: holiday.return,
-      };
-
-      const data = await skyscanner().flight().create({
-        apiUrl,
-        query,
-      });
-
-      if ("error" in data) return;
-
-      setSearches([...searchesRef.current, { query, search: data }]);
-      runPoll({ sessionToken: data.sessionToken });
+    for (let index = 0; index < holidays.length; index++) {
+      const holiday = holidays[index];
+      if (holiday.search) return;
+      runSearch(holidays[index]);
+    }
+  };
+  const runSearch = async (holiday: Holiday) => {
+    const data = await skyscanner().flight().create({
+      apiUrl,
+      query: holiday.query,
     });
+
+    if ("error" in data) return;
+
+    const holidaysAdded = holidaysRef.current.map((holidayLoop) => {
+      if (
+        !(JSON.stringify(holiday.query) === JSON.stringify(holidayLoop.query))
+      )
+        return holidayLoop;
+      return {
+        ...holidayLoop,
+        search: { ...data, sessionToken: data.sessionToken },
+      };
+    });
+    setHolidays(holidaysAdded);
+    if (data.status === "RESULT_STATUS_COMPLETE") return;
+
+    runPoll({ sessionToken: data.sessionToken });
   };
 
   const runPoll = async ({ sessionToken }: { sessionToken: string }) => {
+    console.log("run poll");
     const res = await skyscanner().flight().poll({
       apiUrl,
       token: sessionToken,
@@ -102,6 +120,7 @@ export default function Index() {
     });
 
     if ("error" in res) {
+      console.log("here is an error");
       runPoll({ sessionToken });
 
       return;
@@ -109,47 +128,49 @@ export default function Index() {
 
     if (res.status === "RESULT_STATUS_INCOMPLETE") {
       if (res.action !== "RESULT_ACTION_NOT_MODIFIED") {
-        const searchAdded = searchesRef.current.map((search) => {
-          if (search.search.sessionToken !== sessionToken) return search;
+        const holidaysAdded = holidaysRef.current.map((holiday) => {
+          if (holiday.search && holiday.search.sessionToken !== sessionToken)
+            return holiday;
           return {
-            query: search.query,
+            ...holiday,
             search: { ...res, sessionToken: sessionToken },
           };
         });
-        setSearches(searchAdded);
+        setHolidays(holidaysAdded);
       }
       runPoll({ sessionToken });
     } else {
-      const searchAdded = searchesRef.current.map((search) => {
-        if (search.search.sessionToken !== sessionToken) return search;
+      const holidaysAdded = holidaysRef.current.map((holiday) => {
+        if (holiday.search && holiday.search.sessionToken !== sessionToken)
+          return holiday;
         return {
-          query: search.query,
-          search: res,
+          ...holiday,
+          search: { ...res, sessionToken: sessionToken },
         };
       });
-      setSearches(searchAdded);
+      setHolidays(holidaysAdded);
     }
   };
 
   const handleAddHoliday = (query: QueryPlace) => {
     const holidaysPrevious = holidays;
-    setSearches([]);
-    setHolidays([
-      ...holidaysPrevious,
-      {
-        from: query.from.iata,
-        to: query.to.iata,
+    const holidayAdd = {
+      query: {
+        from: query.from,
+        to: query.to,
         depart: query.depart,
         return: query.return,
       },
-    ]);
+    };
+    setHolidays([...holidaysPrevious, holidayAdd]);
+    runSearch(holidayAdd);
   };
 
-  const searchesRef = useRef<Holiday[]>([]);
+  const holidaysRef = useRef<Holiday[]>([]);
 
   useEffect(() => {
-    searchesRef.current = searches;
-  }, [searches]);
+    holidaysRef.current = holidays;
+  }, [holidays]);
 
   return (
     <Layout>
@@ -172,34 +193,39 @@ export default function Index() {
                   {month.displayMonthText}
                 </h2>
               </div>
-              {searches
-                .filter(
-                  (search) => search.query.depart.split("-")[1] === month.month
-                )
-                .map((search, key) => (
+              {holidays
+                .filter((holiday) => {
+                  return holiday.query.depart.split("-")[1] === month.month;
+                })
+                .map((holiday, key) => (
                   <div
                     className="relative"
-                    key={`${search.search.sessionToken}`}
+                    key={`${holiday.query.from.iata}${holiday.query.to.iata}${holiday.query.depart}${holiday.query.return}`}
                   >
                     <div className="sticky top-14 bg-white dark:bg-gray-900 py-4">
                       <h2 className=" mb-4 text-3xl font-extrabold tracking-tight leading-none md:text-3xl lg:text-3xl text-gray-300 ">
-                        {search.query.from.name} to {search.query.to.name}{" "}
-                        <span className="text-md lg:text-md md:text-md">
-                          (from {search.search.cheapest[0].price})
-                        </span>
+                        {holiday.query.from.name} to {holiday.query.to.name}{" "}
+                        {holiday.search ? (
+                          <span className="text-md lg:text-md md:text-md">
+                            (from {holiday.search.cheapest[0].price})
+                          </span>
+                        ) : (
+                          ""
+                        )}
                       </h2>
                       <p>
                         {getDateYYYYMMDDToDisplay(
-                          search.query.depart,
+                          holiday.query.depart,
                           "ddd, Do MMMM"
                         )}{" "}
-                        {search.query.return
+                        {holiday.query.return
                           ? `to ${getDateYYYYMMDDToDisplay(
-                              search.query.return,
+                              holiday.query.return,
                               "ddd, Do MMMM"
                             )}`
                           : ""}{" "}
-                        {search.search.status === "RESULT_STATUS_COMPLETE" ? (
+                        {holiday.search &&
+                        holiday.search.status === "RESULT_STATUS_COMPLETE" ? (
                           ""
                         ) : (
                           <div className="inline-block">
@@ -208,16 +234,16 @@ export default function Index() {
                         )}{" "}
                         -{" "}
                         {getTripDaysLengthFromYYYYMMDD(
-                          search.query.depart,
-                          search.query.return
+                          holiday.query.depart,
+                          holiday.query.return
                         )}
                       </p>
                     </div>
                     <FlightResultsDefault
                       numberOfResultsToShow={3}
                       filters={{}}
-                      flights={search.search}
-                      query={search.query}
+                      flights={holiday.search}
+                      query={holiday.query}
                       headerSticky={false}
                     />
                   </div>
