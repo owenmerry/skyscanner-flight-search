@@ -121,7 +121,7 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
         </div>
       </div>
       {showCalender && (
-        <div ref={refDate} className="relative z-20">
+        <div ref={refDate} className="relative z-50">
           <div className="bg-white border border-gray-100 w-full mt-2 absolute dark:bg-gray-800 dark:border-gray-600">
             <Calendar
               onDateSelected={handleDateChange}

@@ -86,7 +86,7 @@ export const Location = ({
         />
       </div>
       {showAutoSuggest && searchOrigin.length > 0 && (
-        <div ref={refAutoSuggest} className="relative z-20">
+        <div ref={refAutoSuggest} className="relative z-50">
           <ul className="bg-white border border-gray-100 w-full mt-2 absolute dark:bg-gray-800 dark:border-gray-600">
             {searchOrigin.map((place, key) => (
               <li

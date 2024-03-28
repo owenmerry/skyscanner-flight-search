@@ -1,10 +1,8 @@
-import type {
-  SkyscannerAPICreateResponse,
-  LegSDK,
-} from "~/helpers/sdk/skyscannerSDK";
+import type { LegSDK } from "~/helpers/sdk/flight/flight-functions";
 import { getDateFormated } from "~/helpers/date";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { Query } from "~/types/search";
+import { SkyscannerAPICreateResponse } from "./flight/flight-response";
 
 export const isDirectFlights = (legs: LegSDK[]): boolean => {
   return legs.filter((leg) => !!leg.direct).length === legs.length;

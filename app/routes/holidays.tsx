@@ -20,6 +20,7 @@ import {
   getDateYYYYMMDDToDisplay,
   getNextXMonthsStartDayAndEndDay,
 } from "~/helpers/date";
+import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -47,7 +48,7 @@ export default function Index() {
   }>();
   const randomHeroImage = backgroundImage[1];
   const [searches, setSearches] = useState<Holiday[]>([]);
-  const holidays: QueryPlaceString[] = [
+  const holidaysDefault: QueryPlaceString[] = [
     {
       from: "LHR",
       to: "DUB",
@@ -61,12 +62,14 @@ export default function Index() {
       return: "2024-12-14",
     },
   ];
+  const [holidays, setHolidays] = useState<QueryPlaceString[]>(holidaysDefault);
 
   useEffect(() => {
     runSearches();
-  }, []);
+  }, [holidays]);
 
   const runSearches = async () => {
+    setSearches([]);
     holidays.map(async (holiday) => {
       const from = getPlaceFromIata(holiday.from);
       const to = getPlaceFromIata(holiday.to);
@@ -98,7 +101,6 @@ export default function Index() {
     });
 
     if ("error" in res) {
-      //setError(res.error);
       runPoll({ sessionToken });
 
       return;
@@ -128,6 +130,20 @@ export default function Index() {
     }
   };
 
+  const handleAddHoliday = (query: QueryPlace) => {
+    const holidaysPrevious = holidays;
+    debugger;
+    setHolidays([
+      ...holidaysPrevious,
+      {
+        from: query.from.iata,
+        to: query.to.iata,
+        depart: query.depart,
+        return: query.return,
+      },
+    ]);
+  };
+
   const searchesRef = useRef<Holiday[]>([]);
 
   useEffect(() => {
@@ -143,6 +159,11 @@ export default function Index() {
       />
       <div>
         <div className="justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
+          <FlightControls
+            apiUrl={apiUrl}
+            showPreviousSearches={false}
+            onSearch={handleAddHoliday}
+          />
           {getNextXMonthsStartDayAndEndDay(10).map((month) => (
             <div className="relative border-b-2 border-gray-800">
               <div className="sticky top-0 z-30 bg-white dark:bg-gray-900 py-2">

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@remix-run/react";
-import { Query } from "~/types/search";
+import { Query, QueryPlace } from "~/types/search";
 import { Location } from "~/components/ui/location";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { Spinner } from "flowbite-react";
@@ -12,17 +12,21 @@ import {
   removeAllSearchFromLocalStorage,
 } from "~/helpers/local-storage";
 import { DateSelector } from "../date/date-selector";
-import { getPlaceFromIata } from "~/helpers/sdk/place";
+import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 
 interface FlightControlsProps {
   apiUrl?: string;
   buttonLoading?: boolean;
   flightDefault?: Query;
+  showPreviousSearches?: boolean;
+  onSearch?: (query: QueryPlace) => void;
 }
 export const FlightControls = ({
   apiUrl = "",
   buttonLoading = true,
   flightDefault,
+  showPreviousSearches = true,
+  onSearch,
 }: FlightControlsProps) => {
   const defaultQuery: Query = flightDefault
     ? flightDefault
@@ -71,6 +75,19 @@ export const FlightControls = ({
     });
   };
   const handleSearchClicked = () => {
+    if (onSearch) {
+      const fromPlace = getPlaceFromEntityId(query.from);
+      const toPlace = getPlaceFromEntityId(query.to);
+      if (!fromPlace || !toPlace) return;
+      const queryPlace: QueryPlace = {
+        from: fromPlace,
+        to: toPlace,
+        depart: query.depart,
+        return: query.return,
+      };
+      onSearch(queryPlace);
+      return;
+    }
     setLoading(true);
     addSearchToLocalStorage(query);
   };
@@ -131,36 +148,45 @@ export const FlightControls = ({
         <div className="lg:col-span-3">
           <DateSelector query={query} onDateChange={handleDatesChange} />
         </div>
-        <Link
-          to={`/search/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
-          className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
-          onClick={handleSearchClicked}
-        >
-          {navigation.state === "loading" && loading ? (
-            <>
-              <Spinner aria-label="Spinner button example" />
-              <span className="pl-3">Loading...</span>
-            </>
-          ) : (
-            <>
-              <svg
-                className="mr-2 -ml-1 w-5 h-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Search
-            </>
-          )}
-        </Link>
+        {onSearch ? (
+          <div
+            className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+            onClick={handleSearchClicked}
+          >
+            Add Flight
+          </div>
+        ) : (
+          <Link
+            to={`/search/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
+            className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+            onClick={handleSearchClicked}
+          >
+            {navigation.state === "loading" && loading ? (
+              <>
+                <Spinner aria-label="Spinner button example" />
+                <span className="pl-3">Loading...</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  className="mr-2 -ml-1 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Search
+              </>
+            )}
+          </Link>
+        )}
       </form>
-      {previousSearches.length > 0 ? (
+      {showPreviousSearches && previousSearches.length > 0 ? (
         <div className="py-2 text-left md:flex align-middle items-center">
           <h3 className="mr-2 text-left my-4 text-sm tracking-tight leading-none text-gray-500 dark:text-white">
             Previous Searches:
