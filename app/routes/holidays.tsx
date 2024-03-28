@@ -18,7 +18,7 @@ import { Loading } from "~/components/ui/loading";
 import moment from "moment";
 import {
   getDateYYYYMMDDToDisplay,
-  getDaysBetweenYYYYMMDD,
+  getTripDaysLengthFromYYYYMMDD,
   getNextXMonthsStartDayAndEndDay,
 } from "~/helpers/date";
 import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
@@ -207,7 +207,7 @@ export default function Index() {
                           </div>
                         )}{" "}
                         -{" "}
-                        {getDaysBetweenYYYYMMDD(
+                        {getTripDaysLengthFromYYYYMMDD(
                           search.query.depart,
                           search.query.return
                         )}

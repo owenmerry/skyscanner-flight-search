@@ -157,7 +157,7 @@ export const getYYYYMMDDtoDateObject = (dateTime?: string) => {
   );
 };
 
-export const getDaysBetweenYYYYMMDD = (
+export const getTripDaysLengthFromYYYYMMDD = (
   dateTimeStart?: string,
   dateTimeEnd?: string
 ) => {

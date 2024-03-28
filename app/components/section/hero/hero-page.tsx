@@ -1,7 +1,7 @@
 import {
   getDateFormated,
   getDateYYYYMMDDToDisplay,
-  getDaysBetweenYYYYMMDD,
+  getTripDaysLengthFromYYYYMMDD,
 } from "~/helpers/date";
 import { Query } from "~/types/search";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
@@ -33,7 +33,7 @@ export const Text = ({ flightDefault }: TextProps) => {
             to {getDateYYYYMMDDToDisplay(flightDefault.return, "Do MMMM")}{" "}
             <span className="italic text-sm">
               (
-              {getDaysBetweenYYYYMMDD(
+              {getTripDaysLengthFromYYYYMMDD(
                 flightDefault.depart,
                 flightDefault.return
               )}
