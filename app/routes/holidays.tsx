@@ -18,9 +18,11 @@ import { Loading } from "~/components/ui/loading";
 import moment from "moment";
 import {
   getDateYYYYMMDDToDisplay,
+  getDaysBetweenYYYYMMDD,
   getNextXMonthsStartDayAndEndDay,
 } from "~/helpers/date";
 import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
+import { waitSeconds } from "~/helpers/utils";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -69,7 +71,6 @@ export default function Index() {
   }, [holidays]);
 
   const runSearches = async () => {
-    setSearches([]);
     holidays.map(async (holiday) => {
       const from = getPlaceFromIata(holiday.from);
       const to = getPlaceFromIata(holiday.to);
@@ -132,7 +133,7 @@ export default function Index() {
 
   const handleAddHoliday = (query: QueryPlace) => {
     const holidaysPrevious = holidays;
-    debugger;
+    setSearches([]);
     setHolidays([
       ...holidaysPrevious,
       {
@@ -153,8 +154,8 @@ export default function Index() {
   return (
     <Layout>
       <HeroSimple
-        title={"Holidays"}
-        text="See holidays"
+        title={"My Holidays"}
+        text="See all the holidays for the year"
         backgroundImage={randomHeroImage}
       />
       <div>
@@ -205,6 +206,11 @@ export default function Index() {
                             <Loading />
                           </div>
                         )}{" "}
+                        -{" "}
+                        {getDaysBetweenYYYYMMDD(
+                          search.query.depart,
+                          search.query.return
+                        )}
                       </p>
                     </div>
                     <FlightResultsDefault
