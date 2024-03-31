@@ -1,5 +1,5 @@
-import { LoaderFunction, redirect } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { LoaderFunction, redirect, ActionArgs } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
 import { getImages } from "~/helpers/sdk/query";
 import { HeroSimple } from "~/components/section/hero/hero-simple";
@@ -24,34 +24,25 @@ import {
 import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
 import { waitSeconds } from "~/helpers/utils";
 import { getQueryPlaceFromQuery } from "~/helpers/sdk/flight";
+import { userPrefs } from "~/helpers/cookies";
 
 interface Holiday {
   query: QueryPlace;
   search?: SearchSDK;
 }
 
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await userPrefs.parse(cookieHeader)) || {};
 
   const backgroundImage = await getImages({
     apiUrl,
     query: "beach",
   });
 
-  const holidays: QueryPlaceString[] = [
-    {
-      from: "LHR",
-      to: "DUB",
-      depart: "2024-04-04",
-      return: "2024-04-09",
-    },
-    {
-      from: "LHR",
-      to: "MEX",
-      depart: "2024-12-01",
-      return: "2024-12-14",
-    },
-  ];
+  const holidays: QueryPlaceString[] = [];
 
   const holidaysPlace: Holiday[] = [];
   holidays.forEach((holiday) => {
@@ -64,17 +55,38 @@ export const loader: LoaderFunction = async ({ params }) => {
     apiUrl,
     backgroundImage,
     holidaysPlace,
+    cookieHolidays: cookie.holidays ? JSON.parse(cookie.holidays) : [],
   });
 };
 
+export async function action({ request }: ActionArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await userPrefs.parse(cookieHeader)) || {};
+  const bodyParams = await request.formData();
+
+  if (bodyParams.get("holidays")) {
+    cookie.holidays = bodyParams.get("holidays");
+  }
+
+  return redirect("/holidays", {
+    headers: {
+      "Set-Cookie": await userPrefs.serialize(cookie),
+    },
+  });
+}
+
 export default function Index() {
-  const { backgroundImage, apiUrl, holidaysPlace } = useLoaderData<{
-    backgroundImage: string[];
-    apiUrl: string;
-    holidaysPlace: Holiday[];
-  }>();
+  const { backgroundImage, apiUrl, holidaysPlace, cookieHolidays } =
+    useLoaderData<{
+      backgroundImage: string[];
+      apiUrl: string;
+      holidaysPlace: Holiday[];
+      cookieHolidays?: Holiday[];
+    }>();
   const randomHeroImage = backgroundImage[1];
-  const [holidays, setHolidays] = useState<Holiday[]>(holidaysPlace);
+  const [holidays, setHolidays] = useState<Holiday[]>(
+    cookieHolidays ? cookieHolidays : holidaysPlace
+  );
 
   useEffect(() => {
     runSearches();
@@ -84,7 +96,7 @@ export default function Index() {
     for (let index = 0; index < holidays.length; index++) {
       const holiday = holidays[index];
       if (holiday.search) return;
-      runSearch(holidays[index]);
+      await runSearch(holidays[index]);
     }
   };
   const runSearch = async (holiday: Holiday) => {
@@ -109,6 +121,8 @@ export default function Index() {
     if (data.status === "RESULT_STATUS_COMPLETE") return;
 
     runPoll({ sessionToken: data.sessionToken });
+
+    return;
   };
 
   const runPoll = async ({ sessionToken }: { sessionToken: string }) => {
@@ -172,6 +186,11 @@ export default function Index() {
     holidaysRef.current = holidays;
   }, [holidays]);
 
+  const holidaysStatic = holidays.map((holidaysItem) => ({
+    ...holidaysItem,
+    search: undefined,
+  }));
+
   return (
     <Layout>
       <HeroSimple
@@ -186,6 +205,42 @@ export default function Index() {
             showPreviousSearches={false}
             onSearch={handleAddHoliday}
           />
+
+          <h2 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-4xl lg:text-4xl text-white ">
+            Your Trips
+          </h2>
+          {holidays.map((holiday, key) => (
+            <div className="border-b-2 border-gray-800">
+              {holiday.query.from.name} to {holiday.query.to.name} for{" "}
+              {getTripDaysLengthFromYYYYMMDD(
+                holiday.query.depart,
+                holiday.query.return
+              )}
+            </div>
+          ))}
+          <Form method="post" className="inline-block pr-2">
+            <input
+              type="hidden"
+              name="holidays"
+              value={JSON.stringify(holidaysStatic)}
+            />
+            <button
+              className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+              type="submit"
+            >
+              Save
+            </button>
+          </Form>
+          <Form method="post" className="inline-block">
+            <input type="hidden" name="holidays" value={JSON.stringify([])} />
+            <button
+              className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+              type="submit"
+            >
+              Clear
+            </button>
+          </Form>
+
           {getNextXMonthsStartDayAndEndDay(10).map((month) => (
             <div className="relative border-b-2 border-gray-800">
               <div className="sticky top-0 z-30 bg-white dark:bg-gray-900 py-2">
