@@ -206,16 +206,19 @@ export default function Index() {
             onSearch={handleAddHoliday}
           />
 
-          <h2 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-4xl lg:text-4xl text-white ">
+          <h2 className="mb-4 my-4 text-4xl font-extrabold tracking-tight leading-none md:text-4xl lg:text-4xl text-white ">
             Your Trips
           </h2>
           {holidays.map((holiday, key) => (
-            <div className="border-b-2 border-gray-800">
+            <div className="border-b-2 border-gray-800 my-4">
               {holiday.query.from.name} to {holiday.query.to.name} for{" "}
               {getTripDaysLengthFromYYYYMMDD(
                 holiday.query.depart,
                 holiday.query.return
-              )}
+              )}{" "}
+              from{" "}
+              {holiday?.search?.cheapest[0] &&
+                holiday?.search?.cheapest[0].price}
             </div>
           ))}
           <Form method="post" className="inline-block pr-2">
@@ -262,7 +265,10 @@ export default function Index() {
                         {holiday.query.from.name} to {holiday.query.to.name}{" "}
                         {holiday.search ? (
                           <span className="text-md lg:text-md md:text-md">
-                            (from {holiday.search.cheapest[0].price})
+                            (from{" "}
+                            {holiday?.search?.cheapest[0] &&
+                              holiday?.search?.cheapest[0].price}
+                            )
                           </span>
                         ) : (
                           ""
