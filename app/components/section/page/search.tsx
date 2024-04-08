@@ -15,43 +15,101 @@ import {
 import { getPrice } from "~/helpers/sdk/price";
 import { format } from "date-fns";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import { useState } from "react";
+import { DatesGraph } from "../dates-graph/dates-graph";
 
 export const MapComponent = ({
   googleApiKey,
   googleMapId,
   flightQuery,
   height = 300,
+  clickToShow = false,
 }: {
   googleApiKey: string;
   googleMapId: string;
   flightQuery: QueryPlace;
   height?: number;
+  clickToShow?: boolean;
 }) => {
+  const [showMap, setShowMap] = useState(clickToShow ? false : true);
+
   return (
-    <div className="mb-2">
-      <Wrapper apiKey={googleApiKey} key="map-component-wrapper">
-        <Map
-          googleMapId={googleMapId}
-          key="map-component-map"
-          center={{
-            lat: flightQuery.to.coordinates.latitude,
-            lng: flightQuery.to.coordinates.longitude,
-          }}
-          height={`${height}px`}
-          zoom={5}
-          line={[
-            {
-              lat: flightQuery.from.coordinates.latitude,
-              lng: flightQuery.from.coordinates.longitude,
-            },
-            {
-              lat: flightQuery.to.coordinates.latitude,
-              lng: flightQuery.to.coordinates.longitude,
-            },
-          ]}
-          markers={getFlightSearch([flightQuery.to, flightQuery.from])}
-        />
-      </Wrapper>
+    <div className="">
+      {clickToShow ? (
+        <div
+          className="border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800"
+          onClick={() => setShowMap(!showMap)}
+        >
+          Map View
+        </div>
+      ) : (
+        ""
+      )}
+      {showMap ? (
+        <div className="mb-2">
+          <Wrapper apiKey={googleApiKey} key="map-component-wrapper">
+            <Map
+              googleMapId={googleMapId}
+              key="map-component-map"
+              center={{
+                lat: flightQuery.to.coordinates.latitude,
+                lng: flightQuery.to.coordinates.longitude,
+              }}
+              height={`${height}px`}
+              zoom={5}
+              line={[
+                {
+                  lat: flightQuery.from.coordinates.latitude,
+                  lng: flightQuery.from.coordinates.longitude,
+                },
+                {
+                  lat: flightQuery.to.coordinates.latitude,
+                  lng: flightQuery.to.coordinates.longitude,
+                },
+              ]}
+              markers={getFlightSearch([flightQuery.to, flightQuery.from])}
+            />
+          </Wrapper>
+        </div>
+      ) : (
+        ""
+      )}
+    </div>
+  );
+};
+
+export const SearchGraphs = ({
+  search,
+  query,
+  clickToShow,
+}: {
+  search?: SkyscannerAPIIndicativeResponse;
+  query: QueryPlace;
+  clickToShow?: boolean;
+}) => {
+  const [showGraph, setShowGraph] = useState(clickToShow ? false : true);
+  return (
+    <div>
+      {clickToShow ? (
+        <div
+          className="border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800"
+          onClick={() => setShowGraph(!showGraph)}
+        >
+          Graph View
+        </div>
+      ) : (
+        ""
+      )}
+      {showGraph ? (
+        <div>
+          <h2 className="font-bold mb-2 text-lg">Departure Dates</h2>
+          <DatesGraph search={search} query={query} hasMaxWidth />
+          <h2 className="font-bold mb-2 text-lg">Return Dates</h2>
+          <DatesGraph search={search} query={query} hasMaxWidth isReturn />
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
@@ -60,16 +118,16 @@ export const FlightHotelBundle = ({
   search,
   searchHotel,
 }: {
-  search: SearchSDK | { error: string };
+  search?: SearchSDK | { error: string };
   searchHotel?: SkyscannerAPIHotelSearchResponse;
 }) => {
   return (
     <div className="mb-2 p-4 text-white bg-blue-700 rounded-md text-lg">
-      {searchHotel?.results?.average_min_price ? (
+      {search && searchHotel?.results?.average_min_price ? (
         <>
           <span className="mr-4 font-bold">
             🏷️ Hotel and Flight Bundle: £
-            {"error" in search
+            {!search || (search && "error" in search)
               ? undefined
               : (
                   +search.stats.minPrice.replace("£", "") +
@@ -77,7 +135,10 @@ export const FlightHotelBundle = ({
                 ).toFixed(2)}
           </span>
           <span className="text-sm">
-            Flight: {"error" in search ? undefined : search.stats.minPrice}
+            Flight:{" "}
+            {!search || (search && "error" in search)
+              ? undefined
+              : search.stats.minPrice}
           </span>
           <>
             <span className="mx-2">+</span>

@@ -173,6 +173,7 @@ export default function Search() {
         buttonLoading={false}
         flightDefault={query}
         backgroundImage={image}
+        flightFormChangeSearch
       />
       <Breadcrumbs
         items={[

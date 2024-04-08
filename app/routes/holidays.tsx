@@ -5,24 +5,17 @@ import { getImages } from "~/helpers/sdk/query";
 import { HeroSimple } from "~/components/section/hero/hero-simple";
 import { json } from "@remix-run/node";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import {
-  Place,
-  getIataFromEntityId,
-  getPlaceFromIata,
-} from "~/helpers/sdk/place";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
-import { Query, QueryPlace, QueryPlaceString } from "~/types/search";
+import { QueryPlace, QueryPlaceString } from "~/types/search";
 import { useEffect, useRef, useState } from "react";
 import { Loading } from "~/components/ui/loading";
-import moment from "moment";
 import {
   getDateYYYYMMDDToDisplay,
   getTripDaysLengthFromYYYYMMDD,
   getNextXMonthsStartDayAndEndDay,
 } from "~/helpers/date";
 import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
-import { waitSeconds } from "~/helpers/utils";
 import { getQueryPlaceFromQuery } from "~/helpers/sdk/flight";
 import { userPrefs } from "~/helpers/cookies";
 

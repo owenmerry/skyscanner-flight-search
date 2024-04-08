@@ -21,6 +21,7 @@ import {
   ExplorePage,
   FlightHotelBundle,
   MapComponent,
+  SearchGraphs,
 } from "~/components/section/page/search";
 import { Layout } from "~/components/ui/layout/layout";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
@@ -71,21 +72,9 @@ export const loader = async ({ params }: LoaderArgs) => {
   );
 
   //images
-  const parentImages = getImagesFromParents(toPlace.entityId);
   const fromImage = await getImages({
     apiUrl,
     query: `${toPlace.name}${country ? `, ${country.name}` : ""}`,
-  });
-
-  //get search
-  const flightSearch = await getFlightLiveCreate({
-    apiUrl,
-    query: {
-      from: fromPlace,
-      to: toPlace,
-      depart: params.depart || "",
-      return: params.return,
-    },
   });
 
   return {
@@ -93,17 +82,15 @@ export const loader = async ({ params }: LoaderArgs) => {
     googleApiKey,
     googleMapId,
     params,
-    flightSearch,
     flightParams,
     flightQuery,
-    headerImage: fromImage[0] || parentImages[0] || "",
+    headerImage: fromImage[0] || "",
     country,
   };
 };
 
 export default function Search() {
   const {
-    flightSearch,
     apiUrl,
     googleApiKey,
     googleMapId,
@@ -117,28 +104,28 @@ export default function Search() {
     googleMapId: string;
     flightParams: Query;
     flightQuery: QueryPlace;
-    flightSearch: SearchSDK | { error: string };
     headerImage: string;
     country: Place;
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(flightSearch);
+  const [search, setSearch] = useState<
+    SearchSDK | { error: string } | undefined
+  >();
   const [searchHotel, setSearchHotel] =
     useState<SkyscannerAPIHotelSearchResponse>();
   const [searchIndicative, setSearchIndicative] =
     useState<SkyscannerAPIIndicativeResponse>();
   const [filters, setFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
-  const [error, setError] = useState(
-    "error" in flightSearch ? flightSearch.error : ""
-  );
+  const [error, setError] = useState("");
   const [query, setQuery] = useState(flightParams);
   const [image, setImage] = useState(headerImage);
-  const sessionToken = "sessionToken" in search ? search.sessionToken : "";
+  const sessionToken =
+    search && "sessionToken" in search ? search.sessionToken : "";
 
   useEffect(() => {
     setLoading(true);
-    runPoll();
+    runCreateSearch();
     runHotel();
     runIndicative();
   }, []);
@@ -182,12 +169,30 @@ export default function Search() {
     setSearchIndicative(indicativeSearch.search);
   };
 
-  const runPoll = async () => {
-    if ("status" in search && search.status === "RESULT_STATUS_COMPLETE") {
-      setLoading(false);
-      return;
-    }
+  const runCreateSearch = async () => {
+    const flightSearch = await getFlightLiveCreate({
+      apiUrl,
+      query: {
+        from: flightQuery.from,
+        to: flightQuery.to,
+        depart: flightQuery.depart || "",
+        return: flightQuery.return,
+      },
+    });
 
+    setSearch(flightSearch);
+
+    if (
+      "status" in flightSearch &&
+      flightSearch.status === "RESULT_STATUS_COMPLETE"
+    ) {
+      setLoading(false);
+    } else {
+      runPoll();
+    }
+  };
+
+  const runPoll = async () => {
     const res = await getFlightLivePoll({
       apiUrl,
       token: sessionToken,
@@ -195,7 +200,6 @@ export default function Search() {
     });
 
     if ("error" in res) {
-      //setError(res.error);
       runPoll();
 
       return;
@@ -218,6 +222,7 @@ export default function Search() {
         buttonLoading={false}
         flightDefault={query}
         backgroundImage={image}
+        flightFormChangeSearch
       />
       <Breadcrumbs
         items={[
@@ -244,56 +249,42 @@ export default function Search() {
             } xl:w-[400px] md:block max-w-none`}
           >
             <FiltersDefault
-              flights={"error" in search ? undefined : search}
+              flights={search && "error" in search ? undefined : search}
               onFilterChange={(filters) => setFilters(filters)}
               query={flightQuery}
             />
           </div>
           <div className="w-full md:ml-2">
-            {error !== "" ? (
+            <div className="mb-2">
+              <FlightHotelBundle search={search} searchHotel={searchHotel} />
+              <MapComponent
+                flightQuery={flightQuery}
+                googleMapId={googleMapId}
+                googleApiKey={googleApiKey}
+                key="map-component"
+                clickToShow
+              />
+              <SearchGraphs
+                search={searchIndicative}
+                query={flightQuery}
+                clickToShow
+              />
+            </div>
+            {loading ? (
+              <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
+                <Spinner className="mr-2" /> Loading More Prices & Flights...
+              </div>
+            ) : (
+              ""
+            )}
+            {!search || error !== "" ? (
               <div className="dark:text-white"> {error}</div>
             ) : (
-              <>
-                <div className="mb-2">
-                  <FlightHotelBundle
-                    search={search}
-                    searchHotel={searchHotel}
-                  />
-                  <MapComponent
-                    flightQuery={flightQuery}
-                    googleMapId={googleMapId}
-                    googleApiKey={googleApiKey}
-                    key="map-component"
-                  />
-                  <ExplorePage country={country} />
-                  <h2 className="font-bold mb-2 text-lg">Departure Dates</h2>
-                  <DatesGraph
-                    search={searchIndicative}
-                    query={flightQuery}
-                    hasMaxWidth
-                  />
-                  <h2 className="font-bold mb-2 text-lg">Return Dates</h2>
-                  <DatesGraph
-                    search={searchIndicative}
-                    query={flightQuery}
-                    hasMaxWidth
-                    isReturn
-                  />
-                </div>
-                {loading ? (
-                  <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
-                    <Spinner className="mr-2" /> Loading More Prices &
-                    Flights...
-                  </div>
-                ) : (
-                  ""
-                )}
-                <FlightResultsDefault
-                  flights={"error" in search ? undefined : search}
-                  filters={filters}
-                  query={flightQuery}
-                />
-              </>
+              <FlightResultsDefault
+                flights={"error" in search ? undefined : search}
+                filters={filters}
+                query={flightQuery}
+              />
             )}
           </div>
         </div>

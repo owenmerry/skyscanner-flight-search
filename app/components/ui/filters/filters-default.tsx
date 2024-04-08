@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDebounce } from "use-debounce";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { QueryPlace } from "~/types/search";
@@ -14,7 +15,8 @@ export const FiltersDefault = ({
   flights,
   query,
 }: FiltersDefaultProps) => {
-  const [filters, setFilters] = useState<SearchFilters>({});
+  const [filtersValue, setFilters] = useState<SearchFilters>({});
+  const [filters] = useDebounce(filtersValue, 100);
   const showExtraFilters = false;
 
   const updateStops = (

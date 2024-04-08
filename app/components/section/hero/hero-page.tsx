@@ -6,6 +6,7 @@ import {
 import { Query } from "~/types/search";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { FlightControls } from "../../ui/flight-controls/flight-controls-default";
+import { useState } from "react";
 
 export const Overlay = () => {
   return (
@@ -91,6 +92,8 @@ interface HeroPageProps {
   flightDefault?: Query;
   backgroundImage?: string;
   showFlightForm?: boolean;
+  hideSearchControls?: boolean;
+  flightFormChangeSearch?: boolean;
 }
 
 export const HeroPage = ({
@@ -102,8 +105,10 @@ export const HeroPage = ({
   buttonLoading = false,
   flightDefault,
   backgroundImage = "",
+  flightFormChangeSearch = false,
 }: HeroPageProps) => {
   const fromPlace = getFromPlaceLocalOrDefault();
+  const [showChangeFlightSearch, setShowChangeFlightSearch] = useState(false);
   if (fromPlace === false) return <></>;
 
   const flightQuery = flightDefault
@@ -131,11 +136,34 @@ export const HeroPage = ({
         {newFeature ? <NewFeature text={newFeature} url={newFeatureURL} /> : ``}
         {showText ? <Text flightDefault={flightQuery} /> : ``}
         {showFlightForm ? (
-          <FlightControls
-            apiUrl={apiUrl}
-            buttonLoading={buttonLoading}
-            flightDefault={flightDefault}
-          />
+          <div>
+            {flightFormChangeSearch ? (
+              <div>
+                {showChangeFlightSearch ? (
+                  <FlightControls
+                    apiUrl={apiUrl}
+                    buttonLoading={buttonLoading}
+                    flightDefault={flightDefault}
+                  />
+                ) : (
+                  <div
+                    className="inline-flex justify-center text-sm items-center py-2 px-3 font-medium text-center text-white rounded-lg bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 cursor-pointer"
+                    onClick={() =>
+                      setShowChangeFlightSearch(!showChangeFlightSearch)
+                    }
+                  >
+                    Change Flight Search
+                  </div>
+                )}
+              </div>
+            ) : (
+              <FlightControls
+                apiUrl={apiUrl}
+                buttonLoading={buttonLoading}
+                flightDefault={flightDefault}
+              />
+            )}
+          </div>
         ) : (
           ""
         )}
