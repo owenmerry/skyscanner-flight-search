@@ -179,6 +179,18 @@ const ButtonColumn = ({
         <span className="text-xl font-bold dark:text-white">
           {flight.price.split(".")[0]}
         </span>
+        <div>
+          {flight.prices[0].deepLinks[0].agentImageUrl.length > 0 ? (
+            <div className="bg-white inline-block">
+              <img
+                className="inline-block w-10 p-1"
+                src={flight.prices[0].deepLinks[0].agentImageUrl}
+              />
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
       <div>
         <a
@@ -411,6 +423,9 @@ export const FlightResultsDefault = ({
       ...filters,
       numberOfResultsToShow: results,
     });
+  const nonFilteredResults = flights.cheapest;
+  const filteredOutResultsTotal =
+    nonFilteredResults.length - filteredResults().total;
 
   return (
     <div>
@@ -421,6 +436,17 @@ export const FlightResultsDefault = ({
       >
         Showing<b className="px-1">1-{results}</b>of
         <b className="px-1">{filteredResults().total}</b>
+        {filteredOutResultsTotal > 0 ? (
+          <span className="ml-2">
+            <Label
+              text={`${
+                nonFilteredResults.length - filteredResults().total
+              } Filtered results`}
+            />
+          </span>
+        ) : (
+          ""
+        )}
         <a
           target="_blank"
           className="ml-4 text-slate-400 text-xs hover:underline"

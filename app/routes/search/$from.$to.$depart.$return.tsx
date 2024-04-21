@@ -3,11 +3,10 @@ import type { LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import { getImages } from "~/helpers/sdk/query";
-import { useLoaderData, Link } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { getEntityIdFromIata, getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { Spinner } from "flowbite-react";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
-import { getImagesFromParents } from "~/helpers/sdk/images";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { Query, QueryPlace } from "~/types/search";
@@ -17,20 +16,17 @@ import { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-resp
 import { waitSeconds } from "~/helpers/utils";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import {
-  ExploreDates,
-  ExplorePage,
   FlightHotelBundle,
   MapComponent,
   SearchGraphs,
 } from "~/components/section/page/search";
-import { Layout } from "~/components/ui/layout/layout";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
-import { DatesGraph } from "~/components/section/dates-graph/dates-graph";
 import {
   getFlightLiveCreate,
   getFlightLivePoll,
 } from "~/helpers/sdk/flight/flight-sdk";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import { CompetitorCheck } from "~/components/section/competitor-check/competitor-check";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -179,6 +175,7 @@ export default function Search() {
         return: flightQuery.return,
       },
     });
+    if ("error" in flightSearch) return;
 
     setSearch(flightSearch);
 
@@ -188,11 +185,11 @@ export default function Search() {
     ) {
       setLoading(false);
     } else {
-      runPoll();
+      runPoll(flightSearch.sessionToken);
     }
   };
 
-  const runPoll = async () => {
+  const runPoll = async (sessionToken: string) => {
     const res = await getFlightLivePoll({
       apiUrl,
       token: sessionToken,
@@ -200,7 +197,7 @@ export default function Search() {
     });
 
     if ("error" in res) {
-      runPoll();
+      runPoll(sessionToken);
 
       return;
     }
@@ -208,7 +205,7 @@ export default function Search() {
 
     if (res.status === "RESULT_STATUS_INCOMPLETE") {
       if (res.action !== "RESULT_ACTION_NOT_MODIFIED") setSearch(res);
-      runPoll();
+      runPoll(sessionToken);
     } else {
       setSearch(res);
       setLoading(false);
@@ -248,21 +245,30 @@ export default function Search() {
               showFilters ? "" : "hidden"
             } xl:w-[400px] md:block max-w-none`}
           >
-            <FiltersDefault
-              flights={search && "error" in search ? undefined : search}
-              onFilterChange={(filters) => setFilters(filters)}
-              query={flightQuery}
-            />
+            <div className="sticky top-0 p-2 md:h-screen md:overflow-y-scroll">
+              <FiltersDefault
+                flights={search && "error" in search ? undefined : search}
+                onFilterChange={(filters) => setFilters(filters)}
+                query={flightQuery}
+              />
+              <div className="mt-4">
+                <MapComponent
+                  flightQuery={flightQuery}
+                  googleMapId={googleMapId}
+                  googleApiKey={googleApiKey}
+                  key="map-component"
+                />
+              </div>
+            </div>
           </div>
           <div className="w-full md:ml-2">
             <div className="mb-2">
-              <FlightHotelBundle search={search} searchHotel={searchHotel} />
-              <MapComponent
-                flightQuery={flightQuery}
-                googleMapId={googleMapId}
-                googleApiKey={googleApiKey}
-                key="map-component"
-                clickToShow
+              {/* <FlightHotelBundle search={search} searchHotel={searchHotel} /> */}
+              <CompetitorCheck
+                query={flightQuery}
+                skyscannerSearch={
+                  search && "error" in search ? undefined : search
+                }
               />
               <SearchGraphs
                 search={searchIndicative}
