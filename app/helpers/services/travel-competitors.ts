@@ -79,7 +79,7 @@ export const fetchFlightsKiwi = async (
 ): Promise<KiwiSearchResponse | ErrorResponse> => {
   try {
     const response = await fetch(
-      `http://api.flights.owenmerry.com/service/kiwi/search?from=${
+      `https://api.flights.owenmerry.com/service/kiwi/search?from=${
         query.from.iata
       }&to=${query.to.iata}&depart=${query.depart}${
         query.return ? `&return=${query.return}` : ""
