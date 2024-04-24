@@ -266,6 +266,7 @@ export default function Search() {
               {/* <FlightHotelBundle search={search} searchHotel={searchHotel} /> */}
               <CompetitorCheck
                 query={flightQuery}
+                apiUrl={apiUrl}
                 skyscannerSearch={
                   search && "error" in search ? undefined : search
                 }

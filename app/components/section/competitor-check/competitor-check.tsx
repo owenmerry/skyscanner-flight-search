@@ -9,9 +9,11 @@ import { QueryPlace } from "~/types/search";
 export const CompetitorCheck = ({
   query,
   skyscannerSearch,
+  apiUrl,
 }: {
   query?: QueryPlace;
   skyscannerSearch?: SearchSDK;
+  apiUrl: string;
 }) => {
   const [kiwiSearch, setKiwiSearch] = useState<KiwiSearchResponse>();
 
@@ -21,7 +23,7 @@ export const CompetitorCheck = ({
 
   const runKiwiSearch = async () => {
     if (!query) return;
-    const kiwiFlights = await fetchFlightsKiwi(query);
+    const kiwiFlights = await fetchFlightsKiwi(query, apiUrl);
     if ("error" in kiwiFlights) return;
     console.log("kiwiFlights", kiwiFlights);
     setKiwiSearch(kiwiFlights);

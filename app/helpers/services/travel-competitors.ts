@@ -75,15 +75,14 @@ export const fetchFlightsGoogleFlights = async () => {
 
 // Function to search flights using Kiwi
 export const fetchFlightsKiwi = async (
-  query: QueryPlace
+  query: QueryPlace,
+  apiUrl: string
 ): Promise<KiwiSearchResponse | ErrorResponse> => {
   try {
     const response = await fetch(
-      `https://api.flights.owenmerry.com/service/kiwi/search?from=${
-        query.from.iata
-      }&to=${query.to.iata}&depart=${query.depart}${
-        query.return ? `&return=${query.return}` : ""
-      }`
+      `${apiUrl}/service/kiwi/search?from=${query.from.iata}&to=${
+        query.to.iata
+      }&depart=${query.depart}${query.return ? `&return=${query.return}` : ""}`
     );
     const data: KiwiSearchResponse = await response.json();
     return data;
