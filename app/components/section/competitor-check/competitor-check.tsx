@@ -31,7 +31,7 @@ export const CompetitorCheck = ({
 
   return (
     <div className="">
-      {query && skyscannerSearch ? (
+      {query && skyscannerSearch && skyscannerSearch.cheapest[0] ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {kiwiSearch ? (
             <div className="mb-2 p-4 text-white bg-emerald-700 rounded-md text-lg relative hover:bg-emerald-600 scale-100 hover:scale-105">
@@ -65,6 +65,7 @@ export const CompetitorCheck = ({
           {skyscannerSearch ? (
             <div className="mb-2 p-4 text-white bg-primary-700 rounded-md text-lg relative hover:bg-primary-600 scale-100 hover:scale-105">
               {kiwiSearch &&
+              skyscannerSearch.cheapest[0] &&
               kiwiSearch.data[0].fare.adults >
                 Number(skyscannerSearch.cheapest[0].price.replace("£", "")) ? (
                 <div className="text-center absolute -top-2 right-2">

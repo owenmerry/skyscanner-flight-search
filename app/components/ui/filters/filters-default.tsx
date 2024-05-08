@@ -1,8 +1,10 @@
+import { Slider } from "@mui/material";
 import { useState } from "react";
 import { useDebounce } from "use-debounce";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { QueryPlace } from "~/types/search";
+import { MultiRangeSlider } from "../multi-range-slider/multi-range-slider";
 
 interface FiltersDefaultProps {
   flights?: SearchSDK;
@@ -57,6 +59,7 @@ export const FiltersDefault = ({
   const updateFilters = (filterAdd: SearchFilters) => {
     const filtersUpdated = { ...filters, ...filterAdd };
     setFilters(filtersUpdated);
+    console.log("filters", filters, filtersValue, filtersUpdated);
     onFilterChange && onFilterChange(filtersUpdated);
   };
 
@@ -220,7 +223,8 @@ export const FiltersDefault = ({
               <div className="space-y-2">
                 <div className="">
                   <div className="text-sm">
-                    {filters.outboundTime?.max || 0}:00 - 23:59
+                    {filters.outboundTime?.min || 0}:00 -{" "}
+                    {filters.outboundTime?.max || 23}:59
                   </div>
                   <div>
                     <input
@@ -233,7 +237,27 @@ export const FiltersDefault = ({
                       className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                       onChange={(e) =>
                         updateFilters({
-                          outboundTime: { min: 0, max: Number(e.target.value) },
+                          outboundTime: {
+                            min: Number(e.target.value),
+                            max: filters.outboundTime?.max || 23,
+                          },
+                        })
+                      }
+                    />
+                    <input
+                      id="max-price"
+                      type="range"
+                      min={0}
+                      max={24}
+                      defaultValue={23}
+                      step={1}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                      onChange={(e) =>
+                        updateFilters({
+                          outboundTime: {
+                            min: filters.outboundTime?.min || 0,
+                            max: Number(e.target.value),
+                          },
                         })
                       }
                     />
@@ -250,7 +274,8 @@ export const FiltersDefault = ({
                 <div className="space-y-2">
                   <div className="">
                     <div className="text-sm">
-                      {filters.returnTime?.max || 0}:00 - 23:59
+                      {filters.returnTime?.min || 0}:00 -{" "}
+                      {filters.returnTime?.max || 23}:59
                     </div>
                     <div>
                       <input
@@ -263,7 +288,27 @@ export const FiltersDefault = ({
                         className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                         onChange={(e) =>
                           updateFilters({
-                            returnTime: { min: 0, max: Number(e.target.value) },
+                            returnTime: {
+                              min: Number(e.target.value),
+                              max: filters.returnTime?.max || 23,
+                            },
+                          })
+                        }
+                      />
+                      <input
+                        id="max-price"
+                        type="range"
+                        min={0}
+                        max={24}
+                        defaultValue={23}
+                        step={1}
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                        onChange={(e) =>
+                          updateFilters({
+                            returnTime: {
+                              min: filters.returnTime?.min || 0,
+                              max: Number(e.target.value),
+                            },
                           })
                         }
                       />

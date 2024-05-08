@@ -1,5 +1,5 @@
 import { useState, Fragment } from "react";
-import { Button } from "flowbite-react";
+import { Button, Tooltip } from "flowbite-react";
 import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import type { Query, QueryPlace } from "~/types/search";
@@ -48,18 +48,31 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                 <div className="text-xl font-bold dark:text-white">
                   {leg.departureTime}
                 </div>
-                <div className="text-slate-400">{leg.fromIata}</div>
+                <div className="text-slate-400 flex justify-center">
+                  <Tooltip content={leg.from} className="">
+                    {leg.fromIata}
+                  </Tooltip>
+                </div>
               </div>
 
               <div className="text-center">
                 <div className="text-slate-400 text-sm">{durationShow}</div>
                 <hr className="my-2 dark:border-gray-700" />
                 <div className="text-slate-400 text-sm">
-                  {leg.direct
-                    ? "Direct"
-                    : leg.stops === 1
-                    ? "1 Stop"
-                    : `${leg.stops} Stops`}
+                  {leg.direct ? (
+                    "Direct"
+                  ) : (
+                    <div className="flex justify-center">
+                      <Tooltip
+                        content={leg.layovers
+                          .map((layover) => layover.place.name)
+                          .join(", ")}
+                        className=""
+                      >
+                        {leg.stops === 1 ? "1 Stop" : `${leg.stops} Stops`}
+                      </Tooltip>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -67,7 +80,11 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                 <div className="text-xl font-bold dark:text-white">
                   {leg.arrivalTime}
                 </div>
-                <div className="text-slate-400">{leg.toIata}</div>
+                <div className="text-slate-400 flex justify-center">
+                  <Tooltip content={leg.to} className="">
+                    {leg.toIata}
+                  </Tooltip>
+                </div>
               </div>
             </div>
           </div>
@@ -79,8 +96,9 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
 
 interface DealsProps {
   flight: FlightSDK;
+  query: QueryPlace;
 }
-const Deals = ({ flight }: DealsProps) => {
+const Deals = ({ flight, query }: DealsProps) => {
   return (
     <div className="pt-2">
       {flight.prices.map((price, key) => (
@@ -182,10 +200,15 @@ const ButtonColumn = ({
         <div>
           {flight.prices[0].deepLinks[0].agentImageUrl.length > 0 ? (
             <div className="bg-white inline-block">
-              <img
-                className="inline-block w-10 p-1"
-                src={flight.prices[0].deepLinks[0].agentImageUrl}
-              />
+              <Tooltip
+                content={flight.prices[0].deepLinks[0].agentName}
+                className=""
+              >
+                <img
+                  className="inline-block w-10 p-1"
+                  src={flight.prices[0].deepLinks[0].agentImageUrl}
+                />
+              </Tooltip>
             </div>
           ) : (
             ""
@@ -286,8 +309,18 @@ interface FlightProps {
   flight: FlightSDK;
   flights: SearchSDK;
   query: QueryPlace;
+  apiUrl: string;
+  googleApiKey: string;
+  googleMapId: string;
 }
-const Flight = ({ flight, flights, query }: FlightProps) => {
+const Flight = ({
+  flight,
+  flights,
+  query,
+  apiUrl,
+  googleApiKey,
+  googleMapId,
+}: FlightProps) => {
   const [showDeals, setShowDeals] = useState(false);
   const labels = [
     {
@@ -333,6 +366,18 @@ const Flight = ({ flight, flights, query }: FlightProps) => {
         </div>
         {showDeals ? (
           <div className="mt-4 border-t-2 border-slate-100 dark:border-gray-800 pt-2">
+            <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
+              <MapRoute
+                flightQuery={query}
+                googleMapId={googleMapId}
+                googleApiKey={googleApiKey}
+                apiUrl={apiUrl}
+                key="map-component"
+                height={200}
+                itineraryId={flight.itineraryId}
+                flight={flight}
+              />
+            </div>
             <h2 className="mt-4 mb-4 text-xl font-bold tracking-tight leading-none">
               Journey Details
             </h2>
@@ -356,7 +401,7 @@ const Flight = ({ flight, flights, query }: FlightProps) => {
             <h2 className="mb-2 text-lg font-bold tracking-tight leading-none">
               Prices
             </h2>
-            <Deals flight={flight} />
+            <Deals flight={flight} query={query} />
           </div>
         ) : (
           ""
@@ -404,6 +449,9 @@ interface FlightResultsDefaultProps {
   query?: QueryPlace;
   headerSticky?: boolean;
   numberOfResultsToShow?: number;
+  apiUrl: string;
+  googleApiKey: string;
+  googleMapId: string;
 }
 
 export const FlightResultsDefault = ({
@@ -412,6 +460,9 @@ export const FlightResultsDefault = ({
   query,
   headerSticky = true,
   numberOfResultsToShow = 10,
+  apiUrl,
+  googleApiKey,
+  googleMapId,
 }: FlightResultsDefaultProps) => {
   if (!flights || !query) return <></>;
 
@@ -474,6 +525,9 @@ export const FlightResultsDefault = ({
             flights={flights}
             key={flight.itineraryId}
             query={query}
+            apiUrl={apiUrl}
+            googleApiKey={googleApiKey}
+            googleMapId={googleMapId}
           />
         );
       })}

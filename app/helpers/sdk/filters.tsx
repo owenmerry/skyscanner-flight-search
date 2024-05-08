@@ -40,7 +40,9 @@ export const filterOutbound = (
   time: { min: number; max: number }
 ) => {
   return flights.filter(
-    (flight) => Number(flight.legs[0].departureTime.split(":")[0]) > time.max
+    (flight) =>
+      Number(flight.legs[0].departureTime.split(":")[0]) >= time.min &&
+      Number(flight.legs[0].departureTime.split(":")[0]) <= time.max
   );
 };
 export const filterReturn = (
@@ -49,7 +51,8 @@ export const filterReturn = (
 ) => {
   return flights.filter((flight) =>
     flight.legs[1]
-      ? Number(flight.legs[1].departureTime.split(":")[0]) > time.max
+      ? Number(flight.legs[1].departureTime.split(":")[0]) >= time.min &&
+        Number(flight.legs[1].departureTime.split(":")[0]) <= time.max
       : true
   );
 };

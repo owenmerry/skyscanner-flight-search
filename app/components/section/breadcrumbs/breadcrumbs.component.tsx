@@ -27,7 +27,10 @@ export const Breadcrumbs = ({ items = [] }: BreadcrumbsProps) => {
             </a>
           </li>
           {items.map((item) => (
-            <li aria-current={item.link ? "page" : undefined}>
+            <li
+              aria-current={item.link ? "page" : undefined}
+              key={`${item.link}-${item.name}`}
+            >
               <div className="flex items-center">
                 <svg
                   className="w-3 h-3 text-gray-400 mx-1"

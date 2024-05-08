@@ -291,6 +291,9 @@ export default function Search() {
                 flights={"error" in search ? undefined : search}
                 filters={filters}
                 query={flightQuery}
+                apiUrl={apiUrl}
+                googleApiKey={googleApiKey}
+                googleMapId={googleMapId}
               />
             )}
           </div>

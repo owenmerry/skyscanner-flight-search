@@ -1,6 +1,7 @@
 import { getDateTime, getTime } from "../dateTime";
 import { hasDirectFlights, isDirectFlights } from "../flight";
 import { convertDeepLink } from "../link";
+import { Place, getPlaceFromEntityId } from "../place";
 import { getPrice } from "../price";
 import { SkyscannerAPICreateResponse } from "./flight-response";
 import type { Segment, Leg, Carrier, Itinerary } from "./flight-response";
@@ -25,8 +26,16 @@ export const getSortingOptions = (
 
         return {
           id: segmentRef,
+          fromPlace:
+            getPlaceFromEntityId(
+              res.content.results.places[segment.originPlaceId].entityId
+            ) || undefined,
           from: res.content.results.places[segment.originPlaceId].name,
           fromIata: res.content.results.places[segment.originPlaceId].iata,
+          toPlace:
+            getPlaceFromEntityId(
+              res.content.results.places[segment.destinationPlaceId].entityId
+            ) || undefined,
           to: res.content.results.places[segment.destinationPlaceId].name,
           toIata: res.content.results.places[segment.destinationPlaceId].iata,
           duration: segment.durationInMinutes,
@@ -56,6 +65,36 @@ export const getSortingOptions = (
           };
         }
       );
+      const getLegRoute = (segments: SegmentSDK[]) => {
+        const destinations: Place[] = [];
+        const fromPlace = segments[0].fromPlace;
+        if (!fromPlace) return [];
+        destinations.push(fromPlace);
+        segments.map((segment) => {
+          if (!segment.toPlace) return;
+          destinations.push(segment.toPlace);
+        });
+
+        return destinations;
+      };
+      const getLayoversRoute = (segments: SegmentSDK[]) => {
+        const layovers: LayoverSDK[] = [];
+        const lastDestinationPlace = segments[segments.length - 1].toPlace;
+        if (!lastDestinationPlace) return [];
+        segments.map((segment, key) => {
+          const isLastSegment =
+            segment.toPlace?.entityId === lastDestinationPlace.entityId;
+          if (!segment.toPlace || isLastSegment) return;
+          const nextSegment = segments[key + 1];
+          layovers.push({
+            startTime: segment.arrival,
+            endTime: nextSegment.departure,
+            place: segment.toPlace,
+          });
+        });
+
+        return layovers;
+      };
 
       return {
         id: legRef,
@@ -76,6 +115,14 @@ export const getSortingOptions = (
           leg.arrivalDateTime.hour,
           leg.arrivalDateTime.minute
         ),
+        fromPlace:
+          getPlaceFromEntityId(
+            res.content.results.places[leg.originPlaceId].entityId
+          ) || undefined,
+        toPlace:
+          getPlaceFromEntityId(
+            res.content.results.places[leg.destinationPlaceId].entityId
+          ) || undefined,
         stops: leg.stopCount,
         direct: leg.stopCount === 0,
         segments: segments,
@@ -96,8 +143,24 @@ export const getSortingOptions = (
           leg.arrivalDateTime.hour,
           leg.arrivalDateTime.minute
         ),
+        route: getLegRoute(segments),
+        layovers: getLayoversRoute(segments),
       };
     });
+    const getFlightRoute = () => {
+      const destinations: Place[] = [];
+      const fromPlace = legs[0].fromPlace;
+      if (!fromPlace) return [];
+      destinations.push(fromPlace);
+      legs.map((leg) => {
+        leg.segments.forEach((segment) => {
+          if (!segment.toPlace) return;
+          destinations.push(segment.toPlace);
+        });
+      });
+
+      return destinations;
+    };
 
     return {
       itineraryId: item.itineraryId,
@@ -132,6 +195,7 @@ export const getSortingOptions = (
           flight.pricingOptions[0].items[0].deepLink) ||
         "",
       legs: legs,
+      route: getFlightRoute(),
       isDirectFlights: isDirectFlights(legs),
     };
   });
@@ -167,6 +231,7 @@ export interface FlightSDK {
   deepLink: string;
   legs: LegSDK[];
   isDirectFlights: boolean;
+  route: Place[];
 }
 
 export interface PriceSDK {
@@ -196,6 +261,8 @@ export interface SegmentSDK {
   duration: number;
   departure: string;
   arrival: string;
+  fromPlace?: Place;
+  toPlace?: Place;
 }
 
 export interface CarrierSDK {
@@ -215,6 +282,8 @@ export interface LegSDK {
   stops: number;
   direct: boolean;
   segments: SegmentSDK[];
+  fromPlace?: Place;
+  toPlace?: Place;
   fromIata: string;
   toIata: string;
   fromEntityId: number;
@@ -222,4 +291,12 @@ export interface LegSDK {
   departureTime: String;
   arrivalTime: String;
   carriers: CarrierSDK[];
+  route: Place[];
+  layovers: LayoverSDK[];
+}
+
+interface LayoverSDK {
+  startTime: string;
+  endTime: string;
+  place: Place;
 }
