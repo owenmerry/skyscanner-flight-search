@@ -344,6 +344,16 @@ const Flight = ({
       show: flight.itineraryId === flights.cheapest[0].itineraryId,
     },
     {
+      text: "Best",
+      labelBg: "yellow",
+      show: flight.itineraryId === flights.best[0].itineraryId,
+    },
+    {
+      text: "Fastest",
+      labelBg: "yellow",
+      show: flight.itineraryId === flights.fastest[0].itineraryId,
+    },
+    {
       text: "Mashup",
       labelBg: "yellow",
       show:

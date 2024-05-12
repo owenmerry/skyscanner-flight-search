@@ -228,7 +228,7 @@ export const FiltersDefault = ({
                   </div>
                   <div>
                     <input
-                      id="min-price"
+                      id="min-time-departure"
                       type="range"
                       min={0}
                       max={24}
@@ -245,7 +245,7 @@ export const FiltersDefault = ({
                       }
                     />
                     <input
-                      id="max-price"
+                      id="max-time-departure"
                       type="range"
                       min={0}
                       max={24}
@@ -279,7 +279,7 @@ export const FiltersDefault = ({
                     </div>
                     <div>
                       <input
-                        id="min-price"
+                        id="min-time-return"
                         type="range"
                         min={0}
                         max={24}
@@ -296,7 +296,7 @@ export const FiltersDefault = ({
                         }
                       />
                       <input
-                        id="max-price"
+                        id="max-time-return"
                         type="range"
                         min={0}
                         max={24}
@@ -319,6 +319,34 @@ export const FiltersDefault = ({
             ) : (
               ""
             )}
+
+            <div className="w-full pr-3">
+              <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
+                Duration
+              </h6>
+              <div className="space-y-2">
+                <div className="">
+                  <div className="text-sm">
+                    Up to {filters.duration || 60} hours
+                  </div>
+                  <div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={60}
+                      defaultValue={60}
+                      step={1}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                      onChange={(e) =>
+                        updateFilters({
+                          duration: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {showExtraFilters ? (
               <>

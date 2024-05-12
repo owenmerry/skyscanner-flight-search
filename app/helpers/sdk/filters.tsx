@@ -1,4 +1,5 @@
-import { FlightSDK } from "~/helpers/sdk/skyscannerSDK";
+import { toHoursAndMinutes } from "./dateTime";
+import { FlightSDK } from "./flight/flight-functions";
 
 export interface SearchFilters {
   numberOfResultsToShow?: number;
@@ -11,6 +12,7 @@ export interface SearchFilters {
   mashup?: boolean;
   outboundTime?: { min: number; max: number };
   returnTime?: { min: number; max: number };
+  duration?: number;
 }
 
 export const filterNumberOfResultsToShow = (
@@ -57,6 +59,16 @@ export const filterReturn = (
   );
 };
 
+export const filterDuration = (flights: FlightSDK[], duration: number) => {
+  return flights.filter((flight) =>
+    flight.legs.filter(
+      (leg) => toHoursAndMinutes(leg.duration).hours <= duration
+    ).length === 0
+      ? false
+      : true
+  );
+};
+
 export const filterAgentTypes = (
   flights: FlightSDK[],
   agentTypes: (
@@ -84,6 +96,7 @@ export const addSearchResultFilters = (
     mashup,
     outboundTime,
     returnTime,
+    duration,
   }: SearchFilters
 ) => {
   let flightsFiltered = flights;
@@ -116,6 +129,11 @@ export const addSearchResultFilters = (
   // return time
   if (returnTime) {
     flightsFiltered = filterReturn(flightsFiltered, returnTime);
+  }
+
+  // duration
+  if (duration) {
+    flightsFiltered = filterDuration(flightsFiltered, duration);
   }
 
   // numbeResultsToShow
