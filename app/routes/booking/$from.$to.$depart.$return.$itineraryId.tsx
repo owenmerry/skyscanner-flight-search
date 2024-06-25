@@ -177,7 +177,7 @@ export default function Search() {
         </>
       ) : (
         <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-          <div className="max-w-screen-xl text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
+          <div className="relative z-10 max-w-screen-xl text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
             Loading Flight Details and Prices... <Loading />
           </div>
         </div>
