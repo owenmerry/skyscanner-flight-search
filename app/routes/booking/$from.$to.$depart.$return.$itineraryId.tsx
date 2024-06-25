@@ -15,6 +15,7 @@ import { MapRoute } from "~/components/section/map/map-route";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { Loading } from "~/components/ui/loading";
+import { CarHireList } from "~/components/section/car-hire-list";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -163,6 +164,14 @@ export default function Search() {
             itineraryId={url.itineraryId}
             flight={flight}
             sessionToken={search.sessionToken}
+          />
+          <CarHireList
+            query={{
+              from: query.to.entityId,
+              depart: query.depart,
+              return: query.return,
+            }}
+            apiUrl={apiUrl}
           />
           <HotelList query={query} apiUrl={apiUrl} />
         </>

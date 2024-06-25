@@ -18,6 +18,7 @@ import {
 import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
 import { getQueryPlaceFromQuery } from "~/helpers/sdk/flight";
 import { userPrefs } from "~/helpers/cookies";
+import { DrawerBottom } from "~/components/section/drawer/drawer";
 
 interface Holiday {
   query: QueryPlace;
@@ -26,6 +27,8 @@ interface Holiday {
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
 
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) || {};
@@ -46,6 +49,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   return json({
     apiUrl,
+    googleApiKey,
+    googleMapId,
     backgroundImage,
     holidaysPlace,
     cookieHolidays: cookie.holidays ? JSON.parse(cookie.holidays) : [],
@@ -69,13 +74,21 @@ export async function action({ request }: ActionArgs) {
 }
 
 export default function Index() {
-  const { backgroundImage, apiUrl, holidaysPlace, cookieHolidays } =
-    useLoaderData<{
-      backgroundImage: string[];
-      apiUrl: string;
-      holidaysPlace: Holiday[];
-      cookieHolidays?: Holiday[];
-    }>();
+  const {
+    backgroundImage,
+    apiUrl,
+    holidaysPlace,
+    cookieHolidays,
+    googleApiKey,
+    googleMapId,
+  } = useLoaderData<{
+    backgroundImage: string[];
+    apiUrl: string;
+    googleApiKey: string;
+    googleMapId: string;
+    holidaysPlace: Holiday[];
+    cookieHolidays?: Holiday[];
+  }>();
   const randomHeroImage = backgroundImage[1];
   const [holidays, setHolidays] = useState<Holiday[]>(
     cookieHolidays ? cookieHolidays : holidaysPlace
@@ -236,6 +249,7 @@ export default function Index() {
               Clear
             </button>
           </Form>
+          <DrawerBottom />
 
           {getNextXMonthsStartDayAndEndDay(10).map((month) => (
             <div className="relative border-b-2 border-gray-800">
@@ -299,6 +313,9 @@ export default function Index() {
                       flights={holiday.search}
                       query={holiday.query}
                       headerSticky={false}
+                      apiUrl={apiUrl}
+                      googleApiKey={googleApiKey}
+                      googleMapId={googleMapId}
                     />
                   </div>
                 ))}

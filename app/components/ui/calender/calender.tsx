@@ -1,4 +1,4 @@
-import { Spinner } from "flowbite-react";
+import { Loading } from "~/components/ui/loading/";
 import moment from "moment";
 import { useEffect, useState } from "react";
 
@@ -78,7 +78,9 @@ function CalendarItem({
         onClick={() => !isDisabled && onPriceCheck(date)}
       >
         {price === "loading..." ? (
-          <Spinner className="mt-2" />
+          <div className="mt-2">
+            <Loading />
+          </div>
         ) : price ? (
           <span>{price}</span>
         ) : (

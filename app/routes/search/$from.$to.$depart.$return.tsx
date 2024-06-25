@@ -5,7 +5,7 @@ import { FlightResultsDefault } from "~/components/section/flight-results/flight
 import { getImages } from "~/helpers/sdk/query";
 import { useLoaderData } from "@remix-run/react";
 import { getEntityIdFromIata, getPlaceFromEntityId } from "~/helpers/sdk/place";
-import { Spinner } from "flowbite-react";
+import { Loading } from "~/components/ui/loading/";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
@@ -279,7 +279,10 @@ export default function Search() {
             </div>
             {loading ? (
               <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
-                <Spinner className="mr-2" /> Loading More Prices & Flights...
+                <span className="mr-2">
+                  <Loading />
+                </span>{" "}
+                Loading More Prices & Flights...
               </div>
             ) : (
               ""

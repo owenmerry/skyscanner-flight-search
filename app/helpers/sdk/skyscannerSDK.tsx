@@ -11,13 +11,17 @@ import { FlightQuery, FlightQueryIndicative } from "~/types/search";
 import type { SkyscannerAPIIndicativeResponse } from "./indicative/indicative-response";
 import type { IndicativeSDK } from "./indicative/indicative-sdk";
 import { getIndicativeSDK } from "./indicative/indicative-sdk";
-import { getRefreshSDK } from "./refresh/refresh-sdk";
 //content
 import type { SkyscannerAPIContentPageResponse } from "./content/content-response";
 import { ContentSDK, getContentSDK } from "./content/content-sdk";
 import { getFlightSDK } from "./flight/flight-sdk";
-import { SkyscannerAPICreateResponse } from "./flight/flight-response";
 import { FlightSDK } from "./flight/flight-sdk";
+import {
+  CarHireIndicativeQuery,
+  CarHireIndicativeSDK,
+  getCarHireIndicativeSDK,
+} from "./car-hire-indicative/car-hire-indicative-sdk";
+import { SkyscannerAPICarHireIndicativeResponse } from "./car-hire-indicative/care-hire-indicative-response";
 
 // types (Response)
 
@@ -58,6 +62,14 @@ export interface SkyscannerSDK {
     slug?: string;
     apiUrl?: string;
   }) => Promise<ContentSDK>;
+  carHire: ({
+    query,
+    apiUrl,
+  }: {
+    res?: SkyscannerAPICarHireIndicativeResponse;
+    query?: CarHireIndicativeQuery;
+    apiUrl?: string;
+  }) => Promise<CarHireIndicativeSDK>;
 }
 
 // functions (SDK)
@@ -69,5 +81,6 @@ export const skyscanner = (): SkyscannerSDK => {
     hotel: getHotelSDK,
     indicative: getIndicativeSDK,
     content: getContentSDK,
+    carHire: getCarHireIndicativeSDK,
   };
 };

@@ -123,7 +123,7 @@ const Deals = ({ flight, query }: DealsProps) => {
                 {deepLink.agentName}
                 {deepLink.type === "AGENT_TYPE_AIRLINE" ? (
                   <div>
-                    <Label color="green" text="Airline Option" />
+                    <Label color="emerald" text="Airline Option" />
                   </div>
                 ) : (
                   ""
@@ -295,10 +295,13 @@ interface LabelProps {
   text?: string;
   color?: string;
 }
-const Label = ({ text = "Label", color = "purple" }: LabelProps) => {
+const Label = ({
+  text = "Label",
+  color = "bg-purple-100 text-purple-800 dark:bg-purple-200 dark:text-purple-900",
+}: LabelProps) => {
   return (
     <span
-      className={` bg-${color}-100 text-${color}-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-${color}-200 dark:text-${color}-900`}
+      className={` ${color} text-xs font-semibold mr-2 px-2.5 py-0.5 rounded `}
     >
       {text}
     </span>
@@ -325,12 +328,14 @@ const Flight = ({
   const labels = [
     {
       text: "Direct",
-      labelBg: "purple",
+      labelBg:
+        "bg-purple-100 text-purple-800 dark:bg-purple-200 dark:text-purple-900",
       show: flight.isDirectFlights,
     },
     {
       text: "Airline Option",
-      labelBg: "green",
+      labelBg:
+        "bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900",
       show:
         flight.prices.filter(
           (price) =>
@@ -340,22 +345,26 @@ const Flight = ({
     },
     {
       text: "Cheapest",
-      labelBg: "yellow",
+      labelBg:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-200 dark:text-yellow-900",
       show: flight.itineraryId === flights.cheapest[0].itineraryId,
     },
     {
       text: "Best",
-      labelBg: "yellow",
+      labelBg:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-200 dark:text-yellow-900",
       show: flight.itineraryId === flights.best[0].itineraryId,
     },
     {
       text: "Fastest",
-      labelBg: "yellow",
+      labelBg:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-200 dark:text-yellow-900",
       show: flight.itineraryId === flights.fastest[0].itineraryId,
     },
     {
       text: "Mashup",
-      labelBg: "yellow",
+      labelBg:
+        "bg-yellow-100 text-yellow-800 dark:bg-yellow-200 dark:text-yellow-900",
       show:
         flight.prices.filter((price) => price.deepLinks.length > 1).length > 0,
     },

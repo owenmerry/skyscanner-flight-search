@@ -94,6 +94,7 @@ export const HotelList = ({
           <div className="grid grid-cols-2 gap-6 sm:gap-2 md:grid-cols-4">
             {search?.results.hotels
               .sort((a, b) => a.offers[0].price - b.offers[0].price)
+              .slice(0, 4)
               .map((hotel) => (
                 <div
                   className="rounded-lg border-2 border-slate-100 dark:border-gray-800 pt-2 overflow-hidden"

@@ -3,7 +3,7 @@ import { Link } from "@remix-run/react";
 import { Query, QueryPlace } from "~/types/search";
 import { Location } from "~/components/ui/location";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
-import { Spinner } from "flowbite-react";
+import { Loading } from "~/components/ui/loading/loading.component";
 import { useNavigation } from "@remix-run/react";
 import {
   setFromLocationLocalStorage,
@@ -163,7 +163,9 @@ export const FlightControls = ({
           >
             {navigation.state === "loading" && loading ? (
               <>
-                <Spinner aria-label="Spinner button example" />
+                <span>
+                  <Loading aria-label="Spinner button example" />
+                </span>
                 <span className="pl-3">Loading...</span>
               </>
             ) : (
