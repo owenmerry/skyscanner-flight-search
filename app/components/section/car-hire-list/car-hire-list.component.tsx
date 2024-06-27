@@ -55,7 +55,7 @@ export const CarHireList = ({
                     : 0
                 )
                 .map((quote) => {
-                  return <CarCard carQuote={quote} />;
+                  return <CarCard key={quote.quoteId} carQuote={quote} />;
                 })}
             </div>
           </div>
@@ -88,7 +88,9 @@ const CarCard = ({ carQuote }: { carQuote: ResultSDK }) => {
                 (item) => item.aggregateType === "AGGREGATE_TYPE_CHEAPEST"
               )
               .map((price) => (
-                <>{price.price.amountDisplay}</>
+                <div key={price.price.amountDisplay}>
+                  {price.price.amountDisplay}
+                </div>
               ))}
           </span>
         </div>

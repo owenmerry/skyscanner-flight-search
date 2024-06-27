@@ -30,7 +30,7 @@ export const CompetitorCheck = ({
   };
 
   return (
-    <div className="">
+    <div className="relative z-20">
       {query && skyscannerSearch && skyscannerSearch.cheapest[0] ? (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {kiwiSearch ? (
