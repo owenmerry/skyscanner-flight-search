@@ -26,6 +26,8 @@ import {
   getFlightLivePoll,
 } from "~/helpers/sdk/flight/flight-sdk";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import { CarHireList } from "~/components/section/car-hire-list";
+import { HotelList } from "~/components/section/hotels-list";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -237,6 +239,15 @@ export default function Search() {
                   googleApiKey={googleApiKey}
                   googleMapId={googleMapId}
                 />
+                <CarHireList
+                  query={{
+                    from: flightQuery.from.entityId,
+                    depart: flightQuery.depart,
+                    return: flightQuery.return,
+                  }}
+                  apiUrl={apiUrl}
+                />
+                <HotelList query={flightQuery} apiUrl={apiUrl} />
               </>
             )}
           </div>
