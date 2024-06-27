@@ -136,7 +136,7 @@ export const HeroPage = ({
           <Overlay />
         </div>
       </div>
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
+      <div className="relative py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
         {newFeature ? <NewFeature text={newFeature} url={newFeatureURL} /> : ``}
         {showText ? <Text flightDefault={flightQuery} /> : ``}
         {showFlightForm ? (

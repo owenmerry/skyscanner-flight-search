@@ -478,7 +478,7 @@ export const FlightResultsDefault = ({
   filters = {},
   query,
   headerSticky = true,
-  numberOfResultsToShow = 10,
+  numberOfResultsToShow = 5,
   apiUrl,
   googleApiKey,
   googleMapId,

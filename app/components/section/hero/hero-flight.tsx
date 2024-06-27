@@ -48,7 +48,7 @@ export const HeroFlight = ({
     >
       <Overlay />
       <Gradient />
-      <div className="relative z-10 py-16 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
+      <div className="relative py-16 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
         <Text />
         <FlightControls
           apiUrl={apiUrl}

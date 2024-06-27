@@ -253,14 +253,6 @@ export default function Search() {
                 onFilterChange={(filters) => setFilters(filters)}
                 query={flightQuery}
               />
-              <div className="mt-4">
-                <MapComponent
-                  flightQuery={flightQuery}
-                  googleMapId={googleMapId}
-                  googleApiKey={googleApiKey}
-                  key="map-component"
-                />
-              </div>
             </div>
           </div>
           <div className="w-full md:ml-2">
@@ -273,6 +265,14 @@ export default function Search() {
                   search && "error" in search ? undefined : search
                 }
               />
+              <div className="mt-4">
+                <MapComponent
+                  flightQuery={flightQuery}
+                  googleMapId={googleMapId}
+                  googleApiKey={googleApiKey}
+                  key="map-component"
+                />
+              </div>
               <SearchGraphs
                 search={searchIndicative}
                 query={flightQuery}
