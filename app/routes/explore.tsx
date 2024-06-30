@@ -23,6 +23,7 @@ import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indica
 import { useEffect } from "react";
 import { NavigationMiniApps } from "~/components/ui/navigation/navigation-mini-apps";
 import { Pages } from "~/components/ui/navigation/pages";
+import moment from "moment";
 
 export const loader: LoaderFunction = async ({}) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -53,8 +54,9 @@ export default function SEOAnytime() {
   );
   const defaultSearch = getDefualtFlightQuery();
 
-  const randomCountry =
-    countries[getRandomNumber(countries.length)] || countries[0];
+  // const randomCountry =
+  //   countries[getRandomNumber(countries.length)] || countries[0];
+  const randomCountry = countries[moment().dayOfYear()] || countries[0];
 
   if (!from) return;
 

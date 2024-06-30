@@ -3,6 +3,7 @@ import type {
   SkyscannerAPICarHireIndicativeResponseError,
 } from "./care-hire-indicative-response";
 import { getPrice } from "../price";
+import { getVehicleTypeDisplay } from "./car-hire-indicative-functions";
 
 // SDK Types
 export interface CarHireIndicativeSDK {
@@ -85,6 +86,7 @@ export interface CarHireSDK {
 export interface ResultSDK {
   quoteId: string;
   vehicleType: string;
+  vehicleTypeDisplay: string;
   seats: number;
   bags: number;
   prices: {
@@ -120,7 +122,9 @@ const mapCarHireResponseToSDK = (
     return {
       quoteId: quoteKey,
       ...quote,
+      vehicleTypeDisplay: getVehicleTypeDisplay(quote.vehicleType),
       prices: prices,
+
       stats: {
         cheapest: quote.prices
           .filter((item) => item.aggregateType === "AGGREGATE_TYPE_CHEAPEST")

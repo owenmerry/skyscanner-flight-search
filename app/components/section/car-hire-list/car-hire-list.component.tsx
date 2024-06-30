@@ -78,7 +78,7 @@ const CarCard = ({ carQuote }: { carQuote: ResultSDK }) => {
       <div className="px-5 pb-5">
         <a href="#">
           <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white truncate">
-            {carQuote.vehicleType}
+            {carQuote.vehicleTypeDisplay}
           </h5>
         </a>
         <div className="flex items-center justify-between">

@@ -26,6 +26,9 @@ import { ExploreGraph } from "~/components/section/explore/explore-graph";
 import { Location } from "~/components/ui/location";
 import { ToggleSwitch } from "flowbite-react";
 import { MapSearch } from "~/components/section/map/map-search";
+import { CarHireList } from "~/components/section/car-hire-list";
+import { HotelList } from "~/components/section/hotels-list";
+import moment from "moment";
 
 export const loader: LoaderFunction = async ({ params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -134,7 +137,8 @@ export default function SEOAnytime() {
   const flightQuery: QueryPlace = {
     from: from,
     to: airports[0],
-    depart: "2023-10-01",
+    depart: moment().add(1, "days").format("YYYY-MM-DD"),
+    return: moment().add(3, "days").format("YYYY-MM-DD"),
   };
 
   return (
@@ -160,6 +164,9 @@ export default function SEOAnytime() {
         from={from}
         showReturn
       />
+
+      <CarHireList apiUrl={apiUrl} query={{ from: airports[0].entityId }} />
+      <HotelList apiUrl={apiUrl} query={flightQuery} />
 
       {searchIndicative ? (
         <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
@@ -212,23 +219,6 @@ export default function SEOAnytime() {
                 </div>
               );
             })}
-        </div>
-      </div>
-
-      <div className="relative z-5 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <div className="grid grid-cols-2 gap-2">
-          <a
-            href={`/explore/to/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel To {country.name}
-          </a>
-          <a
-            href={`/explore/from/${country.slug}`}
-            className="rounded-lg dark:bg-slate-700 p-6 py-12 hover:dark:bg-slate-600 text-lg font-bold"
-          >
-            Travel From {country.name}
-          </a>
         </div>
       </div>
 
