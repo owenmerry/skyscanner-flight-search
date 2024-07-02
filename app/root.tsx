@@ -1,4 +1,4 @@
-import type { MetaFunction } from '@remix-run/node';
+import type { MetaFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -6,38 +6,87 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from '@remix-run/react';
-import { LinksFunction } from '@remix-run/node';
+} from "@remix-run/react";
+import { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css";
 
-export const meta: MetaFunction = () => ({
-  charset: 'utf-8',
-  title: 'Flight Search App',
-  viewport: 'width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0',
-});
+//mui
+import { withEmotionCache } from "@emotion/react";
+import { unstable_useEnhancedEffect as useEnhancedEffect } from "@mui/material";
+import theme from "./src/theme";
+import ClientStyleContext from "./src/ClientStyleContext";
+import Layout from "./src/Layout";
+import { useContext } from "react";
+interface DocumentProps {
+  children: React.ReactNode;
+  title?: string;
+}
 
+export const meta: MetaFunction = () => ({
+  charset: "utf-8",
+  title: "Flight Search App",
+  viewport:
+    "width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0",
+});
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
+const Document = withEmotionCache(
+  ({ children, title }: DocumentProps, emotionCache) => {
+    const clientStyleData = useContext(ClientStyleContext);
+
+    // Only executed on client
+    useEnhancedEffect(() => {
+      // re-link sheet container
+      emotionCache.sheet.container = document.head;
+      // re-inject tags
+      const tags = emotionCache.sheet.tags;
+      emotionCache.sheet.flush();
+      tags.forEach((tag) => {
+        // eslint-disable-next-line no-underscore-dangle
+        (emotionCache.sheet as any)._insertTag(tag);
+      });
+      // reset cache to reapply global styles
+      clientStyleData.reset();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return (
+      <html lang="en">
+        <head>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <meta name="theme-color" content={theme.palette.primary.main} />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap"
+            rel="stylesheet"
+          />
+          <link
+            href="https://fonts.googleapis.com/icon?family=Material+Icons"
+            rel="stylesheet"
+          ></link>
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          <Outlet />
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </body>
+      </html>
+    );
+  }
+);
+
 export default function App() {
   return (
-    <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
-        <Meta />
-        <Links />
-      </head>
-      <body>
+    <Document>
+      <Layout>
         <Outlet />
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+      </Layout>
+    </Document>
   );
 }

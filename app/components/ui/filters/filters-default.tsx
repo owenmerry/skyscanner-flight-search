@@ -63,6 +63,12 @@ export const FiltersDefault = ({
     onFilterChange && onFilterChange(filtersUpdated);
   };
 
+  const [value, setValue] = useState<number[]>([20, 37]);
+
+  function valuetext(value: number) {
+    return `${value}:00`;
+  }
+
   return (
     <>
       {/* drawer component */}
@@ -226,40 +232,26 @@ export const FiltersDefault = ({
                     {filters.outboundTime?.min || 0}:00 -{" "}
                     {filters.outboundTime?.max || 23}:59
                   </div>
-                  <div>
-                    <input
-                      id="min-time-departure"
-                      type="range"
-                      min={0}
-                      max={24}
-                      defaultValue={0}
-                      step={1}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                      onChange={(e) =>
+                  <div className="m-2">
+                    <Slider
+                      getAriaLabel={() => "Temperature range"}
+                      value={[
+                        filters.outboundTime?.min || 0,
+                        filters.outboundTime?.max || 23,
+                      ]}
+                      onChange={(e, value) => {
+                        if (!Array.isArray(value)) return;
                         updateFilters({
                           outboundTime: {
-                            min: Number(e.target.value),
-                            max: filters.outboundTime?.max || 23,
+                            min: value[0] || 0,
+                            max: value[1] || 23,
                           },
-                        })
-                      }
-                    />
-                    <input
-                      id="max-time-departure"
-                      type="range"
+                        });
+                      }}
+                      valueLabelDisplay="off"
+                      getAriaValueText={valuetext}
                       min={0}
-                      max={24}
-                      defaultValue={23}
-                      step={1}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                      onChange={(e) =>
-                        updateFilters({
-                          outboundTime: {
-                            min: filters.outboundTime?.min || 0,
-                            max: Number(e.target.value),
-                          },
-                        })
-                      }
+                      max={23}
                     />
                   </div>
                 </div>
@@ -277,40 +269,26 @@ export const FiltersDefault = ({
                       {filters.returnTime?.min || 0}:00 -{" "}
                       {filters.returnTime?.max || 23}:59
                     </div>
-                    <div>
-                      <input
-                        id="min-time-return"
-                        type="range"
-                        min={0}
-                        max={24}
-                        defaultValue={0}
-                        step={1}
-                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                        onChange={(e) =>
+                    <div className="m-2">
+                      <Slider
+                        getAriaLabel={() => "Temperature range"}
+                        value={[
+                          filters.returnTime?.min || 0,
+                          filters.returnTime?.max || 23,
+                        ]}
+                        onChange={(e, value) => {
+                          if (!Array.isArray(value)) return;
                           updateFilters({
                             returnTime: {
-                              min: Number(e.target.value),
-                              max: filters.returnTime?.max || 23,
+                              min: value[0] || 0,
+                              max: value[1] || 23,
                             },
-                          })
-                        }
-                      />
-                      <input
-                        id="max-time-return"
-                        type="range"
+                          });
+                        }}
+                        valueLabelDisplay="off"
+                        getAriaValueText={valuetext}
                         min={0}
-                        max={24}
-                        defaultValue={23}
-                        step={1}
-                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                        onChange={(e) =>
-                          updateFilters({
-                            returnTime: {
-                              min: filters.returnTime?.min || 0,
-                              max: Number(e.target.value),
-                            },
-                          })
-                        }
+                        max={23}
                       />
                     </div>
                   </div>
