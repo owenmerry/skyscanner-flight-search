@@ -5,6 +5,7 @@ import type { SearchFilters } from "~/helpers/sdk/filters";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { QueryPlace } from "~/types/search";
 import { MultiRangeSlider } from "../multi-range-slider/multi-range-slider";
+import { Label } from "flowbite-react";
 
 interface FiltersDefaultProps {
   flights?: SearchSDK;
@@ -62,8 +63,6 @@ export const FiltersDefault = ({
     console.log("filters", filters, filtersValue, filtersUpdated);
     onFilterChange && onFilterChange(filtersUpdated);
   };
-
-  const [value, setValue] = useState<number[]>([20, 37]);
 
   function valuetext(value: number) {
     return `${value}:00`;
@@ -226,6 +225,34 @@ export const FiltersDefault = ({
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                 Departure from {query?.from.iata}
               </h6>
+              <button
+                type="button"
+                className="px-3 py-2 text-xs text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+                onClick={() => {
+                  updateFilters({
+                    outboundTime: {
+                      min: 0,
+                      max: 8,
+                    },
+                  });
+                }}
+              >
+                Before Work
+              </button>
+              <button
+                type="button"
+                className="px-3 py-2 text-xs text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+                onClick={() => {
+                  updateFilters({
+                    outboundTime: {
+                      min: 18,
+                      max: 23,
+                    },
+                  });
+                }}
+              >
+                After Work
+              </button>
               <div className="space-y-2">
                 <div className="">
                   <div className="text-sm">
@@ -263,6 +290,34 @@ export const FiltersDefault = ({
                 <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                   Return from {query?.to.iata}
                 </h6>
+                <button
+                  type="button"
+                  className="px-3 py-2 text-xs text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+                  onClick={() => {
+                    updateFilters({
+                      returnTime: {
+                        min: 0,
+                        max: 8,
+                      },
+                    });
+                  }}
+                >
+                  Before Work
+                </button>
+                <button
+                  type="button"
+                  className="px-3 py-2 text-xs text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+                  onClick={() => {
+                    updateFilters({
+                      returnTime: {
+                        min: 18,
+                        max: 23,
+                      },
+                    });
+                  }}
+                >
+                  After Work
+                </button>
                 <div className="space-y-2">
                   <div className="">
                     <div className="text-sm">
