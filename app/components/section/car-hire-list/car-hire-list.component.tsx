@@ -4,7 +4,6 @@ import {
   CarHireSDK,
   ResultSDK,
 } from "~/helpers/sdk/car-hire-indicative/car-hire-indicative-sdk";
-import { SkyscannerAPICarHireIndicativeResponse } from "~/helpers/sdk/car-hire-indicative/care-hire-indicative-response";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 export interface CarHireListProps {
@@ -46,7 +45,8 @@ export const CarHireList = ({
                 Car Hire
               </h2>
             </div>
-            <div className="grid gap-2 sm:grid-cols-5 grid-cols-2">
+
+            <div className="flex overflow-y-scroll scrollbar-hide snap-x gap-2 sm:overflow-visible sm:grid sm:grid-cols-5 grid-cols-2">
               {search.results
                 .sort((a, b) =>
                   !!(a.stats.cheapest && b.stats.cheapest)
@@ -67,7 +67,7 @@ export const CarHireList = ({
 
 const CarCard = ({ carQuote }: { carQuote: ResultSDK }) => {
   return (
-    <div className="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+    <div className="snap-start w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
       <a target="_blank" href={carQuote.deeplinkUrl}>
         <img
           className="p-8 rounded-t-lg"
@@ -98,7 +98,7 @@ const CarCard = ({ carQuote }: { carQuote: ResultSDK }) => {
           <a
             target="_blank"
             href={carQuote.deeplinkUrl}
-            className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="text-nowrap text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             See Deal
           </a>
