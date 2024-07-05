@@ -1,5 +1,5 @@
 import { Slider } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
@@ -18,8 +18,8 @@ export const FiltersDefault = ({
   flights,
   query,
 }: FiltersDefaultProps) => {
-  const [filtersValue, setFilters] = useState<SearchFilters>({});
-  const [filters] = useDebounce(filtersValue, 100);
+  const [filters, setFilters] = useState<SearchFilters>({});
+  const [filtersDebounced] = useDebounce(filters, 100);
   const showExtraFilters = false;
 
   const updateStops = (
@@ -34,6 +34,10 @@ export const FiltersDefault = ({
     }
     updateFilters({ numberOfStops: stopsUpdated });
   };
+
+  useEffect(() => {
+    onFilterChange && onFilterChange(filtersDebounced);
+  }, [filtersDebounced]);
 
   const updateAgentTypes = (
     arr:
@@ -60,8 +64,6 @@ export const FiltersDefault = ({
   const updateFilters = (filterAdd: SearchFilters) => {
     const filtersUpdated = { ...filters, ...filterAdd };
     setFilters(filtersUpdated);
-    console.log("filters", filters, filtersValue, filtersUpdated);
-    onFilterChange && onFilterChange(filtersUpdated);
   };
 
   function valuetext(value: number) {
