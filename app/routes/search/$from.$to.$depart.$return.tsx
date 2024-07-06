@@ -258,7 +258,7 @@ export default function Search() {
           <div className="w-full md:ml-2">
             <div className="mb-2">
               {/* <FlightHotelBundle search={search} searchHotel={searchHotel} /> */}
-              <CompetitorCheck
+              {/* <CompetitorCheck
                 query={flightQuery}
                 apiUrl={apiUrl}
                 skyscannerSearch={
@@ -277,7 +277,7 @@ export default function Search() {
                 search={searchIndicative}
                 query={flightQuery}
                 clickToShow
-              />
+              /> */}
             </div>
             {loading ? (
               <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">

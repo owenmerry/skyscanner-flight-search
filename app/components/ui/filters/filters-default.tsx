@@ -19,6 +19,7 @@ export const FiltersDefault = ({
   query,
 }: FiltersDefaultProps) => {
   const [filters, setFilters] = useState<SearchFilters>({});
+  const [filtersChanged, setFiltersChanged] = useState<SearchFilters>({});
   const [filtersDebounced] = useDebounce(filters, 100);
   const showExtraFilters = false;
 
@@ -64,6 +65,11 @@ export const FiltersDefault = ({
   const updateFilters = (filterAdd: SearchFilters) => {
     const filtersUpdated = { ...filters, ...filterAdd };
     setFilters(filtersUpdated);
+    setFiltersChanged(filtersUpdated);
+  };
+  const updateFiltersChanged = (filterAdd: SearchFilters) => {
+    const filtersUpdated = { ...filtersChanged, ...filterAdd };
+    setFiltersChanged(filtersUpdated);
   };
 
   function valuetext(value: number) {
@@ -258,17 +264,26 @@ export const FiltersDefault = ({
               <div className="space-y-2">
                 <div className="">
                   <div className="text-sm">
-                    {filters.outboundTime?.min || 0}:00 -{" "}
-                    {filters.outboundTime?.max || 23}:59
+                    {filtersChanged.outboundTime?.min || 0}:00 -{" "}
+                    {filtersChanged.outboundTime?.max || 23}:59
                   </div>
                   <div className="m-2">
                     <Slider
                       getAriaLabel={() => "Temperature range"}
                       value={[
-                        filters.outboundTime?.min || 0,
-                        filters.outboundTime?.max || 23,
+                        filtersChanged.outboundTime?.min || 0,
+                        filtersChanged.outboundTime?.max || 23,
                       ]}
                       onChange={(e, value) => {
+                        if (!Array.isArray(value)) return;
+                        updateFiltersChanged({
+                          outboundTime: {
+                            min: value[0] || 0,
+                            max: value[1] || 23,
+                          },
+                        });
+                      }}
+                      onChangeCommitted={(e, value) => {
                         if (!Array.isArray(value)) return;
                         updateFilters({
                           outboundTime: {
@@ -323,17 +338,26 @@ export const FiltersDefault = ({
                 <div className="space-y-2">
                   <div className="">
                     <div className="text-sm">
-                      {filters.returnTime?.min || 0}:00 -{" "}
-                      {filters.returnTime?.max || 23}:59
+                      {filtersChanged.returnTime?.min || 0}:00 -{" "}
+                      {filtersChanged.returnTime?.max || 23}:59
                     </div>
                     <div className="m-2">
                       <Slider
                         getAriaLabel={() => "Temperature range"}
                         value={[
-                          filters.returnTime?.min || 0,
-                          filters.returnTime?.max || 23,
+                          filtersChanged.returnTime?.min || 0,
+                          filtersChanged.returnTime?.max || 23,
                         ]}
                         onChange={(e, value) => {
+                          if (!Array.isArray(value)) return;
+                          updateFiltersChanged({
+                            returnTime: {
+                              min: value[0] || 0,
+                              max: value[1] || 23,
+                            },
+                          });
+                        }}
+                        onChangeCommitted={(e, value) => {
                           if (!Array.isArray(value)) return;
                           updateFilters({
                             returnTime: {

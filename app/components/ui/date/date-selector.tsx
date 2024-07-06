@@ -3,6 +3,7 @@ import { Query } from "~/types/search";
 import Calendar from "../calender/calender";
 import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
 import moment from "moment";
+import { Button } from "../button/button";
 
 interface DateSelectorProps {
   query: Query;
@@ -130,6 +131,9 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
               departDate={dates.depart}
               returnDate={dates.return}
             />
+            <div className="p-2">
+              <Button text="Set Dates" onClick={() => setShowCalender(false)} />
+            </div>
           </div>
         </div>
       )}

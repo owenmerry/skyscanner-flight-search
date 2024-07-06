@@ -372,7 +372,7 @@ const Flight = ({
 
   return (
     <div className="mb-2">
-      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-800">
+      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 bg-gray-800">
         <Labels flight={flight} labels={labels} />
         <div className="md:flex">
           <SegmentsColumn flight={flight} />
