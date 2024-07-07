@@ -216,7 +216,7 @@ const ButtonColumn = ({
           )}
         </div>
       </div>
-      <div>
+      <div className="sm:display hidden">
         <a
           target="_blank"
           className="ml-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
@@ -372,62 +372,70 @@ const Flight = ({
   ];
 
   return (
-    <div className="mb-2">
-      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white drop-shadow-sm">
-        <Labels flight={flight} labels={labels} />
-        <div className="flex">
-          <SegmentsColumn flight={flight} />
-          <ButtonColumn
-            flight={flight}
-            onButtonSelect={() => setShowDeals(!showDeals)}
-            showDeals={showDeals}
-            query={query}
-          />
-        </div>
-        {showDeals ? (
-          <div className="mt-4 border-t-2 border-slate-100 dark:border-gray-800 pt-2">
-            <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-              <MapRoute
-                flightQuery={query}
-                googleMapId={googleMapId}
-                googleApiKey={googleApiKey}
-                apiUrl={apiUrl}
-                key="map-component"
-                height={200}
-                itineraryId={flight.itineraryId}
-                flight={flight}
-              />
-            </div>
-            <h2 className="mt-4 mb-4 text-xl font-bold tracking-tight leading-none">
-              Journey Details
-            </h2>
-            <div className="mb-4 px-4 py-2 border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600">
-              {flight.legs.map((leg, key) => (
-                <div>
-                  {key === 0 && (
-                    <h3 className="my-2 text-lg font-bold leading-none">
-                      {query?.from.name} to {query?.to.name} Flight
-                    </h3>
-                  )}
-                  {key === 1 && (
-                    <h3 className="my-2 text-xl font-bold leading-none">
-                      {query?.to.name} to {query?.from.name} Flight
-                    </h3>
-                  )}
-                  <LegTimeline leg={leg} query={query} isReturn={key === 1} />
-                </div>
-              ))}
-            </div>
-            <h2 className="mb-2 text-lg font-bold tracking-tight leading-none">
-              Prices
-            </h2>
-            <Deals flight={flight} query={query} />
+    <a
+      target="_blank"
+      className="cursor-pointer"
+      href={`/booking/${query.from.iata}/${query.to.iata}/${query.depart}${
+        query.return ? `/${query.return}` : ``
+      }/${encodeURIComponent(flight.itineraryId)}`}
+    >
+      <div className="mb-2">
+        <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md">
+          <Labels flight={flight} labels={labels} />
+          <div className="flex">
+            <SegmentsColumn flight={flight} />
+            <ButtonColumn
+              flight={flight}
+              onButtonSelect={() => setShowDeals(!showDeals)}
+              showDeals={showDeals}
+              query={query}
+            />
           </div>
-        ) : (
-          ""
-        )}
+          {showDeals ? (
+            <div className="mt-4 border-t-2 border-slate-100 dark:border-gray-800 pt-2">
+              <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
+                <MapRoute
+                  flightQuery={query}
+                  googleMapId={googleMapId}
+                  googleApiKey={googleApiKey}
+                  apiUrl={apiUrl}
+                  key="map-component"
+                  height={200}
+                  itineraryId={flight.itineraryId}
+                  flight={flight}
+                />
+              </div>
+              <h2 className="mt-4 mb-4 text-xl font-bold tracking-tight leading-none">
+                Journey Details
+              </h2>
+              <div className="mb-4 px-4 py-2 border-slate-100 bg-slate-50 border-b-2 dark:bg-gray-800 dark:border-gray-600">
+                {flight.legs.map((leg, key) => (
+                  <div>
+                    {key === 0 && (
+                      <h3 className="my-2 text-lg font-bold leading-none">
+                        {query?.from.name} to {query?.to.name} Flight
+                      </h3>
+                    )}
+                    {key === 1 && (
+                      <h3 className="my-2 text-xl font-bold leading-none">
+                        {query?.to.name} to {query?.from.name} Flight
+                      </h3>
+                    )}
+                    <LegTimeline leg={leg} query={query} isReturn={key === 1} />
+                  </div>
+                ))}
+              </div>
+              <h2 className="mb-2 text-lg font-bold tracking-tight leading-none">
+                Prices
+              </h2>
+              <Deals flight={flight} query={query} />
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
-    </div>
+    </a>
   );
 };
 
