@@ -217,22 +217,25 @@ export default function Search() {
   };
 
   return (
-    <div>
-      <FlightControlsApp apiUrl={apiUrl} />
-      {loading ? (
-        <Box sx={{ width: "100%" }}>
-          <LinearProgress
-            sx={{
-              backgroundColor: "rgba(0,0,0,0)",
-              "& .MuiLinearProgress-bar": {
-                backgroundColor: "#1b64f2",
-              },
-            }}
-          />
-        </Box>
-      ) : (
-        ""
-      )}
+    <div className="relative">
+      <div className="sticky top-0 z-30 mb-2">
+        <FlightControlsApp apiUrl={apiUrl} flightDefault={query} />
+        {loading ? (
+          <Box sx={{ width: "100%" }}>
+            <LinearProgress
+              sx={{
+                backgroundColor: "rgba(0,0,0,0)",
+                "& .MuiLinearProgress-bar": {
+                  backgroundColor: "#1b64f2",
+                },
+              }}
+            />
+          </Box>
+        ) : (
+          ""
+        )}
+      </div>
+
       {/* <HeroPage
         apiUrl={apiUrl}
         buttonLoading={false}
@@ -260,23 +263,16 @@ export default function Search() {
           >
             {showFilters ? "Hide Filters" : "Show Filters"}
           </div>
-          <div
-            className={`${
-              showFilters ? "" : "hidden"
-            } xl:w-[400px] md:block max-w-none`}
-          >
-            <div className="sticky top-0 p-2 md:h-screen md:overflow-y-scroll">
-              <FiltersDefault
-                flights={search && "error" in search ? undefined : search}
-                onFilterChange={(filters) => setFilters(filters)}
-                query={flightQuery}
-              />
-            </div>
+          <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
+            <FiltersDefault
+              flights={search && "error" in search ? undefined : search}
+              onFilterChange={(filters) => setFilters(filters)}
+              query={flightQuery}
+            />
           </div>
-          <div className="w-full md:ml-2">
-            <div className="mb-2">
-              {/* <FlightHotelBundle search={search} searchHotel={searchHotel} /> */}
-              {/* <CompetitorCheck
+          <div className="w-full md:ml-2 mb-2">
+            {/* <FlightHotelBundle search={search} searchHotel={searchHotel} /> */}
+            {/* <CompetitorCheck
                 query={flightQuery}
                 apiUrl={apiUrl}
                 skyscannerSearch={
@@ -296,7 +292,6 @@ export default function Search() {
                 query={flightQuery}
                 clickToShow
               /> */}
-            </div>
             <FlightResultsDefault
               flights={search && "error" in search ? undefined : search}
               filters={filters}
@@ -305,6 +300,7 @@ export default function Search() {
               googleApiKey={googleApiKey}
               googleMapId={googleMapId}
               loading={!!!search}
+              headerSticky={false}
             />
             {/* {!search || error !== "" ? (
               <div className="dark:text-white"> {error}</div>
@@ -322,6 +318,16 @@ export default function Search() {
                 <HotelList query={flightQuery} apiUrl={apiUrl} /> }
               </>
             )} */}
+          </div>
+          <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
+            <CompetitorCheck
+              query={flightQuery}
+              apiUrl={apiUrl}
+              skyscannerSearch={
+                search && "error" in search ? undefined : search
+              }
+            />
+            <FlightHotelBundle search={search} searchHotel={searchHotel} />
           </div>
         </div>
       </div>

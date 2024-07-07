@@ -28,9 +28,9 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
         return (
           <div
             key={`leg-${leg.id}`}
-            className="grid grid-cols-3 pb-4 last:pb-0"
+            className="grid grid-cols-2 pb-4 last:pb-0"
           >
-            <div className="">
+            {/* <div className="">
               {leg.carriers.map((carrier, key) => (
                 <div
                   key={`carrier-${carrier.name}-${key}`}
@@ -40,10 +40,9 @@ const SegmentsColumn = ({ flight }: SegmentsProps) => {
                     className="inline-block w-20 p-1"
                     src={carrier.imageUrl}
                   />
-                  {/* <div className="hidden md:block self-center text-sm text-slate-400">{carrier.name}</div> */}
                 </div>
               ))}
-            </div>
+            </div> */}
 
             <div className="col-span-2 grid grid-cols-3 flex-1">
               <div className="text-center">
@@ -374,9 +373,9 @@ const Flight = ({
 
   return (
     <div className="mb-2">
-      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white">
+      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white drop-shadow-sm">
         <Labels flight={flight} labels={labels} />
-        <div className="md:flex">
+        <div className="flex">
           <SegmentsColumn flight={flight} />
           <ButtonColumn
             flight={flight}
@@ -464,6 +463,66 @@ const Paging = ({
   );
 };
 
+const ResultsCount = ({
+  headerSticky,
+  filteredResults,
+  filteredOutResultsTotal,
+  nonFilteredResults,
+  results,
+  query,
+}: {
+  headerSticky: boolean;
+  filteredResults: {
+    results: FlightSDK[];
+    total: number;
+  };
+  filteredOutResultsTotal: number;
+  nonFilteredResults: FlightSDK[];
+  results: number;
+  query: QueryPlace;
+}) => {
+  return (
+    <div
+      className={`${
+        headerSticky ? "sticky top-0" : ""
+      } border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800`}
+    >
+      Showing<b className="px-1">1-{results}</b>of
+      <b className="px-1">{filteredResults.total}</b>
+      {filteredOutResultsTotal > 0 ? (
+        <span className="ml-2">
+          <Label
+            text={`${
+              nonFilteredResults.length - filteredResults.total
+            } Filtered results`}
+          />
+        </span>
+      ) : (
+        ""
+      )}
+      <a
+        target="_blank"
+        className="ml-4 text-slate-400 text-xs hover:underline"
+        href={getSkyscannerSearchLink(query)}
+      >
+        See Search On Skyscanner{" "}
+        <svg
+          width="13.5"
+          height="13.5"
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          className="ml-1 inline-block"
+        >
+          <path
+            fill="currentColor"
+            d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+          ></path>
+        </svg>
+      </a>
+    </div>
+  );
+};
+
 interface FlightResultsDefaultProps {
   flights?: SearchSDK;
   filters?: SearchFilters;
@@ -493,6 +552,7 @@ export const FlightResultsDefault = ({
         {loading ? (
           <FlightResultsSkeleton
             numberOfResultsToShow={numberOfResultsToShow}
+            headerSticky={headerSticky}
           />
         ) : (
           ""
@@ -514,44 +574,14 @@ export const FlightResultsDefault = ({
 
   return !loading ? (
     <div>
-      <div
-        className={`${
-          headerSticky ? "sticky top-0" : ""
-        } border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800`}
-      >
-        Showing<b className="px-1">1-{results}</b>of
-        <b className="px-1">{filteredResults().total}</b>
-        {filteredOutResultsTotal > 0 ? (
-          <span className="ml-2">
-            <Label
-              text={`${
-                nonFilteredResults.length - filteredResults().total
-              } Filtered results`}
-            />
-          </span>
-        ) : (
-          ""
-        )}
-        <a
-          target="_blank"
-          className="ml-4 text-slate-400 text-xs hover:underline"
-          href={getSkyscannerSearchLink(query)}
-        >
-          See Search On Skyscanner{" "}
-          <svg
-            width="13.5"
-            height="13.5"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            className="ml-1 inline-block"
-          >
-            <path
-              fill="currentColor"
-              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
-            ></path>
-          </svg>
-        </a>
-      </div>
+      <ResultsCount
+        headerSticky={headerSticky}
+        filteredResults={filteredResults()}
+        filteredOutResultsTotal={filteredOutResultsTotal}
+        nonFilteredResults={nonFilteredResults}
+        results={results}
+        query={query}
+      />
       {filteredResults().results.map((flight) => {
         return (
           <Flight
@@ -573,7 +603,10 @@ export const FlightResultsDefault = ({
     </div>
   ) : (
     <>
-      <FlightResultsSkeleton numberOfResultsToShow={numberOfResultsToShow} />
+      <FlightResultsSkeleton
+        numberOfResultsToShow={numberOfResultsToShow}
+        headerSticky={headerSticky}
+      />
     </>
   );
 };

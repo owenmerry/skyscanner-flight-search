@@ -95,7 +95,7 @@ export const FiltersDefault = ({
         </h5>
         <div className="flex flex-col justify-between flex-1">
           <div className="space-y-4">
-            <div className="w-full">
+            <div className="w-full border-b border-gray-300 dark:border-gray-800 pb-6">
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                 Stops
               </h6>
@@ -154,7 +154,7 @@ export const FiltersDefault = ({
               </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full border-b border-gray-300 dark:border-gray-800 pb-6">
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                 Booking Options
               </h6>
@@ -204,7 +204,7 @@ export const FiltersDefault = ({
               </div>
             </div>
 
-            <div className="w-full">
+            <div className="w-full border-b border-gray-300 dark:border-gray-800 pb-6">
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                 Features
               </h6>
@@ -229,7 +229,7 @@ export const FiltersDefault = ({
               </div>
             </div>
 
-            <div className="w-full pr-3">
+            <div className="w-full pr-3 border-b border-gray-300 dark:border-gray-800 pb-6">
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                 Departure from {query?.from.iata}
               </h6>
@@ -303,7 +303,7 @@ export const FiltersDefault = ({
             </div>
 
             {query?.return ? (
-              <div className="w-full pr-3">
+              <div className="w-full pr-3 border-b border-gray-300 dark:border-gray-800 pb-6">
                 <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                   Return from {query?.to.iata}
                 </h6>
@@ -379,7 +379,7 @@ export const FiltersDefault = ({
               ""
             )}
 
-            <div className="w-full pr-3">
+            <div className="w-full pr-3 border-b border-gray-300 dark:border-gray-800 pb-6">
               <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
                 Duration
               </h6>

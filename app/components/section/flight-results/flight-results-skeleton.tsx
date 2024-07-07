@@ -2,13 +2,19 @@ import { Box, Skeleton } from "@mui/material";
 
 export const FlightResultsSkeleton = ({
   numberOfResultsToShow = 10,
+  headerSticky = true,
 }: {
   numberOfResultsToShow?: number;
+  headerSticky: boolean;
 }) => {
   return (
     <Box>
       <div className="relative">
-        <div className="sticky flex top-0 z-10 gap-2 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800">
+        <div
+          className={`${
+            headerSticky ? "sticky flex top-0" : ""
+          } flex z-10 gap-2 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white dark:border-gray-800 drop-shadow-sm`}
+        >
           <Skeleton
             width="20%"
             variant="text"
@@ -25,7 +31,7 @@ export const FlightResultsSkeleton = ({
         {Array.from(Array(numberOfResultsToShow)).map((e, k) => (
           <div
             key={`skeleton-flight-${k}`}
-            className="mb-2 flex items-center gap-2 border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white"
+            className="mb-2 flex items-center gap-2 border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white drop-shadow-sm"
           >
             <div className="flex-1">
               <div className="flex gap-2">

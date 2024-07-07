@@ -223,12 +223,12 @@ export const FlightHotelBundle = ({
           </>
         </>
       ) : (
-        <>
+        <div className="text-sm">
           <span className="mr-4">
             <Loading />
           </span>
           Loading Flight and Hotel Deal...
-        </>
+        </div>
       )}
     </div>
   );

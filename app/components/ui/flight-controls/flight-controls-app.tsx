@@ -1,19 +1,33 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Link } from "@remix-run/react";
 import { Query, QueryPlace } from "~/types/search";
 import { Location } from "~/components/ui/location";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { Loading } from "~/components/ui/loading/loading.component";
 import { useNavigation } from "@remix-run/react";
-import {
-  setFromLocationLocalStorage,
-  getSearchFromLocalStorage,
-  addSearchToLocalStorage,
-} from "~/helpers/local-storage";
+import { getSearchFromLocalStorage } from "~/helpers/local-storage";
 import { DateSelector } from "../date/date-selector";
 import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 import { Box, Button, Drawer, Typography } from "@mui/material";
 import styled from "@emotion/styled";
+import {
+  getDateYYYYMMDDToDisplay,
+  getTripDaysLengthFromYYYYMMDD,
+} from "~/helpers/date";
+
+const convertQuerytoQueryPlace = (query: Query): QueryPlace | null => {
+  const fromPlace = getPlaceFromEntityId(query.from);
+  const toPlace = getPlaceFromEntityId(query.to);
+  if (!fromPlace || !toPlace) return null;
+  const queryPlace: QueryPlace = {
+    from: fromPlace,
+    to: toPlace,
+    depart: query.depart,
+    return: query.return,
+  };
+
+  return queryPlace;
+};
 
 const FlightsSearchForm: React.FC<FlightControlsAppProps> = ({
   apiUrl = "",
@@ -21,13 +35,11 @@ const FlightsSearchForm: React.FC<FlightControlsAppProps> = ({
   flightDefault,
   showPreviousSearches = true,
   onSearch,
+  onChange,
 }) => {
   const defaultQuery: Query = flightDefault
     ? flightDefault
     : getDefualtFlightQuery();
-  const [previousSearches, setPreviousSearches] = useState(
-    getSearchFromLocalStorage().reverse().slice(0, 5)
-  );
   const [query, setQuery] = useState<Query>(defaultQuery);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -59,7 +71,6 @@ const FlightsSearchForm: React.FC<FlightControlsAppProps> = ({
     key: string,
     iataCode: string
   ) => {
-    if (key === "from") setFromLocationLocalStorage(iataCode);
     const place = getPlaceFromIata(iataCode);
     setQuery({
       ...query,
@@ -70,26 +81,29 @@ const FlightsSearchForm: React.FC<FlightControlsAppProps> = ({
   };
   const handleSearchClicked = () => {
     if (onSearch) {
-      const fromPlace = getPlaceFromEntityId(query.from);
-      const toPlace = getPlaceFromEntityId(query.to);
-      if (!fromPlace || !toPlace) return;
-      const queryPlace: QueryPlace = {
-        from: fromPlace,
-        to: toPlace,
-        depart: query.depart,
-        return: query.return,
-      };
+      const queryPlace = convertQuerytoQueryPlace(query);
+      if (!queryPlace) return;
       onSearch(queryPlace);
       return;
     }
     setLoading(true);
-    addSearchToLocalStorage(query);
   };
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const queryPlace = convertQuerytoQueryPlace(query);
+    if (!queryPlace) return;
+    console.log("changed query", {
+      query,
+    });
+
+    onChange && onChange(queryPlace);
+  }, [query]);
+
   return (
     <form
       action="#"
-      className="grid gap-y-4 w-full rounded lg:gap-x-4 lg:grid-cols-9 lg:mt-4"
+      className="grid gap-y-4 w-full rounded lg:gap-x-4 lg:grid-cols-9"
     >
       <div className="lg:col-span-2 relative">
         <Location
@@ -186,9 +200,6 @@ const FlightControlsDrawer: React.FC<{ children: ReactNode }> = ({
   type ToggleDrawer = (
     open: boolean
   ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
-  const BottomSheetContainer = styled(Box)(({ theme }) => ({
-    height: "50vh", // 50% of viewport height
-  }));
 
   const toggleDrawer: ToggleDrawer = (open) => () => {
     setOpen(open);
@@ -212,7 +223,7 @@ const FlightControlsDrawer: React.FC<{ children: ReactNode }> = ({
         onClose={toggleDrawer(false)}
         ModalProps={{ keepMounted: true }} // Better open performance on mobile
       >
-        <BottomSheetContainer>{children}</BottomSheetContainer>
+        {children}
       </Drawer>
     </div>
   );
@@ -224,6 +235,7 @@ interface FlightControlsAppProps {
   flightDefault?: Query;
   showPreviousSearches?: boolean;
   onSearch?: (query: QueryPlace) => void;
+  onChange?: (query: QueryPlace) => void;
 }
 export const FlightControlsApp = ({
   apiUrl = "",
@@ -232,6 +244,9 @@ export const FlightControlsApp = ({
   showPreviousSearches = true,
   onSearch,
 }: FlightControlsAppProps) => {
+  const flightDefaultPlace =
+    (flightDefault && convertQuerytoQueryPlace(flightDefault)) || null;
+  console.log("check here", flightDefault);
   return (
     <div className="bg-white dark:bg-gray-800 border-gray-300 border-b dark:border-0">
       <div className="mx-auto max-w-screen-xl lg:px-12 px-4 py-2 sm:py-4 sm:px-4">
@@ -242,22 +257,49 @@ export const FlightControlsApp = ({
             flightDefault={flightDefault}
             showPreviousSearches={showPreviousSearches}
             onSearch={onSearch}
+            onChange={onSearch}
           />
         </div>
         <div className="p-4 sm:hidden flex">
           <div className="flex-1">
             <div>
-              <span className="font-bold">London</span> to{" "}
-              <span className="font-bold">Melbourne</span>
+              <span className="font-bold">{flightDefaultPlace?.from.name}</span>{" "}
+              to{" "}
+              <span className="font-bold">{flightDefaultPlace?.to.name}</span>
             </div>
             <div>
-              <span className="font-bold">Thu 19 Sep</span> to{" "}
-              <span className="font-bold">Tue 22 Oct</span>
+              <span className="font-bold">
+                {getDateYYYYMMDDToDisplay(
+                  flightDefaultPlace?.depart,
+                  "Do MMMM"
+                )}{" "}
+              </span>
+              {flightDefaultPlace?.return ? (
+                <>
+                  to{" "}
+                  <span className="font-bold">
+                    {getDateYYYYMMDDToDisplay(
+                      flightDefaultPlace.return,
+                      "Do MMMM"
+                    )}
+                  </span>{" "}
+                  <span className="italic text-sm">
+                    (
+                    {getTripDaysLengthFromYYYYMMDD(
+                      flightDefaultPlace.depart,
+                      flightDefaultPlace.return
+                    )}
+                    )
+                  </span>
+                </>
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <div className="">
             <FlightControlsDrawer>
-              <div className="px-2 py-6">
+              <div className="px-6 py-8">
                 <h2 className="text-2xl font-bold mb-4">Change Search</h2>
                 <FlightsSearchForm
                   apiUrl={apiUrl}
