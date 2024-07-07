@@ -29,6 +29,8 @@ import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { CompetitorCheck } from "~/components/section/competitor-check/competitor-check";
 import { CarHireList } from "~/components/section/car-hire-list";
 import { HotelList } from "~/components/section/hotels-list";
+import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
+import { Box, LinearProgress } from "@mui/material";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -216,14 +218,30 @@ export default function Search() {
 
   return (
     <div>
-      <HeroPage
+      <FlightControlsApp apiUrl={apiUrl} />
+      {loading ? (
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress
+            sx={{
+              backgroundColor: "rgba(0,0,0,0)",
+              "& .MuiLinearProgress-bar": {
+                backgroundColor: "#1b64f2",
+              },
+            }}
+          />
+        </Box>
+      ) : (
+        ""
+      )}
+      {/* <HeroPage
         apiUrl={apiUrl}
         buttonLoading={false}
         flightDefault={query}
         backgroundImage={image}
         flightFormChangeSearch
-      />
-      <Breadcrumbs
+        showFlightForm={false}
+      /> */}
+      {/* <Breadcrumbs
         items={[
           {
             name: "Flight Search",
@@ -233,9 +251,9 @@ export default function Search() {
             name: `${flightQuery.from.name} to ${flightQuery.to.name}`,
           },
         ]}
-      />
-      <div className="bg-white dark:bg-gray-900">
-        <div className="md:flex justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
+      /> */}
+      <div className="">
+        <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
           <div
             className="relative z-10 md:hidden bg-white dark:bg-gray-900 border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800"
             onClick={() => setShowFilters(!showFilters)}
@@ -279,29 +297,21 @@ export default function Search() {
                 clickToShow
               /> */}
             </div>
-            {loading ? (
-              <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
-                <span className="mr-2">
-                  <Loading />
-                </span>{" "}
-                Loading More Prices & Flights...
-              </div>
-            ) : (
-              ""
-            )}
-            {!search || error !== "" ? (
+            <FlightResultsDefault
+              flights={search && "error" in search ? undefined : search}
+              filters={filters}
+              query={flightQuery}
+              apiUrl={apiUrl}
+              googleApiKey={googleApiKey}
+              googleMapId={googleMapId}
+              loading={!!!search}
+            />
+            {/* {!search || error !== "" ? (
               <div className="dark:text-white"> {error}</div>
             ) : (
               <>
-                <FlightResultsDefault
-                  flights={"error" in search ? undefined : search}
-                  filters={filters}
-                  query={flightQuery}
-                  apiUrl={apiUrl}
-                  googleApiKey={googleApiKey}
-                  googleMapId={googleMapId}
-                />
-                <CarHireList
+                
+                {/* <CarHireList
                   query={{
                     from: flightQuery.from.entityId,
                     depart: flightQuery.depart,
@@ -309,9 +319,9 @@ export default function Search() {
                   }}
                   apiUrl={apiUrl}
                 />
-                <HotelList query={flightQuery} apiUrl={apiUrl} />
+                <HotelList query={flightQuery} apiUrl={apiUrl} /> }
               </>
-            )}
+            )} */}
           </div>
         </div>
       </div>

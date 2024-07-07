@@ -44,7 +44,7 @@ export const HeaderDefault = ({
 
   return (
     <header>
-      <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-900">
+      <nav className="bg-white border-gray-200 drop-shadow-md px-4 lg:px-6 py-2.5 dark:bg-gray-900">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link to="/" className="flex items-center">
             <img
@@ -57,9 +57,9 @@ export const HeaderDefault = ({
             </span>
           </Link>
           <div className="flex items-center lg:order-2">
-            <div>
+            {/* <div>
               <Search />
-            </div>
+            </div> */}
             <div className="cursor-pointer p-3" onClick={onDarkModeClick}>
               {" "}
               {isDarkMode ? (

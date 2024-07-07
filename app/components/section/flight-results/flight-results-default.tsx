@@ -11,6 +11,8 @@ import {
 import { LegTimeline } from "../flight-details/flight-details.component";
 import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { MapRoute } from "../map/map-route";
+import { Box, Skeleton } from "@mui/material";
+import { FlightResultsSkeleton } from "./flight-results-skeleton";
 
 interface SegmentsProps {
   flight: FlightSDK;
@@ -372,7 +374,7 @@ const Flight = ({
 
   return (
     <div className="mb-2">
-      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 bg-gray-800">
+      <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white">
         <Labels flight={flight} labels={labels} />
         <div className="md:flex">
           <SegmentsColumn flight={flight} />
@@ -471,6 +473,7 @@ interface FlightResultsDefaultProps {
   apiUrl: string;
   googleApiKey: string;
   googleMapId: string;
+  loading: boolean;
 }
 
 export const FlightResultsDefault = ({
@@ -478,12 +481,24 @@ export const FlightResultsDefault = ({
   filters = {},
   query,
   headerSticky = true,
-  numberOfResultsToShow = 5,
+  numberOfResultsToShow = 10,
   apiUrl,
   googleApiKey,
   googleMapId,
+  loading = false,
 }: FlightResultsDefaultProps) => {
-  if (!flights || !query) return <></>;
+  if (!flights || !query)
+    return (
+      <div>
+        {loading ? (
+          <FlightResultsSkeleton
+            numberOfResultsToShow={numberOfResultsToShow}
+          />
+        ) : (
+          ""
+        )}
+      </div>
+    );
 
   const [results, setResults] = useState(
     filters.numberOfResultsToShow || numberOfResultsToShow
@@ -497,7 +512,7 @@ export const FlightResultsDefault = ({
   const filteredOutResultsTotal =
     nonFilteredResults.length - filteredResults().total;
 
-  return (
+  return !loading ? (
     <div>
       <div
         className={`${
@@ -556,5 +571,9 @@ export const FlightResultsDefault = ({
         onShowMore={(amount) => setResults(amount)}
       />
     </div>
+  ) : (
+    <>
+      <FlightResultsSkeleton numberOfResultsToShow={numberOfResultsToShow} />
+    </>
   );
 };
