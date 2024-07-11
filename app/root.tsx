@@ -13,14 +13,16 @@ import stylesheet from "~/tailwind.css";
 //mui
 import { withEmotionCache } from "@emotion/react";
 import { unstable_useEnhancedEffect as useEnhancedEffect } from "@mui/material";
-import theme from "./src/theme";
 import ClientStyleContext from "./src/ClientStyleContext";
 import Layout from "./src/Layout";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 interface DocumentProps {
   children: React.ReactNode;
   title?: string;
 }
+
+//tracking
+import * as amplitude from "@amplitude/analytics-browser";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -59,11 +61,6 @@ const Document = withEmotionCache(
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <meta name="theme-color" content="#101827" />
-          <script src="https://cdn.amplitude.com/libs/analytics-browser-2.7.4-min.js.gz"></script><script src="https://cdn.amplitude.com/libs/plugin-session-replay-browser-1.4.1-min.js.gz"></script><script src="https://cdn.amplitude.com/libs/plugin-autocapture-browser-0.9.0-min.js.gz"></script><script>window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1})).promise.then(function() {window.amplitude.add(window.amplitudeAutocapturePlugin.plugin());window.amplitude.init('db590d6781718f23151b150759366db4');});</script>
-          {/* <link
-            href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap"
-            rel="stylesheet"
-          /> */}
           <link
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
             rel="stylesheet"
@@ -88,6 +85,10 @@ const Document = withEmotionCache(
 );
 
 export default function App() {
+  useEffect(() => {
+    amplitude.init("db590d6781718f23151b150759366db4");
+  }, []);
+
   return (
     <Document>
       <Layout>

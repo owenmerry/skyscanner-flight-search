@@ -6,6 +6,7 @@ import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { QueryPlace } from "~/types/search";
 import { MultiRangeSlider } from "../multi-range-slider/multi-range-slider";
 import { Label } from "flowbite-react";
+import { track } from "logrocket";
 
 interface FiltersDefaultProps {
   flights?: SearchSDK;
@@ -28,6 +29,7 @@ export const FiltersDefault = ({
     value: number,
     checked: boolean
   ) => {
+    track("changed stops filter on search");
     let stopsUpdated = arr ? arr : [];
     stopsUpdated = stopsUpdated.filter((item) => item !== value);
     if (checked) {
@@ -63,6 +65,7 @@ export const FiltersDefault = ({
   };
 
   const updateFilters = (filterAdd: SearchFilters) => {
+    track("changed filters on search");
     const filtersUpdated = { ...filters, ...filterAdd };
     setFilters(filtersUpdated);
     setFiltersChanged(filtersUpdated);

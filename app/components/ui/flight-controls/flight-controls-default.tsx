@@ -12,6 +12,7 @@ import {
 } from "~/helpers/local-storage";
 import { DateSelector } from "../date/date-selector";
 import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
+import { track } from "@amplitude/analytics-browser";
 
 interface FlightControlsProps {
   apiUrl?: string;
@@ -41,6 +42,7 @@ export const FlightControls = ({
     setQuery({ ...query, [key]: value });
   };
   const handleDatesChange = (dates: DatesQuery) => {
+    track("change dates search controls");
     setQuery({
       ...query,
       depart: dates.depart,
@@ -64,6 +66,7 @@ export const FlightControls = ({
     key: string,
     iataCode: string
   ) => {
+    track("change location search controls");
     if (key === "from") setFromLocationLocalStorage(iataCode);
     const place = getPlaceFromIata(iataCode);
     setQuery({
@@ -75,6 +78,7 @@ export const FlightControls = ({
   };
   const handleSearchClicked = () => {
     if (onSearch) {
+      track("clicked search controls search");
       const fromPlace = getPlaceFromEntityId(query.from);
       const toPlace = getPlaceFromEntityId(query.to);
       if (!fromPlace || !toPlace) return;
