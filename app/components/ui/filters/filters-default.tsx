@@ -6,7 +6,7 @@ import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { QueryPlace } from "~/types/search";
 import { MultiRangeSlider } from "../multi-range-slider/multi-range-slider";
 import { Label } from "flowbite-react";
-import { track } from "logrocket";
+import { track } from "@amplitude/analytics-browser";
 
 interface FiltersDefaultProps {
   flights?: SearchSDK;
