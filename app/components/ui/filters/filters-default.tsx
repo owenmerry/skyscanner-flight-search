@@ -4,8 +4,6 @@ import { useDebounce } from "use-debounce";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { QueryPlace } from "~/types/search";
-import { MultiRangeSlider } from "../multi-range-slider/multi-range-slider";
-import { Label } from "flowbite-react";
 import { track } from "@amplitude/analytics-browser";
 
 interface FiltersDefaultProps {
@@ -29,7 +27,6 @@ export const FiltersDefault = ({
     value: number,
     checked: boolean
   ) => {
-    track("changed stops filter on search");
     let stopsUpdated = arr ? arr : [];
     stopsUpdated = stopsUpdated.filter((item) => item !== value);
     if (checked) {
@@ -65,7 +62,10 @@ export const FiltersDefault = ({
   };
 
   const updateFilters = (filterAdd: SearchFilters) => {
-    track("changed filters on search");
+    track("changed filters on search", {
+      name: Object.keys(filterAdd)[0],
+      ...filterAdd,
+    });
     const filtersUpdated = { ...filters, ...filterAdd };
     setFilters(filtersUpdated);
     setFiltersChanged(filtersUpdated);
