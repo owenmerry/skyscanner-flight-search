@@ -446,17 +446,17 @@ interface PagingProps {
 }
 
 const Paging = ({
-  shown = 100,
+  shown = 10,
   total = 1000,
   onShowMore = (number: number) => {},
 }: PagingProps) => {
   return (
     <>
       {total > shown ? (
-        <div className="my-4 text-center">
+        <div className="py-4 text-center">
           <button
             className="text-white bg-blue-700 border border-transparent hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disabled:hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 dark:disabled:hover:bg-blue-600 focus:!ring-2 group h-min items-center justify-center p-0.5 text-center font-medium focus:z-10 rounded-lg ml-2"
-            onClick={() => onShowMore(shown + 100)}
+            onClick={() => onShowMore(shown + 10)}
           >
             <span className="flex items-center rounded-md text-sm px-4 py-2">
               Show more results (Showing<b className="px-1">1-{shown}</b>of
@@ -579,18 +579,19 @@ export const FlightResultsDefault = ({
   const nonFilteredResults = flights.cheapest;
   const filteredOutResultsTotal =
     nonFilteredResults.length - filteredResults().total;
+  const filteredResultsList = filteredResults();
 
   return !loading ? (
     <div>
       <ResultsCount
         headerSticky={headerSticky}
-        filteredResults={filteredResults()}
+        filteredResults={filteredResultsList}
         filteredOutResultsTotal={filteredOutResultsTotal}
         nonFilteredResults={nonFilteredResults}
         results={results}
         query={query}
       />
-      {filteredResults().results.map((flight) => {
+      {filteredResultsList.results.map((flight) => {
         return (
           <Flight
             flight={flight}
@@ -604,7 +605,7 @@ export const FlightResultsDefault = ({
         );
       })}
       <Paging
-        total={filteredResults().total}
+        total={filteredResultsList.total}
         shown={results}
         onShowMore={(amount) => setResults(amount)}
       />

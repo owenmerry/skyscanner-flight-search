@@ -5,6 +5,7 @@ import type { SearchFilters } from "~/helpers/sdk/filters";
 import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { QueryPlace } from "~/types/search";
 import { track } from "@amplitude/analytics-browser";
+import { Button } from "../button/button";
 
 interface FiltersDefaultProps {
   flights?: SearchSDK;

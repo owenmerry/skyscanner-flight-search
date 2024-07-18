@@ -238,6 +238,7 @@ export default function Search() {
                   apiUrl={apiUrl}
                   googleApiKey={googleApiKey}
                   googleMapId={googleMapId}
+                  loading={!!!search}
                 />
                 <CarHireList
                   query={{

@@ -31,6 +31,7 @@ import { CarHireList } from "~/components/section/car-hire-list";
 import { HotelList } from "~/components/section/hotels-list";
 import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
 import { Box, LinearProgress } from "@mui/material";
+import { FiltersDrawer } from "~/components/ui/drawer/drawer-filter";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -257,20 +258,26 @@ export default function Search() {
       /> */}
       <div className="">
         <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-          <div
-            className="relative z-10 md:hidden bg-white dark:bg-gray-900 border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            {showFilters ? "Hide Filters" : "Show Filters"}
+          <div className="relative z-10 md:hidden bg-white dark:bg-gray-900 border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800">
+            <FiltersDrawer>
+              <div className="px-6 py-8">
+                <h2 className="text-2xl font-bold mb-4">Change Search</h2>
+                <FiltersDefault
+                  flights={search && "error" in search ? undefined : search}
+                  onFilterChange={(filters) => setFilters(filters)}
+                  query={flightQuery}
+                />
+              </div>
+            </FiltersDrawer>
           </div>
-          <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
+          <div className={`hidden md:block w-96 p-2`}>
             <FiltersDefault
               flights={search && "error" in search ? undefined : search}
               onFilterChange={(filters) => setFilters(filters)}
               query={flightQuery}
             />
           </div>
-          <div className="w-full md:ml-2 mb-2">
+          <div className="w-full md:ml-2">
             {/* <FlightHotelBundle search={search} searchHotel={searchHotel} /> */}
             {/* <CompetitorCheck
                 query={flightQuery}
