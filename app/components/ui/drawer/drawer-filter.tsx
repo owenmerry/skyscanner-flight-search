@@ -41,7 +41,7 @@ export const FiltersDrawer: React.FC<FiltersDrawer> = ({
         onClose={toggleDrawer(false)}
         ModalProps={{ keepMounted: false }} // Better open performance on mobile
       >
-        <div className="max-h-[90vh]">
+        <div className="max-h-[70vh]">
           <div className="pb-16">{children}</div>
           <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-t-lg">
             <div className="grid grid-cols-2 gap-2">
