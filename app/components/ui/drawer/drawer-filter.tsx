@@ -2,8 +2,14 @@ import { Drawer } from "@mui/material";
 import { ReactNode, useState } from "react";
 import { Button } from "../button/button";
 
-export const FiltersDrawer: React.FC<{ children: ReactNode }> = ({
+interface FiltersDrawer {
+  children: ReactNode;
+  onClear?: () => void;
+}
+
+export const FiltersDrawer: React.FC<FiltersDrawer> = ({
   children,
+  onClear,
 }) => {
   const [open, setOpen] = useState(false);
   type ToggleDrawer = (
@@ -39,7 +45,12 @@ export const FiltersDrawer: React.FC<{ children: ReactNode }> = ({
           <div className="pb-16">{children}</div>
           <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-t-lg">
             <div className="grid grid-cols-2 gap-2">
-              <Button text="Clear filters" onClick={() => setOpen(false)} />
+              <Button
+                text="Clear filters"
+                onClick={() => {
+                  onClear && onClear();
+                }}
+              />
               <Button text="Show results" onClick={() => setOpen(false)} />
             </div>
           </div>

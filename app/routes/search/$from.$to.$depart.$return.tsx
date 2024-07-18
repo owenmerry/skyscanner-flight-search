@@ -259,7 +259,11 @@ export default function Search() {
       <div className="">
         <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
           <div className="relative z-10 md:hidden bg-white dark:bg-gray-900 border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800">
-            <FiltersDrawer>
+            <FiltersDrawer
+              onClear={() => {
+                setFilters({});
+              }}
+            >
               <div className="px-6 py-8">
                 <h2 className="text-2xl font-bold mb-4">Change Search</h2>
                 <FiltersDefault
