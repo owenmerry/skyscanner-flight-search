@@ -270,6 +270,7 @@ export default function Search() {
                   flights={search && "error" in search ? undefined : search}
                   onFilterChange={(filters) => setFilters(filters)}
                   query={flightQuery}
+                  defaultFilters={filters}
                 />
               </div>
             </FiltersDrawer>
