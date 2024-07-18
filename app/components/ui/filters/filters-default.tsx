@@ -42,10 +42,6 @@ defaultFilters = {},
     onFilterChange && onFilterChange(filtersDebounced);
   }, [filtersDebounced]);
 
-  useEffect(() => {
-    setFilter(defaultFilters);
-  },[defaultFilters]);
-
   const updateAgentTypes = (
     arr:
       | (
