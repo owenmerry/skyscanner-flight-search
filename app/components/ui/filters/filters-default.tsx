@@ -11,14 +11,16 @@ interface FiltersDefaultProps {
   flights?: SearchSDK;
   query?: QueryPlace;
   onFilterChange: (filters: SearchFilters) => void;
+  defaultFilters?: SearchFilters;
 }
 
 export const FiltersDefault = ({
   onFilterChange,
   flights,
   query,
+defaultFilters = {},
 }: FiltersDefaultProps) => {
-  const [filters, setFilters] = useState<SearchFilters>({});
+  const [filters, setFilters] = useState<SearchFilters>(defaultFilters);
   const [filtersChanged, setFiltersChanged] = useState<SearchFilters>({});
   const [filtersDebounced] = useDebounce(filters, 100);
   const showExtraFilters = false;
@@ -39,6 +41,10 @@ export const FiltersDefault = ({
   useEffect(() => {
     onFilterChange && onFilterChange(filtersDebounced);
   }, [filtersDebounced]);
+
+  useEffect(() => {
+    setFilter(defaultFilters);
+  },[defaultFilters]);
 
   const updateAgentTypes = (
     arr:
