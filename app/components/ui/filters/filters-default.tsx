@@ -18,10 +18,11 @@ export const FiltersDefault = ({
   onFilterChange,
   flights,
   query,
-defaultFilters = {},
+  defaultFilters = {},
 }: FiltersDefaultProps) => {
   const [filters, setFilters] = useState<SearchFilters>(defaultFilters);
-  const [filtersChanged, setFiltersChanged] = useState<SearchFilters>({});
+  const [filtersChanged, setFiltersChanged] =
+    useState<SearchFilters>(defaultFilters);
   const [filtersDebounced] = useDebounce(filters, 100);
   const showExtraFilters = false;
 
@@ -39,8 +40,11 @@ defaultFilters = {},
   };
 
   useEffect(() => {
+    console.log(filtersDebounced);
     onFilterChange && onFilterChange(filtersDebounced);
   }, [filtersDebounced]);
+
+  useEffect(() => {}, [defaultFilters]);
 
   const updateAgentTypes = (
     arr:
@@ -110,7 +114,7 @@ defaultFilters = {},
                   <input
                     id="blue"
                     type="checkbox"
-                    defaultValue=""
+                    checked={!!filters.numberOfStops!?.includes(0)}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateStops(filters.numberOfStops, 0, e.target.checked)
@@ -127,7 +131,7 @@ defaultFilters = {},
                   <input
                     id="gray"
                     type="checkbox"
-                    defaultValue=""
+                    checked={!!filters.numberOfStops!?.includes(1)}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateStops(filters.numberOfStops, 1, e.target.checked)
@@ -144,7 +148,7 @@ defaultFilters = {},
                   <input
                     id="green"
                     type="checkbox"
-                    defaultValue=""
+                    checked={!!filters.numberOfStops!?.includes(2)}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateStops(filters.numberOfStops, 2, e.target.checked)
@@ -169,7 +173,9 @@ defaultFilters = {},
                   <input
                     id="blue"
                     type="checkbox"
-                    defaultValue=""
+                    checked={
+                      !!filters.agentTypes!?.includes("AGENT_TYPE_AIRLINE")
+                    }
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateAgentTypes(
@@ -190,7 +196,9 @@ defaultFilters = {},
                   <input
                     id="gray"
                     type="checkbox"
-                    defaultValue=""
+                    checked={
+                      !!filters.agentTypes!?.includes("AGENT_TYPE_TRAVEL_AGENT")
+                    }
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateAgentTypes(
@@ -219,7 +227,7 @@ defaultFilters = {},
                   <input
                     id="blue"
                     type="checkbox"
-                    defaultValue=""
+                    checked={!!filters.mashup}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateFilters({ mashup: e.target.checked })
@@ -399,7 +407,7 @@ defaultFilters = {},
                       type="range"
                       min={0}
                       max={60}
-                      defaultValue={60}
+                      defaultValue={filters.duration ? filters.duration : 60}
                       step={1}
                       className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                       onChange={(e) =>
