@@ -43,7 +43,7 @@ export const FiltersDrawer: React.FC<FiltersDrawer> = ({
       >
         <div className="max-h-[80vh]">
           <div className="pb-16">{children}</div>
-          <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-t-lg">
+          <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-t-sm">
             <div className="grid grid-cols-2 gap-2">
               <Button
                 text="Clear filters"
