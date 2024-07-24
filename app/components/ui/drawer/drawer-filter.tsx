@@ -46,9 +46,11 @@ export const FiltersDrawer: React.FC<FiltersDrawer> = ({
           <div className="fixed bottom-0 left-0 w-full bg-white p-4 shadow-t-sm">
             <div className="grid grid-cols-2 gap-2">
               <Button
+                secondary
                 text="Clear filters"
                 onClick={() => {
                   onClear && onClear();
+                  setOpen(false);
                 }}
               />
               <Button text="Show results" onClick={() => setOpen(false)} />
