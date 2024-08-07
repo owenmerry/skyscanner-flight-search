@@ -30,7 +30,7 @@ export const JourneyDrawer: React.FC<JourneyDrawer> = ({ children }) => {
         ModalProps={{ keepMounted: false }} // Better open performance on mobile
       >
         <div className="dark">
-          <div className="min-h-screen w-screen md:w-[50vw] dark:bg-gray-900">
+          <div className="min-h-screen w-screen md:w-[92vw] dark:bg-gray-900">
             <Header onClose={() => setOpen(false)}>Trip Details</Header>
             <div className="pb-16 dark:text-white">{children[1]}</div>
           </div>
