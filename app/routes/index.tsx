@@ -1,4 +1,5 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroDefault } from "~/components/section/hero/hero-default";
 import { NavigationWebsite } from "~/components/ui/navigation/navigation-website";
@@ -8,51 +9,81 @@ import { Place } from "~/helpers/sdk/place";
 
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import { getMarkersCountryFrom } from "~/helpers/map";
-import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { Map } from "~/components/ui/map";
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { NavigationMiniApps } from "~/components/ui/navigation/navigation-mini-apps";
+import { userPrefs } from "~/helpers/cookies";
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
   const placesSDK = skyscanner().geo();
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await userPrefs.parse(cookieHeader)) || {};
 
   return {
     countries: placesSDK.countries,
     apiUrl,
     googleApiKey,
     googleMapId,
+    from: cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LHR"),
+    fromCookie: cookie.from,
   };
 };
 
+export async function action({ request }: ActionArgs) {
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await userPrefs.parse(cookieHeader)) || {};
+  const bodyParams = await request.formData();
+  const from = bodyParams.get("from") ? bodyParams.get("from") : '';
+  const fromParse: Place | undefined = typeof from === 'string' ? JSON.parse(from) : undefined;
+
+  if (from) {
+    cookie.from = from;
+  }
+
+  const query = {
+    from: fromParse?.iata || '',
+    to: bodyParams.get("to"),
+    depart: bodyParams.get("depart"),
+    return: bodyParams.get("return"),
+  };
+
+  return redirect(
+    `/search/${query.from}/${query.to}/${query.depart}/${query.return}`,
+    {
+      headers: {
+        "Set-Cookie": await userPrefs.serialize(cookie),
+      },
+    }
+  );
+}
+
 export default function Index() {
-  const { apiUrl, googleApiKey, googleMapId, countries } = useLoaderData<{
-    countries: Place[];
-    googleApiKey: string;
-    googleMapId: string;
-    apiUrl: string;
-  }>();
+  const { apiUrl, googleApiKey, googleMapId, countries, from, fromCookie } =
+    useLoaderData<{
+      countries: Place[];
+      googleApiKey: string;
+      googleMapId: string;
+      apiUrl: string;
+      from: Place;
+      fromCookie: string;
+    }>();
   const [countryShow, setCountryShow] = useState(false);
   const [searchIndicative, setSearchIndicative] =
     useState<SkyscannerAPIIndicativeResponse>();
-  const [from] = useState(
-    getFromPlaceLocalOrDefault() || getPlaceFromIata("LHR")
-  );
   const defaultSearch = getDefualtFlightQuery();
+  defaultSearch.from = from.entityId;
+  defaultSearch.fromIata = from.iata;
+  defaultSearch.fromText = from.name;
+  console.log("query", fromCookie);
 
-  if (!from) return;
-
-  useEffect(() => {
-    runIndicative();
-  }, []);
-
-  const runIndicative = async () => {
+  const runIndicative = useCallback(async () => {
     const indicativeSearch = await skyscanner().indicative({
       apiUrl,
       query: {
@@ -68,7 +99,11 @@ export default function Index() {
     console.log(indicativeSearch.search);
 
     setSearchIndicative(indicativeSearch.search);
-  };
+  }, [apiUrl, from]);
+
+  useEffect(() => {
+    runIndicative();
+  }, [runIndicative]);
 
   return (
     <Layout selectedUrl="/">
@@ -76,6 +111,8 @@ export default function Index() {
         apiUrl={apiUrl}
         newFeature="We are always adding new features. See All New Features"
         newFeatureURL="/news"
+        flightDefault={defaultSearch}
+        useForm
       />
       {searchIndicative ? (
         <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">

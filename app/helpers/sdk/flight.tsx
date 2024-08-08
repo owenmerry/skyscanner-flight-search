@@ -12,11 +12,10 @@ export const hasDirectFlights = (res: SkyscannerAPICreateResponse): boolean => {
   return !!(res.content.stats.itineraries.stops.direct.total.count > 0);
 };
 export const getDefualtFlightQuery = (): Query => {
-  const fromPlace = getFromPlaceLocalOrDefault();
   return {
-    from: fromPlace ? fromPlace.entityId : "95565050",
-    fromIata: fromPlace ? fromPlace.iata : "LHR",
-    fromText: fromPlace ? fromPlace.name : "London Heathrow",
+    from: "95565050",
+    fromIata: "LHR",
+    fromText: "London Heathrow",
     to: "95673529", //Dublin
     toIata: "DUB", //Dublin
     toText: "Dublin", //Dublin

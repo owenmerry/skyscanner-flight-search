@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "@remix-run/react";
+import { Form, Link } from "@remix-run/react";
 import { Query, QueryPlace } from "~/types/search";
 import { Location } from "~/components/ui/location";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
@@ -20,12 +20,14 @@ interface FlightControlsProps {
   flightDefault?: Query;
   showPreviousSearches?: boolean;
   onSearch?: (query: QueryPlace) => void;
+  useForm?: boolean;
 }
 export const FlightControls = ({
   apiUrl = "",
   buttonLoading = true,
   flightDefault,
   showPreviousSearches = true,
+  useForm,
   onSearch,
 }: FlightControlsProps) => {
   const defaultQuery: Query = flightDefault
@@ -67,7 +69,6 @@ export const FlightControls = ({
     iataCode: string
   ) => {
     track("change location search controls");
-    if (key === "from") setFromLocationLocalStorage(iataCode);
     const place = getPlaceFromIata(iataCode);
     setQuery({
       ...query,
@@ -102,10 +103,30 @@ export const FlightControls = ({
         Search
       </h1>
 
-      <form
-        action="#"
+      <Form
+        method="post"
         className="grid gap-y-4 mt-8 w-full bg-white rounded lg:gap-x-4 lg:grid-cols-9 lg:mt-4 dark:bg-gray-800"
       >
+        <input
+              type="hidden"
+              name="from"
+              value={JSON.stringify(getPlaceFromEntityId(query.from))}
+        />
+        <input
+              type="hidden"
+              name="to"
+              value={query.toIata}
+        />
+        <input
+              type="hidden"
+              name="depart"
+              value={query.depart}
+        />
+        <input
+              type="hidden"
+              name="return"
+              value={query.return}
+        />
         <div className="lg:col-span-2 relative">
           <Location
             name="From"
@@ -158,6 +179,36 @@ export const FlightControls = ({
           >
             Add Flight
           </div>
+        ) : ''}
+        {useForm ? (
+          <button 
+          className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+          type="submit">
+            {navigation.state === "loading" ? (
+              <>
+                <span>
+                  <Loading aria-label="Spinner button example" />
+                </span>
+                <span className="pl-3">Loading...</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  className="mr-2 -ml-1 w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Search
+              </>
+            )}
+          </button>
         ) : (
           <Link
             to={`/search/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
@@ -190,7 +241,7 @@ export const FlightControls = ({
             )}
           </Link>
         )}
-      </form>
+      </Form>
     </div>
   );
 };

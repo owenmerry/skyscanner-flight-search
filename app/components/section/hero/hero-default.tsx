@@ -88,6 +88,7 @@ interface HeroDefaultProps {
   showText?: boolean;
   buttonLoading?: boolean;
   flightDefault?: Query;
+  useForm?: boolean;
 }
 
 export const HeroDefault = ({
@@ -97,6 +98,7 @@ export const HeroDefault = ({
   showText = true,
   buttonLoading = false,
   flightDefault,
+  useForm,
 }: HeroDefaultProps) => {
   return (
     <section className="bg-[url('/images/hero/airport.jpg')] relative bg-top md:bg-bottom bg-cover bg-no-repeat">
@@ -109,6 +111,7 @@ export const HeroDefault = ({
           apiUrl={apiUrl}
           buttonLoading={buttonLoading}
           flightDefault={flightDefault}
+          useForm={useForm}
         />
       </div>
     </section>
