@@ -99,10 +99,12 @@ export const MapComponent = ({
 
 export const SearchGraphs = ({
   search,
+  searchReturn,
   query,
   clickToShow,
 }: {
   search?: SkyscannerAPIIndicativeResponse;
+  searchReturn?: SkyscannerAPIIndicativeResponse;
   query: QueryPlace;
   clickToShow?: boolean;
 }) => {
@@ -179,8 +181,14 @@ export const SearchGraphs = ({
         <div className="py-4 px-4">
           <h2 className="font-bold mb-2 text-lg">Departure Dates</h2>
           <DatesGraph search={search} query={query} hasMaxWidth />
-          <h2 className="font-bold mb-2 text-lg">Return Dates</h2>
-          <DatesGraph search={search} query={query} hasMaxWidth isReturn />
+          {searchReturn ? (
+            <>
+              <h2 className="font-bold mb-2 text-lg">Return Dates</h2>
+              <DatesGraph search={search} query={query} hasMaxWidth />
+            </>
+          ) : (
+            ""
+          )}
         </div>
       ) : (
         ""

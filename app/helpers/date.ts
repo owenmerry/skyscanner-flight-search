@@ -177,7 +177,7 @@ export const getNextXMonthsStartDayAndEndDay = (months: number) => {
 
   for (; n < months; n++) {
     const month = moment().startOf("month").add(n, "months");
-    const monthFirstDay = month;
+    const monthFirstDay = month.startOf("month");
     const monthLastDay = month.endOf("month");
     arRet.push({
       displayMonthText: month.format("MMMM YYYY"),

@@ -159,7 +159,7 @@ export default function SEOAnytime() {
       />
 
       <ExploreGraph
-        airports={airports}
+        airports={[from]}
         apiUrl={apiUrl}
         from={from}
         showReturn

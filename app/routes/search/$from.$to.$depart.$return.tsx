@@ -32,6 +32,9 @@ import { HotelList } from "~/components/section/hotels-list";
 import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
 import { Box, LinearProgress } from "@mui/material";
 import { FiltersDrawer } from "~/components/ui/drawer/drawer-filter";
+import { ExploreGraph } from "~/components/section/explore/explore-graph";
+import { PriceGraph } from "~/components/ui/graph/price-graph";
+import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -259,6 +262,7 @@ export default function Search() {
       <div className="">
         <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
           <div className="relative z-10 md:hidden bg-white dark:bg-gray-900 border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800">
+            <div className="flex gap-2">
             <FiltersDrawer
               onClear={() => {
                 setFilters({});
@@ -274,6 +278,14 @@ export default function Search() {
                 />
               </div>
             </FiltersDrawer>
+            <GraphDrawer>
+            <PriceGraph
+                apiUrl={apiUrl}
+                query={flightQuery}
+                showReturn
+              />
+            </GraphDrawer>
+            </div>
           </div>
           <div className={`hidden md:block w-96 p-2`}>
             <FiltersDefault
@@ -298,12 +310,7 @@ export default function Search() {
                   googleApiKey={googleApiKey}
                   key="map-component"
                 />
-              </div>
-              <SearchGraphs
-                search={searchIndicative}
-                query={flightQuery}
-                clickToShow
-              /> */}
+              </div> */}
             <FlightResultsDefault
               flights={search && "error" in search ? undefined : search}
               filters={filters}
