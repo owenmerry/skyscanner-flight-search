@@ -1,15 +1,9 @@
 import { useState } from "react";
-import { Form, Link } from "@remix-run/react";
-import { Query, QueryPlace } from "~/types/search";
+import { Form, Link, useNavigation } from "@remix-run/react";
+import type { Query, QueryPlace } from "~/types/search";
 import { Location } from "~/components/ui/location";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { Loading } from "~/components/ui/loading/loading.component";
-import { useNavigation } from "@remix-run/react";
-import {
-  setFromLocationLocalStorage,
-  getSearchFromLocalStorage,
-  addSearchToLocalStorage,
-} from "~/helpers/local-storage";
 import { DateSelector } from "../date/date-selector";
 import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 import { track } from "@amplitude/analytics-browser";
@@ -33,16 +27,8 @@ export const FlightControls = ({
   const defaultQuery: Query = flightDefault
     ? flightDefault
     : getDefualtFlightQuery();
-  const [previousSearches, setPreviousSearches] = useState(
-    getSearchFromLocalStorage().reverse().slice(0, 5)
-  );
   const [query, setQuery] = useState<Query>(defaultQuery);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const handleQueryChange = (value: string, key: string) => {
-    console.log(query, value, key);
-    setQuery({ ...query, [key]: value });
-  };
   const handleDatesChange = (dates: DatesQuery) => {
     track("change dates search controls");
     setQuery({
@@ -93,7 +79,6 @@ export const FlightControls = ({
       return;
     }
     setLoading(true);
-    addSearchToLocalStorage(query);
   };
   const navigation = useNavigation();
 

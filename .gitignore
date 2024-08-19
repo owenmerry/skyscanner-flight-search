@@ -4,3 +4,7 @@ node_modules
 /build
 /public/build
 .env
+
+*storybook.log
+*storybook-static
+*storybook-build

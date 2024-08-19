@@ -18,7 +18,7 @@ export const Loading = (): JSX.Element => {
             fill="currentFill"
           />
         </svg>
-        <span className="sr-only">Loading...</span>
+        <span className="sr-only">Loading... please wait</span>
       </div>
     </>
   );
