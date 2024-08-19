@@ -298,7 +298,7 @@ export default function Search() {
           </div>
         </div>
         <div>
-        <CarHireList
+        {/* <CarHireList
                   query={{
                     from: flightQuery.from.entityId,
                     depart: flightQuery.depart,
@@ -306,7 +306,7 @@ export default function Search() {
                   }}
                   apiUrl={apiUrl}
                 />
-                <HotelList query={flightQuery} apiUrl={apiUrl} />
+                <HotelList query={flightQuery} apiUrl={apiUrl} /> */}
         </div>
       </div>
     </div>

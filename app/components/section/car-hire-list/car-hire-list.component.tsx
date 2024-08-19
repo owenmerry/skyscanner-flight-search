@@ -46,10 +46,10 @@ export const CarHireList = ({
               </h2>
             </div>
 
-            <div className="flex overflow-y-scroll scrollbar-hide gap-2 sm:overflow-visible sm:grid sm:grid-cols-5 grid-cols-2">
+            <div className="flex overflow-y-scroll scrollbar-hide gap-2 grid-cols-2">
               {search.results
                 .sort((a, b) =>
-                  !!(a.stats.cheapest && b.stats.cheapest)
+                  (a.stats.cheapest && b.stats.cheapest)
                     ? Number(a.stats.cheapest.replace("£", "")) -
                       Number(b.stats.cheapest.replace("£", ""))
                     : 0

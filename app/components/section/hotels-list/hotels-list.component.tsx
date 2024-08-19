@@ -91,13 +91,13 @@ export const HotelList = ({
           <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
             Hotels in {query?.to.name}
           </h2>
-          <div className="flex overflow-y-scroll scrollbar-hide gap-2 sm:overflow-visible sm:grid sm:grid-cols-4">
+          <div className="flex overflow-y-scroll scrollbar-hide gap-2 ">
             {search?.results.hotels
               .sort((a, b) => a.offers[0].price - b.offers[0].price)
               .slice(0, 8)
               .map((hotel) => (
                 <div
-                  className="snap-start min-w-60 sm:min-w-0 rounded-lg border-2 border-slate-100 dark:border-gray-700 bg-gray-800 pt-2"
+                  className="snap-start min-w-60 rounded-lg border-2 border-slate-100 dark:border-gray-700 bg-gray-800 pt-2"
                   key={hotel.hotel_id}
                 >
                   <div
