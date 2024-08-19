@@ -1,10 +1,9 @@
 import { DatesGraph } from "../../section/dates-graph/dates-graph";
-import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
+import type { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { useEffect, useState } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { QueryPlace } from "~/types/search";
+import type { QueryPlace } from "~/types/search";
 import moment from "moment";
-import { ToggleSwitch } from "flowbite-react";
 import { getNextXMonthsStartDayAndEndDay } from "~/helpers/date";
 
 export const PriceGraph = ({

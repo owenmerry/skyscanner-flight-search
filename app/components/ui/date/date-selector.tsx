@@ -1,5 +1,5 @@
-import { MouseEvent, useEffect, useRef, useState } from "react";
-import { Query } from "~/types/search";
+import { useEffect,  useState } from "react";
+import type { Query } from "~/types/search";
 import Calendar from "../calender/calender";
 import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
 import moment from "moment";
