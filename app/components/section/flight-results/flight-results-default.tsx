@@ -1,17 +1,18 @@
 import { useState, Fragment } from "react";
-import { Button, Tooltip } from "flowbite-react";
+import { Tooltip } from "flowbite-react";
 import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import type { SearchFilters } from "~/helpers/sdk/filters";
-import type { Query, QueryPlace } from "~/types/search";
+import type { QueryPlace } from "~/types/search";
 import { addSearchResultFilters } from "~/helpers/sdk/filters";
 import {
   getSkyscannerLink,
   getSkyscannerSearchLink,
 } from "~/helpers/sdk/skyscanner-website";
 import { LegTimeline } from "../flight-details/flight-details.component";
-import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
-import { MapRoute } from "../map/map-route";
-import { Box, Skeleton } from "@mui/material";
+import type {
+  FlightSDK,
+  SearchSDK,
+} from "~/helpers/sdk/flight/flight-functions";
 import { FlightResultsSkeleton } from "./flight-results-skeleton";
 import { JourneyDrawer } from "~/components/ui/drawer/drawer-journey";
 
@@ -375,7 +376,7 @@ const Flight = ({
   return (
     <>
       <JourneyDrawer>
-      <div className="mb-2">
+        <div className="mb-2">
           <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 hover:dark:border-gray-600 dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md transition ease-in-out">
             <Labels flight={flight} labels={labels} />
             <div className="flex">
@@ -556,6 +557,11 @@ export const FlightResultsDefault = ({
   googleMapId,
   loading = false,
 }: FlightResultsDefaultProps) => {
+  const [results, setResults] = useState(
+    filters.numberOfResultsToShow || numberOfResultsToShow
+  );
+  const [sort, setSort] = useState<"cheapest" | "best" | "fastest">("cheapest");
+
   if (!flights || !query)
     return (
       <div>
@@ -569,22 +575,49 @@ export const FlightResultsDefault = ({
         )}
       </div>
     );
-
-  const [results, setResults] = useState(
-    filters.numberOfResultsToShow || numberOfResultsToShow
-  );
   const filteredResults = () =>
-    addSearchResultFilters(flights.cheapest, {
+    addSearchResultFilters(flights[sort], {
       ...filters,
       numberOfResultsToShow: results,
     });
-  const nonFilteredResults = flights.cheapest;
+  const nonFilteredResults = flights[sort];
   const filteredOutResultsTotal =
     nonFilteredResults.length - filteredResults().total;
   const filteredResultsList = filteredResults();
 
   return !loading ? (
     <div>
+      <div className="flex gap-2">
+        <div
+          className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer hover:dark:border-gray-700 ${
+            sort === "cheapest"
+              ? "dark:border-gray-700"
+              : "dark:border-gray-800"
+          }`}
+          onClick={() => setSort("cheapest")}
+        >
+          <div className="text-sm font-bold dark:text-white">Cheapest</div>
+          <div className="text-sm dark:text-white">{flights.cheapest[0].price}</div>
+        </div>
+        <div
+          className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer hover:dark:border-gray-700 ${
+            sort === "best" ? "dark:border-gray-700" : "dark:border-gray-800"
+          }`}
+          onClick={() => setSort("best")}
+        >
+          <div className="text-sm font-bold dark:text-white">Best</div>
+          <div className="text-sm dark:text-white">{flights.best[0].price}</div>
+        </div>
+        <div
+          className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer hover:dark:border-gray-700 ${
+            sort === "fastest" ? "dark:border-gray-700" : "dark:border-gray-800"
+          }`}
+          onClick={() => setSort("fastest")}
+        >
+          <div className="text-sm font-bold dark:text-white">Fastest</div>
+          <div className="text-sm dark:text-white">{flights.fastest[0].price}</div>
+        </div>
+      </div>
       <ResultsCount
         headerSticky={headerSticky}
         filteredResults={filteredResultsList}

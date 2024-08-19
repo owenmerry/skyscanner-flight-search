@@ -1,4 +1,4 @@
-import { Place } from "~/helpers/sdk/place";
+import type { Place } from "~/helpers/sdk/place";
 import { FlightControls } from "../../ui/flight-controls/flight-controls-default";
 import { useState } from "react";
 

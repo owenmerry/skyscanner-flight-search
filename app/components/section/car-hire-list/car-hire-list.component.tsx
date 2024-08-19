@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {
+import type {
   CarHireIndicativeQuery,
   CarHireSDK,
   ResultSDK,
@@ -46,7 +46,7 @@ export const CarHireList = ({
               </h2>
             </div>
 
-            <div className="flex overflow-y-scroll scrollbar-hide snap-x gap-2 sm:overflow-visible sm:grid sm:grid-cols-5 grid-cols-2">
+            <div className="flex overflow-y-scroll scrollbar-hide gap-2 sm:overflow-visible sm:grid sm:grid-cols-5 grid-cols-2">
               {search.results
                 .sort((a, b) =>
                   !!(a.stats.cheapest && b.stats.cheapest)
