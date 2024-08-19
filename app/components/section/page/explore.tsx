@@ -37,7 +37,7 @@ export const AllCountries = ({
           .slice(0, showAll ? 999 : 30)
           .map((country: Place, key: number) => {
             return (
-              <div className="">
+              <div key={key}>
                 <Link
                   className="hover:underline"
                   to={`/explore/${country.slug}`}
