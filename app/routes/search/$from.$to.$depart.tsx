@@ -1,33 +1,34 @@
 import { useEffect, useState } from "react";
-import type { LoaderFunction, LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import { getImages } from "~/helpers/sdk/query";
 import { useLoaderData } from "@remix-run/react";
-import {
-  Place,
-  getEntityIdFromIata,
-  getPlaceFromEntityId,
-} from "~/helpers/sdk/place";
-import { Loading } from "~/components/ui/loading";
-import { getPlaceFromIata } from "~/helpers/sdk/place";
-import { getImagesFromParents } from "~/helpers/sdk/images";
-import { HeroPage } from "~/components/section/hero/hero-page";
+import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { Query, QueryPlace } from "~/types/search";
-import { ExplorePage, MapComponent } from "~/components/section/page/search";
+import type { Query, QueryPlace } from "~/types/search";
 import { getCountryEntityId } from "~/helpers/sdk/data";
-import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
-import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
-import { Layout } from "~/components/ui/layout/layout";
-import { DatesGraph } from "~/components/section/dates-graph/dates-graph";
+import type { Place } from "~/helpers/sdk/place";
+import type { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
+import { waitSeconds } from "~/helpers/utils";
+import {
+  ExplorePage,
+  FlightHotelBundle,
+} from "~/components/section/page/search";
 import {
   getFlightLiveCreate,
   getFlightLivePoll,
 } from "~/helpers/sdk/flight/flight-sdk";
-import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import type { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import { CompetitorCheck } from "~/components/section/competitor-check/competitor-check";
+import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
+import { Box, LinearProgress } from "@mui/material";
+import { FiltersDrawer } from "~/components/ui/drawer/drawer-filter";
+import { PriceGraph } from "~/components/ui/graph/price-graph";
+import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
 import { CarHireList } from "~/components/section/car-hire-list";
 import { HotelList } from "~/components/section/hotels-list";
+import moment from "moment";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -49,8 +50,8 @@ export const loader = async ({ params }: LoaderArgs) => {
     toIata: toPlace.iata,
     toText: toPlace.name,
     depart: params.depart || "",
-    return: "",
-    tripType: "",
+    return: params.return || "",
+    tripType: "return",
   };
 
   //explore
@@ -60,15 +61,22 @@ export const loader = async ({ params }: LoaderArgs) => {
     depart: params.depart || "",
     return: params.return || "",
   };
+  const hotelQuery: QueryPlace = {
+    from: fromPlace,
+    to: toPlace,
+    depart: params.depart || "",
+    return: moment(params.depart).add(2 ,'days').format('YYYY-MM-DD') || "",
+  };
   const country = getPlaceFromEntityId(
     getCountryEntityId(flightQuery.to.entityId)
   );
 
+
+
   //images
-  const parentImages = getImagesFromParents(toPlace.entityId);
   const fromImage = await getImages({
     apiUrl,
-    query: `${toPlace.name} ${country ? country.name : ""}`,
+    query: `${toPlace.name}${country ? `, ${country.name}` : ""}`,
   });
 
   return {
@@ -76,11 +84,11 @@ export const loader = async ({ params }: LoaderArgs) => {
     googleApiKey,
     googleMapId,
     params,
-    country,
-    flightQuery,
     flightParams,
-    parentImages,
-    headerImage: fromImage[0] || parentImages[0] || "",
+    flightQuery,
+    hotelQuery,
+    headerImage: fromImage[0] || "",
+    country,
   };
 };
 
@@ -89,95 +97,132 @@ export default function Search() {
     apiUrl,
     googleApiKey,
     googleMapId,
-    country,
     flightParams,
-    parentImages,
     flightQuery,
-    headerImage,
+    hotelQuery,
+    country,
   }: {
     apiUrl: string;
     googleApiKey: string;
     googleMapId: string;
     flightParams: Query;
-    country: Place;
-    parentImages: string[];
     flightQuery: QueryPlace;
-    flightSearch: SearchSDK | { error: string };
+    hotelQuery: QueryPlace;
     headerImage: string;
+    country: Place;
   } = useLoaderData();
-  const [search, setSearch] = useState<SearchSDK | { error: string }>();
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState<
+    SearchSDK | { error: string } | undefined
+  >();
+  const [searchHotel, setSearchHotel] =
+    useState<SkyscannerAPIHotelSearchResponse>();
   const [filters, setFilters] = useState({});
-  const [showFilters, setShowFilters] = useState(false);
-  const [searchIndicative, setSearchIndicative] =
-    useState<SkyscannerAPIIndicativeResponse>();
-  const [query, setQuery] = useState(flightParams);
-  const [image, setImage] = useState(headerImage);
-  //const sessionToken = "sessionToken" in search ? search.sessionToken : "";
+  const [showFilters] = useState(false);
+  const [query] = useState(flightParams);
 
   useEffect(() => {
-    runCreate();
-    runIndicative();
+    setLoading(true);
+    runCreateSearch();
+    runHotel();
   }, []);
 
-  const runCreate = async () => {
-    //get search
-    const searchCreate = await skyscanner().flight().create({
+  const runHotel = async () => {
+    const hotelSearch = await skyscanner().hotel({
       apiUrl,
-      query: flightQuery,
+      query: {
+        from: hotelQuery.from.entityId,
+        to: hotelQuery.to.entityId,
+        depart: hotelQuery.depart,
+        return: moment(hotelQuery.depart).add(2 ,'days').format('YYYY-MM-DD'),
+        tripType: "return",
+      },
     });
-    if ("error" in searchCreate) return;
-    setSearch(searchCreate);
-    if (searchCreate.status === "RESULT_STATUS_COMPLETE") return;
-    runPoll({ sessionToken: searchCreate.sessionToken });
+
+    if ("error" in hotelSearch.search) return;
+    if (hotelSearch.search.meta.final_status !== "COMPLETED") {
+      await waitSeconds(3);
+      runHotel();
+    }
+
+    setSearchHotel(hotelSearch.search);
   };
-  const runPoll = async ({ sessionToken }: { sessionToken: string }) => {
-    const res = await skyscanner().flight().poll({
+
+  const runCreateSearch = async () => {
+    const flightSearch = await getFlightLiveCreate({
+      apiUrl,
+      query: {
+        from: flightQuery.from,
+        to: flightQuery.to,
+        depart: flightQuery.depart || "",
+        return: flightQuery.return,
+      },
+    });
+    if ("error" in flightSearch) return;
+
+    setSearch(flightSearch);
+
+    if (
+      "status" in flightSearch &&
+      flightSearch.status === "RESULT_STATUS_COMPLETE"
+    ) {
+      setLoading(false);
+    } else {
+      runPoll(flightSearch.sessionToken);
+    }
+  };
+
+  const runPoll = async (sessionToken: string) => {
+    const res = await getFlightLivePoll({
       apiUrl,
       token: sessionToken,
       wait: 1,
     });
 
     if ("error" in res) {
-      runPoll({ sessionToken });
+      runPoll(sessionToken);
 
       return;
     }
+
     if (res.status === "RESULT_STATUS_INCOMPLETE") {
-      setSearch(res);
-      runPoll({ sessionToken });
+      if (res.action !== "RESULT_ACTION_NOT_MODIFIED") setSearch(res);
+      runPoll(sessionToken);
     } else {
       setSearch(res);
+      setLoading(false);
     }
   };
 
-  const runIndicative = async () => {
-    const indicativeSearch = await skyscanner().indicative({
-      apiUrl,
-      query: {
-        from: query.from,
-        to: query.to,
-        tripType: "single",
-      },
-      month: Number(query.depart.split("-")[1]),
-      year: Number(query.depart.split("-")[0]),
-      groupType: "date",
-    });
-
-    if ("error" in indicativeSearch.search) return;
-
-    setSearchIndicative(indicativeSearch.search);
-  };
-
   return (
-    <div>
-      <HeroPage
+    <div className="relative">
+      <div className="sticky top-0 z-30 mb-2">
+        <FlightControlsApp apiUrl={apiUrl} flightDefault={query} />
+        {loading ? (
+          <Box sx={{ width: "100%" }}>
+            <LinearProgress
+              sx={{
+                backgroundColor: "rgba(0,0,0,0)",
+                "& .MuiLinearProgress-bar": {
+                  backgroundColor: "#1b64f2",
+                },
+              }}
+            />
+          </Box>
+        ) : (
+          ""
+        )}
+      </div>
+
+      {/* <HeroPage
         apiUrl={apiUrl}
         buttonLoading={false}
         flightDefault={query}
         backgroundImage={image}
         flightFormChangeSearch
-      />
-      <Breadcrumbs
+        showFlightForm={false}
+      /> */}
+      {/* <Breadcrumbs
         items={[
           {
             name: "Flight Search",
@@ -187,60 +232,85 @@ export default function Search() {
             name: `${flightQuery.from.name} to ${flightQuery.to.name}`,
           },
         ]}
-      />
-      <div className="bg-white dark:bg-gray-900">
-        <div className="md:flex justify-between mx-4 max-w-screen-xl bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-          <div
-            className="relative z-10 bg-white dark:bg-gray-900 md:hidden border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800"
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            {showFilters ? "Hide Filters" : "Show Filters"}
+      /> */}
+      <div className="">
+        <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
+          <div className="relative z-10 md:hidden bg-white dark:bg-gray-900 border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800">
+            <div className="flex gap-2">
+            <FiltersDrawer
+              onClear={() => {
+                setFilters({});
+              }}
+            >
+              <div className="px-6 py-8">
+                <h2 className="text-2xl font-bold mb-4">Change Search</h2>
+                <FiltersDefault
+                  flights={search && "error" in search ? undefined : search}
+                  onFilterChange={(filters) => setFilters(filters)}
+                  query={flightQuery}
+                  defaultFilters={filters}
+                />
+              </div>
+            </FiltersDrawer>
+            <GraphDrawer>
+            <PriceGraph
+                apiUrl={apiUrl}
+                query={flightQuery}
+                showReturn
+              />
+            </GraphDrawer>
+            </div>
           </div>
-          <div
-            className={`${
-              showFilters ? "" : "hidden"
-            } xl:w-[400px] md:block max-w-none`}
-          >
-            <FiltersDefault onFilterChange={(filters) => setFilters(filters)} />
+          <div className={`hidden md:block w-96 p-2`}>
+            <FiltersDefault
+              flights={search && "error" in search ? undefined : search}
+              onFilterChange={(filters) => setFilters(filters)}
+              query={flightQuery}
+            />
           </div>
           <div className="w-full md:ml-2">
-            {search && "error" in search ? (
-              <div className="dark:text-white"> {search.error}</div>
+            <FlightResultsDefault
+              flights={search && "error" in search ? undefined : search}
+              filters={filters}
+              query={flightQuery}
+              apiUrl={apiUrl}
+              googleApiKey={googleApiKey}
+              googleMapId={googleMapId}
+              loading={!search}
+              headerSticky={false}
+            />
+            {/* {!search || error !== "" ? (
+              <div className="dark:text-white"> {error}</div>
             ) : (
               <>
+                
+                {/*  }
+              </>
+            )} */}
+          </div>
+          <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
+            <CompetitorCheck
+              query={flightQuery}
+              apiUrl={apiUrl}
+              skyscannerSearch={
+                search && "error" in search ? undefined : search
+              }
+            />
+            <FlightHotelBundle search={search} searchHotel={searchHotel} />
+            {/* <div className="mt-4">
                 <MapComponent
                   flightQuery={flightQuery}
                   googleMapId={googleMapId}
                   googleApiKey={googleApiKey}
                   key="map-component"
                 />
-                <ExplorePage country={country} />
-                <h2 className="font-bold mb-2 text-lg">Departure Dates</h2>
-                <DatesGraph
-                  search={searchIndicative}
-                  query={flightQuery}
-                  hasMaxWidth
-                />
-                {search?.status !== "RESULT_STATUS_COMPLETE" ? (
-                  <div className="sticky top-0 z-20 text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
-                    <span className="mr-2">
-                      <Loading />
-                    </span>{" "}
-                    Loading More Prices & Flights...
-                  </div>
-                ) : (
-                  ""
-                )}
-                <FlightResultsDefault
-                  flights={search && "error" in search ? undefined : search}
-                  filters={filters}
-                  query={flightQuery}
-                  apiUrl={apiUrl}
-                  googleApiKey={googleApiKey}
-                  googleMapId={googleMapId}
-                  loading={!!!search}
-                />
-                <CarHireList
+              </div> */}
+            <ExplorePage country={country} />
+
+          </div>
+        </div>
+        <div>
+        {/* <CarHireList
                   query={{
                     from: flightQuery.from.entityId,
                     depart: flightQuery.depart,
@@ -248,10 +318,7 @@ export default function Search() {
                   }}
                   apiUrl={apiUrl}
                 />
-                <HotelList query={flightQuery} apiUrl={apiUrl} />
-              </>
-            )}
-          </div>
+                <HotelList query={hotelQuery} apiUrl={apiUrl} /> */}
         </div>
       </div>
     </div>

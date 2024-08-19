@@ -4,37 +4,30 @@ import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import { getImages } from "~/helpers/sdk/query";
 import { useLoaderData } from "@remix-run/react";
-import { getEntityIdFromIata, getPlaceFromEntityId } from "~/helpers/sdk/place";
-import { Loading } from "~/components/ui/loading/";
-import { getPlaceFromIata } from "~/helpers/sdk/place";
-import { HeroPage } from "~/components/section/hero/hero-page";
+import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { Query, QueryPlace } from "~/types/search";
 import { getCountryEntityId } from "~/helpers/sdk/data";
 import type { Place } from "~/helpers/sdk/place";
-import { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
+import type { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
 import { waitSeconds } from "~/helpers/utils";
-import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import {
+  ExplorePage,
   FlightHotelBundle,
-  MapComponent,
-  SearchGraphs,
 } from "~/components/section/page/search";
-import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
 import {
   getFlightLiveCreate,
   getFlightLivePoll,
 } from "~/helpers/sdk/flight/flight-sdk";
-import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import type { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { CompetitorCheck } from "~/components/section/competitor-check/competitor-check";
-import { CarHireList } from "~/components/section/car-hire-list";
-import { HotelList } from "~/components/section/hotels-list";
 import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
 import { Box, LinearProgress } from "@mui/material";
 import { FiltersDrawer } from "~/components/ui/drawer/drawer-filter";
-import { ExploreGraph } from "~/components/section/explore/explore-graph";
 import { PriceGraph } from "~/components/ui/graph/price-graph";
 import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
+import { CarHireList } from "~/components/section/car-hire-list";
+import { HotelList } from "~/components/section/hotels-list";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -43,10 +36,6 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   //exit
   if (!params.from || !params.to) return;
-
-  //get locations
-  const from = getEntityIdFromIata(params.from);
-  const to = getEntityIdFromIata(params.to);
 
   //query
   const fromPlace = getPlaceFromIata(params.from);
@@ -100,7 +89,6 @@ export default function Search() {
     googleMapId,
     flightParams,
     flightQuery,
-    headerImage,
     country,
   }: {
     apiUrl: string;
@@ -117,21 +105,14 @@ export default function Search() {
   >();
   const [searchHotel, setSearchHotel] =
     useState<SkyscannerAPIHotelSearchResponse>();
-  const [searchIndicative, setSearchIndicative] =
-    useState<SkyscannerAPIIndicativeResponse>();
   const [filters, setFilters] = useState({});
-  const [showFilters, setShowFilters] = useState(false);
-  const [error, setError] = useState("");
-  const [query, setQuery] = useState(flightParams);
-  const [image, setImage] = useState(headerImage);
-  const sessionToken =
-    search && "sessionToken" in search ? search.sessionToken : "";
+  const [showFilters] = useState(false);
+  const [query] = useState(flightParams);
 
   useEffect(() => {
     setLoading(true);
     runCreateSearch();
     runHotel();
-    runIndicative();
   }, []);
 
   const runHotel = async () => {
@@ -153,24 +134,6 @@ export default function Search() {
     }
 
     setSearchHotel(hotelSearch.search);
-  };
-
-  const runIndicative = async () => {
-    const indicativeSearch = await skyscanner().indicative({
-      apiUrl,
-      query: {
-        from: query.from,
-        to: query.to,
-        tripType: "return",
-      },
-      month: Number(query.depart.split("-")[1]),
-      year: Number(query.depart.split("-")[0]),
-      groupType: "date",
-    });
-
-    if ("error" in indicativeSearch.search) return;
-
-    setSearchIndicative(indicativeSearch.search);
   };
 
   const runCreateSearch = async () => {
@@ -209,7 +172,6 @@ export default function Search() {
 
       return;
     }
-    setError("");
 
     if (res.status === "RESULT_STATUS_INCOMPLETE") {
       if (res.action !== "RESULT_ACTION_NOT_MODIFIED") setSearch(res);
@@ -295,22 +257,6 @@ export default function Search() {
             />
           </div>
           <div className="w-full md:ml-2">
-            {/* <FlightHotelBundle search={search} searchHotel={searchHotel} /> */}
-            {/* <CompetitorCheck
-                query={flightQuery}
-                apiUrl={apiUrl}
-                skyscannerSearch={
-                  search && "error" in search ? undefined : search
-                }
-              />
-              <div className="mt-4">
-                <MapComponent
-                  flightQuery={flightQuery}
-                  googleMapId={googleMapId}
-                  googleApiKey={googleApiKey}
-                  key="map-component"
-                />
-              </div> */}
             <FlightResultsDefault
               flights={search && "error" in search ? undefined : search}
               filters={filters}
@@ -318,7 +264,7 @@ export default function Search() {
               apiUrl={apiUrl}
               googleApiKey={googleApiKey}
               googleMapId={googleMapId}
-              loading={!!!search}
+              loading={!search}
               headerSticky={false}
             />
             {/* {!search || error !== "" ? (
@@ -326,15 +272,7 @@ export default function Search() {
             ) : (
               <>
                 
-                {/* <CarHireList
-                  query={{
-                    from: flightQuery.from.entityId,
-                    depart: flightQuery.depart,
-                    return: flightQuery.return,
-                  }}
-                  apiUrl={apiUrl}
-                />
-                <HotelList query={flightQuery} apiUrl={apiUrl} /> }
+                {/*  }
               </>
             )} */}
           </div>
@@ -347,7 +285,28 @@ export default function Search() {
               }
             />
             <FlightHotelBundle search={search} searchHotel={searchHotel} />
+            {/* <div className="mt-4">
+                <MapComponent
+                  flightQuery={flightQuery}
+                  googleMapId={googleMapId}
+                  googleApiKey={googleApiKey}
+                  key="map-component"
+                />
+              </div> */}
+            <ExplorePage country={country} />
+
           </div>
+        </div>
+        <div>
+        {/* <CarHireList
+                  query={{
+                    from: flightQuery.from.entityId,
+                    depart: flightQuery.depart,
+                    return: flightQuery.return,
+                  }}
+                  apiUrl={apiUrl}
+                />
+                <HotelList query={flightQuery} apiUrl={apiUrl} /> */}
         </div>
       </div>
     </div>
