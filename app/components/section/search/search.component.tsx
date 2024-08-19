@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "flowbite-react";
-import { waitSeconds } from "~/helpers/utils";
-import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { Place } from "~/helpers/sdk/place";
+import type { Place } from "~/helpers/sdk/place";
 import { Link } from "@remix-run/react";
 import { getGeoSDK } from "~/helpers/sdk/geo/geo-sdk";
 
@@ -62,7 +60,6 @@ export default function SearchModal({
   onClose,
 }: SearchModalProps) {
   const [showModal, setShowModal] = useState<boolean>(show);
-  const inputReference = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setShowModal(show);

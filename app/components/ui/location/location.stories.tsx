@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Location } from './location.component';
  
 const meta: Meta<typeof Location> = {
-  title: 'UI/Location',
+  title: 'UI/Location/Location',
   component: Location,
 };
  

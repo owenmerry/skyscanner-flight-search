@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
  
-import { Wrapper } from './wrapper.component';
+import { Search } from './search.component';
  
-const meta: Meta<typeof Wrapper> = {
-  title: 'UI/Wrapper/Wrapper',
-  component: Wrapper,
+const meta: Meta<typeof Search> = {
+  title: 'Section/Search/Search',
+  component: Search,
 };
  
 export default meta;
