@@ -21,7 +21,7 @@ const query = {
 
 export const Default: Story = {
   args: {
-    apiUrl: "https://api.flights.owenmerry.com",
+    apiUrl: "GameJackpot",
     ...(query.from && query.to ? {query: {
       from: query.from,
       to: query.to,
