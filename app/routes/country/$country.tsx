@@ -27,6 +27,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       to: country ? country.entityId : 'anywhere',
       tripType: "return",
     },
+    groupType: 'month',
     month: Number(moment().format('MM')),
     year: Number(moment().format('YYYY')),
     endMonth: Number(moment().add(12,'months').format('MM')),
