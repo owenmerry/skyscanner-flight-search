@@ -3,7 +3,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { Loading } from "~/components/ui/loading";
 import { getSearchWithCreateAndPoll } from "~/helpers/sdk/flight/flight-sdk";
-import {
+import type {
   IndicitiveQuoteResult,
   SkyscannerDateTimeObject,
 } from "~/helpers/sdk/indicative/indicative-response";

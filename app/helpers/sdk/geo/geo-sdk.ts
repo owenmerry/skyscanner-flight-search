@@ -8,6 +8,7 @@ import geoAirports from "~/data/geo-airport.json";
 export interface GeoSDK {
   places: Place[];
   countries: Place[];
+  continent: Place[];
   cities: Place[];
   airports: Place[];
   index: { [key: string]: Place };
@@ -51,6 +52,9 @@ export const getGeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
   const countries = places.filter(
     (place) => place.type === "PLACE_TYPE_COUNTRY"
   );
+  const continent = places.filter(
+    (place) => place.type === "PLACE_TYPE_CONTINENT"
+  );
   const cities = places.filter((place) => place.type === "PLACE_TYPE_CITY");
   const airports = places.filter(
     (place) => place.type === "PLACE_TYPE_AIRPORT"
@@ -63,6 +67,7 @@ export const getGeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
   return {
     places,
     countries,
+    continent,
     cities,
     airports,
     index,

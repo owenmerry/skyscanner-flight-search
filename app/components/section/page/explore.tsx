@@ -40,7 +40,7 @@ export const AllCountries = ({
               <div key={key}>
                 <Link
                   className="hover:underline"
-                  to={`/explore/${country.slug}`}
+                  to={`/country/${country.slug}`}
                 >
                   <div
                     style={{
