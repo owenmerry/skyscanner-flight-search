@@ -329,7 +329,7 @@ export const ExplorePage = ({ country }: { country?: Place }) => {
       {country ? (
         <div className="mt-2 mb-2">
           <Link
-            to={`/explore/${country.slug}`}
+            to={`/country/${country.slug}`}
             target="_blank"
             className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
           >
