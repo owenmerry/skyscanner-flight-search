@@ -6,22 +6,25 @@ import { getGeoSDK } from "./geo/geo-sdk";
 import type { SkyscannerAPIHotelSearchResponse } from "./hotel/hotel-response";
 import type { HotelSDK } from "./hotel/hotel-sdk";
 import { getHotelSDK } from "./hotel/hotel-sdk";
-import { FlightQuery, FlightQueryIndicative } from "~/types/search";
+import type { FlightQuery, FlightQueryIndicative } from "~/types/search";
 //indicative
 import type { SkyscannerAPIIndicativeResponse } from "./indicative/indicative-response";
 import type { IndicativeSDK } from "./indicative/indicative-sdk";
 import { getIndicativeSDK } from "./indicative/indicative-sdk";
 //content
 import type { SkyscannerAPIContentPageResponse } from "./content/content-response";
-import { ContentSDK, getContentSDK } from "./content/content-sdk";
+import { getContentSDK } from "./content/content-sdk";
+import type { ContentSDK } from "./content/content-sdk";
 import { getFlightSDK } from "./flight/flight-sdk";
-import { FlightSDK } from "./flight/flight-sdk";
-import {
+import type { FlightSDK } from "./flight/flight-sdk";
+import type {
   CarHireIndicativeQuery,
   CarHireIndicativeSDK,
+} from "./car-hire-indicative/car-hire-indicative-sdk";
+import {
   getCarHireIndicativeSDK,
 } from "./car-hire-indicative/car-hire-indicative-sdk";
-import { SkyscannerAPICarHireIndicativeResponse } from "./car-hire-indicative/care-hire-indicative-response";
+import type { SkyscannerAPICarHireIndicativeResponse } from "./car-hire-indicative/care-hire-indicative-response";
 
 // types (Response)
 
@@ -35,6 +38,8 @@ export interface SkyscannerSDK {
     apiUrl,
     month,
     year,
+    endMonth,
+    endYear,
     groupType,
   }: {
     res?: SkyscannerAPIIndicativeResponse;
@@ -42,6 +47,8 @@ export interface SkyscannerSDK {
     apiUrl?: string;
     month?: number;
     year?: number;
+    endMonth?: number;
+    endYear?: number;
     groupType?: string;
   }) => Promise<IndicativeSDK>;
   hotel: ({

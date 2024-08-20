@@ -1,155 +1,75 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { Layout } from "~/components/ui/layout/layout";
-import { Map } from "~/components/ui/map";
-import { Wrapper } from "@googlemaps/react-wrapper";
-import { getMarkersWorld } from "~/helpers/map";
-import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { useState } from "react";
-import { ExploreEverywhere } from "~/components/section/explore/explore-everywhere";
-import { AllCountries } from "~/components/section/page/explore";
-import { AllActivities } from "~/components/section/activities/activities";
-import { HeroExplore } from "~/components/section/hero/hero-explore";
-import { getRandomNumber } from "~/helpers/utils";
-import { Place } from "~/helpers/sdk/place";
-import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
-
+import type { Place } from "~/helpers/sdk/place";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
-import { getMarkersCountryFrom } from "~/helpers/map";
-import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
-import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
-import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
-import { useEffect } from "react";
-import { NavigationMiniApps } from "~/components/ui/navigation/navigation-mini-apps";
-import { Pages } from "~/components/ui/navigation/pages";
-import moment from "moment";
+import { Layout } from "~/components/ui/layout/layout";
+import { userPrefs } from "~/helpers/cookies";
+import { MarketingGallery } from "~/components/section/marketing/marketing-gallery";
+import { MarketingPlaces } from "~/components/section/marketing/marketing-places";
+import { getImages } from "~/helpers/sdk/query";
+import { MarketingHeroExplore } from "~/components/section/marketing/marketing-hero-explore";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
+import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 
-export const loader: LoaderFunction = async ({}) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
-  const googleApiKey = process.env.GOOGLE_API_KEY || "";
-  const googleMapId = process.env.GOOGLE_MAP_ID || "";
-  const placesSDK = skyscanner().geo();
+  const cookieHeader = request.headers.get("Cookie");
+  const cookie = (await userPrefs.parse(cookieHeader)) || {};
+  const exploreImages = await getImages({
+    apiUrl,
+    query: `Summer Holidays`,
+  });
+  const from = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LHR");
+  const indicativeSearch = await skyscanner().indicative({
+    apiUrl,
+    query: {
+      from: from.entityId,
+      to: "anywhere",
+      tripType: "return",
+    },
+    month: 8,
+    year: 2024,
+    endMonth: 12,
+    endYear: 2024,
+  });
+  const search = indicativeSearch.quotes;
 
   return json({
-    countries: placesSDK.countries,
-    apiUrl,
-    googleApiKey,
-    googleMapId,
+    exploreImages,
+    from,
+    search,
   });
 };
 
 export default function SEOAnytime() {
-  const { countries, googleApiKey, googleMapId, apiUrl } = useLoaderData<{
-    countries: Place[];
-    googleApiKey: string;
-    googleMapId: string;
-    apiUrl: string;
-  }>();
-  const [countryShow, setCountryShow] = useState(false);
-  const [searchIndicative, setSearchIndicative] =
-    useState<SkyscannerAPIIndicativeResponse>();
-  const [from, setFrom] = useState(
-    getFromPlaceLocalOrDefault() || getPlaceFromIata("LHR")
-  );
-  const defaultSearch = getDefualtFlightQuery();
-
-  // const randomCountry =
-  //   countries[getRandomNumber(countries.length)] || countries[0];
-  const randomCountry = countries[moment().dayOfYear()] || countries[0];
-
-  if (!from) return;
-
-  useEffect(() => {
-    runIndicative();
-  }, []);
-
-  const runIndicative = async () => {
-    const indicativeSearch = await skyscanner().indicative({
-      apiUrl,
-      query: {
-        from: from.entityId,
-        to: "anywhere",
-        tripType: "return",
-      },
-      month: Number("2023-12-01".split("-")[1]),
-    });
-
-    if ("error" in indicativeSearch.search) return;
-
-    console.log(indicativeSearch.search);
-
-    setSearchIndicative(indicativeSearch.search);
-  };
+  const {
+    exploreImages,
+    from,
+    search,
+  } : {
+    from: Place;
+    exploreImages: string[];
+    search: IndicativeQuotesSDK[];
+  } = useLoaderData();
 
   return (
     <Layout selectedUrl="/explore">
-      <HeroExplore
-        title={`Explore Everywhere`}
-        imagePlace={randomCountry}
-        backgroundImage={randomCountry.images}
-        apiUrl={apiUrl}
-      />
-      <Breadcrumbs
-        items={[
-          {
-            name: "Explore",
-          },
-        ]}
-      />
-
-      {searchIndicative ? (
-        <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-          <div>
-            <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-              Flights From {from.name} to Everywhere
-            </h2>
-          </div>
-          <Wrapper apiKey={googleApiKey}>
-            <Map
-              googleMapId={googleMapId}
-              center={{
-                lat: from.coordinates.latitude,
-                lng: from.coordinates.longitude,
-              }}
-              zoom={5}
-              markers={getMarkersCountryFrom(
-                [],
-                searchIndicative,
-                from,
-                defaultSearch
-              )}
-              isFitZoomToMarkers={false}
-            />
-          </Wrapper>
+      <div className="relative">
+        <div
+          className="absolute top-0 left-0 w-full bg-top bg-cover bg-no-repeat h-[60rem]"
+          style={{ backgroundImage: `url(${exploreImages[0]})` }}
+        >
+          <div className="opacity-80 bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>
+          <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>
         </div>
-      ) : (
-        ""
-      )}
-
-      <NavigationMiniApps />
-      <Pages apiUrl={apiUrl} />
-
-      <AllCountries
-        countries={countries}
-        showAll={countryShow}
-        onShowToggle={() => setCountryShow(!countryShow)}
-      />
-      <AllActivities />
-      <ExploreEverywhere apiUrl={apiUrl} />
-
-      <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-        <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-          Explore By Map
-        </h2>
-        <Wrapper apiKey={googleApiKey}>
-          <Map
-            googleMapId={googleMapId}
-            center={{ lat: 0, lng: 0 }}
-            zoom={2}
-            markers={getMarkersWorld(countries)}
-          />
-        </Wrapper>
+      </div>
+      <div className="p-8 text-center relative z-10">
+        <MarketingHeroExplore />
+        <MarketingGallery images={exploreImages} />
+        <MarketingPlaces url="/continent/" from={from} search={search} />
+        <MarketingDeals from={from} search={search} />
       </div>
     </Layout>
   );

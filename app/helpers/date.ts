@@ -1,7 +1,6 @@
-import { addDays } from "date-fns";
-import { formatDistance } from "date-fns";
-import { IndicitiveResults } from "~/types/geo";
-import { SkyscannerDateTimeObject } from "./sdk/indicative/indicative-response";
+import { addDays, formatDistance } from "date-fns";
+import type { IndicitiveResults } from "~/types/geo";
+import type { SkyscannerDateTimeObject } from "./sdk/indicative/indicative-response";
 import moment from "moment";
 
 export const getNextDay = (date = new Date(), dayNumber: number) => {
@@ -189,4 +188,40 @@ export const getNextXMonthsStartDayAndEndDay = (months: number) => {
   }
 
   return arRet;
+};
+
+export const getYYYYMMDDFromSkyscannerDate = (date: SkyscannerDateTimeObject) => {
+  const numberTwoDigits = (myNumber: number) => {
+    return ("0" + myNumber).slice(-2);
+  };
+  return `${date.year}-${numberTwoDigits(
+    date.month
+  )}-${numberTwoDigits(date.day)}`;
+};
+
+export const getTripDays = (
+  departDate: string,
+  returnDate: string
+) => {
+  const departDateObject = new Date(departDate);
+  const returnDateObject = addDays(new Date(returnDate), 1);
+
+  return formatDistance(departDateObject, returnDateObject, {});
+};
+
+export const getUpdatedFromTimestamps = (outboundLegTimestamp : string, inboundLegTimestamp :string) => {
+  const departUpdateTimestamp = new Date(
+    Number(outboundLegTimestamp) * 1000
+  );
+  const returnUpdateTimestamp = new Date(
+    Number(inboundLegTimestamp) * 1000
+  );
+  const updateTimestamp =
+    departUpdateTimestamp >= returnUpdateTimestamp
+      ? departUpdateTimestamp
+      : returnUpdateTimestamp;
+
+  return formatDistance(updateTimestamp, new Date(), {
+    addSuffix: true,
+  });
 };

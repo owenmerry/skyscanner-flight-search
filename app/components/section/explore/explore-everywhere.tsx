@@ -1,21 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { getPlaceFromIata, type Place } from "~/helpers/sdk/place";
 import { getPlaceFromEntityId } from "~/helpers/sdk/place";
-import {
+import type {
   IndicitiveQuote,
   IndicitiveQuoteResult,
   SkyscannerAPIIndicativeResponse,
   SkyscannerDateTimeObject,
 } from "~/helpers/sdk/indicative/indicative-response";
 import { getPrice } from "~/helpers/sdk/price";
-import { QueryPlace } from "~/types/search";
+import type { QueryPlace } from "~/types/search";
 import { formatDistance, format, addDays } from "date-fns";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { getFromPlaceLocalOrDefault } from "~/helpers/local-storage";
 import moment from "moment";
 import { ToggleSwitch } from "flowbite-react";
 import { getCountryEntityId } from "~/helpers/sdk/data";
-import { getSearchWithCreateAndPoll } from "~/helpers/sdk/flight/flight-sdk";
 import { Loading } from "~/components/ui/loading";
 
 export const ExploreEverywhere = ({
@@ -89,6 +88,15 @@ export const ExploreEverywhere = ({
       },
       month: Number(moment(month).startOf("month").format("MM")),
       year: Number(moment(month).startOf("month").format("YYYY")),
+      endMonth: 12,
+      endYear: 2024,
+    });
+
+    console.log({
+      month: Number(moment(month).startOf("month").format("MM")),
+      year: Number(moment(month).startOf("month").format("YYYY")),
+      endMonth: 12,
+      endYear: 2024,
     });
 
     if ("error" in indicativeSearch.search) return;

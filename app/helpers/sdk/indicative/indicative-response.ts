@@ -66,6 +66,17 @@ export interface IndicitiveResults {
       };
     };
   };
+  carriers: {
+    [key: string]: IndicitiveCarrier;
+  };
+}
+
+export interface IndicitiveCarrier {
+  displayCode: string;
+  iata: string;
+  icao: string;
+  imageUrl: string;
+  name: string;
 }
 
 export interface SkyscannerDateTimeObject {

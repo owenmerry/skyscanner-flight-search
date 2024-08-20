@@ -1,6 +1,6 @@
+import { skyscanner } from "./skyscannerSDK";
 import type { Place } from "~/helpers/sdk/geo/geo-sdk";
 export type { Place } from "~/helpers/sdk/geo/geo-sdk";
-import { skyscanner } from "./skyscannerSDK";
 
 const geoData = skyscanner().geo();
 
@@ -22,10 +22,38 @@ export const getPlaceFromIata = (iata: string): Place | false => {
   return found.length > 0 ? found[0] : false;
 };
 
-export const getPlaceFromSlug = (slug: string, type: string): Place | false => {
+export const getPlaceFromSlug = (
+  slug: string,
+  type: string,
+  options?: {
+    parentId?: string;
+  }
+): Place | false => {
   const list = getGeoList();
-  const found = list.filter((item) => item.slug === slug && item.type === type);
+  const found = list.filter(
+    (item) =>
+      item.slug === slug &&
+      item.type === type &&
+      (options?.parentId ? options?.parentId === item.parentId : true)
+  );
   return found.length > 0 ? found[0] : false;
+};
+
+export const getPlaceChildren = (place: Place): Place[] => {
+  const list = getGeoList().filter((item) => item.parentId === place.entityId);
+  return list;
+};
+
+export const getPlaceType = (place: Place): string => {
+  const placeType: { [key: string]: string } = {
+    PLACE_TYPE_CITY: "City",
+    PLACE_TYPE_COUNTRY: "Country",
+    PLACE_TYPE_CONTINENT: "Continent",
+    PLACE_TYPE_ISLAND: "Island",
+    PLACE_TYPE_AIRPORT: "Airport",
+  };
+
+  return placeType[place.type];
 };
 
 export const getPlaceFromEntityId = (entityId: string): Place | false => {
