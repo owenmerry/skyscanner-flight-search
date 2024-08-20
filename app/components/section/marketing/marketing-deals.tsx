@@ -17,7 +17,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
       <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
         We are strategists, designers and developers. Innovators and problem
         solvers. Small enough to be simple and quick, but big enough to deliver
-        the scope you want at the pace you need.
+        the scope you want at the pace you need {search.length}.
       </p>
       <div className="m-6 grid grid-cols-1 gap-4 md:grid-cols-3">
         {search

@@ -29,8 +29,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     },
     month: Number(moment().format('MM')),
     year: Number(moment().format('YYYY')),
-    endMonth: Number(moment().add(6,'months').format('MM')),
-    endYear: Number(moment().add(6,'months').format('YYYY')),
+    endMonth: Number(moment().add(12,'months').format('MM')),
+    endYear: Number(moment().add(12,'months').format('YYYY')),
   });
   const search = indicativeSearch.quotes;
 
