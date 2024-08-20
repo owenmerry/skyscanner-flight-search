@@ -180,6 +180,7 @@ export const getNextXMonthsStartDayAndEndDay = (months: number) => {
     const monthLastDay = month.endOf("month");
     arRet.push({
       displayMonthText: month.format("MMMM YYYY"),
+      smallMonth: month.format("MMM"),
       firstDay: monthFirstDay.format("YYYY-MM-DD"),
       lastDay: monthLastDay.format("YYYY-MM-DD"),
       year: monthLastDay.format("YYYY"),

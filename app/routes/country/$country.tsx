@@ -11,6 +11,8 @@ import { MarketingPlaces } from "~/components/section/marketing/marketing-places
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
+import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
+import moment from "moment";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -25,10 +27,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       to: country ? country.entityId : 'anywhere',
       tripType: "return",
     },
-    month: 8,
-    year: 2024,
-    endMonth: 12,
-    endYear: 2024,
+    month: Number(moment().format('MM')),
+    year: Number(moment().format('YYYY')),
+    endMonth: Number(moment().add(6,'months').format('MM')),
+    endYear: Number(moment().add(6,'months').format('YYYY')),
   });
   const search = indicativeSearch.quotes;
 
@@ -64,6 +66,7 @@ export default function SEOAnytime() {
         <MarketingGallery images={country.images} />
         <MarketingPlaces place={country} url={`/city/${country.slug}/`} from={from} search={search} />
         <MarketingDeals from={from} search={search} to={country} level="city" />
+        <MarketingGraph from={from} search={search} to={country} />
       </div>
         
     </Layout>

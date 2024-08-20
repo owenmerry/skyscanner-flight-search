@@ -1,7 +1,7 @@
 import { getTripDays, getUpdatedFromTimestamps, getYYYYMMDDFromSkyscannerDate } from "~/helpers/date";
 import { getAllParents } from "../data";
 import { getPlaceFromEntityId, type Place } from "../place";
-import { getPrice } from "../price";
+import { getPrice, getPriceRaw } from "../price";
 import type { IndicitiveCarrier, SkyscannerAPIIndicativeResponse, SkyscannerDateTimeObject } from "./indicative-response";
 
 export interface IndicativeQuotesSDK {
@@ -16,6 +16,7 @@ export interface IndicativeQuotesSDK {
   isDirect: boolean;
   price: {
     display: string;
+    raw: string;
     amount: string;
     unit: string;
   };
@@ -75,6 +76,7 @@ export const getIndicativeQuotesSDK = (
       },
       price: {
         display: getPrice(quote.minPrice.amount, quote.minPrice.unit),
+        raw: getPriceRaw(quote.minPrice.amount, quote.minPrice.unit),
         amount: quote.minPrice.amount,
         unit: quote.minPrice.unit,
       },
