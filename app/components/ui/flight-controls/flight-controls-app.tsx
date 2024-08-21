@@ -42,6 +42,7 @@ const FlightsSearchForm: React.FC<FlightControlsAppProps> = ({
     : getDefualtFlightQuery();
   const [query, setQuery] = useState<Query>(defaultQuery);
   const [loading, setLoading] = useState<boolean>(false);
+  const [switchRotate, setSwitchRotate] = useState<boolean>(false);
 
   const handleQueryChange = (value: string, key: string) => {
     console.log(query, value, key);
@@ -56,6 +57,7 @@ const FlightsSearchForm: React.FC<FlightControlsAppProps> = ({
   };
   const handleLocationSwap = () => {
     console.log("swap", query);
+    setSwitchRotate(!switchRotate);
     setQuery({
       ...query,
       from: query.to,
@@ -114,27 +116,27 @@ const FlightsSearchForm: React.FC<FlightControlsAppProps> = ({
             handleLocationChange(value, "from", iataCode)
           }
         />
-        <div className="absolute top-3 right-2">
+        <div className="absolute top-1 -right-5 z-30">
+          <div onClick={() => handleLocationSwap()} className={`rounded-full p-2 bg-blue-600 shadow hover:scale-110 hover:bg-blue-500 ${switchRotate ? `rotate-180` : ''} transition cursor-pointer`}>
           <svg
+            className="w-4 h-4 text-white"
+            aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            fill="#fff"
-            height="15px"
-            width="15px"
-            version="1.1"
-            id="Capa_1"
-            viewBox="0 0 489.698 489.698"
-            xmlSpace="preserve"
-            className="cursor-pointer"
-            onClick={() => handleLocationSwap()}
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
           >
-            <g>
-              <g>
-                <path d="M468.999,227.774c-11.4,0-20.8,8.3-20.8,19.8c-1,74.9-44.2,142.6-110.3,178.9c-99.6,54.7-216,5.6-260.6-61l62.9,13.1    c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-123.7-26c-7.2-1.7-26.1,3.5-23.9,22.9l15.6,124.8    c1,10.4,9.4,17.7,19.8,17.7c15.5,0,21.8-11.4,20.8-22.9l-7.3-60.9c101.1,121.3,229.4,104.4,306.8,69.3    c80.1-42.7,131.1-124.8,132.1-215.4C488.799,237.174,480.399,227.774,468.999,227.774z" />
-                <path d="M20.599,261.874c11.4,0,20.8-8.3,20.8-19.8c1-74.9,44.2-142.6,110.3-178.9c99.6-54.7,216-5.6,260.6,61l-62.9-13.1    c-10.4-2.1-21.8,4.2-23.9,15.6c-2.1,10.4,4.2,21.8,15.6,23.9l123.8,26c7.2,1.7,26.1-3.5,23.9-22.9l-15.6-124.8    c-1-10.4-9.4-17.7-19.8-17.7c-15.5,0-21.8,11.4-20.8,22.9l7.2,60.9c-101.1-121.2-229.4-104.4-306.8-69.2    c-80.1,42.6-131.1,124.8-132.2,215.3C0.799,252.574,9.199,261.874,20.599,261.874z" />
-              </g>
-            </g>
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
+            />
           </svg>
+
+          </div>
         </div>
       </div>
       <div className="lg:col-span-2">

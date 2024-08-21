@@ -11,6 +11,7 @@ import type {
   TripadvisorNearByData,
   TripadvisorNearByResponse,
 } from "~/types/tripadvisor-near-by";
+import { tripSDKData } from "./helpers/data-tripadvisor";
 
 export interface TripadvisorSDK {
   location: TripadvisorNearByData;
@@ -29,9 +30,10 @@ export const MarketingNearby = ({
   to,
   apiUrl,
 }: MarketingNearbyProps) => {
-  const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
+  const [locations, setLocations] = useState<TripadvisorSDK[]>(tripSDKData);
 
   const runLocations = async () => {
+    if(locations.length > 0) return;
     const res = await fetch(
       `${apiUrl}/service/tripadvisor/locations?searchQuery=${to.name}`
     );
