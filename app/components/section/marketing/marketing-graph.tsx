@@ -5,7 +5,7 @@ interface MarketingGraphProps {
   search: IndicativeQuotesSDK[];
 }
 export const MarketingGraph = ({ search }: MarketingGraphProps) => {
-  const months = getNextXMonthsStartDayAndEndDay(12);
+  const months = getNextXMonthsStartDayAndEndDay(11);
   const monthsPrice = months.map((monthItem) => ({
     ...monthItem,
     price: search.filter(
