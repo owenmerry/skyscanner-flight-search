@@ -64,7 +64,7 @@ export const MarketingMap = ({
         lat: from.coordinates.latitude,
         lng: from.coordinates.longitude,
       },
-      label: `<div class='rounded-full w-5 h-5 bg-pink-600 border-white border-2 shadow'></div>`,
+      label: `<div class='rounded-full w-5 h-5 bg-pink-600 border-white border-2 shadow animate-bounce'></div>`,
     });
 
     return markers;
