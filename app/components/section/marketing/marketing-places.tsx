@@ -58,21 +58,19 @@ export const MarketingPlaces = ({
           })
           .map((childPlace) => {
             return (
-              <div key={childPlace.place.entityId} className="min-w-72">
+              <div key={childPlace.place.entityId} className="min-w-72 sm:min-w-0 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800  hover:dark:border-gray-500">
                 <a
-                  href={url ? `${url}${childPlace.place.slug}` : ''}
-                  className="grid grid-cols-2 items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800  hover:dark:border-gray-500"
+                  href={url ? `${url}${childPlace.place.slug}` : ""}
+                  className="flex items-center "
                 >
-                  <img
-                    className="object-cover w-full rounded-t-lg h-32 md:rounded-none md:rounded-s-lg"
-                    src={
-                      childPlace.place.images[0]
-                        ? `${childPlace.place.images[0]}&h=250`
-                        : "/images/places/map-dark.png"
-                    }
-                    alt=""
-                  />
-                  <div className="flex flex-col justify-between p-4 leading-normal">
+                  {childPlace.place.images[0] ? (
+                    <div
+                    className="flex-1 rounded-t-lg h-32 md:rounded-none md:rounded-s-lg bg-cover bg-center" style={{backgroundImage:`url(${childPlace.place.images[0]})`}}
+                    ></div>
+                  ) : (
+                    ""
+                  )}
+                  <div className="flex-1 flex flex-col justify-between p-4 leading-normal">
                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white truncate">
                       {childPlace.place.name}
                     </h5>

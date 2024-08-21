@@ -1,14 +1,15 @@
 export interface TripadvisorDetailsData {
   location_id: string;
   name: string;
-  description: string;
+  description?: string;
   web_url: string;
   address_obj: {
-    street1: string;
-    street2: string;
+    street1?: string;
+    street2?: string;
     city: string;
     country: string;
-    postalcode: string;
+    postalcode?: string;
+    state?: string;
     address_string: string;
   };
   ancestors: {
@@ -43,7 +44,7 @@ export interface TripadvisorDetailsData {
   };
   photo_count: string;
   see_all_photos: string;
-  hours: {
+  hours?: {
     periods: {
       open: {
         day: number;
