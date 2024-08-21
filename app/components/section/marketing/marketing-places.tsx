@@ -33,7 +33,7 @@ export const MarketingPlaces = ({
   });
 
   return (
-    <div className="py-8 px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
+    <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
       <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
         Popular places {place ? `in ${place.name}` : `to Explore`}
       </h2>
@@ -42,8 +42,7 @@ export const MarketingPlaces = ({
         solvers. Small enough to be simple and quick, but big enough to deliver
         the scope you want at the pace you need.
       </p>
-      <div className="m-6 grid sm:grid-cols-3 gap-4">
-        {/* <div className="flex overflow-y-scroll scrollbar-hide snap-x gap-2 sm:overflow-visible sm:grid sm:grid-cols-5 grid-cols-2"> */}
+      <div className="flex overflow-y-scroll scrollbar-hide m-6 sm:grid sm:grid-cols-3 gap-4">
         {childrenPlacesPrices
           .sort((a, b) => {
             // Handle cases where the price is undefined
@@ -59,7 +58,7 @@ export const MarketingPlaces = ({
           })
           .map((childPlace) => {
             return (
-              <div key={childPlace.place.entityId} className="">
+              <div key={childPlace.place.entityId} className="min-w-72">
                 <a
                   href={`${url}${childPlace.place.slug}`}
                   className="grid grid-cols-2 items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"

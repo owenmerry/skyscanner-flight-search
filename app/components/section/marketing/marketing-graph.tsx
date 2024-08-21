@@ -28,7 +28,7 @@ export const MarketingGraph = ({ search }: MarketingGraphProps) => {
   };
 
   return (
-    <div className="py-8 px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
+    <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
       <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
         Cheapest months to travel
       </h2>

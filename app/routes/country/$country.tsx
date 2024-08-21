@@ -62,7 +62,7 @@ export default function SEOAnytime() {
            <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>
         </div>
       </div>
-      <div className="p-8 text-center relative z-10">
+      <div className="text-center relative z-10">
         <MarketingHero place={country} />
         <MarketingGallery images={country.images} />
         <MarketingPlaces place={country} url={`/city/${country.slug}/`} from={from} search={search} />

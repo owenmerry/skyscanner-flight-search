@@ -10,7 +10,7 @@ interface MarketingDealsProps {
 }
 export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps) => {
   return (
-    <div className="py-8 px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
+    <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
       <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
         Cheap flights to {to ? to.name : "Everywhere"}
       </h2>
@@ -19,7 +19,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
         solvers. Small enough to be simple and quick, but big enough to deliver
         the scope you want at the pace you need {search.length}.
       </p>
-      <div className="m-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="flex overflow-y-scroll scrollbar-hide m-6 sm:grid sm:grid-cols-1 gap-4 md:grid-cols-3">
         {search
           .filter((item) =>
             to ? item.parentsString.includes(to.entityId) : true
@@ -27,10 +27,10 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
           .splice(0, 9)
           .map((deal, key) => {
             return (
-              <div key={deal.id}>
+              <div key={deal.id} className="min-w-96 sm:min-w-0">
                 <a
                   href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
-                  className="relative block bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+                  className="relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
                 >
                   <div
                     className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
