@@ -33,7 +33,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
               <div key={deal.id} className="min-w-72 sm:min-w-0">
                 <a
                   href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
-                  className="relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
+                  className="group/link relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
                 >
                   <div
                     className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
@@ -41,7 +41,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
                       backgroundImage: `url(${deal.country.images[key]}&w=500)`,
                     }}
                   ></div>
-                  <div className="opacity-80 bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
+                  <div className="opacity-80 group-hover/link:opacity-60 bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
                   <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[80%] z-0 rounded-lg"></div>
                   <div className="relative z-10 p-4 leading-normal">
                     <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
