@@ -61,7 +61,7 @@ export const MarketingPlaces = ({
               <div key={childPlace.place.entityId} className="min-w-72">
                 <a
                   href={url ? `${url}${childPlace.place.slug}` : ''}
-                  className="grid grid-cols-2 items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+                  className="grid grid-cols-2 items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800  hover:dark:border-gray-500"
                 >
                   <img
                     className="object-cover w-full rounded-t-lg h-32 md:rounded-none md:rounded-s-lg"
