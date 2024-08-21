@@ -55,6 +55,7 @@ export default function SEOAnytime() {
     continentImages,
     from,
     search,
+    apiUrl,
   }: {
     apiUrl: string;
     continent: Place;
@@ -78,7 +79,7 @@ export default function SEOAnytime() {
         <MarketingPlaces place={continent} url='/country/' from={from} search={search} />
         <MarketingDeals from={from} search={search} to={continent} />
         <MarketingGraph search={search} />
-        <MarketingNearby search={search} to={continent} />
+        <MarketingNearby search={search} to={continent} apiUrl={apiUrl} />
       </div>
         
     </Layout>

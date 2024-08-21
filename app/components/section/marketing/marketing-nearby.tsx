@@ -16,14 +16,15 @@ export interface TripadvisorSDK {
 interface MarketingNearbyProps {
   search: IndicativeQuotesSDK[];
   to: Place;
+  apiUrl: string;
 }
 
-export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
+export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) => {
   const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
 
   const runLocations = async () => {
     const res = await fetch(
-      `https://api.content.tripadvisor.com/api/v1/location/search?key=51E86DB2EC7940CD8B8AAF2A48B1836B&searchQuery=${to.name}&category=attractions&language=en`
+      `${apiUrl}/service/tripadvisor/locations?searchQuery=${to.name}`
     );
     const data: TripadvisorNearByResponse = await res.json();
 
@@ -31,12 +32,12 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
     const tripLocations = data.data.splice(0, 6);
     for (const tripLocation of tripLocations) {
       const resImages = await fetch(
-        `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/photos?language=en&key=51E86DB2EC7940CD8B8AAF2A48B1836B`
+        `${apiUrl}/service/tripadvisor/images?location_id=${tripLocation.location_id}`
       );
       const dataImages: TripadvisorImagesResponse = await resImages.json();
 
       const resDetails = await fetch(
-        `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/details?language=en&currency=USD&key=51E86DB2EC7940CD8B8AAF2A48B1836B`
+        `${apiUrl}/service/tripadvisor/details?location_id=${tripLocation.location_id}`
       );
       const dataDetails: TripadvisorDetailsData = await resDetails.json();
 

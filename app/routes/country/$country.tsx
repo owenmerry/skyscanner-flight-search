@@ -40,6 +40,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     country,
     from,
     search,
+    apiUrl,
   });
 };
 
@@ -48,10 +49,12 @@ export default function SEOAnytime() {
     country,
     from,
     search,
+    apiUrl,
   }: {
     country: Place;
     from: Place;
     search: IndicativeQuotesSDK[];
+    apiUrl: string;
   } = useLoaderData();
 
   return (
@@ -69,7 +72,7 @@ export default function SEOAnytime() {
         <MarketingPlaces place={country} url={`/city/${country.slug}/`} from={from} search={search} />
         <MarketingDeals from={from} search={search} to={country} level="city" />
         <MarketingGraph search={search} />
-        <MarketingNearby search={search} to={country} />
+        <MarketingNearby search={search} to={country} apiUrl={apiUrl} />
       </div>
         
     </Layout>

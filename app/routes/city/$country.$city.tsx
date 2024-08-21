@@ -58,6 +58,7 @@ export default function SEOAnytime() {
     cityImages,
     from,
     search,
+    apiUrl,
   }: {
     apiUrl: string;
     city: Place;
@@ -81,7 +82,7 @@ export default function SEOAnytime() {
         <MarketingPlaces place={city} from={from} search={search} />
         <MarketingDeals from={from} search={search} to={city} />
         <MarketingGraph search={search} />
-        <MarketingNearby search={search} to={city} />
+        <MarketingNearby search={search} to={city} apiUrl={apiUrl} />
       </div>
         
     </Layout>
