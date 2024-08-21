@@ -34,7 +34,13 @@ export const MarketingPlaces = ({
 
   return (
     <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
-      <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+      <div className="flex justify-center mb-4">
+      <svg className="w-6 h-6 text-gray-800 dark:text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m3 16 5-7 6 6.5m6.5 2.5L16 13l-4.286 6M14 10h.01M4 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z"/>
+</svg>
+
+      </div>
+      <h2 className="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
         Popular places {place ? `in ${place.name}` : `to Explore`}
       </h2>
       <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
@@ -42,7 +48,7 @@ export const MarketingPlaces = ({
         solvers. Small enough to be simple and quick, but big enough to deliver
         the scope you want at the pace you need.
       </p>
-      <div className="relative my-3">
+      <div className="relative my-8">
         <div className="bg-gradient-to-l from-slate-900 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-20 sm:hidden"></div>
         <div className="flex overflow-y-scroll scrollbar-hide sm:grid sm:grid-cols-3 gap-4">
           {childrenPlacesPrices

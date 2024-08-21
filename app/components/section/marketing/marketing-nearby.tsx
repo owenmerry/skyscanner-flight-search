@@ -3,10 +3,14 @@ import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-fu
 import type { Place } from "~/helpers/sdk/place";
 import type { TripadvisorDetailsData } from "~/types/tripadvisor-details";
 import { Skeleton } from "@mui/material";
-import type { TripadvisorImagesData, TripadvisorImagesResponse } from "~/types/tripadvisor-images";
-import type { TripadvisorNearByData, TripadvisorNearByResponse } from "~/types/tripadvisor-near-by";
-import { tripSDKData } from "./helpers/data-tripadvisor";
-
+import type {
+  TripadvisorImagesData,
+  TripadvisorImagesResponse,
+} from "~/types/tripadvisor-images";
+import type {
+  TripadvisorNearByData,
+  TripadvisorNearByResponse,
+} from "~/types/tripadvisor-near-by";
 
 export interface TripadvisorSDK {
   location: TripadvisorNearByData;
@@ -20,7 +24,11 @@ interface MarketingNearbyProps {
   apiUrl: string;
 }
 
-export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) => {
+export const MarketingNearby = ({
+  search,
+  to,
+  apiUrl,
+}: MarketingNearbyProps) => {
   const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
 
   const runLocations = async () => {
@@ -59,7 +67,31 @@ export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) =>
   return (
     <div className="bg-blue-600 shadow-inner">
       <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
-        <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+        <div className="flex justify-center mb-4">
+          <svg
+            className="w-6 h-6 text-gray-800 dark:text-white"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 18V8a1 1 0 0 1 1-1h1.5l1.707-1.707A1 1 0 0 1 8.914 5h6.172a1 1 0 0 1 .707.293L17.5 7H19a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1Z"
+            />
+            <path
+              stroke="currentColor"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+            />
+          </svg>
+        </div>
+        <h2 className="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
           What to do in {to.name}
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-white">
@@ -67,7 +99,7 @@ export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) =>
           solvers. Small enough to be simple and quick, but big enough to
           deliver the scope you want at the pace you need.
         </p>
-        <div className="relative my-3">
+        <div className="relative my-8">
           <div className="bg-gradient-to-l from-blue-600 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-10 sm:hidden"></div>
           <div className="flex overflow-y-scroll scrollbar-hide sm:grid sm:grid-cols-3 gap-4">
             {locations.map((location) => {
@@ -105,7 +137,7 @@ export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) =>
                         />
                         <div className="mt-2">
                           {location.details.ranking_data.ranking_string}
-                          </div>
+                        </div>
                       </div>
                     </div>
                   </a>

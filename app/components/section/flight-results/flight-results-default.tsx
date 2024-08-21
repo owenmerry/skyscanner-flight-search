@@ -591,7 +591,7 @@ export const FlightResultsDefault = ({
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer hover:dark:border-gray-700 ${
             sort === "cheapest"
-              ? "dark:border-gray-700"
+              ? "dark:border-blue-600"
               : "dark:border-gray-800"
           }`}
           onClick={() => setSort("cheapest")}
@@ -601,7 +601,7 @@ export const FlightResultsDefault = ({
         </div>
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer hover:dark:border-gray-700 ${
-            sort === "best" ? "dark:border-gray-700" : "dark:border-gray-800"
+            sort === "best" ? "dark:border-blue-600" : "dark:border-gray-800"
           }`}
           onClick={() => setSort("best")}
         >
@@ -610,7 +610,7 @@ export const FlightResultsDefault = ({
         </div>
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer hover:dark:border-gray-700 ${
-            sort === "fastest" ? "dark:border-gray-700" : "dark:border-gray-800"
+            sort === "fastest" ? "dark:border-blue-600" : "dark:border-gray-800"
           }`}
           onClick={() => setSort("fastest")}
         >
