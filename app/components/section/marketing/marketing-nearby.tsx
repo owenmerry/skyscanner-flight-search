@@ -30,7 +30,7 @@ export const MarketingNearby = ({
   to,
   apiUrl,
 }: MarketingNearbyProps) => {
-  const [locations, setLocations] = useState<TripadvisorSDK[]>(tripSDKData);
+  const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
 
   const runLocations = async () => {
     if(locations.length > 0) return;
