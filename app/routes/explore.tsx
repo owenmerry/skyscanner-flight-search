@@ -32,7 +32,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       to: "anywhere",
       tripType: "return",
     },
-    groupType: 'month',
     month: Number(moment().format('MM')),
     year: Number(moment().format('YYYY')),
     endMonth: Number(moment().add(10,'months').format('MM')),
