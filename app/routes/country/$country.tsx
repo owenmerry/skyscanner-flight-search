@@ -13,6 +13,7 @@ import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-fu
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import moment from "moment";
+import { MarketingNearby } from "~/components/section/marketing/marketing-nearby";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -68,6 +69,7 @@ export default function SEOAnytime() {
         <MarketingPlaces place={country} url={`/city/${country.slug}/`} from={from} search={search} />
         <MarketingDeals from={from} search={search} to={country} level="city" />
         <MarketingGraph search={search} />
+        <MarketingNearby search={search} to={country} />
       </div>
         
     </Layout>
