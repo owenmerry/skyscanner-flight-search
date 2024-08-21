@@ -3,6 +3,9 @@ import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-fu
 import type { Place } from "~/helpers/sdk/place";
 
 interface TripadvisorNearByResponse {
+  data: TripadvisorNearByData[];
+}
+interface TripadvisorNearByData{
   address_obj: {
     street1?: string;
     street2?: string;
@@ -16,52 +19,58 @@ interface TripadvisorNearByResponse {
   name: string;
 }
 interface TripadvisorImagesResponse {
-  id: number;
-  is_blessed: boolean;
-  caption: string;
-  published_date: string;
-  images: {
-    thumbnail: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    small: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    medium: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    large: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    original: {
-      height: number;
-      width: number;
-      url: string;
-    };
-  };
-  album: string;
-  source: {
-    name: string;
-    localized_name: string;
-  };
-  user: {
-    username: string;
-  };
+  data: TripadvisorImagesData[];
 }
-interface TripadvisorDetailsResponse {}
+interface TripadvisorImagesData {
+  id: number;
+    is_blessed: boolean;
+    caption: string;
+    published_date: string;
+    images: {
+      thumbnail: {
+        height: number;
+        width: number;
+        url: string;
+      };
+      small: {
+        height: number;
+        width: number;
+        url: string;
+      };
+      medium: {
+        height: number;
+        width: number;
+        url: string;
+      };
+      large: {
+        height: number;
+        width: number;
+        url: string;
+      };
+      original: {
+        height: number;
+        width: number;
+        url: string;
+      };
+    };
+    album: string;
+    source: {
+      name: string;
+      localized_name: string;
+    };
+    user: {
+      username: string;
+    };
+}
+export interface TripadvisorDetailsResponse {
+  data: TripadvisorDetailsData;
+}
+interface TripadvisorDetailsData {}
 
 interface TripadvisorSDK {
-  location: TripadvisorNearByResponse;
-  images: TripadvisorImagesResponse;
-  details: TripadvisorDetailsResponse;
+  location: TripadvisorNearByData;
+  images: TripadvisorImagesData[];
+  details: TripadvisorDetailsData;
 }
 
 interface MarketingNearbyProps {
@@ -196,10 +205,10 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
     const res = await fetch(
       "https://api.content.tripadvisor.com/api/v1/location/search?key=51E86DB2EC7940CD8B8AAF2A48B1836B&searchQuery=London&category=attractions&language=en"
     );
-    const data: TripadvisorNearByResponse[] = await res.json();
+    const data: TripadvisorNearByResponse = await res.json();
 
     let tripSDK: TripadvisorSDK[] = [];
-    for (const tripLocation of data) {
+    for (const tripLocation of data.data) {
       const resImages = await fetch(
         `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/photos?language=en&key=51E86DB2EC7940CD8B8AAF2A48B1836B`
       );
@@ -207,7 +216,7 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
 
       tripSDK.push({
         location: tripLocation,
-        images: dataImages,
+        images: dataImages.data,
         details: {},
       });
     }
@@ -244,7 +253,9 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
               >
                 <div
                   className="h-40 bg-cover bg-center bg-no-repeat"
-                  style={{ backgroundImage: `url(${location.images.images.medium.url})` }}
+                  style={{
+                    backgroundImage: `url(${location.images[0].images.medium.url})`,
+                  }}
                 ></div>
                 <h5 className="m-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {location.location.name}
