@@ -21,7 +21,7 @@ interface MarketingNearbyProps {
 }
 
 export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) => {
-  const [locations, setLocations] = useState<TripadvisorSDK[]>(tripSDKData);
+  const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
 
   const runLocations = async () => {
     const res = await fetch(
