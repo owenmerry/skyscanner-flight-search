@@ -15,12 +15,14 @@ export const MarketingGraph = ({ search }: MarketingGraphProps) => {
       (item) => item.legs.depart.date.month === Number(monthItem.month)
     )[0]?.price?.raw,
   }));
-  const cheapest = monthsPrice.slice().filter(item => item.priceRaw).sort(
-    (a, b) => Number(a.priceRaw) - Number(b.priceRaw)
-  )[0];
-  const highest = monthsPrice.slice().filter(item => item.priceRaw).sort(
-    (a, b) => Number(b.priceRaw) - Number(a.priceRaw)
-  )[0];
+  const cheapest = monthsPrice
+    .slice()
+    .filter((item) => item.priceRaw)
+    .sort((a, b) => Number(a.priceRaw) - Number(b.priceRaw))[0];
+  const highest = monthsPrice
+    .slice()
+    .filter((item) => item.priceRaw)
+    .sort((a, b) => Number(b.priceRaw) - Number(a.priceRaw))[0];
   const getPercentageBar = (number: number, numberPercentage: number) => {
     return (
       100 - Math.ceil(((numberPercentage - number) / numberPercentage) * 100)
@@ -45,31 +47,40 @@ export const MarketingGraph = ({ search }: MarketingGraphProps) => {
                 <div className="self-center font-bold">{month.smallMonth}</div>
                 <div className="bg-slate-800 w-full flex-1 rounded-lg col-span-9">
                   {month.priceRaw ? (
-                    <div
-                      className={`${
-                        cheapest.priceRaw === month.priceRaw
-                          ? "bg-blue-600"
-                          : "bg-slate-600"
-                      } rounded-lg p-2 flex flex-row-reverse`}
-                      style={{
-                        width: `${
-                          month.priceRaw
-                            ? getPercentageBar(
-                                Number(month.priceRaw),
-                                Number(highest.priceRaw)
-                              )
-                            : "0"
-                        }%`,
-                      }}
-                    >
-                      <div className="bg-blue-950 text-white inline-block rounded-lg p-1 text-sm sm:p-2">
-                        from {month?.price}
+                    <>
+                      <div
+                        className={`${
+                          cheapest.priceRaw === month.priceRaw
+                            ? "bg-blue-600"
+                            : "bg-slate-600"
+                        } rounded-lg p-2 flex flex-row-reverse`}
+                        style={{
+                          width: `${
+                            month.priceRaw
+                              ? getPercentageBar(
+                                  Number(month.priceRaw),
+                                  Number(highest.priceRaw)
+                                )
+                              : "0"
+                          }%`,
+                        }}
+                      >
+                        <div
+                          className={`${
+                            getPercentageBar(
+                              Number(month.priceRaw),
+                              Number(highest.priceRaw)
+                            ) < 20
+                              ? "min-w-32 relative left-36 bg-blue-900"
+                              : "bg-blue-950"
+                          } text-white inline-block rounded-lg p-1 text-sm sm:p-2`}
+                        >
+                          from {month?.price}
+                        </div>
                       </div>
-                    </div>
+                    </>
                   ) : (
-                    <div
-                      className={`rounded-lg p-1 flex sm:p-2`}
-                    >
+                    <div className={`rounded-lg p-1 flex sm:p-2`}>
                       <div className="bg-slate-800 text-white inline-block rounded-lg p-2 text-sm">
                         No Prices
                       </div>

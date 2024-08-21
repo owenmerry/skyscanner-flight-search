@@ -203,12 +203,15 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
 
   const runLocations = async () => {
     const res = await fetch(
-      "https://api.content.tripadvisor.com/api/v1/location/search?key=51E86DB2EC7940CD8B8AAF2A48B1836B&searchQuery=London&category=attractions&language=en"
+      `https://api.content.tripadvisor.com/api/v1/location/search?key=51E86DB2EC7940CD8B8AAF2A48B1836B&searchQuery=${to.name}&category=attractions&language=en`
     );
     const data: TripadvisorNearByResponse = await res.json();
-
+    
+    console.log(data);
+    
     let tripSDK: TripadvisorSDK[] = [];
     for (const tripLocation of data.data) {
+      console.log('run', `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/photos?language=en&key=51E86DB2EC7940CD8B8AAF2A48B1836B`);
       const resImages = await fetch(
         `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/photos?language=en&key=51E86DB2EC7940CD8B8AAF2A48B1836B`
       );
@@ -221,7 +224,6 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
       });
     }
 
-    console.log(data);
     console.log(tripSDK);
     setLocations(tripSDK);
   };
