@@ -10,6 +10,7 @@ interface MarketingDealsProps {
 }
 export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps) => {
   return (
+    <div className="dark:bg-slate-950">
     <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
       <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
         Cheap flights to {to ? to.name : "Everywhere"}
@@ -86,6 +87,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
             );
           })}
       </div>
+    </div>
     </div>
   );
 };
