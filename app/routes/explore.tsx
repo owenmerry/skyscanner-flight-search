@@ -23,7 +23,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     apiUrl,
     query: `Summer Holidays`,
   });
-  const from = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LHR");
+  const fromCookie = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON");
+  const from = fromCookie || getPlaceFromIata("LON");
   const indicativeSearch = await skyscanner().indicative({
     apiUrl,
     query: {
@@ -34,8 +35,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     groupType: 'month',
     month: Number(moment().format('MM')),
     year: Number(moment().format('YYYY')),
-    endMonth: Number(moment().add(12,'months').format('MM')),
-    endYear: Number(moment().add(12,'months').format('YYYY')),
+    endMonth: Number(moment().add(10,'months').format('MM')),
+    endYear: Number(moment().add(10,'months').format('YYYY')),
   });
   const search = indicativeSearch.quotes;
 

@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     apiUrl,
     query: `${city ? city.name : ''},  city`,
   });
-  const from = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LHR");
+  const from = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON");
   const indicativeSearch = await skyscanner().indicative({
     apiUrl,
     query: {
@@ -38,8 +38,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     groupType: 'month',
     month: Number(moment().format('MM')),
     year: Number(moment().format('YYYY')),
-    endMonth: Number(moment().add(12,'months').format('MM')),
-    endYear: Number(moment().add(12,'months').format('YYYY')),
+    endMonth: Number(moment().add(10,'months').format('MM')),
+    endYear: Number(moment().add(10,'months').format('YYYY')),
   });
   const search = indicativeSearch.quotes;
 
@@ -77,7 +77,7 @@ export default function SEOAnytime() {
       <div className="text-center relative z-10">
         <MarketingHero place={city} />
         <MarketingGallery images={cityImages} />
-        <MarketingPlaces place={city} url="/airport/" from={from} search={search} />
+        <MarketingPlaces place={city} from={from} search={search} />
         <MarketingDeals from={from} search={search} to={city} />
         <MarketingGraph search={search} />
       </div>

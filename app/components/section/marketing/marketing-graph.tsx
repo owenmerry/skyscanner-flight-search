@@ -15,7 +15,7 @@ export const MarketingGraph = ({ search }: MarketingGraphProps) => {
       (item) => item.legs.depart.date.month === Number(monthItem.month)
     )[0]?.price?.raw,
   }));
-  const cheapest = monthsPrice.slice().sort(
+  const cheapest = monthsPrice.slice().filter(item => item.priceRaw).sort(
     (a, b) => Number(a.priceRaw) - Number(b.priceRaw)
   )[0];
   const highest = monthsPrice.slice().filter(item => item.priceRaw).sort(
@@ -71,7 +71,7 @@ export const MarketingGraph = ({ search }: MarketingGraphProps) => {
                       className={`rounded-lg p-1 flex sm:p-2`}
                     >
                       <div className="bg-slate-800 text-white inline-block rounded-lg p-2 text-sm">
-                        Check Prices
+                        No Prices
                       </div>
                     </div>
                   )}
