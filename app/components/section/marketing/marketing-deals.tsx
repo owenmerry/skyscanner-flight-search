@@ -12,7 +12,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
   return (
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
       <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-        Deals to fly to {to ? to.name : "Everywhere"}
+        Cheap flights to {to ? to.name : "Everywhere"}
       </h2>
       <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
         We are strategists, designers and developers. Innovators and problem
@@ -25,7 +25,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
             to ? item.parentsString.includes(to.entityId) : true
           )
           .splice(0, 9)
-          .map((deal) => {
+          .map((deal, key) => {
             return (
               <div key={deal.id}>
                 <a
@@ -35,7 +35,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
                   <div
                     className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
                     style={{
-                      backgroundImage: `url(${deal.country.images[0]}&w=500)`,
+                      backgroundImage: `url(${deal.country.images[key]}&w=500)`,
                     }}
                   ></div>
                   <div className="opacity-80 bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>

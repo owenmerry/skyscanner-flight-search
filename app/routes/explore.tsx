@@ -12,6 +12,8 @@ import { MarketingHeroExplore } from "~/components/section/marketing/marketing-h
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
+import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
+import moment from "moment";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -29,10 +31,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       to: "anywhere",
       tripType: "return",
     },
-    month: 8,
-    year: 2024,
-    endMonth: 12,
-    endYear: 2024,
+    groupType: 'month',
+    month: Number(moment().format('MM')),
+    year: Number(moment().format('YYYY')),
+    endMonth: Number(moment().add(12,'months').format('MM')),
+    endYear: Number(moment().add(12,'months').format('YYYY')),
   });
   const search = indicativeSearch.quotes;
 
@@ -70,6 +73,7 @@ export default function SEOAnytime() {
         <MarketingGallery images={exploreImages} />
         <MarketingPlaces url="/continent/" from={from} search={search} />
         <MarketingDeals from={from} search={search} />
+        <MarketingGraph search={search} />
       </div>
     </Layout>
   );

@@ -12,32 +12,32 @@ export const MarketingGallery = ({
           <div className="gap-4 mt-8 grid grid-cols-4">
             <img
               className="col-span-2 mb-4 sm:mb-0 rounded-lg"
-              src={images[0]}
+              src={`${images[0]}&w=800`}
               alt="content gallery 1"
             />
             <img
               className="col-span-1 sm:block rounded-lg"
-              src={images[1]}
+              src={`${images[1]}&w=800`}
               alt="content gallery 2"
             />
             <img
               className="col-span-1 sm:block rounded-lg"
-              src={images[2]}
+              src={`${images[2]}&w=500`}
               alt="content gallery 3"
             />
             <img
               className="col-span-1 sm:block rounded-lg"
-              src={images[3]}
+              src={`${images[3]}&w=500`}
               alt="content gallery 4"
             />
             <img
               className="col-span-2 rounded-lg"
-              src={images[4]}
+              src={`${images[4]}&w=800`}
               alt="content gallery 5"
             />
             <img
               className="hidden col-span-1 sm:block rounded-lg"
-              src={images[5]}
+              src={`${images[5]}&w=800`}
               alt="content gallery 6"
             />
           </div>

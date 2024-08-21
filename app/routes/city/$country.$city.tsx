@@ -79,7 +79,7 @@ export default function SEOAnytime() {
         <MarketingGallery images={cityImages} />
         <MarketingPlaces place={city} url="/airport/" from={from} search={search} />
         <MarketingDeals from={from} search={search} to={city} />
-        <MarketingGraph from={from} search={search} to={city} />
+        <MarketingGraph search={search} />
       </div>
         
     </Layout>

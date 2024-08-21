@@ -1,14 +1,10 @@
 import { getNextXMonthsStartDayAndEndDay } from "~/helpers/date";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
-import type { Place } from "~/helpers/sdk/place";
 
 interface MarketingGraphProps {
-  place?: Place;
-  from: Place;
-  to: Place;
   search: IndicativeQuotesSDK[];
 }
-export const MarketingGraph = ({ place, search }: MarketingGraphProps) => {
+export const MarketingGraph = ({ search }: MarketingGraphProps) => {
   const months = getNextXMonthsStartDayAndEndDay(12);
   const monthsPrice = months.map((monthItem) => ({
     ...monthItem,
@@ -34,20 +30,20 @@ export const MarketingGraph = ({ place, search }: MarketingGraphProps) => {
   return (
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
       <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-        Top Months
+        Cheapest months to travel
       </h2>
       <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
         We are strategists, designers and developers. Innovators and problem
         solvers. Small enough to be simple and quick, but big enough to deliver
         the scope you want at the pace you need.
       </p>
-      <div className="m-6">
+      <div className="m-6 grid grid-cols-1 gap-2">
         {monthsPrice.map((month) => {
           return (
             <div key={`${month.displayMonthText}`}>
-              <div className="grid grid-cols-10 content-center justify-items-center">
-                <div className="">{month.smallMonth}</div>
-                <div className="bg-slate-800 w-full flex-1 rounded-lg col-span-9 mb-3">
+              <div className="grid grid-cols-10 content-center justify-items-center gap-1">
+                <div className="self-center font-bold">{month.smallMonth}</div>
+                <div className="bg-slate-800 w-full flex-1 rounded-lg col-span-9">
                   {month.priceRaw ? (
                     <div
                       className={`${
@@ -66,13 +62,13 @@ export const MarketingGraph = ({ place, search }: MarketingGraphProps) => {
                         }%`,
                       }}
                     >
-                      <div className="bg-blue-950 text-white inline-block rounded-lg p-2 text-sm">
+                      <div className="bg-blue-950 text-white inline-block rounded-lg p-1 text-sm sm:p-2">
                         from {month?.price}
                       </div>
                     </div>
                   ) : (
                     <div
-                      className={`rounded-lg p-2 flex`}
+                      className={`rounded-lg p-1 flex sm:p-2`}
                     >
                       <div className="bg-slate-800 text-white inline-block rounded-lg p-2 text-sm">
                         Check Prices

@@ -13,6 +13,7 @@ import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import moment from "moment";
+import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -31,6 +32,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       to: "anywhere",
       tripType: "return",
     },
+    groupType: 'month',
     month: Number(moment().format('MM')),
     year: Number(moment().format('YYYY')),
     endMonth: Number(moment().add(12,'months').format('MM')),
@@ -75,6 +77,7 @@ export default function SEOAnytime() {
         <MarketingGallery images={continentImages} />
         <MarketingPlaces place={continent} url='/country/' from={from} search={search} />
         <MarketingDeals from={from} search={search} to={continent} />
+        <MarketingGraph search={search} />
       </div>
         
     </Layout>
