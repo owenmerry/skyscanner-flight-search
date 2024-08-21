@@ -27,7 +27,7 @@ export interface TripadvisorDetailsData {
   write_review: string;
   ranking_data: {
     geo_location_id: string;
-    ranking_string: string;
+    ranking_string?: string;
     geo_location_name: string;
     ranking_out_of: string;
     ranking: string;

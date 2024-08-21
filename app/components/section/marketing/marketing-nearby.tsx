@@ -136,7 +136,7 @@ export const MarketingNearby = ({
                           alt="tripadvisor rating"
                         />
                         <div className="mt-2">
-                          {location.details.ranking_data.ranking_string}
+                          {location.details.ranking_data?.ranking_string}
                         </div>
                       </div>
                     </div>
