@@ -20,7 +20,9 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
         solvers. Small enough to be simple and quick, but big enough to deliver
         the scope you want at the pace you need {search.length}.
       </p>
-      <div className="flex overflow-y-scroll scrollbar-hide m-6 sm:grid sm:grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="relative my-3">
+      <div className="bg-gradient-to-l from-slate-950 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-20 sm:hidden"></div>
+      <div className="flex overflow-y-scroll scrollbar-hide sm:grid sm:grid-cols-1 gap-4 md:grid-cols-3">
         {search
           .filter((item) =>
             to ? item.parentsString.includes(to.entityId) : true
@@ -28,7 +30,7 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
           .splice(0, 9)
           .map((deal, key) => {
             return (
-              <div key={deal.id} className="min-w-96 sm:min-w-0">
+              <div key={deal.id} className="min-w-72 sm:min-w-0">
                 <a
                   href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
                   className="relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
@@ -86,6 +88,8 @@ export const MarketingDeals = ({ search, to, from, level }: MarketingDealsProps)
               </div>
             );
           })}
+          <div className="w-[20px] sm:hidden"></div>
+      </div>
       </div>
     </div>
     </div>

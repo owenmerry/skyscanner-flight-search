@@ -42,49 +42,59 @@ export const MarketingPlaces = ({
         solvers. Small enough to be simple and quick, but big enough to deliver
         the scope you want at the pace you need.
       </p>
-      <div className="flex overflow-y-scroll scrollbar-hide m-6 sm:grid sm:grid-cols-3 gap-4">
-        {childrenPlacesPrices
-          .sort((a, b) => {
-            // Handle cases where the price is undefined
-            if (!a.price) return 1; // Move undefined prices to the end
-            if (!b.price) return -1;
+      <div className="relative my-3">
+        <div className="bg-gradient-to-l from-slate-900 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-20 sm:hidden"></div>
+        <div className="flex overflow-y-scroll scrollbar-hide sm:grid sm:grid-cols-3 gap-4">
+          {childrenPlacesPrices
+            .sort((a, b) => {
+              // Handle cases where the price is undefined
+              if (!a.price) return 1; // Move undefined prices to the end
+              if (!b.price) return -1;
 
-            // Convert the amount strings to numbers
-            const priceA = parseFloat(a.price.amount);
-            const priceB = parseFloat(b.price.amount);
+              // Convert the amount strings to numbers
+              const priceA = parseFloat(a.price.amount);
+              const priceB = parseFloat(b.price.amount);
 
-            // Sort in ascending order
-            return priceA - priceB;
-          })
-          .map((childPlace) => {
-            return (
-              <div key={childPlace.place.entityId} className="min-w-72 sm:min-w-0 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800  hover:dark:border-gray-500">
-                <a
-                  href={url ? `${url}${childPlace.place.slug}` : ""}
-                  className="flex items-center "
+              // Sort in ascending order
+              return priceA - priceB;
+            })
+            .map((childPlace) => {
+              return (
+                <div
+                  key={childPlace.place.entityId}
+                  className="min-w-72 sm:min-w-0 bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800  hover:dark:border-gray-500"
                 >
-                  {childPlace.place.images[0] ? (
-                    <div
-                    className="flex-1 rounded-t-lg h-32 md:rounded-none md:rounded-s-lg bg-cover bg-center" style={{backgroundImage:`url(${childPlace.place.images[0]})`}}
-                    ></div>
-                  ) : (
-                    ""
-                  )}
-                  <div className="flex-1 flex flex-col justify-between p-4 leading-normal">
-                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white truncate">
-                      {childPlace.place.name}
-                    </h5>
-                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                      {/* {getPlaceType(childPlace.place)}{" "} */}
-                      {childPlace.price?.display
-                        ? `${childPlace.price?.display}`
-                        : ""}
-                    </p>
-                  </div>
-                </a>
-              </div>
-            );
-          })}
+                  <a
+                    href={url ? `${url}${childPlace.place.slug}` : ""}
+                    className="flex items-center "
+                  >
+                    {childPlace.place.images[0] ? (
+                      <div
+                        className="flex-1 rounded-t-lg h-32 md:rounded-none md:rounded-s-lg bg-cover bg-center"
+                        style={{
+                          backgroundImage: `url(${childPlace.place.images[0]})`,
+                        }}
+                      ></div>
+                    ) : (
+                      ""
+                    )}
+                    <div className="flex-1 flex flex-col justify-between p-4 leading-normal">
+                      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white truncate">
+                        {childPlace.place.name}
+                      </h5>
+                      <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                        {/* {getPlaceType(childPlace.place)}{" "} */}
+                        {childPlace.price?.display
+                          ? `${childPlace.price?.display}`
+                          : ""}
+                      </p>
+                    </div>
+                  </a>
+                </div>
+              );
+            })}
+          <div className="w-[20px] sm:hidden"></div>
+        </div>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { Place } from "~/helpers/sdk/place";
 import type { TripadvisorDetailsData } from "~/types/tripadvisor-details";
-// import { tripSDKData } from "./helpers/data-tripadvisor";
+import { Skeleton } from "@mui/material";
 
 interface TripadvisorNearByResponse {
   data: TripadvisorNearByData[];
@@ -76,126 +76,6 @@ interface MarketingNearbyProps {
   to: Place;
 }
 
-// const mockNearBy: TripadvisorNearByResponse[] = [
-//   {
-//     location_id: "553603",
-//     name: "London Eye",
-//     address_obj: {
-//       street1: "Westminster Bridge Road",
-//       street2: "Riverside Building, County Hall",
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "SE1 7PB",
-//       address_string:
-//         "Westminster Bridge Road Riverside Building, County Hall, London SE1 7PB England",
-//     },
-//   },
-//   {
-//     location_id: "187547",
-//     name: "Tower of London",
-//     address_obj: {
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "EC3N 4AB",
-//       address_string: "London EC3N 4AB England",
-//     },
-//   },
-//   {
-//     location_id: "187536",
-//     name: "London Underground",
-//     address_obj: {
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "SW1H 0TL",
-//       address_string: "London SW1H 0TL England",
-//     },
-//   },
-//   {
-//     location_id: "187553",
-//     name: "London Zoo",
-//     address_obj: {
-//       street1: "Outer Circle",
-//       street2: "Regents Park",
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "NW1 4RY",
-//       address_string: "Outer Circle Regents Park, London NW1 4RY England",
-//     },
-//   },
-//   {
-//     location_id: "189027",
-//     name: "The London Dungeon",
-//     address_obj: {
-//       street1: "Westminster Bridge Road",
-//       street2: "County Hall",
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "SE1 7PB",
-//       address_string:
-//         "Westminster Bridge Road County Hall, London SE1 7PB England",
-//     },
-//   },
-//   {
-//     location_id: "522874",
-//     name: "Liberty London",
-//     address_obj: {
-//       street1: "Regent St",
-//       street2: "Main entrance: Great Marlborough Street",
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "W1B 5AH",
-//       address_string:
-//         "Regent St Main entrance: Great Marlborough Street, London W1B 5AH England",
-//     },
-//   },
-//   {
-//     location_id: "12035544",
-//     name: "Westfield London",
-//     address_obj: {
-//       street1: "Ariel Way",
-//       street2: "Shepherds Bush",
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "W12 7GF",
-//       address_string: "Ariel Way Shepherds Bush, London W12 7GF England",
-//     },
-//   },
-//   {
-//     location_id: "7914853",
-//     name: "London Bridge",
-//     address_obj: {
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "EC4R 9HA",
-//       address_string: "London EC4R 9HA England",
-//     },
-//   },
-//   {
-//     location_id: "187739",
-//     name: "London Walks",
-//     address_obj: {
-//       street2: "",
-//       city: "London",
-//       country: "United Kingdom",
-//       postalcode: "NW6 4LW",
-//       address_string: "London NW6 4LW England",
-//     },
-//   },
-//   {
-//     location_id: "2190135",
-//     name: "London's Farmers Market",
-//     address_obj: {
-//       street1: "900 King Street",
-//       street2: "",
-//       city: "London",
-//       state: "Ontario",
-//       country: "Canada",
-//       postalcode: "N5Y 5P8",
-//       address_string: "900 King Street, London, Ontario N5Y 5P8 Canada",
-//     },
-//   },
-// ];
-
 export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
   const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
 
@@ -244,46 +124,79 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
           solvers. Small enough to be simple and quick, but big enough to
           deliver the scope you want at the pace you need.
         </p>
-        <div className="flex overflow-y-scroll scrollbar-hide m-6 sm:grid sm:grid-cols-3 gap-4">
-          {locations.map((location) => {
-            return (
-              <div
-                key={location.location.location_id}
-                className="min-w-96 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
-              >
-                <a
-                  href={`${location.details.web_url}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="relative block"
+        <div className="relative my-3">
+          <div className="bg-gradient-to-l from-blue-600 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-10 sm:hidden"></div>
+          <div className="flex overflow-y-scroll scrollbar-hide sm:grid sm:grid-cols-3 gap-4">
+            {locations.map((location) => {
+              return (
+                <div
+                  key={location.location.location_id}
+                  className="min-w-96 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
                 >
-                  <div
-                    className="relative h-40 bg-cover bg-center bg-no-repeat rounded-t-lg"
-                    style={{
-                      backgroundImage: `url(${location.images[0].images.large.url})`,
-                    }}
+                  <a
+                    href={`${location.details.web_url}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="relative block"
                   >
-                    {/* <div className="bg-gradient-to-t from-slate-800 to-transparent absolute bottom-0 left-0 w-[100%] h-[30%] z-0 rounded-t-lg"></div> */}
-                  </div>
-                  <div className="p-4">
-                    <h5 className="mb-2 text-2xl font-bold tracking-tight  ">
-                      {location.location.name}
-                    </h5>
-                    <p className="h-8 font-normal  dark:text-gray-400 truncate">
-                      {location.details.description}
-                    </p>
-                    <div className=" text-gray-700  font-bold">
-                      <img
-                        src={location.details.rating_image_url}
-                        alt="tripadvisor rating"
-                      />
-                      {location.details.ranking_data.ranking_string}
+                    <div
+                      className="relative h-40 bg-cover bg-center bg-no-repeat rounded-t-lg"
+                      style={{
+                        backgroundImage: `url(${location.images[0].images.large.url})`,
+                      }}
+                    >
+                      <div className="bg-gradient-to-t from-slate-800 to-transparent absolute bottom-0 left-0 w-[100%] h-[30%] z-0 rounded-t-lg"></div>
+                    </div>
+                    <div className="p-4">
+                      <h5 className="mb-2 text-2xl font-bold tracking-tight  ">
+                        {location.location.name}
+                      </h5>
+                      <p className="h-8 font-normal  dark:text-gray-400 truncate">
+                        {location.details.description}
+                      </p>
+                      <div className=" text-gray-700  font-bold">
+                        <img
+                          src={location.details.rating_image_url}
+                          alt="tripadvisor rating"
+                        />
+                        {location.details.ranking_data.ranking_string}
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              );
+            })}
+
+            {locations.length === 0 ? (
+              <>
+                {Array.from(Array(6)).map((e, k) => (
+                  <div
+                    key={`skeleton-flight-${k}`}
+                    className="min-w-72 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
+                  >
+                    <div className="relative block">
+                      <div className="relative h-40 bg-cover bg-center bg-no-repeat rounded-t-lg bg-slate-200"></div>
+                      <div className="p-4">
+                        <h5 className="mb-2 text-2xl font-bold tracking-tight  ">
+                          <Skeleton width="60%" />
+                        </h5>
+                        <p className="h-8 font-normal  dark:text-gray-400 truncate">
+                          <Skeleton />
+                        </p>
+                        <div className=" text-gray-700  font-bold">
+                          <Skeleton width="30%" />
+                          <Skeleton width="60%" />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </a>
-              </div>
-            );
-          })}
+                ))}
+              </>
+            ) : (
+              ""
+            )}
+            <div className="w-[20px] sm:hidden"></div>
+          </div>
         </div>
       </div>
     </div>
