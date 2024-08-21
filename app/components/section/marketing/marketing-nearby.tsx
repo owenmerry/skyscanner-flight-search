@@ -223,6 +223,7 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
         details: dataDetails,
       });
     }
+    console.log(tripSDK);
 
     setLocations(tripSDK);
   };
@@ -260,12 +261,17 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
                     backgroundImage: `url(${location.images[0].images.large.url})`,
                   }}
                 ></div>
+                <div className="p-4">
                 <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {location.location.name}
                 </h5>
-                <p className="font-normal text-gray-700 dark:text-gray-400">
+                <p className="font-normal text-gray-700 dark:text-gray-400 h-24 truncate">
                   {location.details.description}
                 </p>
+                <div className="font-normal text-gray-700 dark:text-white">
+                  {location.details.rating}
+                </div>
+                </div>
               </a>
             </div>
           );
