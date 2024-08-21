@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { Place } from "~/helpers/sdk/place";
+import type { TripadvisorDetailsData } from "~/types/tripadvisor-details";
 
 interface TripadvisorNearByResponse {
   data: TripadvisorNearByData[];
 }
-interface TripadvisorNearByData{
+interface TripadvisorNearByData {
   address_obj: {
     street1?: string;
     street2?: string;
@@ -23,49 +24,45 @@ interface TripadvisorImagesResponse {
 }
 interface TripadvisorImagesData {
   id: number;
-    is_blessed: boolean;
-    caption: string;
-    published_date: string;
-    images: {
-      thumbnail: {
-        height: number;
-        width: number;
-        url: string;
-      };
-      small: {
-        height: number;
-        width: number;
-        url: string;
-      };
-      medium: {
-        height: number;
-        width: number;
-        url: string;
-      };
-      large: {
-        height: number;
-        width: number;
-        url: string;
-      };
-      original: {
-        height: number;
-        width: number;
-        url: string;
-      };
+  is_blessed: boolean;
+  caption: string;
+  published_date: string;
+  images: {
+    thumbnail: {
+      height: number;
+      width: number;
+      url: string;
     };
-    album: string;
-    source: {
-      name: string;
-      localized_name: string;
+    small: {
+      height: number;
+      width: number;
+      url: string;
     };
-    user: {
-      username: string;
+    medium: {
+      height: number;
+      width: number;
+      url: string;
     };
+    large: {
+      height: number;
+      width: number;
+      url: string;
+    };
+    original: {
+      height: number;
+      width: number;
+      url: string;
+    };
+  };
+  album: string;
+  source: {
+    name: string;
+    localized_name: string;
+  };
+  user: {
+    username: string;
+  };
 }
-export interface TripadvisorDetailsResponse {
-  data: TripadvisorDetailsData;
-}
-interface TripadvisorDetailsData {}
 
 interface TripadvisorSDK {
   location: TripadvisorNearByData;
@@ -206,25 +203,27 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
       `https://api.content.tripadvisor.com/api/v1/location/search?key=51E86DB2EC7940CD8B8AAF2A48B1836B&searchQuery=${to.name}&category=attractions&language=en`
     );
     const data: TripadvisorNearByResponse = await res.json();
-    
-    console.log(data);
-    
+
     let tripSDK: TripadvisorSDK[] = [];
-    for (const tripLocation of data.data) {
-      console.log('run', `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/photos?language=en&key=51E86DB2EC7940CD8B8AAF2A48B1836B`);
+    const tripLocations = data.data.splice(0, 6);
+    for (const tripLocation of tripLocations) {
       const resImages = await fetch(
         `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/photos?language=en&key=51E86DB2EC7940CD8B8AAF2A48B1836B`
       );
       const dataImages: TripadvisorImagesResponse = await resImages.json();
 
+      const resDetails = await fetch(
+        `https://api.content.tripadvisor.com/api/v1/location/${tripLocation.location_id}/details?language=en&currency=USD&key=51E86DB2EC7940CD8B8AAF2A48B1836B`
+      );
+      const dataDetails: TripadvisorDetailsData = await resDetails.json();
+
       tripSDK.push({
         location: tripLocation,
         images: dataImages.data,
-        details: {},
+        details: dataDetails,
       });
     }
 
-    console.log(tripSDK);
     setLocations(tripSDK);
   };
 
@@ -247,21 +246,26 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
           return (
             <div
               key={location.location.location_id}
-              className="min-w-96 sm:min-w-0"
+              className="min-w-96 sm:min-w-0 text-left"
             >
               <a
-                href={`/`}
+                href={`${location.details.web_url}`}
+                target="_blank"
+                rel="noreferrer" 
                 className="relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
               >
                 <div
-                  className="h-40 bg-cover bg-center bg-no-repeat"
+                  className="h-40 bg-cover bg-center bg-no-repeat rounded-t-lg"
                   style={{
-                    backgroundImage: `url(${location.images[0].images.medium.url})`,
+                    backgroundImage: `url(${location.images[0].images.large.url})`,
                   }}
                 ></div>
-                <h5 className="m-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {location.location.name}
                 </h5>
+                <p className="font-normal text-gray-700 dark:text-gray-400">
+                  {location.details.description}
+                </p>
               </a>
             </div>
           );
