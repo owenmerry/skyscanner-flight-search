@@ -253,7 +253,7 @@ export const MarketingNearby = ({ search, to }: MarketingNearbyProps) => {
                 href={`${location.details.web_url}`}
                 target="_blank"
                 rel="noreferrer" 
-                className="relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
+                className="relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 hover:dark:border-gray-500"
               >
                 <div
                   className="h-40 bg-cover bg-center bg-no-repeat rounded-t-lg"
