@@ -3,67 +3,9 @@ import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-fu
 import type { Place } from "~/helpers/sdk/place";
 import type { TripadvisorDetailsData } from "~/types/tripadvisor-details";
 import { Skeleton } from "@mui/material";
+import type { TripadvisorImagesData, TripadvisorImagesResponse } from "~/types/tripadvisor-images";
+import type { TripadvisorNearByData, TripadvisorNearByResponse } from "~/types/tripadvisor-near-by";
 
-interface TripadvisorNearByResponse {
-  data: TripadvisorNearByData[];
-}
-interface TripadvisorNearByData {
-  address_obj: {
-    street1?: string;
-    street2?: string;
-    city: string;
-    state?: string;
-    address_string: string;
-    country: string;
-    postalcode?: string;
-  };
-  location_id: string;
-  name: string;
-}
-interface TripadvisorImagesResponse {
-  data: TripadvisorImagesData[];
-}
-interface TripadvisorImagesData {
-  id: number;
-  is_blessed: boolean;
-  caption: string;
-  published_date: string;
-  images: {
-    thumbnail: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    small: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    medium: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    large: {
-      height: number;
-      width: number;
-      url: string;
-    };
-    original?: {
-      height: number;
-      width: number;
-      url: string;
-    };
-  };
-  album: string;
-  source: {
-    name: string;
-    localized_name: string;
-  };
-  user: {
-    username: string;
-  };
-}
 
 export interface TripadvisorSDK {
   location: TripadvisorNearByData;
