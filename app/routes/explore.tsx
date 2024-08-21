@@ -14,9 +14,12 @@ import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-fu
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import moment from "moment";
+import { MarketingMap } from "~/components/section/marketing/marketing-map";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) || {};
   const exploreImages = await getImages({
@@ -43,6 +46,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     exploreImages,
     from,
     search,
+    googleMapId,
+    googleApiKey,
   });
 };
 
@@ -51,10 +56,14 @@ export default function SEOAnytime() {
     exploreImages,
     from,
     search,
+    googleMapId,
+    googleApiKey,
   } : {
     from: Place;
     exploreImages: string[];
     search: IndicativeQuotesSDK[];
+    googleMapId: string;
+    googleApiKey: string;
   } = useLoaderData();
 
   return (
@@ -74,6 +83,7 @@ export default function SEOAnytime() {
         <MarketingPlaces url="/continent/" from={from} search={search} />
         <MarketingDeals from={from} search={search} />
         <MarketingGraph search={search} />
+        <MarketingMap search={search} from={from} googleMapId={googleMapId} googleApiKey={googleApiKey} level="everywhere" />
       </div>
     </Layout>
   );

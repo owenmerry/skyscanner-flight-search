@@ -5,6 +5,7 @@ import type { TripadvisorDetailsData } from "~/types/tripadvisor-details";
 import { Skeleton } from "@mui/material";
 import type { TripadvisorImagesData, TripadvisorImagesResponse } from "~/types/tripadvisor-images";
 import type { TripadvisorNearByData, TripadvisorNearByResponse } from "~/types/tripadvisor-near-by";
+import { tripSDKData } from "./helpers/data-tripadvisor";
 
 
 export interface TripadvisorSDK {
@@ -20,7 +21,7 @@ interface MarketingNearbyProps {
 }
 
 export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) => {
-  const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
+  const [locations, setLocations] = useState<TripadvisorSDK[]>(tripSDKData);
 
   const runLocations = async () => {
     const res = await fetch(
@@ -47,7 +48,6 @@ export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) =>
         details: dataDetails,
       });
     }
-    console.log(tripSDK);
 
     setLocations(tripSDK);
   };
@@ -74,7 +74,7 @@ export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) =>
               return (
                 <div
                   key={location.location.location_id}
-                  className="min-w-96 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
+                  className="group/link min-w-96 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
                 >
                   <a
                     href={`${location.details.web_url}`}
@@ -88,13 +88,14 @@ export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) =>
                         backgroundImage: `url(${location.images[0].images.large.url})`,
                       }}
                     >
+                      <div className="opacity-0 group-hover/link:opacity-10 transition ease-out bg-white absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
                       <div className="bg-gradient-to-t from-slate-800 to-transparent absolute bottom-0 left-0 w-[100%] h-[30%] z-0 rounded-t-lg"></div>
                     </div>
                     <div className="p-4">
                       <h5 className="mb-2 text-2xl font-bold tracking-tight  ">
                         {location.location.name}
                       </h5>
-                      <p className="h-8 font-normal  dark:text-gray-400 truncate">
+                      <p className="font-normal  dark:text-gray-400 mb-4 line-clamp-4">
                         {location.details.description}
                       </p>
                       <div className=" text-gray-700  font-bold">
@@ -102,7 +103,9 @@ export const MarketingNearby = ({ search, to, apiUrl }: MarketingNearbyProps) =>
                           src={location.details.rating_image_url}
                           alt="tripadvisor rating"
                         />
-                        {location.details.ranking_data.ranking_string}
+                        <div className="mt-2">
+                          {location.details.ranking_data.ranking_string}
+                          </div>
                       </div>
                     </div>
                   </a>

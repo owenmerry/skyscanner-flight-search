@@ -15,9 +15,12 @@ import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import moment from "moment";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import { MarketingNearby } from "~/components/section/marketing/marketing-nearby";
+import { MarketingMap } from "~/components/section/marketing/marketing-map";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
   const city = getPlaceFromSlug(params.city || "", "PLACE_TYPE_CITY",{
     parentId: country ? country.entityId : undefined,
@@ -49,6 +52,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     cityImages,
     from,
     search,
+    googleMapId,
+    googleApiKey,
   });
 };
 
@@ -59,12 +64,16 @@ export default function SEOAnytime() {
     from,
     search,
     apiUrl,
+    googleMapId,
+    googleApiKey,
   }: {
     apiUrl: string;
     city: Place;
     from: Place;
     cityImages: string[];
     search: IndicativeQuotesSDK[];
+    googleMapId:string;
+    googleApiKey:string;
   } = useLoaderData();
 
   return (
@@ -83,6 +92,7 @@ export default function SEOAnytime() {
         <MarketingDeals from={from} search={search} to={city} />
         <MarketingGraph search={search} />
         <MarketingNearby search={search} to={city} apiUrl={apiUrl} />
+        <MarketingMap search={search} from={from} to={city} googleMapId={googleMapId} googleApiKey={googleApiKey} />
       </div>
         
     </Layout>

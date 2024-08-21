@@ -15,9 +15,12 @@ import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import moment from "moment";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import { MarketingNearby } from "~/components/section/marketing/marketing-nearby";
+import { MarketingMap } from "~/components/section/marketing/marketing-map";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const continent = getPlaceFromSlug(params.continent || "", "PLACE_TYPE_CONTINENT");
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) || {};
@@ -46,6 +49,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     continentImages,
     from,
     search,
+    googleMapId,
+    googleApiKey,
   });
 };
 
@@ -56,12 +61,16 @@ export default function SEOAnytime() {
     from,
     search,
     apiUrl,
+    googleMapId,
+    googleApiKey,
   }: {
     apiUrl: string;
     continent: Place;
     from: Place;
     continentImages: string[],
     search: IndicativeQuotesSDK[],
+    googleMapId:string;
+    googleApiKey:string;
   } = useLoaderData();
 
   return (
@@ -80,6 +89,7 @@ export default function SEOAnytime() {
         <MarketingDeals from={from} search={search} to={continent} />
         <MarketingGraph search={search} />
         <MarketingNearby search={search} to={continent} apiUrl={apiUrl} />
+        <MarketingMap search={search} to={continent} from={from} googleMapId={googleMapId} googleApiKey={googleApiKey} />
       </div>
         
     </Layout>

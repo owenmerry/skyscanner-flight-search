@@ -104,7 +104,7 @@ export const Map = ({
 
   useEffect(() => {
     buildMarkersAndMap();
-  }, []);
+  }, [markers]);
 
   return <div ref={ref} id="map" style={{ height }} />;
 };
