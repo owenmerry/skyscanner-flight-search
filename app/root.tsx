@@ -1,4 +1,5 @@
-import type { MetaFunction } from "@remix-run/node";
+import * as amplitude from "@amplitude/analytics-browser";
+import type { MetaFunction, LinksFunction } from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -7,7 +8,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { LinksFunction } from "@remix-run/node";
 import stylesheet from "~/tailwind.css";
 
 //mui
@@ -20,9 +20,6 @@ interface DocumentProps {
   children: React.ReactNode;
   title?: string;
 }
-
-//tracking
-import * as amplitude from "@amplitude/analytics-browser";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -86,7 +83,9 @@ const Document = withEmotionCache(
 
 export default function App() {
   useEffect(() => {
-    amplitude.init("db590d6781718f23151b150759366db4");
+    amplitude.init("db590d6781718f23151b150759366db4",{
+      defaultTracking: true,
+    });
   }, []);
 
   return (
