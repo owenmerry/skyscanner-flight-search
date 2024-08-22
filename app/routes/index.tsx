@@ -1,22 +1,21 @@
 import type { ActionArgs, LoaderFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroDefault } from "~/components/section/hero/hero-default";
-import { NavigationWebsite } from "~/components/ui/navigation/navigation-website";
 import { Layout } from "~/components/ui/layout/layout";
 import { AllCountries } from "~/components/section/page/explore";
-import { Place } from "~/helpers/sdk/place";
-
+import type { Place } from "~/helpers/sdk/place";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
-import { getMarkersCountryFrom } from "~/helpers/map";
 import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
-import { SkyscannerAPIIndicativeResponse } from "~/helpers/sdk/indicative/indicative-response";
 import { useCallback, useEffect, useState } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { Map } from "~/components/ui/map";
-import { Wrapper } from "@googlemaps/react-wrapper";
 import { NavigationMiniApps } from "~/components/ui/navigation/navigation-mini-apps";
 import { userPrefs } from "~/helpers/cookies";
+import { MarketingMap } from "~/components/section/marketing/marketing-map";
+import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
+import moment from "moment";
+import { MarketingPlaces } from "~/components/section/marketing/marketing-places";
+import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
+import { actionsSearchForm } from "~/actions/search-form";
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -31,37 +30,16 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
     apiUrl,
     googleApiKey,
     googleMapId,
-    from: cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LHR"),
+    from: cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON"),
     fromCookie: cookie.from,
   };
 };
 
 export async function action({ request }: ActionArgs) {
-  const cookieHeader = request.headers.get("Cookie");
-  const cookie = (await userPrefs.parse(cookieHeader)) || {};
-  const bodyParams = await request.formData();
-  const from = bodyParams.get("from") ? bodyParams.get("from") : '';
-  const fromParse: Place | undefined = typeof from === 'string' ? JSON.parse(from) : undefined;
+  let action;
+  action = actionsSearchForm({request});
 
-  if (from) {
-    cookie.from = from;
-  }
-
-  const query = {
-    from: fromParse?.iata || '',
-    to: bodyParams.get("to"),
-    depart: bodyParams.get("depart"),
-    return: bodyParams.get("return"),
-  };
-
-  return redirect(
-    `/search/${query.from}/${query.to}/${query.depart}/${query.return}`,
-    {
-      headers: {
-        "Set-Cookie": await userPrefs.serialize(cookie),
-      },
-    }
-  );
+  return action;
 }
 
 export default function Index() {
@@ -75,8 +53,7 @@ export default function Index() {
       fromCookie: string;
     }>();
   const [countryShow, setCountryShow] = useState(false);
-  const [searchIndicative, setSearchIndicative] =
-    useState<SkyscannerAPIIndicativeResponse>();
+  const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
   const defaultSearch = getDefualtFlightQuery();
   defaultSearch.from = from.entityId;
   defaultSearch.fromIata = from.iata;
@@ -91,14 +68,17 @@ export default function Index() {
         to: "anywhere",
         tripType: "return",
       },
-      month: Number("2023-12-01".split("-")[1]),
+      month: Number(moment().format("MM")),
+      year: Number(moment().format("YYYY")),
+      endMonth: Number(moment().add(10, "months").format("MM")),
+      endYear: Number(moment().add(10, "months").format("YYYY")),
     });
 
     if ("error" in indicativeSearch.search) return;
 
-    console.log(indicativeSearch.search);
+    console.log("check", indicativeSearch.quotes);
 
-    setSearchIndicative(indicativeSearch.search);
+    setSearch(indicativeSearch.quotes);
   }, [apiUrl, from]);
 
   useEffect(() => {
@@ -114,41 +94,29 @@ export default function Index() {
         flightDefault={defaultSearch}
         useForm
       />
-      {searchIndicative ? (
-        <div className="relative py-4 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-          <div>
-            <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-              Flights From {from.name} to Everywhere
-            </h2>
-          </div>
-          <Wrapper apiKey={googleApiKey}>
-            <Map
+      <div className="relative z-10">
+        {search ? (
+          <>
+            <MarketingMap
+              search={search}
+              from={from}
               googleMapId={googleMapId}
-              center={{
-                lat: from.coordinates.latitude,
-                lng: from.coordinates.longitude,
-              }}
-              zoom={5}
-              markers={getMarkersCountryFrom(
-                [],
-                searchIndicative,
-                from,
-                defaultSearch
-              )}
-              isFitZoomToMarkers={false}
+              googleApiKey={googleApiKey}
+              level="everywhere"
             />
-          </Wrapper>
-        </div>
-      ) : (
-        ""
-      )}
-      <NavigationWebsite />
-      <NavigationMiniApps />
-      <AllCountries
-        countries={countries}
-        showAll={countryShow}
-        onShowToggle={() => setCountryShow(!countryShow)}
-      />
+            <MarketingPlaces url="/continent/" from={from} search={search} />
+            <MarketingDeals from={from} search={search} />
+          </>
+        ) : (
+          ""
+        )}
+        <NavigationMiniApps />
+        <AllCountries
+          countries={countries}
+          showAll={countryShow}
+          onShowToggle={() => setCountryShow(!countryShow)}
+        />
+      </div>
     </Layout>
   );
 }

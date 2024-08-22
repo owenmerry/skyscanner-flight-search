@@ -33,7 +33,7 @@ export interface TripadvisorDetailsData {
     ranking: string;
   };
   rating: string;
-  rating_image_url: string;
+  rating_image_url?: string;
   num_reviews: string;
   review_rating_count: {
     "1": string;

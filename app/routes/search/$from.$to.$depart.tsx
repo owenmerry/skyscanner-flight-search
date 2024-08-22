@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import { getImages } from "~/helpers/sdk/query";
@@ -26,9 +26,8 @@ import { Box, LinearProgress } from "@mui/material";
 import { FiltersDrawer } from "~/components/ui/drawer/drawer-filter";
 import { PriceGraph } from "~/components/ui/graph/price-graph";
 import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
-import { CarHireList } from "~/components/section/car-hire-list";
-import { HotelList } from "~/components/section/hotels-list";
 import moment from "moment";
+import { actionsSearchForm } from "~/actions/search-form";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -91,6 +90,13 @@ export const loader = async ({ params }: LoaderArgs) => {
     country,
   };
 };
+
+export async function action({ request }: ActionArgs) {
+  let action;
+  action = actionsSearchForm({request});
+
+  return action;
+}
 
 export default function Search() {
   const {

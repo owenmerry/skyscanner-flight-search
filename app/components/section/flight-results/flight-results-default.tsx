@@ -597,7 +597,7 @@ export const FlightResultsDefault = ({
           onClick={() => setSort("cheapest")}
         >
           <div className="text-sm font-bold dark:text-white">Cheapest</div>
-          <div className="text-sm dark:text-white">{flights.cheapest[0].price}</div>
+          <div className="text-sm dark:text-white">{flights.cheapest[0]?.price}</div>
         </div>
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer ${
@@ -606,7 +606,7 @@ export const FlightResultsDefault = ({
           onClick={() => setSort("best")}
         >
           <div className="text-sm font-bold dark:text-white">Best</div>
-          <div className="text-sm dark:text-white">{flights.best[0].price}</div>
+          <div className="text-sm dark:text-white">{flights.best[0]?.price}</div>
         </div>
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer ${
@@ -615,7 +615,7 @@ export const FlightResultsDefault = ({
           onClick={() => setSort("fastest")}
         >
           <div className="text-sm font-bold dark:text-white">Fastest</div>
-          <div className="text-sm dark:text-white">{flights.fastest[0].price}</div>
+          <div className="text-sm dark:text-white">{flights.fastest[0]?.price}</div>
         </div>
       </div>
       {/* <ResultsCount

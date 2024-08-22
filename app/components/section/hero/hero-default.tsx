@@ -1,6 +1,7 @@
 import { Link } from "@remix-run/react";
 import { Query } from "~/types/search";
 import { FlightControls } from "../../ui/flight-controls/flight-controls-default";
+import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
 
 export const Overlay = () => {
   return (
@@ -16,8 +17,8 @@ export const Text = () => {
   return (
     <div>
       {" "}
-      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white">
-        Explore the World with Ease
+      <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-8xl text-white">
+        Explore the World
       </h1>
       <p className="mb-8 text-lg font-normallg:text-xl sm:px-16 xl:px-48 text-white">
         Find your perfect flight or holiday package with our unique traveler
@@ -101,17 +102,20 @@ export const HeroDefault = ({
   useForm,
 }: HeroDefaultProps) => {
   return (
-    <section className="bg-[url('/images/hero/airport.jpg')] relative bg-top md:bg-bottom bg-cover bg-no-repeat">
-      <Overlay />
-      <Gradient />
+    <section className="relative overflow-visible">
+      <div className="bg-[url('/images/hero/landscape.jpg')] bg-top md:bg-top bg-cover bg-no-repeat absolute top-0 left-0 w-[100%] h-[150%] z-0">
+        <Overlay />
+        <Gradient />
+      </div>
       <div className="relative z-10 py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 lg:px-12">
         {newFeature ? <NewFeature text={newFeature} url={newFeatureURL} /> : ``}
         {showText ? <Text /> : ``}
-        <FlightControls
+        <FlightControlsApp
           apiUrl={apiUrl}
           buttonLoading={buttonLoading}
           flightDefault={flightDefault}
-          useForm={useForm}
+          useForm
+          rounded
         />
       </div>
     </section>

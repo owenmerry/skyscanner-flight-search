@@ -12,7 +12,7 @@ export interface IndicativeQuotesSDK {
   parentsString: string[];
   continent: Place;
   country: Place;
-  city: Place;
+  city?: Place;
   isDirect: boolean;
   price: {
     display: string;
@@ -57,6 +57,7 @@ export const getIndicativeQuotesSDK = (
     const country = parents.filter(parent => parent.type === 'PLACE_TYPE_COUNTRY')[0];
     const continent = parents.filter(parent => parent.type === 'PLACE_TYPE_CONTINENT')[0];
     const city = parents.filter(parent => parent.type === 'PLACE_TYPE_CITY')[0];
+    const days = getTripDays(outboundDateString ,inboundDateString);
 
     return {
       id: quoteKey,
@@ -92,7 +93,8 @@ export const getIndicativeQuotesSDK = (
             carrier: search.content.results.carriers[quote.inboundLeg.marketingCarrierId],
         },
       },
-      tripDays: getTripDays(outboundDateString ,inboundDateString),
+      days,
+      tripDays: days > 1 ? `${days} days` : `${days} day`,
       updated: getUpdatedFromTimestamps(quote.outboundLeg.quoteCreationTimestamp, quote.inboundLeg.quoteCreationTimestamp),
     };
   });

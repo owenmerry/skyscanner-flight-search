@@ -204,11 +204,11 @@ export const getTripDays = (
   departDate: string,
   returnDate: string
 ) => {
-  const departDateObject = new Date(departDate);
-  const returnDateObject = addDays(new Date(returnDate), 1);
+  const departMoment = moment(departDate);
+  const returnMoment = moment(returnDate);
+  const days = returnMoment.diff(departMoment, "days");
 
-  return formatDistance(departDateObject, returnDateObject, {
-  });
+  return days;
 };
 
 export const getUpdatedFromTimestamps = (outboundLegTimestamp : string, inboundLegTimestamp :string) => {

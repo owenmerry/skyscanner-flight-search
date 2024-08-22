@@ -87,7 +87,7 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
               isDepartSelected
                 ? "dark:border-primary-600"
                 : "dark:border-gray-600"
-            } dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
+            } dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 font-semibold`}
           >
             {dates.depart}
           </div>
@@ -115,7 +115,7 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
               isReturnSelected
                 ? "dark:border-primary-600"
                 : "dark:border-gray-600"
-            } dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
+            } dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 font-semibold`}
           >
             {dates.return ? dates.return : "No Return"}{" "}
           </div>

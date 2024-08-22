@@ -91,7 +91,7 @@ export const NavSidebar = () => {
               </li>
             </ul>
           </div> */}
-          <ul className="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700">
+          <ul className="pt-5 mt-5 space-y-2">
             <li>
               <a
                 href="/"

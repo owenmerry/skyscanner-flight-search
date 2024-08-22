@@ -133,10 +133,12 @@ export const MarketingNearby = ({
                         {location.details.description}
                       </p>
                       <div className=" text-gray-700  font-bold">
-                        <img
-                          src={location.details.rating_image_url}
-                          alt="tripadvisor rating"
-                        />
+                        {location.details.rating_image_url ? (
+                          <img
+                            src={location.details.rating_image_url}
+                            alt="tripadvisor rating"
+                          />
+                        ) : ''}
                         <div className="mt-2">
                           {location.details.ranking_data?.ranking_string}
                         </div>

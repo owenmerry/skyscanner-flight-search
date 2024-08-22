@@ -72,16 +72,29 @@ export const MarketingMap = ({
   const [markers] = useState<Markers[]>(getMarkers(search));
 
   return (
-    <div className="dark:bg-slate-900">
+    <div className="">
       <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
-      <div className="flex justify-center mb-4">
-      <svg className="w-6 h-6 text-gray-800 dark:text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 0v6M9.5 9A2.5 2.5 0 0 1 12 6.5"/>
-</svg>
-
+        <div className="flex justify-center mb-4">
+          <svg
+            className="w-6 h-6 text-gray-800 dark:text-blue-600"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 0v6M9.5 9A2.5 2.5 0 0 1 12 6.5"
+            />
+          </svg>
         </div>
         <h2 className="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-          Explore {level !== 'everywhere' ? to?.name : "Everywhere"} by Map
+          Explore {level !== "everywhere" ? to?.name : "Everywhere"} by Map
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
           We are strategists, designers and developers. Innovators and problem
@@ -100,8 +113,8 @@ export const MarketingMap = ({
                 lng: to ? to.coordinates.longitude : from.coordinates.longitude,
               }}
               markers={markers}
-              zoom={level === 'everywhere' ? 5 : 0}
-              isFitZoomToMarkers={level !== 'everywhere'}
+              zoom={level === "everywhere" ? 5 : 0}
+              isFitZoomToMarkers={level !== "everywhere"}
             />
           </Wrapper>
         </div>

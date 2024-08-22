@@ -2,7 +2,7 @@ import type { LegSDK } from "~/helpers/sdk/flight/flight-functions";
 import { getDateFormated } from "~/helpers/date";
 import type { Query, QueryPlace, QueryPlaceString } from "~/types/search";
 import type { SkyscannerAPICreateResponse } from "./flight/flight-response";
-import { getPlaceFromIata } from "./place";
+import { getPlaceFromIata, Place } from "./place";
 
 export const isDirectFlights = (legs: LegSDK[]): boolean => {
   return legs.filter((leg) => !!leg.direct).length === legs.length;
@@ -10,14 +10,14 @@ export const isDirectFlights = (legs: LegSDK[]): boolean => {
 export const hasDirectFlights = (res: SkyscannerAPICreateResponse): boolean => {
   return !!(res.content.stats.itineraries.stops.direct.total.count > 0);
 };
-export const getDefualtFlightQuery = (): Query => {
+export const getDefualtFlightQuery = ({from, to} : {from?: Place, to?: Place} = {}): Query => {
   return {
-    from: "95565050",
-    fromIata: "LHR",
-    fromText: "London Heathrow",
-    to: "95673529", //Dublin
-    toIata: "DUB", //Dublin
-    toText: "Dublin", //Dublin
+    from: from?.entityId || "27544008", //London
+    fromIata: from?.iata || "LON", //London
+    fromText: from?.name || "London", //London
+    to: to?.entityId || "95673529", //Dublin
+    toIata: to?.iata || "DUB", //Dublin
+    toText: to?.name || "Dublin", //Dublin
     depart: getDateFormated(1),
     return: getDateFormated(3),
     tripType: "return",

@@ -76,7 +76,7 @@ export const MarketingGraph = ({ search }: MarketingGraphProps) => {
                             getPercentageBar(
                               Number(month.priceRaw),
                               Number(highest.priceRaw)
-                            ) < 20
+                            ) < 30
                               ? "min-w-32 relative left-36 bg-blue-900"
                               : "bg-blue-950"
                           } text-white inline-block rounded-lg p-1 text-sm sm:p-2`}

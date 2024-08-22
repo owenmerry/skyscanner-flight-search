@@ -19,11 +19,20 @@ export const AllCountries = ({
   );
   return (
     <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-12">
-      <div>
-        <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-          Search By Country
-        </h2>
-      </div>
+<div className="flex justify-center mb-4">
+<svg className="w-6 h-6 text-gray-800 dark:text-blue-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 14v7M5 4.971v9.541c5.6-5.538 8.4 2.64 14-.086v-9.54C13.4 7.61 10.6-.568 5 4.97Z"/>
+</svg>
+
+        </div>
+        <div className="mx-auto max-w-screen-sm text-center mb-8 lg:mb-16">
+          <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+            Explore by Country
+          </h2>
+          <p className="font-light text-gray-500 sm:text-xl dark:text-gray-400">
+            Explore all the Countries to world and find your next big adventure.
+          </p>
+        </div>
       <div className="my-4">
         <input
           value={filter}
