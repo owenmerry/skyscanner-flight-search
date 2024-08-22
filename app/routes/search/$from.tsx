@@ -45,7 +45,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export async function action({ request }: ActionArgs) {
   let action;
-  action = actionsSearchForm({request});
+  action = actionsSearchForm({ request });
 
   return action;
 }
@@ -169,11 +169,11 @@ export default function Search() {
         const departDate = moment(deal.legs.depart.dateString).day();
         const returnDate = moment(deal.legs.return.dateString).day();
 
-        check = check && 
-        (departDate === 4 || departDate === 5 || departDate === 6) && 
-        (returnDate === 0 || returnDate === 1) && 
-        (deal.days < 6);
-
+        check =
+          check &&
+          (departDate === 4 || departDate === 5 || departDate === 6) &&
+          (returnDate === 0 || returnDate === 1) &&
+          deal.days < 6;
       }
 
       return check;
@@ -207,8 +207,8 @@ export default function Search() {
           ""
         )}
       </div>
-      <div className="py-12 sm:py-2 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 lg:py-2">
-      <div className="flex items-center mb-2 mt-4">
+      <div className="py-2 sm:py-2 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12">
+        <div className="flex items-center mb-2 mt-4">
           <svg
             className="w-8 h-8 text-gray-800 dark:text-blue-600 mr-2"
             aria-hidden="true"
@@ -226,13 +226,23 @@ export default function Search() {
               d="M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 0v6M9.5 9A2.5 2.5 0 0 1 12 6.5"
             />
           </svg>
-        <h2 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-          {from.name} to Everywhere
-        </h2>
+          <h2 className="text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+            {from.name} to Everywhere
+          </h2>
         </div>
         <div className="flex overflow-y-scroll scrollbar-hide gap-2 py-3">
           {!loading ? (
             <>
+              <div
+                onClick={() => addFilter("weekend")}
+                className={`${
+                  filters.includes("weekend")
+                    ? `border-blue-600 bg-blue-600 hover:border-blue-600`
+                    : `border-slate-600 bg-slate-800 hover:border-slate-500`
+                } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
+              >
+                Weekend Trip
+              </div>
               <div
                 onClick={() => addFilter("depart 7 days")}
                 className={`${
@@ -252,16 +262,6 @@ export default function Search() {
                 } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
               >
                 Depart within 1 month
-              </div>
-              <div
-                onClick={() => addFilter("weekend")}
-                className={`${
-                  filters.includes("weekend")
-                    ? `border-blue-600 bg-blue-600 hover:border-blue-600`
-                    : `border-slate-600 bg-slate-800 hover:border-slate-500`
-                } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
-              >
-                Weekend Trip
               </div>
               <div
                 onClick={() => addFilter("short holiday")}
@@ -350,7 +350,7 @@ export default function Search() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {searchFiltered.map((deal, key) => {
-            if(key + 1 > 21) return '';
+            if (key + 1 > 21) return "";
             return (
               <div key={deal.id} className="">
                 <a
@@ -358,17 +358,20 @@ export default function Search() {
                   className="group/link relative block rounded-lg shadow md:flex-row md:max-w-xl border border-slate-700 bg-slate-800 hover:border-slate-600 transition"
                 >
                   <div
-                        className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
-                        style={{
-                          backgroundImage: `url(${deal.country.images[key % deal.country.images.length]}&w=500)`,
-                        }}
-                      ></div>
-                      <div className="opacity-80 group-hover/link:opacity-60 transition ease-in bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
-                      <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[80%] z-0 rounded-lg"></div>
+                    className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
+                    style={{
+                      backgroundImage: `url(${
+                        deal.country.images[key % deal.country.images.length]
+                      }&w=500)`,
+                    }}
+                  ></div>
+                  <div className="opacity-80 group-hover/link:opacity-60 transition ease-in bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
+                  <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[80%] z-0 rounded-lg"></div>
                   <div className="relative z-10 p-4 leading-normal">
                     <div className="flex gap-2 justify-between mb-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-left">
                       <div className="truncate">
-                        {deal.city?.name || deal.query.to.name}, {deal.country.name}
+                        {deal.city?.name || deal.query.to.name},{" "}
+                        {deal.country.name}
                       </div>
                       <div className="whitespace-nowrap">{deal.tripDays}</div>
                     </div>
@@ -467,19 +470,30 @@ export default function Search() {
           )}
         </div>
         {!loading && searchFiltered.length === 0 ? (
-            <div className="border border-slate-700 bg-slate-800 rounded-lg p-6">
-              <h5 className="text-2xl font-bold pb-4">No Results Found</h5>
-              {filters.length > 0 ? (
-                <div>
-                  Try changing your filters as you didnt get any results with this trip <div className="underline cursor-pointer pt-4" onClick={() => setFilters([])}>Remove Filters</div>
+          <div className="border border-slate-700 bg-slate-800 rounded-lg p-6">
+            <h5 className="text-2xl font-bold pb-4">No Results Found</h5>
+            {filters.length > 0 ? (
+              <div>
+                Try changing your filters as you didnt get any results with this
+                trip{" "}
+                <div
+                  className="underline cursor-pointer pt-4"
+                  onClick={() => setFilters([])}
+                >
+                  Remove Filters
+                </div>
               </div>
-              ) : (
-                <div>
-                  Try a differnt location as there is'nt any results for this search.
-              </div>)}
-              <p></p>
-            </div>
-          ) : ''}
+            ) : (
+              <div>
+                Try a differnt location as there is'nt any results for this
+                search.
+              </div>
+            )}
+            <p></p>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
