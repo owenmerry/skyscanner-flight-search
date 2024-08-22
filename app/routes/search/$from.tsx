@@ -19,7 +19,8 @@ type Filters =
   | "in north america"
   | "in south america"
   | "in africa"
-  | "in europe";
+  | "in europe"
+  | "weekend";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -164,6 +165,16 @@ export default function Search() {
             check && deal.parentsString.includes(continentEurope.entityId);
         }
       }
+      if (filters.includes("weekend")) {
+        const departDate = moment(deal.legs.depart.dateString).day();
+        const returnDate = moment(deal.legs.return.dateString).day();
+
+        check = check && 
+        (departDate === 4 || departDate === 5 || departDate === 6) && 
+        (returnDate === 0 || returnDate === 1) && 
+        (deal.days < 6);
+
+      }
 
       return check;
     }) || [];
@@ -241,6 +252,16 @@ export default function Search() {
                 } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
               >
                 Depart within 1 month
+              </div>
+              <div
+                onClick={() => addFilter("weekend")}
+                className={`${
+                  filters.includes("weekend")
+                    ? `border-blue-600 bg-blue-600 hover:border-blue-600`
+                    : `border-slate-600 bg-slate-800 hover:border-slate-500`
+                } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
+              >
+                Weekend Trip
               </div>
               <div
                 onClick={() => addFilter("short holiday")}

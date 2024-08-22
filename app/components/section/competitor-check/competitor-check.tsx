@@ -53,6 +53,7 @@ export const CompetitorCheck = ({
                 <a
                   className="text-xs hover:underline -mt-2"
                   target="_blank"
+                  rel="noreferrer"
                   href={kiwiSearch.data[0]?.deep_link}
                 >
                   (See Price)

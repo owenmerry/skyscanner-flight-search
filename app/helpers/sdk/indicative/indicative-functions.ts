@@ -38,6 +38,7 @@ export interface IndicativeQuotesSDK {
         carrier: IndicitiveCarrier;
     }
   };
+  days: number;
   tripDays: string;
   updated: string;
 }
