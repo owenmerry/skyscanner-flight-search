@@ -103,7 +103,7 @@ export const MarketingNearby = ({
           solvers. Small enough to be simple and quick, but big enough to
           deliver the scope you want at the pace you need.
         </p>
-        <div className="relative my-8">
+        <div className="relative my-[20px] sm:my-8">
           <div className="bg-gradient-to-l from-blue-600 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-10 sm:hidden"></div>
           <div className="flex overflow-y-scroll scrollbar-hide sm:grid sm:grid-cols-3 gap-4">
             {locations.map((location) => {
