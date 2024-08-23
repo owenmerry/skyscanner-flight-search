@@ -179,7 +179,7 @@ export const MarketingNearby = ({
             ) : (
               ""
             )}
-            <div className="w-[20px] sm:hidden"></div>
+            <div className="w-[20px] sm:hidden">this</div>
           </div>
         </div>
       </div>
