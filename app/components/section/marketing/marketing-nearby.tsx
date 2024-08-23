@@ -12,6 +12,7 @@ import type {
   TripadvisorNearByResponse,
 } from "~/types/tripadvisor-near-by";
 import { tripSDKData } from "./helpers/data-tripadvisor";
+import { getAllParents } from "~/helpers/sdk/data";
 
 export interface TripadvisorSDK {
   location: TripadvisorNearByData;
@@ -30,12 +31,13 @@ export const MarketingNearby = ({
   to,
   apiUrl,
 }: MarketingNearbyProps) => {
-  const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
+  const [locations, setLocations] = useState<TripadvisorSDK[]>(tripSDKData);
+  const parents = getAllParents(to.parentId);
 
   const runLocations = async () => {
     if(locations.length > 0) return;
     const res = await fetch(
-      `${apiUrl}/service/tripadvisor/locations?searchQuery=${to.name}`
+      `${apiUrl}/service/tripadvisor/locations?searchQuery=${encodeURIComponent(`${to.name}${parents[0] ? `, ${parents[0].name}` : ''}`)}`
     );
     const data: TripadvisorNearByResponse = await res.json();
 
@@ -94,7 +96,7 @@ export const MarketingNearby = ({
           </svg>
         </div>
         <h2 className="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-          What to do in {to.name}
+          What to do in {to.name}{parents[0] ? `, ${parents[0].name}` : ''}
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-white">
           We are strategists, designers and developers. Innovators and problem

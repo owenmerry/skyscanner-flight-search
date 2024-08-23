@@ -15,6 +15,7 @@ import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import moment from "moment";
 import { MarketingMap } from "~/components/section/marketing/marketing-map";
+import { AllCountries } from "~/components/section/page/explore";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -28,6 +29,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
   const fromCookie = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON");
   const from = fromCookie || getPlaceFromIata("LON");
+  const countries = skyscanner().geo().countries;
   const indicativeSearch = await skyscanner().indicative({
     apiUrl,
     query: {
@@ -48,6 +50,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     search,
     googleMapId,
     googleApiKey,
+    countries,
   });
 };
 
@@ -58,12 +61,14 @@ export default function SEOAnytime() {
     search,
     googleMapId,
     googleApiKey,
+    countries,
   } : {
     from: Place;
     exploreImages: string[];
     search: IndicativeQuotesSDK[];
     googleMapId: string;
     googleApiKey: string;
+    countries: Place[];
   } = useLoaderData();
 
   return (
@@ -84,6 +89,9 @@ export default function SEOAnytime() {
         <MarketingDeals from={from} search={search} />
         <MarketingGraph search={search} />
         <MarketingMap search={search} from={from} googleMapId={googleMapId} googleApiKey={googleApiKey} level="everywhere" />
+        <AllCountries
+          countries={countries}
+        />
       </div>
     </Layout>
   );

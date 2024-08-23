@@ -22,6 +22,7 @@
     "@googlemaps/markerwithlabel": "^2.0.25",
     "@googlemaps/react-wrapper": "^1.1.35",
     "@mui/material": "^5.15.15",
+    "@react-google-maps/api": "^2.19.3",
     "@remix-run/node": "^1.16.0",
     "@remix-run/react": "^1.16.0",
     "@remix-run/serve": "^1.16.0",

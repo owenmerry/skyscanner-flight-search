@@ -4,13 +4,14 @@ import { type Place } from "~/helpers/sdk/place";
 
 export const AllCountries = ({
   countries,
-  showAll,
+  showAll = false,
   onShowToggle,
 }: {
   countries: Place[];
-  showAll: boolean;
-  onShowToggle: () => void;
+  showAll?: boolean;
+  onShowToggle?: () => void;
 }) => {
+  const [show, setShow] = useState<boolean>(showAll);
   const [filter, setFilter] = useState<string>();
   const countriesFiltered = countries.filter(
     (country) =>
@@ -43,7 +44,7 @@ export const AllCountries = ({
       </div>
       <div className="grid gap-2 sm:grid-cols-5 grid-cols-2">
         {countriesFiltered
-          .slice(0, showAll ? 999 : 30)
+          .slice(0, show ? 999 : 30)
           .map((country: Place, key: number) => {
             return (
               <div key={key}>
@@ -67,9 +68,9 @@ export const AllCountries = ({
         <div className="text-center mt-4">
           <div
             className="inline-block justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 cursor-pointer"
-            onClick={onShowToggle}
+            onClick={onShowToggle ? onShowToggle : () => setShow(!show)}
           >
-            {showAll ? "Show Less Countries" : "Show All Countries"}
+            {show ? "Show Less Countries" : "Show All Countries"}
           </div>
         </div>
       ) : (
