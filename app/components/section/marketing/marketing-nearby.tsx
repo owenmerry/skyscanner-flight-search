@@ -110,7 +110,7 @@ export const MarketingNearby = ({
               return (
                 <div
                   key={location.location.location_id}
-                  className="group/link min-w-96 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
+                  className="group/link min-w-72 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
                 >
                   <a
                     href={`${location.details.web_url}`}
