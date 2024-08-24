@@ -31,7 +31,7 @@ export const MarketingNearby = ({
   to,
   apiUrl,
 }: MarketingNearbyProps) => {
-  const [locations, setLocations] = useState<TripadvisorSDK[]>(tripSDKData);
+  const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
   const parents = getAllParents(to.parentId);
 
   const runLocations = async () => {
@@ -110,7 +110,7 @@ export const MarketingNearby = ({
               return (
                 <div
                   key={location.location.location_id}
-                  className="group/link min-w-96 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
+                  className="group/link min-w-72 sm:min-w-0 text-left shadow-lg bg-white rounded-lg md:flex-row md:max-w-xl hover:bg-gray-100  dark:bg-white  dark:text-black"
                 >
                   <a
                     href={`${location.details.web_url}`}
@@ -179,7 +179,7 @@ export const MarketingNearby = ({
             ) : (
               ""
             )}
-            <div className="w-[20px] sm:hidden"></div>
+            <div className="w-[20px] sm:hidden">&nbsp;</div>
           </div>
         </div>
       </div>
