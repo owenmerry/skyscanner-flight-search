@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
 
 interface MapProps {
@@ -9,7 +9,7 @@ interface MapProps {
   isFitZoomToMarkers?: boolean;
   fitLocationAddress?: string;
   line?: google.maps.LatLngLiteral[];
-  onLoadedMap?: (map: google.maps.Map) => void
+  onLoadedMap?: (map: google.maps.Map) => void;
   markers?:
     | {
         location: google.maps.LatLngLiteral;
@@ -32,7 +32,6 @@ export const Map = ({
   onLoadedMap,
 }: MapProps) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [stateMap, setStateMap] = useState<google.maps.Map>();
 
   const buildMarkersAndMap = async () => {
     if (!ref.current) return;
@@ -48,20 +47,9 @@ export const Map = ({
       mapId: googleMapId,
       ...(isMobile ? { gestureHandling: "greedy" } : {}),
     });
-    setStateMap(googleMap);
-
-    const locationSvg = {
-      path: "M-1.547 12l6.563-6.609-1.406-1.406-5.156 5.203-2.063-2.109-1.406 1.406zM0 0q2.906 0 4.945 2.039t2.039 4.945q0 1.453-0.727 3.328t-1.758 3.516-2.039 3.070-1.711 2.273l-0.75 0.797q-0.281-0.328-0.75-0.867t-1.688-2.156-2.133-3.141-1.664-3.445-0.75-3.375q0-2.906 2.039-4.945t4.945-2.039z",
-      fillColor: "blue",
-      fillOpacity: 0.6,
-      strokeWeight: 0,
-      rotation: 0,
-      scale: 2,
-      anchor: new google.maps.Point(0, 20),
-    };
 
     if (markers) {
-      const markersAdvanced = markers.map((marker) => {
+      for (const marker of markers) {
         const container = document.createElement("div");
         container.innerHTML = marker.label;
 
@@ -82,8 +70,8 @@ export const Map = ({
         }
 
         //fit zoom to markers
-        if(fitLocationAddress){
-          fetchCityBounds(fitLocationAddress,googleMap);
+        if (fitLocationAddress) {
+          fetchCityBounds(fitLocationAddress, googleMap);
         } else if (isFitZoomToMarkers) {
           var bounds = new google.maps.LatLngBounds();
           markers.forEach((marker) => {
@@ -106,28 +94,31 @@ export const Map = ({
 
           flightPath.setMap(googleMap);
         }
-      });
+      }
     }
 
     onLoadedMap && onLoadedMap(googleMap);
   };
 
-  const fetchCityBounds = useCallback((cityName: string, mapRef: google.maps.Map) => {
-    const geocoder = new google.maps.Geocoder();
+  const fetchCityBounds = useCallback(
+    (cityName: string, mapRef: google.maps.Map) => {
+      const geocoder = new google.maps.Geocoder();
 
-    geocoder.geocode({ address: cityName }, (results, status) => {
-      if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
-        const bounds = results && results[0].geometry.bounds;
-        if (bounds && mapRef) {
-          mapRef.fitBounds(bounds);
+      geocoder.geocode({ address: cityName }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
+          const bounds = results && results[0].geometry.bounds;
+          if (bounds && mapRef) {
+            mapRef.fitBounds(bounds);
+          }
+        } else {
+          console.error(
+            `Geocode was not successful for the following reason: ${status}`
+          );
         }
-      } else {
-        console.error(
-          `Geocode was not successful for the following reason: ${status}`
-        );
-      }
-    });
-  }, []);
+      });
+    },
+    []
+  );
 
   useEffect(() => {
     buildMarkersAndMap();

@@ -1,12 +1,12 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { useState } from "react";
-import { Map } from "~/components/ui/map";
+import { MapControls, MapMarker } from "~/components/ui/map/map-control.component";
 import type { Markers } from "~/helpers/map";
 import { getAllParents } from "~/helpers/sdk/data";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { Place } from "~/helpers/sdk/place";
 
-interface MarketingMapProps {
+interface MarketingMapExploreProps {
   googleMapId: string;
   googleApiKey: string;
   to?: Place;
@@ -14,14 +14,15 @@ interface MarketingMapProps {
   search: IndicativeQuotesSDK[];
   level?: "city" | "country" | "continent" | "everywhere";
 }
-export const MarketingMap = ({
+export const MarketingMapExplore = ({
   search,
   level,
   to,
   from,
   googleMapId,
   googleApiKey,
-}: MarketingMapProps) => {
+}: MarketingMapExploreProps) => {
+  const [map, setMap] = useState<google.maps.Map>();
   const parents = to ? getAllParents(to.parentId) : [];
   const getMarkers = (search: IndicativeQuotesSDK[]): Markers[] => {
     const markers: Markers[] = [];
@@ -52,25 +53,46 @@ export const MarketingMap = ({
               </div>
               <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-blue-700 "></div>
               </div>`,
-              link: `/search/${flight.query.from.iata}/${flight.query.to.iata}/${flight.query.depart}/${flight.query.return}`,
+          link: `/search/${flight.query.from.iata}/${flight.query.to.iata}/${flight.query.depart}/${flight.query.return}`,
           icon: "\ue539",
         });
       }
     }
 
     //from
-    markers.push({
-      location: {
-        lat: from.coordinates.latitude,
-        lng: from.coordinates.longitude,
-      },
-      label: `<div class='rounded-full w-5 h-5 bg-pink-600 border-white border-2 shadow animate-bounce'></div>`,
-    });
+    // markers.push({
+    //   location: {
+    //     lat: from.coordinates.latitude,
+    //     lng: from.coordinates.longitude,
+    //   },
+    //   label: `<div class='rounded-full w-5 h-5 bg-pink-600 border-white border-2 shadow animate-bounce'></div>`,
+    // });
 
     return markers;
   };
   const [markers] = useState<Markers[]>(getMarkers(search));
 
+  const centerMap = () => {
+    if(!map) return;
+
+    map.panTo({
+      lat: to ? to.coordinates.latitude : from.coordinates.latitude,
+      lng: to ? to.coordinates.longitude : from.coordinates.longitude,
+    });
+  }
+  const moveToMarker = (map: google.maps.Map , marker: MapMarker) => {
+    console.log('run marker');
+    if(!map) return;
+    console.log('move marker');
+    
+    map.panTo({
+      lat: marker.location.lat,
+      lng: marker.location.lng,
+    });
+    console.log('zoom to marker');
+    map.setZoom(16);
+  }
+  
   return (
     <div className="">
       <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
@@ -101,12 +123,12 @@ export const MarketingMap = ({
           solvers. Small enough to be simple and quick, but big enough to
           deliver the scope you want at the pace you need {search.length}.
         </p>
-        {/* <div className="flex py-3">
-          <div onClick={addLondon} className="py-3 px-3 rounded-lg cursor-pointer bg-slate-600 text-white font-bold text-sm">Add London (markers: {markers.length})</div>
-        </div> */}
         <div className="py-8">
-          <Wrapper apiKey={googleApiKey}>
-            <Map
+          <div className="py-2 flex justify-end">
+          <div className='text-white inline-block rounded-xl px-3 py-2 text-sm bg-blue-600 font-bold' onClick={centerMap}>Center Map</div>
+          </div>
+        <Wrapper apiKey={googleApiKey}>
+            <MapControls
               googleMapId={googleMapId}
               center={{
                 lat: to ? to.coordinates.latitude : from.coordinates.latitude,
@@ -114,7 +136,10 @@ export const MarketingMap = ({
               }}
               markers={markers}
               zoom={level === "everywhere" ? 5 : 0}
-              fitLocationAddress={to ? `${to?.name}${getAllParents(from.parentId)[0] ? `, ${parents[0].name}` : ''}` : `${getAllParents(from.parentId)[0]}`}
+              fitAddress={to ? `${to?.name}${parents[0] ? `, ${parents[0].name}` : ''}` : `${getAllParents(from.parentId)[0]}`}
+              onMarkerClick={(map, marker) => moveToMarker(map, marker)}
+              onMapLoaded={(map) => setMap(map)}
+              showPlaces
             />
           </Wrapper>
         </div>

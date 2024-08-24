@@ -15,9 +15,8 @@ import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import moment from "moment";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import { MarketingNearby } from "~/components/section/marketing/marketing-nearby";
-import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { MarketingWeather } from "~/components/section/marketing/marketing-weather";
-import { MarketingMapControl } from "~/components/section/marketing/marketing-map-control";
+import { MarketingMapExplore } from "~/components/section/marketing/marketing-map-explore";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -95,8 +94,7 @@ export default function SEOAnytime() {
         <MarketingDeals from={from} search={search} to={city} />
         <MarketingGraph search={search} />
         <MarketingNearby search={search} to={city} apiUrl={apiUrl} />
-        <MarketingMap search={search} from={from} to={city} googleMapId={googleMapId} googleApiKey={googleApiKey} />
-        {/* <MarketingMapControl search={search} from={from} to={city} googleMapId={googleMapId} googleApiKey={googleApiKey} /> */}
+        <MarketingMapExplore search={search} from={from} to={city} googleMapId={googleMapId} googleApiKey={googleApiKey} /> 
         <MarketingWeather to={city} apiUrl={apiUrl} />
       </div>
         

@@ -1,265 +1,260 @@
-import React, { useState, useRef, useCallback } from "react";
-import {
-  GoogleMap,
-  useLoadScript,
-  Marker,
-  DirectionsRenderer,
-} from "@react-google-maps/api";
+import { useCallback, useEffect, useRef } from "react";
+import { isMobile } from "react-device-detect";
 
-// Define types for the props and location objects
-export interface Location {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  category: "restaurants" | "attractions" | "hotels" | "airports"; // Add categories here
+export interface MapMarker {
+  location: google.maps.LatLngLiteral;
+  label: string;
+  icon?: string;
+  link?: string;
 }
 
-interface MapControlProps {
-  googleMapsApiKey: string;
-  locations: Location[];
-  cityName?: string; // New prop for the city name
-  mapContainerStyle?: React.CSSProperties;
-  defaultCenter?: { lat: number; lng: number };
-  defaultZoom?: number;
-  renderMarkerContent?: (location: Location) => JSX.Element;
-  showDirections?: boolean; // New prop to enable or disable directions
-  fitToCity?: boolean; // New prop to control automatic zoom to city bounds
-  onItemClick?: (location: Location) => void;
-  onMapLoad?: (map: google.maps.Map) => void;
+interface MapControlsProps {
+  googleMapId: string;
+  center: google.maps.LatLngLiteral;
+  zoom: number;
+  height?: string;
+  fitMarkers?: boolean;
+  fitAddress?: string;
+  line?: google.maps.LatLngLiteral[];
+  showDirections?: boolean;
+  showPlaces?: boolean;
+  markers?: MapMarker[] | null;
+  onMapLoaded?: (map: google.maps.Map) => void;
+  onMarkerClick?: (map: google.maps.Map, marker: MapMarker) => void;
 }
 
-export const MapControl: React.FC<MapControlProps> = ({
-  googleMapsApiKey,
-  locations,
-  cityName,
-  mapContainerStyle = { height: "400px", width: "800px" },
-  defaultCenter = { lat: 37.7749, lng: -122.4194 },
-  defaultZoom = 12,
-  renderMarkerContent = (location) => <div>{location.name}</div>,
-  showDirections = false, // Default to false
-  fitToCity = false, // Default to false
-  onItemClick = () => {},
-  onMapLoad = () => {},
-}) => {
-  const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey,
-    libraries: ["places"], // Required for Geocoding API
-  });
-  const [visibleCategories, setVisibleCategories] = useState({
-    restaurants: true,
-    attractions: true,
-    hotels: true,
-    airports: true,
-  });
+export const MapControls = ({
+  center,
+  zoom,
+  markers,
+  line,
+  fitMarkers = true,
+  height = "600px",
+  showDirections = false,
+  showPlaces = false,
+  googleMapId,
+  fitAddress,
+  onMapLoaded,
+  onMarkerClick,
+}: MapControlsProps) => {
+  const ref = useRef<HTMLDivElement>(null);
 
-  const [directions, setDirections] =
-    useState<google.maps.DirectionsResult | null>(null);
+  const buildMap = async () => {
+    if (!ref.current) return;
+    const { Map } = (await google.maps.importLibrary(
+      "maps"
+    )) as google.maps.MapsLibrary;
+    const googleMap = new Map(ref.current, {
+      center,
+      zoom,
+      mapId: googleMapId,
+      ...(isMobile ? { gestureHandling: "greedy" } : {}),
+    });
 
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const markerRef = useRef<Location[]>(locations);
+    if (markers) {
+      for (const marker of markers) {
+        addMarker(googleMap, marker, onMarkerClick);
+      }
 
-  const handleMapLoad = useCallback(
-    (map: google.maps.Map) => {
-      mapRef.current = map;
+      //fit map screen
+      if (fitAddress) {
+        fitMapToCityBounds(fitAddress, googleMap);
+      } else if (fitMarkers) {
+        fitMapToBounds(googleMap, markers);
+      }
 
-      // Fetch directions if showDirections is true
+      //add line drawing
+      if (line) {
+        addLine(googleMap, line);
+      }
+
+      //add directions
       if (showDirections) {
-        fetchDirections();
+        addDirections(googleMap, markers);
       }
 
-      // Automatically fit the map to city bounds if fitToCity is true
-      if (fitToCity && cityName) {
-        fetchCityBounds(cityName);
-      } else if (fitToCity) {
-        fitMapToBounds(map);
+      if (showPlaces) {
+        await addPlaces(googleMap, center, onMarkerClick);
       }
+    }
 
-      onMapLoad(map);
+    onMapLoaded && onMapLoaded(googleMap);
+  };
+
+  const fitMapToCityBounds = useCallback(
+    (cityName: string, mapRef: google.maps.Map) => {
+      const geocoder = new google.maps.Geocoder();
+
+      geocoder.geocode({ address: cityName }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
+          const bounds = results && results[0].geometry.bounds;
+          if (bounds && mapRef) {
+            mapRef.fitBounds(bounds);
+          }
+        } else {
+          console.error(
+            `Geocode was not successful for the following reason: ${status}`
+          );
+        }
+      });
     },
-    [locations, showDirections, fitToCity, cityName, onMapLoad]
+    []
   );
 
-  const handleItemClick = (location: Location) => {
-    console.log("clicked location", location.name);
-    //setSelectedLocation(location);
-    //onItemClick(location);
+  const fitMapToBounds = (map: google.maps.Map, markers: MapMarker[]) => {
+    const bounds = new google.maps.LatLngBounds();
+    markers?.forEach((marker) => {
+      bounds.extend(
+        new google.maps.LatLng(marker.location.lat, marker.location.lng)
+      );
+    });
+    map.fitBounds(bounds);
+  };
 
-    if (mapRef.current) {
-      console.log("pan to location", location.name);
-      mapRef.current.panTo({ lat: location.lat, lng: location.lng });
-      mapRef.current.setZoom(14);
+  const addLine = (map: google.maps.Map, line: MapControlsProps["line"]) => {
+    const flightPath = new google.maps.Polyline({
+      path: line,
+      geodesic: false,
+      strokeColor: "#53638e",
+      strokeOpacity: 1.0,
+      strokeWeight: 2,
+    });
+
+    flightPath.setMap(map);
+  };
+
+  const addMarker = async (
+    map: google.maps.Map,
+    marker: MapMarker,
+    onMarkerClick: MapControlsProps["onMarkerClick"]
+  ) => {
+    const { AdvancedMarkerElement } = (await google.maps.importLibrary(
+      "marker"
+    )) as google.maps.MarkerLibrary;
+
+    const container = document.createElement("div");
+    container.innerHTML = marker.label;
+
+    const googleMarker = new AdvancedMarkerElement({
+      position: marker.location,
+      title: "Weather marker",
+      content: container,
+      map,
+    });
+
+    if (onMarkerClick) {
+      googleMarker.addListener("click", () => {
+        onMarkerClick(map, marker);
+      });
     }
   };
 
-  const handleCategoryToggle = (category: keyof typeof visibleCategories) => {
-    const newVisibleCategories = {
-      ...visibleCategories,
-      [category]: !visibleCategories[category],
-    };
-    setVisibleCategories(newVisibleCategories);
+  const addPlaces = async (
+    map: google.maps.Map,
+    location: google.maps.LatLngLiteral,
+    onMarkerClick: MapControlsProps["onMarkerClick"]
+  ) => {
+    const { PlacesService } = (await google.maps.importLibrary(
+      "places"
+    )) as google.maps.PlacesLibrary;
 
-    // Refit map to bounds if fitToCity is enabled
-    // if (fitToCity && mapRef.current) {
-    //   if (cityName) {
-    //     fetchCityBounds(cityName);
-    //   } else {
-    //     fitMapToBounds(mapRef.current);
-    //   }
-    // }
+    // Create a Places service instance
+    var service = new PlacesService(map);
+
+    // Perform a nearby search for tourist attractions
+    service.nearbySearch(
+      {
+        location: location,
+        radius: 5000, // 5 kilometers
+        type: "tourist_attraction",
+      },
+      (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          for (const place of results) {
+            if (!place.geometry?.location) return;
+            addMarker(
+              map,
+              {
+                label: `
+              <div class="relative bg-pink-700 p-2 rounded-lg ">
+              <div class=" text-white text-sm">
+                <svg class="w-4 h-4 text-gray-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M3 21h18M4 18h16M6 10v8m4-8v8m4-8v8m4-8v8M4 9.5v-.955a1 1 0 0 1 .458-.84l7-4.52a1 1 0 0 1 1.084 0l7 4.52a1 1 0 0 1 .458.84V9.5a.5.5 0 0 1-.5.5h-15a.5.5 0 0 1-.5-.5Z"/>
+                </svg>
+                <div class='font-bold'>${place.name}</div>
+                <div class='font-semibold text-xs'>Rating: ${place.rating}</div>
+              </div>
+              <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-pink-700 "></div>
+              </div>
+              `,
+                location: {
+                  lat: place.geometry?.location.lat(),
+                  lng: place.geometry?.location.lng(),
+                },
+              },
+              onMarkerClick
+            );
+          }
+        }
+      }
+    );
   };
 
-  const fetchDirections = useCallback(() => {
-    if (locations.length < 2) return;
+  const addDirections = (map: google.maps.Map, markers: MapMarker[]) => {
+    console.log("run directions");
+    if (!markers || markers.length < 2) return;
 
+    console.log("run directions service");
     const directionsService = new google.maps.DirectionsService();
+    const directionsRenderer = new google.maps.DirectionsRenderer();
+    directionsRenderer.setMap(map);
 
-    const waypoints = locations.slice(1, locations.length - 1).map((loc) => ({
-      location: new google.maps.LatLng(loc.lat, loc.lng),
-      stopover: true,
-    }));
+    const waypoints = markers.slice(1, markers.length - 1).map((marker) => {
+      console.log("set waypoints", marker);
 
+      return {
+        location: new google.maps.LatLng(
+          marker.location.lat,
+          marker.location.lng
+        ),
+        stopover: true,
+      };
+    });
+
+    console.log("set origin", markers[0]);
+    console.log("set destination", markers[markers.length - 1]);
     directionsService.route(
       {
-        origin: new google.maps.LatLng(locations[0].lat, locations[0].lng),
-        destination: new google.maps.LatLng(
-          locations[locations.length - 1].lat,
-          locations[locations.length - 1].lng
+        origin: new google.maps.LatLng(
+          markers[0].location.lat,
+          markers[0].location.lng
         ),
-        waypoints: waypoints,
+        destination: new google.maps.LatLng(
+          markers[markers.length - 1].location.lat,
+          markers[markers.length - 1].location.lng
+        ),
+        waypoints,
         travelMode: google.maps.TravelMode.DRIVING,
       },
       (result, status) => {
         if (status === google.maps.DirectionsStatus.OK) {
-          setDirections(result);
+          console.log("run directions rendrer", result);
+
+          directionsRenderer.setDirections(result);
         } else {
           console.error(`Error fetching directions: ${status}`);
         }
       }
     );
-  }, [locations]);
+  };
 
-  const fitMapToBounds = useCallback(
-    (map: google.maps.Map) => {
-      const bounds = new google.maps.LatLngBounds();
-      locations.forEach((location) => {
-        bounds.extend(new google.maps.LatLng(location.lat, location.lng));
-      });
-      map.fitBounds(bounds);
-    },
-    [locations]
-  );
-
-  const fetchCityBounds = useCallback((cityName: string, mapRef) => {
-    const geocoder = new google.maps.Geocoder();
-
-    geocoder.geocode({ address: cityName }, (results, status) => {
-      if (status === google.maps.GeocoderStatus.OK && results && results[0]) {
-        const bounds = results && results[0].geometry.bounds;
-        if (bounds && mapRef.current) {
-          mapRef.current.fitBounds(bounds);
-        }
-      } else {
-        console.error(
-          `Geocode was not successful for the following reason: ${status}`
-        );
-      }
-    });
+  useEffect(() => {
+    buildMap();
   }, []);
-
-  if (loadError) return <div>Error loading map</div>;
-  if (!isLoaded) return <div>Loading map...</div>;
 
   return (
     <div>
-      <div style={{ width: "200px", padding: "10px" }}>
-        <div className="flex gap-2">
-          {Object.keys(visibleCategories).map((category) => (
-            <label
-              className="rounded-xl border border-slate-500 p-2 whitespace-nowrap"
-              key={category}
-            >
-              <span className="pr-2"><input
-                type="checkbox"
-                className="hidden"
-                checked={
-                  visibleCategories[category as keyof typeof visibleCategories]
-                }
-                onChange={() => {
-                  handleCategoryToggle(
-                    category as keyof typeof visibleCategories
-                  );
-                  fetchCityBounds('San Francisco');
-                }
-                }
-              /></span>
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </label>
-          ))}
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <ul className="w-2/5">
-          {markerRef.current
-            .map((location) => (
-              <li
-                key={location.id}
-                className="py-5 border-t border-slate-500"
-                onMouseEnter={() => {
-                  mapRef.current?.panTo({
-                    lat: location.lat,
-                    lng: location.lng,
-                  });
-                  mapRef.current?.setZoom(14);
-                  onItemClick(location);
-                }}
-              >
-                {location.name}
-              </li>
-            ))}
-        </ul>
-
-        <div className="relative flex-grow">
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            zoom={defaultZoom}
-            center={defaultCenter}
-            onLoad={handleMapLoad}
-            onZoomChanged={() => {
-              console.log('zoom chnged');
-              markerRef.current = [...markerRef.current, {
-                id: stateLocations.length + 1,
-                name: `Added ${stateLocations.length + 1}`,
-                lat: Number(`37.7649`),
-                lng: -122.3994,
-                category: "airports",
-              }]
-            }}
-          >
-            {markerRef.current
-              .map((location) => (
-                <Marker
-                  key={location.id}
-                  position={{ lat: location.lat, lng: location.lng }}
-                  onClick={() => handleItemClick(location)}
-                />
-              ))}
-
-            {showDirections && directions && (
-              <DirectionsRenderer
-                directions={directions}
-                options={{
-                  polylineOptions: {
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 0.6,
-                    strokeWeight: 4,
-                  },
-                }}
-              />
-            )}
-          </GoogleMap>
-        </div>
-      </div>
+      <div ref={ref} id="map" style={{ height }} />
     </div>
   );
 };
