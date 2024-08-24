@@ -114,7 +114,7 @@ export const MarketingMap = ({
               }}
               markers={markers}
               zoom={level === "everywhere" ? 5 : 0}
-              fitLocationAddress={to ? `${to?.name}${getAllParents(from.parentId)[0] ? `, ${parents[0].name}` : ''}` : `${getAllParents(from.parentId)[0]}`}
+              fitLocationAddress={to ? `${to?.name}${getAllParents(from.parentId)[0] ? `, ${parents[0]?.name}` : ''}` : `${getAllParents(from.parentId)[0]}`}
             />
           </Wrapper>
         </div>
