@@ -48,6 +48,7 @@ export const MapControls = ({
       center,
       zoom,
       mapId: googleMapId,
+      disableDefaultUI: true,
       ...(isMobile ? { gestureHandling: "greedy" } : {}),
     });
 

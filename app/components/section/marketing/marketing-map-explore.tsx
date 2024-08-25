@@ -95,7 +95,7 @@ export const MarketingMapExplore = ({
   
   return (
     <div className="">
-      <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center lg:py-16">
+      <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 text-center lg:py-16">
         <div className="flex justify-center mb-4">
           <svg
             className="w-6 h-6 text-gray-800 dark:text-blue-600"

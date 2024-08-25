@@ -72,7 +72,7 @@ const SearchLabels = ({ onChange, selected }: SearchLabelsProps) => {
         onClick={() => onChange("flights")}
         className={`${
           selected === "flights"
-            ? `border-blue-600 bg-blue-600 hover:border-blue-600 text-white`
+            ? `border-blue-600 bg-blue-600 hover:bg-blue-700 text-white`
             : `dark:border-slate-600 border-slate-500 dark:bg-slate-800 hover:border-slate-500 text-slate-800 dark:text-white`
         } border py-2 px-3 rounded-xl cursor-pointer font-bold text-sm whitespace-nowrap`}
       >
@@ -82,7 +82,7 @@ const SearchLabels = ({ onChange, selected }: SearchLabelsProps) => {
         onClick={() => onChange("explore")}
         className={`${
           selected === "explore"
-            ? `border-blue-600 bg-blue-600 hover:border-blue-600 text-white`
+            ? `border-blue-600 bg-blue-600 hover:bg-blue-700 text-white`
             : `dark:border-slate-600 border-slate-500  dark:bg-slate-800 hover:border-slate-500 text-slate-800 dark:text-white`
         } border py-2 px-3 rounded-xl cursor-pointer font-bold text-sm whitespace-nowrap`}
       >

@@ -7,7 +7,7 @@ export const MarketingGallery = ({
   return (
     <div>
       <section className="">
-        <div className="px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 sm:text-center">
+        <div className="px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 text-center">
          
           <div className="gap-4 mt-8 grid grid-cols-4">
             <img

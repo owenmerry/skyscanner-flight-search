@@ -9,6 +9,9 @@ import { Box, LinearProgress, Skeleton } from "@mui/material";
 import moment from "moment";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { actionsSearchForm } from "~/actions/search-form";
+import { MapDrawer } from "~/components/ui/drawer/drawer-map";
+import { MarketingMapExplore } from "~/components/section/marketing/marketing-map-explore";
+import { MapExplore } from "~/components/section/map/map-explore";
 
 type Filters =
   | "depart 7 days"
@@ -54,6 +57,8 @@ export default function Search() {
   const {
     apiUrl,
     from,
+    googleApiKey,
+    googleMapId,
   }: {
     apiUrl: string;
     googleApiKey: string;
@@ -348,6 +353,8 @@ export default function Search() {
             </>
           )}
         </div>
+        <div className="">
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {searchFiltered.map((deal, key) => {
             if (key + 1 > 21) return "";
@@ -494,7 +501,13 @@ export default function Search() {
         ) : (
           ""
         )}
+        </div>
       </div>
+        {!loading && search ? (
+          <MapDrawer><div>
+            <MapExplore level="everywhere" from={from} googleApiKey={googleApiKey} googleMapId={googleMapId} search={search}  />
+            </div></MapDrawer>
+        ) : ''}
     </div>
   );
 }
