@@ -8,6 +8,7 @@ import type { Markers } from "~/helpers/map";
 import { getAllParents } from "~/helpers/sdk/data";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { Place } from "~/helpers/sdk/place";
+import { IoMdAirplane } from "react-icons/io";
 
 interface MapExploreProps {
   googleMapId: string;
@@ -48,10 +49,8 @@ export const MapExplore = ({
           },
           label: `
               <div class="relative bg-blue-700 p-2 rounded-lg ">
-              <div class=" text-white text-sm">
-                <svg class="w-4 h-4 text-gray-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                  <path fill-rule="evenodd" d="M12 2a1 1 0 0 1 .932.638l7 18a1 1 0 0 1-1.326 1.281L13 19.517V13a1 1 0 1 0-2 0v6.517l-5.606 2.402a1 1 0 0 1-1.326-1.281l7-18A1 1 0 0 1 12 2Z" clip-rule="evenodd"/>
-                </svg>
+              <div class=" text-white text-sm text-center">
+               <svg class='inline' stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M448 336v-40L288 192V79.2c0-17.7-14.8-31.2-32-31.2s-32 13.5-32 31.2V192L64 296v40l160-48v113.6l-48 31.2V464l80-16 80 16v-31.2l-48-31.2V288l160 48z"></path></svg>
                 <div class='font-bold'>${flight.price.display}</div>
               </div>
               <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-blue-700 "></div>
@@ -87,6 +86,12 @@ export const MapExplore = ({
     map.setZoom(16);
   };
 
+  const handleMarkerClick = (marker: MapMarker) => {
+    if(!marker.link) return;
+
+    window.location.href = marker.link;
+  };
+
   return (
     <div className="relative">
       <div className="absolute top-0 left-0 w-full z-20 p-2">
@@ -115,7 +120,7 @@ export const MapExplore = ({
                 ? `${to?.name}${parents[0] ? `, ${parents[0].name}` : ""}`
                 : `${getAllParents(from.parentId)[0]}`
             }
-            onMarkerClick={(map, marker) => moveToMarker(map, marker)}
+            onMarkerClick={(map, marker) => handleMarkerClick(marker)}
             onMapLoaded={(map) => setMap(map)}
           />
         </Wrapper>

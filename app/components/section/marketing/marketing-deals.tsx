@@ -110,6 +110,9 @@ export const MarketingDeals = ({
                           {deal.price.display.split(".")[0]}{" "}
                           <span className="text-sm">Return</span>
                         </h5>
+                        <div className="text-xs mt-2 mb-2 text-gray-500 text-right italic">
+                          Updated {deal.updated}
+                        </div>
                       </div>
                     </a>
                   </div>
