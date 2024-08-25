@@ -35,9 +35,13 @@ export const MarketingNearby = ({
   const parents = getAllParents(to.parentId);
 
   const runLocations = async () => {
-    if(locations.length > 0) return;
+    if (locations.length > 0) return;
     const res = await fetch(
-      `${apiUrl}/service/tripadvisor/locations?searchQuery=${encodeURIComponent(`${to.name}${parents[0] ? `, ${parents[0].name}` : ''}`)}`
+      `${apiUrl}/service/tripadvisor/locations?searchQuery=${encodeURIComponent(
+        `${to.name}${parents[0] ? `, ${parents[0].name}` : ""}`
+      )}&latLong=${encodeURIComponent(
+        `${to.coordinates.latitude},${to.coordinates.longitude}`
+      )}`
     );
     const data: TripadvisorNearByResponse = await res.json();
 
@@ -96,7 +100,8 @@ export const MarketingNearby = ({
           </svg>
         </div>
         <h2 className="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
-          What to do in {to.name}{parents[0] ? `, ${parents[0].name}` : ''}
+          What to do in {to.name}
+          {parents[0] ? `, ${parents[0].name}` : ""}
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-white">
           We are strategists, designers and developers. Innovators and problem
@@ -121,7 +126,7 @@ export const MarketingNearby = ({
                     <div
                       className="relative h-40 bg-cover bg-center bg-no-repeat rounded-t-lg"
                       style={{
-                        backgroundImage: `url(${location.images[0].images.large.url})`,
+                        backgroundImage: `url(${location?.images[0]?.images.large.url})`,
                       }}
                     >
                       <div className="opacity-0 group-hover/link:opacity-10 transition ease-out bg-white absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
@@ -140,7 +145,9 @@ export const MarketingNearby = ({
                             src={location.details.rating_image_url}
                             alt="tripadvisor rating"
                           />
-                        ) : ''}
+                        ) : (
+                          ""
+                        )}
                         <div className="mt-2">
                           {location.details.ranking_data?.ranking_string}
                         </div>

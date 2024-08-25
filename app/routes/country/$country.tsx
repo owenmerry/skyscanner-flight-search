@@ -82,7 +82,6 @@ export default function SEOAnytime() {
         <MarketingPlaces place={country} url={`/city/${country.slug}/`} from={from} search={search} />
         <MarketingDeals from={from} search={search} to={country} level="city" />
         <MarketingGraph search={search} />
-        <MarketingNearby search={search} to={country} apiUrl={apiUrl} />
         <MarketingMap search={search} to={country} from={from} googleMapId={googleMapId} googleApiKey={googleApiKey} />
         <MarketingWeather to={country} apiUrl={apiUrl} />
       </div>

@@ -506,7 +506,7 @@ export default function Search() {
       </div>
         {!loading && search ? (
           <MapDrawer><div>
-            <MapExplore level="everywhere" from={from} googleApiKey={googleApiKey} googleMapId={googleMapId} search={search}  />
+            <MapExplore level="everywhere" from={from} googleApiKey={googleApiKey} googleMapId={googleMapId} search={searchFiltered}  />
             </div></MapDrawer>
         ) : ''}
     </div>

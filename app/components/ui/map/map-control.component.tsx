@@ -251,7 +251,7 @@ export const MapControls = ({
 
   useEffect(() => {
     buildMap();
-  }, []);
+  }, [markers]);
 
   return (
     <div>
