@@ -31,7 +31,7 @@ export const MarketingNearby = ({
   to,
   apiUrl,
 }: MarketingNearbyProps) => {
-  const [locations, setLocations] = useState<TripadvisorSDK[]>(tripSDKData);
+  const [locations, setLocations] = useState<TripadvisorSDK[]>([]);
   const parents = getAllParents(to.parentId);
 
   const runLocations = async () => {
