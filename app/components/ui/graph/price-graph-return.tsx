@@ -101,14 +101,14 @@ export const PriceGraph = ({
                   ...query,
                   return: undefined,
                 }}
-                selected={selected.return ? selected.return : ''}
+                selected={selected.depart}
                 onSelected={(date) => setSelected({ ...query, return: date })}
               />
             </>
           ) : (
             ""
           )}
-          <div className="my-6">
+          <div className="my-4">
           <a
             href={`/search/${selected.from.iata}/${selected.to.iata}/${
               selected.depart

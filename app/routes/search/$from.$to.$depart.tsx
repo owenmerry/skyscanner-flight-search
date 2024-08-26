@@ -13,6 +13,7 @@ import type { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel
 import { waitSeconds } from "~/helpers/utils";
 import {
   ExplorePage,
+  ExplorePageButton,
   FlightHotelBundle,
 } from "~/components/section/page/search";
 import {
@@ -241,7 +242,7 @@ export default function Search() {
       /> */}
       <div className="">
         <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-          <div className="relative z-10 md:hidden bg-white dark:bg-gray-900 border-2 border-slate-100 py-4 px-4 rounded-lg mb-2 cursor-pointer dark:text-white dark:border-gray-800">
+          <div className="relative z-10 md:hidden bg-white dark:bg-gray-900  py-4 rounded-lg mb-2 cursor-pointer dark:text-white ">
             <div className="flex gap-2">
             <FiltersDrawer
               onClear={() => {
@@ -265,6 +266,7 @@ export default function Search() {
                 showReturn
               />
             </GraphDrawer>
+            <ExplorePageButton country={country} />
             </div>
           </div>
           <div className={`hidden md:block w-96 p-2`}>

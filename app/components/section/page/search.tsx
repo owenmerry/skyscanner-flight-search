@@ -21,6 +21,7 @@ import {
   KiwiSearchResponse,
   fetchFlightsKiwi,
 } from "~/helpers/services/travel-competitors";
+import { IoLocationSharp } from "react-icons/io5";
 
 export const MapComponent = ({
   googleApiKey,
@@ -328,24 +329,40 @@ export const ExplorePage = ({ country }: { country?: Place }) => {
     <>
       {country ? (
         <div className="mt-2 mb-2">
+          <div className="relative h-40 bg-cover bg-center w-full rounded-lg" style={{backgroundImage: `url(${country.images[0]})`}}>
+          <div className="absolute bottom-0 left-0 p-2">
           <Link
             to={`/country/${country.slug}`}
             target="_blank"
             className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
           >
-            Explore {country.name}{" "}
-            <svg
-              width="13.5"
-              height="13.5"
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              className="ml-2"
-            >
-              <path
-                fill="currentColor"
-                d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
-              ></path>
-            </svg>
+            <IoLocationSharp className="mr-2" />
+             Explore {country.name}{" "}
+          </Link>
+
+          </div>
+          </div>
+          
+        </div>
+      ) : (
+        ""
+      )}
+    </>
+  );
+};
+
+export const ExplorePageButton = ({ country }: { country?: Place }) => {
+  return (
+    <>
+      {country ? (
+        <div>
+          <Link
+            to={`/country/${country.slug}`}
+            target="_blank"
+            className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center"
+          >
+            <IoLocationSharp className="mr-2" />
+             Explore {country.name}{" "}
           </Link>
         </div>
       ) : (

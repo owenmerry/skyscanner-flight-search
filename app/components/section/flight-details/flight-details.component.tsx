@@ -159,7 +159,7 @@ export const LegTimeline = ({
   return (
     <div>
       <Timeline>
-        {leg.segments.map((segment) => {
+        {leg.segments.map((segment, key) => {
           const duration = toHoursAndMinutes(segment.duration);
           const durationShow = `${duration.hours > 0 && `${duration.hours}h `}${
             duration.minutes
@@ -168,7 +168,7 @@ export const LegTimeline = ({
             segment.id === leg.segments[leg.segments.length - 1].id;
           const notLastSegment = !isLastSegment;
           return (
-            <div>
+            <div key={key}>
               <Timeline.Item>
                 <Timeline.Point />
                 <Timeline.Content>
@@ -192,9 +192,11 @@ export const LegTimeline = ({
                     {!isReturn && notLastSegment ? (
                       <div className="text-xs text-slate-400">
                         <span className="mr-2">Add a stop over:</span>
-                        {[1, 2, 3, 5].map((days) => (
+                        {[1, 2, 3, 5].map((days, key) => (
                           <a
+                          key={key}
                             target="_blank"
+                            rel="noreferrer"
                             className="mr-2 underline text-slate-400 hover:text-white"
                             href={getSkyscannerMultiCityLink(
                               leg,
@@ -244,6 +246,7 @@ const SegmentsColumn = ({ flight, number }: SegmentsProps) => {
                   <img
                     className="inline-block w-20 p-1"
                     src={carrier.imageUrl}
+                    alt={carrier.name}
                   />
                   {/* <div className="hidden md:block self-center text-sm text-slate-400">{carrier.name}</div> */}
                 </div>
@@ -303,6 +306,7 @@ const Deals = ({ flight }: DealsProps) => {
                   <img
                     className="inline-block w-20 p-1"
                     src={deepLink.agentImageUrl}
+                    alt={deepLink.agentName}
                   />
                 </div>
               </div>
@@ -330,6 +334,7 @@ const Deals = ({ flight }: DealsProps) => {
                 <a
                   href={deepLink.link}
                   target="_blank"
+                  rel="noreferrer"
                   className="inline-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
                 >
                   Book{" "}

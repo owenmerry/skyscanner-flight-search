@@ -1,6 +1,7 @@
 import { Drawer } from "@mui/material";
 import { ReactNode, useState } from "react";
 import { Button } from "../button/button";
+import { IoFilterSharp } from "react-icons/io5";
 
 interface FiltersDrawer {
   children: ReactNode;
@@ -22,12 +23,12 @@ export const FiltersDrawer: React.FC<FiltersDrawer> = ({
 
   return (
     <div>
-      <a
-        className="text-primary-700 font-bold cursor-pointer"
+      <div
+        className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center"
         onClick={toggleDrawer(true)}
-      >
+      ><IoFilterSharp className="mr-2" />
         Filters
-      </a>
+      </div>
 
       <Drawer
         PaperProps={{
