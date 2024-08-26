@@ -68,13 +68,13 @@ export const calculateGlobalAverage = (
   return totalRating / totalPlacesWithRating;
 };
 
-export const sortPlacesByDynamicTrustworthiness = (
+export const sortPlacesByBayesianAverage = (
   places: google.maps.places.PlaceResult[]
 ): google.maps.places.PlaceResult[] => {
   const globalAverage = calculateGlobalAverage(places);
 
   // Define the confidence level (C)
-  const confidenceLevel = 20;
+  const confidenceLevel = 90;
 
   // Calculate Bayesian average for each place and add it to the place object
   const ratedList: { rating: number; place: google.maps.places.PlaceResult }[] =
@@ -96,7 +96,7 @@ export const sortPlacesByDynamicTrustworthiness = (
   return placesSorted;
 };
 
-export const sortPlacesByBayesianAverage = (
+export const sortPlacesByDynamicTrustworthiness = (
   places: google.maps.places.PlaceResult[]
 ): google.maps.places.PlaceResult[] => {
   const threshold = calculateDynamicThreshold(places);
@@ -156,8 +156,8 @@ export const getGooglePlaces = async ({
       (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
           //resolve(results);
-          //const sortedPlaces = sortPlacesByDynamicTrustworthiness(results);
-          const sortedPlaces = sortPlacesByBayesianAverage(results);
+          const sortedPlaces = sortPlacesByDynamicTrustworthiness(results);
+          //const sortedPlaces = sortPlacesByBayesianAverage(results);
           resolve(sortedPlaces);
         }
       }
