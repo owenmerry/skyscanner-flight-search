@@ -304,7 +304,7 @@ const Label = ({
 }: LabelProps) => {
   return (
     <span
-      className={` ${color} text-xs font-semibold mr-2 px-2.5 py-0.5 rounded `}
+      className={` ${color} text-xs font-semibold mr-2 px-2.5 py-0.5 rounded whitespace-nowrap`}
     >
       {text}
     </span>

@@ -242,10 +242,10 @@ export const MapPlaces = ({
               Center Map
             </div>
           </div>
-      <div className="flex gap-2">
-        <div className={`flex-1 overflow-x-scroll scrollbar-hide`} style={{ height }}>
+      <div className="sm:flex gap-2">
+        <div className={`flex gap-2 sm:block pb-2 sm:pb-0 overflow-y-scroll sm:w-1/3 sm:overflow-x-scroll scrollbar-hide sm:h-[800px]`}>
           {attractions?.map((attraction, key) => {
-            return <div key={key} className={`text-left border-b-slate-600 p-4 rounded-lg ${selectedMarker?.name === attraction.name ? `bg-slate-800` : ``}`} onMouseEnter={() => {
+            return <div key={key} className={`mb-0 sm:mb-2 min-w-72 sm:min-w-0 text-left border border-slate-700 p-4 rounded-lg ${selectedMarker?.name === attraction.name ? `bg-slate-800` : ``}`} onMouseEnter={() => {
               if(!map || !attraction.geometry?.location) return;
               map.panTo({
                 lat: attraction.geometry.location.lat(),
@@ -271,8 +271,8 @@ export const MapPlaces = ({
             </div>
           })}
         </div>
-        <div className="flex-1">
-      <div ref={ref} id="map" style={{ height }} />
+        <div className="sm:w-2/3">
+      <div ref={ref} id="map" className="h-[500px] sm:h-[800px]" />
         </div>
       </div>
     </div>
