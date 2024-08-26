@@ -1,4 +1,5 @@
 import type { MapMarker } from "../map-control.component";
+import { GooglePlacesType } from "../types/places-types";
 
 export const calculateDynamicThreshold = (
   places: google.maps.places.PlaceResult[]
@@ -21,7 +22,81 @@ export const calculateDynamicThreshold = (
   return dynamicThreshold;
 };
 
+// Function to calculate Bayesian Average Rating
+export const calculateBayesianAverage = ({
+  rating,
+  reviewCount,
+  globalAverage,
+  confidenceLevel,
+}: {
+  rating?: number;
+  reviewCount?: number;
+  globalAverage: number;
+  confidenceLevel: number;
+}): number => {
+  // If reviewCount is undefined, treat it as 0
+  const count = reviewCount ?? 0;
+
+  // If the rating is undefined, return the global average
+  if (rating === undefined) {
+    return globalAverage;
+  }
+
+  // Calculate Bayesian average
+  return (
+    (rating * count + globalAverage * confidenceLevel) /
+    (count + confidenceLevel)
+  );
+};
+
+export const calculateGlobalAverage = (
+  places: google.maps.places.PlaceResult[]
+): number => {
+  const totalRating = places.reduce(
+    (sum, place) => sum + (place.rating || 0),
+    0
+  );
+  const totalPlacesWithRating = places.filter(
+    (place) => place.rating !== undefined
+  ).length;
+
+  // Avoid division by zero
+  if (totalPlacesWithRating === 0) {
+    return 0;
+  }
+
+  return totalRating / totalPlacesWithRating;
+};
+
 export const sortPlacesByDynamicTrustworthiness = (
+  places: google.maps.places.PlaceResult[]
+): google.maps.places.PlaceResult[] => {
+  const globalAverage = calculateGlobalAverage(places);
+
+  // Define the confidence level (C)
+  const confidenceLevel = 20;
+
+  // Calculate Bayesian average for each place and add it to the place object
+  const ratedList: { rating: number; place: google.maps.places.PlaceResult }[] =
+    places.map((place) => ({
+      rating: calculateBayesianAverage({
+        rating: place.rating,
+        reviewCount: place.user_ratings_total,
+        globalAverage,
+        confidenceLevel
+    }),
+      place,
+    }));
+
+  // Sort places by Bayesian average rating, descending
+  ratedList.sort((a, b) => b.rating! - a.rating!);
+
+  const placesSorted = ratedList.map(place => place.place)
+
+  return placesSorted;
+};
+
+export const sortPlacesByBayesianAverage = (
   places: google.maps.places.PlaceResult[]
 ): google.maps.places.PlaceResult[] => {
   const threshold = calculateDynamicThreshold(places);
@@ -54,11 +129,13 @@ export const getGooglePlaces = async ({
   location,
   radius = 5000, // 5 kilometers
   type = "tourist_attraction",
+  keyword = "things to do",
 }: {
   map: google.maps.Map;
   location: google.maps.LatLngLiteral;
   radius?: number;
-  type?: string;
+  type?: GooglePlacesType;
+  keyword?: string;
 }): Promise<google.maps.places.PlaceResult[]> => {
   return new Promise(async (resolve, reject) => {
     const { PlacesService } = (await google.maps.importLibrary(
@@ -74,10 +151,13 @@ export const getGooglePlaces = async ({
         location: location,
         radius,
         type,
+        keyword,
       },
       (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          //resolve(results);
           const sortedPlaces = sortPlacesByDynamicTrustworthiness(results);
+          //const sortedPlaces = sortPlacesByBayesianAverage(results);
           resolve(sortedPlaces);
         }
       }
@@ -85,10 +165,12 @@ export const getGooglePlaces = async ({
   });
 };
 
-export const getAttractionMarkersFromPlaces = ({
+export const getMarkersFromPlaces = ({
   places,
+  icon
 }: {
-  places: google.maps.places.PlaceResult[]
+  places: google.maps.places.PlaceResult[];
+  icon: string;
 }): MapMarker[] => {
   const markers: MapMarker[] = [];
   let count = 0;
@@ -99,13 +181,10 @@ export const getAttractionMarkersFromPlaces = ({
         label: `
         <div class="relative bg-pink-700 p-2 rounded-lg ">
         <div class=" text-white text-sm">
-        <svg class="w-4 h-4 text-gray-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-        <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M3 21h18M4 18h16M6 10v8m4-8v8m4-8v8m4-8v8M4 9.5v-.955a1 1 0 0 1 .458-.84l7-4.52a1 1 0 0 1 1.084 0l7 4.52a1 1 0 0 1 .458.84V9.5a.5.5 0 0 1-.5.5h-15a.5.5 0 0 1-.5-.5Z"/>
-        </svg>
-        <div class='font-bold'>${count} - ${place.name}</div>
-        <div class='font-semibold text-xs'>Rating: ${place.rating}</div>
+        ${icon}
+        <div class='font-semibold text-xs'>${place.rating}</div>
         </div>
-        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-pink-700 "></div>
+        <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-2 h-2 bg-pink-700 "></div>
         </div>
         `,
         location: {

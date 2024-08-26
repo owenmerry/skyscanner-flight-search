@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
-import { getAttractionMarkersFromPlaces, getGooglePlaces } from "./helpers/places-rating";
 
 export interface MapMarker {
   location: google.maps.LatLngLiteral;
@@ -77,9 +76,6 @@ export const MapControls = ({
         addDirections(googleMap, markers);
       }
 
-      if (showPlaces) {
-        await addPlaces(googleMap, center, onMarkerClick);
-      }
     }
 
     onMapLoaded && onMapLoaded(googleMap);
@@ -150,21 +146,6 @@ export const MapControls = ({
       googleMarker.addListener("click", () => {
         onMarkerClick(map, marker);
       });
-    }
-  };
-
-  const addPlaces = async (
-    map: google.maps.Map,
-    location: google.maps.LatLngLiteral,
-    onMarkerClick: MapControlsProps["onMarkerClick"]
-  ) => {
-    const places = placesList || await getGooglePlaces({
-      map,
-      location,
-    });
-    const markers =  getAttractionMarkersFromPlaces({places});
-    for(const marker of markers){
-      addMarker(map, marker, onMarkerClick);
     }
   };
 
