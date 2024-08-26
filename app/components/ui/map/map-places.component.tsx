@@ -1,15 +1,9 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import { getAttractionMarkersFromPlaces, getGooglePlaces } from "./helpers/places-rating";
+import type { MapMarker } from "./map-control.component";
 
-export interface MapMarker {
-  location: google.maps.LatLngLiteral;
-  label: string;
-  icon?: string;
-  link?: string;
-}
-
-export interface MapControlsProps {
+export interface MapPlacesProps {
   googleMapId: string;
   center: google.maps.LatLngLiteral;
   zoom: number;
@@ -25,7 +19,7 @@ export interface MapControlsProps {
   onMarkerClick?: (map: google.maps.Map, marker: MapMarker) => void;
 }
 
-export const MapControls = ({
+export const MapPlaces = ({
   center,
   zoom,
   markers,
@@ -39,8 +33,17 @@ export const MapControls = ({
   placesList,
   onMapLoaded,
   onMarkerClick,
-}: MapControlsProps) => {
+}: MapPlacesProps) => {
   const ref = useRef<HTMLDivElement>(null);
+  const [attractions, setAttractions] = useState<
+  google.maps.places.PlaceResult[]
+>();
+  const [selectedMarker, setSelectedMarker] = useState<
+    google.maps.places.PlaceResult
+  >();
+  const [map, setMap] = useState<
+  google.maps.Map
+>();
 
   const buildMap = async () => {
     if (!ref.current) return;
@@ -54,6 +57,7 @@ export const MapControls = ({
       disableDefaultUI: true,
       ...(isMobile ? { gestureHandling: "greedy" } : {}),
     });
+    setMap(googleMap);
 
     if (markers) {
       for (const marker of markers) {
@@ -115,7 +119,7 @@ export const MapControls = ({
     map.fitBounds(bounds);
   };
 
-  const addLine = (map: google.maps.Map, line: MapControlsProps["line"]) => {
+  const addLine = (map: google.maps.Map, line: MapPlacesProps["line"]) => {
     const flightPath = new google.maps.Polyline({
       path: line,
       geodesic: false,
@@ -130,7 +134,7 @@ export const MapControls = ({
   const addMarker = async (
     map: google.maps.Map,
     marker: MapMarker,
-    onMarkerClick: MapControlsProps["onMarkerClick"]
+    onMarkerClick: MapPlacesProps["onMarkerClick"]
   ) => {
     const { AdvancedMarkerElement } = (await google.maps.importLibrary(
       "marker"
@@ -156,16 +160,20 @@ export const MapControls = ({
   const addPlaces = async (
     map: google.maps.Map,
     location: google.maps.LatLngLiteral,
-    onMarkerClick: MapControlsProps["onMarkerClick"]
+    onMarkerClick: MapPlacesProps["onMarkerClick"]
   ) => {
-    const places = placesList || await getGooglePlaces({
-      map,
-      location,
-    });
-    const markers =  getAttractionMarkersFromPlaces({places});
-    for(const marker of markers){
+    const places =
+      placesList ||
+      (await getGooglePlaces({
+        map,
+        location,
+      }));
+      const markers = getAttractionMarkersFromPlaces({places});
+    for (const marker of markers) {
       addMarker(map, marker, onMarkerClick);
     }
+    setAttractions(places);
+    addDirections(map, markers);
   };
 
   const addDirections = (map: google.maps.Map, markers: MapMarker[]) => {
@@ -222,7 +230,51 @@ export const MapControls = ({
 
   return (
     <div>
+        <div className="py-2 flex justify-end">
+            <div
+              className="text-white inline-block rounded-xl px-3 py-2 text-sm bg-blue-600 font-bold cursor-pointer"
+              onClick={() => {
+                if(fitAddress && map){
+                  fitMapToCityBounds(fitAddress, map);
+                }
+              }}
+            >
+              Center Map
+            </div>
+          </div>
+      <div className="flex gap-2">
+        <div className={`flex-1 overflow-x-scroll scrollbar-hide`} style={{ height }}>
+          {attractions?.map((attraction, key) => {
+            return <div key={key} className={`text-left border-b-slate-600 p-4 rounded-lg ${selectedMarker?.name === attraction.name ? `bg-slate-800` : ``}`} onMouseEnter={() => {
+              if(!map || !attraction.geometry?.location) return;
+              map.panTo({
+                lat: attraction.geometry.location.lat(),
+                lng: attraction.geometry.location.lng(),
+              });
+              map.setZoom(16);
+              setSelectedMarker(attraction);
+            }} onClick={() => {
+              if(!map || !attraction.geometry?.location) return;
+              map.panTo({
+                lat: attraction.geometry.location.lat(),
+                lng: attraction.geometry.location.lng(),
+              });
+              map.setZoom(16);
+              setSelectedMarker(attraction);
+            }}>
+              <div className="text-lg font-bold">
+              {attraction.name}
+                </div>
+                <div>Lynn's Ranking: {key + 1}</div>
+                <div>Rating {attraction.rating}</div>
+                <div>{attraction.user_ratings_total} Reviews</div>
+            </div>
+          })}
+        </div>
+        <div className="flex-1">
       <div ref={ref} id="map" style={{ height }} />
+        </div>
+      </div>
     </div>
   );
 };

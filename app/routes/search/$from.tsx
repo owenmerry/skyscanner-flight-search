@@ -10,9 +10,7 @@ import moment from "moment";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { actionsSearchForm } from "~/actions/search-form";
 import { MapDrawer } from "~/components/ui/drawer/drawer-map";
-import { MarketingMapExplore } from "~/components/section/marketing/marketing-map-explore";
 import { MapExplore } from "~/components/section/map/map-explore";
-import { IoMdAirplane } from "react-icons/io";
 
 type Filters =
   | "depart 7 days"
