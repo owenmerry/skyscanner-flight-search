@@ -15,7 +15,7 @@ export interface MapPlacesProps {
   line?: google.maps.LatLngLiteral[];
   showDirections?: boolean;
   placeType: GooglePlacesType;
-  placeKeyword: string;
+  placeKeyword?: string;
   placeIcon: string;
   markers?: MapMarker[] | null;
   onMapLoaded?: (map: google.maps.Map) => void;
@@ -173,7 +173,7 @@ export const MapPlaces = ({
     map: google.maps.Map;
     location: google.maps.LatLngLiteral;
     onClick: MapPlacesProps["onMarkerClick"];
-    keyword: string;
+    keyword?: string;
     icon: string;
     type: GooglePlacesType;
   }) => {
