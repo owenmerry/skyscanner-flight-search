@@ -155,10 +155,10 @@ export const getGooglePlaces = async ({
       },
       (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          //resolve(results);
-          const sortedPlaces = sortPlacesByDynamicTrustworthiness(results);
+          resolve(results);
+          //const sortedPlaces = sortPlacesByDynamicTrustworthiness(results);
           //const sortedPlaces = sortPlacesByBayesianAverage(results);
-          resolve(sortedPlaces);
+          //resolve(sortedPlaces);
         }
       }
     );
