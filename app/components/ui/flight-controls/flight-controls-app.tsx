@@ -6,6 +6,7 @@ import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { Drawer } from "@mui/material";
 import {
   getDateYYYYMMDDToDisplay,
+  getTripDays,
   getTripDaysLengthFromYYYYMMDD,
 } from "~/helpers/date";
 import { ExploreSearchForm } from "./components/explore-search-form";
@@ -178,7 +179,7 @@ export const FlightControlsApp = ({
                   <span className="font-bold">
                     {getDateYYYYMMDDToDisplay(
                       flightDefaultPlace?.depart,
-                      "Do MMMM"
+                      "ddd, D MMM"
                     )}{" "}
                   </span>
                   {flightDefaultPlace?.return ? (
@@ -187,16 +188,16 @@ export const FlightControlsApp = ({
                       <span className="font-bold">
                         {getDateYYYYMMDDToDisplay(
                           flightDefaultPlace.return,
-                          "Do MMMM"
+                          "ddd, D MMM"
                         )}
                       </span>{" "}
                       <span className="italic text-sm">
                         (
-                        {getTripDaysLengthFromYYYYMMDD(
+                        {getTripDays(
                           flightDefaultPlace.depart,
                           flightDefaultPlace.return
-                        )}
-                        )
+                        )}{" "}
+                        days)
                       </span>
                     </>
                   ) : (
