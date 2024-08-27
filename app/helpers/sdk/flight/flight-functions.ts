@@ -1,4 +1,4 @@
-import { getDateTime, getTime } from "../dateTime";
+import { getDateTime, getDateTimeFormat, getMinutesToDuration, getTime, getTimeDuration, getTimeDurationMoment } from "../dateTime";
 import { hasDirectFlights, isDirectFlights } from "../flight";
 import { convertDeepLink } from "../link";
 import { Place, getPlaceFromEntityId } from "../place";
@@ -20,9 +20,33 @@ export const getSortingOptions = (
     const legs = flight.legIds.map((legItem): LegSDK => {
       const legRef = legItem;
       const leg: Leg = res.content.results.legs[legRef];
-      const segments = leg.segmentIds.map((segmentItem): SegmentSDK => {
+      const segments = leg.segmentIds.map((segmentItem, key): SegmentSDK => {
         const segmentRef = segmentItem;
         const segment: Segment = res.content.results.segments[segmentRef];
+        const hasNextSegment = !!leg.segmentIds[key + 1];
+        const nextSegment: Segment | undefined = hasNextSegment ? res.content.results.segments[leg.segmentIds[key + 1]] : undefined;
+        const departureDateTime = getDateTime(
+          segment.departureDateTime.day,
+          segment.departureDateTime.month,
+          segment.departureDateTime.year,
+          segment.departureDateTime.hour,
+          segment.departureDateTime.minute,
+        );
+        const arrivalDateTime = getDateTime(
+          segment.arrivalDateTime.day,
+          segment.arrivalDateTime.month,
+          segment.arrivalDateTime.year,
+          segment.arrivalDateTime.hour,
+          segment.arrivalDateTime.minute,
+        );
+        const nextSegmentDepartureDateTime = nextSegment && getDateTime(
+          nextSegment.departureDateTime.day,
+          nextSegment.departureDateTime.month,
+          nextSegment.departureDateTime.year,
+          nextSegment.departureDateTime.hour,
+          nextSegment.departureDateTime.minute,
+        );
+        const journeyDurationMoment = getTimeDurationMoment(arrivalDateTime, nextSegmentDepartureDateTime);
 
         return {
           id: segmentRef,
@@ -39,20 +63,19 @@ export const getSortingOptions = (
           to: res.content.results.places[segment.destinationPlaceId].name,
           toIata: res.content.results.places[segment.destinationPlaceId].iata,
           duration: segment.durationInMinutes,
-          departure: getDateTime(
-            segment.departureDateTime.day,
-            segment.departureDateTime.month,
-            segment.departureDateTime.year,
-            segment.departureDateTime.hour,
-            segment.departureDateTime.minute
-          ),
-          arrival: getDateTime(
-            segment.arrivalDateTime.day,
-            segment.arrivalDateTime.month,
-            segment.arrivalDateTime.year,
-            segment.arrivalDateTime.hour,
-            segment.arrivalDateTime.minute
-          ),
+          departure: getDateTimeFormat(departureDateTime),
+          arrival: getDateTimeFormat(arrivalDateTime),
+          waitBreakdown: {
+            wait: getTimeDuration(arrivalDateTime, nextSegmentDepartureDateTime),
+            hours: journeyDurationMoment ? Math.floor(journeyDurationMoment?.asHours()) : undefined,
+            minutes: journeyDurationMoment?.asMinutes(),
+            longWait: journeyDurationMoment ? Math.floor(journeyDurationMoment?.asHours()) > 3 : undefined,
+            exploreCityWait: journeyDurationMoment ? Math.floor(journeyDurationMoment?.asHours()) > 6 : undefined,
+          },
+          nextSegment: {
+            nextSegment,
+            hasNextSegment,
+          },
         };
       });
       const carriers = leg.operatingCarrierIds.map(
@@ -101,6 +124,7 @@ export const getSortingOptions = (
         from: res.content.results.places[leg.originPlaceId].name,
         to: res.content.results.places[leg.destinationPlaceId].name,
         duration: leg.durationInMinutes,
+        durationDisplay: getMinutesToDuration(leg.durationInMinutes),
         departure: getDateTime(
           leg.departureDateTime.day,
           leg.departureDateTime.month,
@@ -263,6 +287,17 @@ export interface SegmentSDK {
   arrival: string;
   fromPlace?: Place;
   toPlace?: Place;
+  waitBreakdown: {
+    wait?: string;
+    hours?: number;
+    minutes?: number;
+    longWait?: boolean;
+    exploreCityWait?: boolean;
+  };
+  nextSegment: {
+    hasNextSegment: boolean;
+    nextSegment?: Segment;
+  }
 }
 
 export interface CarrierSDK {
@@ -277,6 +312,7 @@ export interface LegSDK {
   from: string;
   to: string;
   duration: number;
+  durationDisplay: string;
   departure: string;
   arrival: string;
   stops: number;

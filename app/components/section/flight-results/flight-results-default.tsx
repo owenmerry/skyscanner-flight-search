@@ -8,7 +8,6 @@ import {
   getSkyscannerLink,
   getSkyscannerSearchLink,
 } from "~/helpers/sdk/skyscanner-website";
-import { LegTimeline } from "../flight-details/flight-details.component";
 import type {
   FlightSDK,
   SearchSDK,
@@ -16,87 +15,7 @@ import type {
 import { FlightResultsSkeleton } from "./flight-results-skeleton";
 import { JourneyDrawer } from "~/components/ui/drawer/drawer-journey";
 import { FlightDetails } from "./flight-details";
-
-interface SegmentsProps {
-  flight: FlightSDK;
-}
-const SegmentsColumn = ({ flight }: SegmentsProps) => {
-  return (
-    <div className="col-span-2 flex-1">
-      {flight.legs.map((leg) => {
-        const duration = toHoursAndMinutes(leg.duration);
-        const durationShow = `${duration.hours > 0 && `${duration.hours}h `}${
-          duration.minutes
-        }m`;
-        return (
-          <div
-            key={`leg-${leg.id}`}
-            className="grid grid-cols-2 pb-4 last:pb-0"
-          >
-            {/* <div className="">
-              {leg.carriers.map((carrier, key) => (
-                <div
-                  key={`carrier-${carrier.name}-${key}`}
-                  className="bg-white inline-block border-slate-50 border-2 mr-2"
-                >
-                  <img
-                    className="inline-block w-20 p-1"
-                    src={carrier.imageUrl}
-                  />
-                </div>
-              ))}
-            </div> */}
-
-            <div className="col-span-2 grid grid-cols-3 flex-1">
-              <div className="text-center">
-                <div className="text-xl font-bold dark:text-white">
-                  {leg.departureTime}
-                </div>
-                <div className="text-slate-400 flex justify-center">
-                  <Tooltip content={leg.from} className="">
-                    {leg.fromIata}
-                  </Tooltip>
-                </div>
-              </div>
-
-              <div className="text-center">
-                <div className="text-slate-400 text-sm">{durationShow}</div>
-                <hr className="my-2 dark:border-gray-700" />
-                <div className="text-slate-400 text-sm">
-                  {leg.direct ? (
-                    "Direct"
-                  ) : (
-                    <div className="flex justify-center">
-                      <Tooltip
-                        content={leg.layovers
-                          .map((layover) => layover.place.name)
-                          .join(", ")}
-                        className=""
-                      >
-                        {leg.stops === 1 ? "1 Stop" : `${leg.stops} Stops`}
-                      </Tooltip>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div className="text-center">
-                <div className="text-xl font-bold dark:text-white">
-                  {leg.arrivalTime}
-                </div>
-                <div className="text-slate-400 flex justify-center">
-                  <Tooltip content={leg.to} className="">
-                    {leg.toIata}
-                  </Tooltip>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+import { Legs } from "./flight-leg";
 
 interface DealsProps {
   flight: FlightSDK;
@@ -381,7 +300,7 @@ const Flight = ({
           <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 hover:dark:border-gray-600 dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md transition ease-in-out">
             <Labels flight={flight} labels={labels} />
             <div className="flex">
-              <SegmentsColumn flight={flight} />
+              <Legs flight={flight} />
               <ButtonColumn
                 flight={flight}
                 onButtonSelect={() => setShowDeals(!showDeals)}
@@ -407,9 +326,7 @@ const Flight = ({
           <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
             Trip Details
           </h2>
-          <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md">
-         <FlightDetails flight={flight} query={query} />
-          </div>
+          <FlightDetails flight={flight} query={query} />
           <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
             Choose a booking option
           </h2>
