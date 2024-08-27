@@ -304,6 +304,15 @@ export default function Search() {
             )} */}
           </div>
           <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
+          <div className="mb-2">
+          <GraphDrawer>
+            <PriceGraph
+                apiUrl={apiUrl}
+                query={flightQuery}
+                showReturn
+              />
+            </GraphDrawer>
+            </div>
             <CompetitorCheck
               query={flightQuery}
               apiUrl={apiUrl}

@@ -63,9 +63,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const country = getPlaceFromEntityId(
     getCountryEntityId(flightQuery.to.entityId)
   );
-  const city = getPlaceFromEntityId(
-    getCityyEntityId(flightQuery.to.entityId)
-  );
+  const city = getPlaceFromEntityId(getCityyEntityId(flightQuery.to.entityId));
 
   //images
   const fromImage = await getImages({
@@ -88,7 +86,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export async function action({ request }: ActionArgs) {
   let action;
-  action = actionsSearchForm({request});
+  action = actionsSearchForm({ request });
 
   return action;
 }
@@ -237,31 +235,27 @@ export default function Search() {
       <div className="">
         <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
           <div className="relative z-10 md:hidden bg-white dark:bg-gray-900  py-4 rounded-lg mb-2 cursor-pointer dark:text-white ">
-          <div className="flex overflow-y-scroll scrollbar-hide gap-2">
-            <FiltersDrawer
-              onClear={() => {
-                setFilters({});
-              }}
-            >
-              <div className="px-6 py-8">
-                <h2 className="text-2xl font-bold mb-4">Change Search</h2>
-                <FiltersDefault
-                  flights={search && "error" in search ? undefined : search}
-                  onFilterChange={(filters) => setFilters(filters)}
-                  query={flightQuery}
-                  defaultFilters={filters}
-                />
-              </div>
-            </FiltersDrawer>
-            <GraphDrawer>
-            <PriceGraph
-                apiUrl={apiUrl}
-                query={flightQuery}
-                showReturn
-              />
-            </GraphDrawer>
-            <ExplorePageButton country={country} />
-            <ExplorePageButton country={country} city={city} />
+            <div className="flex overflow-y-scroll scrollbar-hide gap-2">
+              <FiltersDrawer
+                onClear={() => {
+                  setFilters({});
+                }}
+              >
+                <div className="px-6 py-8">
+                  <h2 className="text-2xl font-bold mb-4">Change Search</h2>
+                  <FiltersDefault
+                    flights={search && "error" in search ? undefined : search}
+                    onFilterChange={(filters) => setFilters(filters)}
+                    query={flightQuery}
+                    defaultFilters={filters}
+                  />
+                </div>
+              </FiltersDrawer>
+              <GraphDrawer>
+                <PriceGraph apiUrl={apiUrl} query={flightQuery} showReturn />
+              </GraphDrawer>
+              <ExplorePageButton country={country} />
+              <ExplorePageButton country={country} city={city} />
             </div>
           </div>
           <div className={`hidden md:block w-96 p-2`}>
@@ -292,6 +286,11 @@ export default function Search() {
             )} */}
           </div>
           <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
+            <div className="mb-2">
+              <GraphDrawer>
+                <PriceGraph apiUrl={apiUrl} query={flightQuery} showReturn />
+              </GraphDrawer>
+            </div>
             <CompetitorCheck
               query={flightQuery}
               apiUrl={apiUrl}
@@ -309,18 +308,10 @@ export default function Search() {
                 />
               </div> */}
             <ExplorePage country={country} />
-            <GraphDrawer>
-            <PriceGraph
-                apiUrl={apiUrl}
-                query={flightQuery}
-                showReturn
-              />
-            </GraphDrawer>
-
           </div>
         </div>
         <div>
-        {/* <CarHireList
+          {/* <CarHireList
                   query={{
                     from: flightQuery.from.entityId,
                     depart: flightQuery.depart,

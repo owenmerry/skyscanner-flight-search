@@ -15,6 +15,7 @@ import type {
 } from "~/helpers/sdk/flight/flight-functions";
 import { FlightResultsSkeleton } from "./flight-results-skeleton";
 import { JourneyDrawer } from "~/components/ui/drawer/drawer-journey";
+import { FlightDetails } from "./flight-details";
 
 interface SegmentsProps {
   flight: FlightSDK;
@@ -407,21 +408,7 @@ const Flight = ({
             Trip Details
           </h2>
           <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md">
-            {flight.legs.map((leg, key) => (
-              <div key={`${key}-leg`}>
-                {key === 0 && (
-                  <h3 className="my-2 text-lg font-bold leading-none">
-                    {query?.from.name} to {query?.to.name} Flight
-                  </h3>
-                )}
-                {key === 1 && (
-                  <h3 className="my-2 text-xl font-bold leading-none">
-                    {query?.to.name} to {query?.from.name} Flight
-                  </h3>
-                )}
-                <LegTimeline leg={leg} query={query} isReturn={key === 1} />
-              </div>
-            ))}
+         <FlightDetails flight={flight} query={query} />
           </div>
           <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
             Choose a booking option
