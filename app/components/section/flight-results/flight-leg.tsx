@@ -37,11 +37,6 @@ export const Leg = ({ leg, showCarriers = true }: LegProps) => {
               {leg.fromIata}
             </Tooltip>
           </div>
-          <div className="text-slate-600 flex justify-center text-xs">
-            <Tooltip content={leg.carriers[0].name} className="">
-            {leg.carriers[0].name}{leg.carriers[1] ? `, +${leg.carriers.length - 1}` : ''}
-            </Tooltip>
-          </div>
         </div>
 
         <div className="text-center">
@@ -62,6 +57,13 @@ export const Leg = ({ leg, showCarriers = true }: LegProps) => {
                 </Tooltip>
               </div>
             )}
+          </div>
+          <div className="text-slate-500 flex justify-center text-xs">
+            <Tooltip content={leg.carriers
+                    .map((carrier) => carrier.name)
+                    .join(", ")} className="">
+            {leg.carriers[0].name}{leg.carriers[1] ? `, +${leg.carriers.length - 1}` : ''}
+            </Tooltip>
           </div>
         </div>
 
