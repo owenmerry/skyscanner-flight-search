@@ -16,6 +16,11 @@ import { FlightResultsSkeleton } from "./flight-results-skeleton";
 import { JourneyDrawer } from "~/components/ui/drawer/drawer-journey";
 import { FlightDetails } from "./flight-details";
 import { Legs } from "./flight-leg";
+import { MapRoute } from "../map/map-route";
+import { Panel } from "./flight-panel";
+import { Loading } from "~/components/ui/loading";
+import { WaitForDisplay } from "~/components/ui/wait-for-display/ait-for-display.component";
+import { FaMapLocationDot } from "react-icons/fa6";
 
 interface DealsProps {
   flight: FlightSDK;
@@ -37,7 +42,8 @@ const Deals = ({ flight, query }: DealsProps) => {
               <div className="">
                 <div className="bg-white inline-block">
                   <img
-                    className="inline-block w-20 p-1"
+                    alt="Agent logo"
+                    className="inline-block w-20 p-1 rounded-lg"
                     src={deepLink.agentImageUrl}
                   />
                 </div>
@@ -63,7 +69,7 @@ const Deals = ({ flight, query }: DealsProps) => {
                 {price.price !== "£0.00" ? price.price : "See Website"}
                 {deepLink.type === "AGENT_TYPE_AIRLINE" ? (
                   <div className="md:hidden">
-                    <Label color="green" text="Airline Option" />
+                    <Label color="bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900" text="Airline Option" />
                   </div>
                 ) : (
                   ""
@@ -74,23 +80,9 @@ const Deals = ({ flight, query }: DealsProps) => {
                   href={deepLink.link}
                   target="_blank"
                   className="inline-block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                  rel="noreferrer"
                 >
-                  Book{" "}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    className="w-4 h-4 ml-1"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                    />
-                  </svg>
+                  Book
                 </a>
               </div>
             </div>
@@ -205,7 +197,7 @@ interface LabelsProps {
 }
 const Labels = ({ labels, flight }: LabelsProps) => {
   return (
-    <div className="mb-2">
+    <div className="flex overflow-y-scroll scrollbar-hide gap-2 mb-2">
       {labels.map((label, key) => (
         <Fragment key={`label-${label.text}-${key}`}>
           {label.show ? <Label color={label.labelBg} text={label.text} /> : ""}
@@ -311,18 +303,23 @@ const Flight = ({
           </div>
         </div>
         <div className="mx-4 md:mx-10">
-          {/* <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-            <MapRoute
-              flightQuery={query}
-              googleMapId={googleMapId}
-              googleApiKey={googleApiKey}
-              apiUrl={apiUrl}
-              key="map-component"
-              height={200}
-              itineraryId={flight.itineraryId}
-              flight={flight}
-            />
-          </div> */}
+          <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
+            Route Map
+          </h2>
+          <Panel title="Map" icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}>
+            <WaitForDisplay delay={300} height="400px">
+              <MapRoute
+                flightQuery={query}
+                googleMapId={googleMapId}
+                googleApiKey={googleApiKey}
+                apiUrl={apiUrl}
+                key="map-component"
+                height={400}
+                itineraryId={flight.itineraryId}
+                flight={flight}
+              />
+            </WaitForDisplay>
+          </Panel>
           <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
             Trip Details
           </h2>
@@ -501,25 +498,35 @@ export const FlightResultsDefault = ({
           onClick={() => setSort("cheapest")}
         >
           <div className="text-sm font-bold dark:text-white">Cheapest</div>
-          <div className="text-sm dark:text-white">{flights.cheapest[0]?.price}</div>
+          <div className="text-sm dark:text-white">
+            {flights.cheapest[0]?.price}
+          </div>
         </div>
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer ${
-            sort === "best" ? "dark:border-blue-600" : "dark:border-gray-800 hover:dark:border-gray-700"
+            sort === "best"
+              ? "dark:border-blue-600"
+              : "dark:border-gray-800 hover:dark:border-gray-700"
           }`}
           onClick={() => setSort("best")}
         >
           <div className="text-sm font-bold dark:text-white">Best</div>
-          <div className="text-sm dark:text-white">{flights.best[0]?.price}</div>
+          <div className="text-sm dark:text-white">
+            {flights.best[0]?.price}
+          </div>
         </div>
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer ${
-            sort === "fastest" ? "dark:border-blue-600" : "dark:border-gray-800 hover:dark:border-gray-700"
+            sort === "fastest"
+              ? "dark:border-blue-600"
+              : "dark:border-gray-800 hover:dark:border-gray-700"
           }`}
           onClick={() => setSort("fastest")}
         >
           <div className="text-sm font-bold dark:text-white">Fastest</div>
-          <div className="text-sm dark:text-white">{flights.fastest[0]?.price}</div>
+          <div className="text-sm dark:text-white">
+            {flights.fastest[0]?.price}
+          </div>
         </div>
       </div>
       {/* <ResultsCount

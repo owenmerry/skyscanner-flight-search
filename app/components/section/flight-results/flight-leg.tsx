@@ -58,7 +58,7 @@ export const Leg = ({ leg, showCarriers = true }: LegProps) => {
               </div>
             )}
           </div>
-          <div className="text-slate-500 flex justify-center text-xs">
+          <div className="text-slate-500 flex justify-center text-xs mt-2">
             <Tooltip content={leg.carriers
                     .map((carrier) => carrier.name)
                     .join(", ")} className="">
