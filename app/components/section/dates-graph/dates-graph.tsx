@@ -29,35 +29,25 @@ export const DatesGraph = ({
   search,
   query,
   hasMaxWidth = false,
-  selected,
   onSelected,
+  isReturn,
 }: {
   search?: SkyscannerAPIIndicativeResponse;
   query: QueryPlace;
   isReturn?: boolean;
   hasMaxWidth?: boolean;
-  selected: string;
-  onSelected?: (date: string, price: string) => void
+  onSelected?: (date: string, price: string) => void;
 }) => {
-
   const sortByDate = (
-    quoteGroups: IndicitiveQuote[] | IndicitiveQuoteDate[],
+    quoteGroups: IndicitiveQuote[] | IndicitiveQuoteDate[]
   ) => {
     const sorted = quoteGroups.sort(function (a, b) {
       const quoteA = search?.content.results.quotes[a.quoteIds[0]];
       const quoteB = search?.content.results.quotes[b.quoteIds[0]];
 
       return quoteA && quoteB
-        ? Number(
-            getDateNumber(
-              quoteA?.outboundLeg.departureDateTime
-            )
-          ) -
-            Number(
-              getDateNumber(
-                quoteB?.outboundLeg.departureDateTime
-              )
-            )
+        ? Number(getDateNumber(quoteA?.outboundLeg.departureDateTime)) -
+            Number(getDateNumber(quoteB?.outboundLeg.departureDateTime))
         : 0;
     });
 
@@ -68,34 +58,14 @@ export const DatesGraph = ({
       100 - Math.ceil(((numberPercentage - number) / numberPercentage) * 100)
     );
   };
-  const getQuoteNumberFromDate = (
-    quoteIds: string[],
-    date: string,
-  ) => {
-    const filteredQuotes = quoteIds.filter((quoteId) => {
-      const quote = search?.content.results.quotes[quoteId];
-      if (!quote) return;
-      const returnDateYYYYMMDD = getDateNumber(
-        quote.inboundLeg.departureDateTime
-      );
 
-      return date === returnDateYYYYMMDD;
-    });
-
-    return filteredQuotes;
-  };
-
-  const quotesGroup = search?.content?.groupingOptions.byDate.quotesOutboundGroups;
+  const quotesGroup =
+    search?.content?.groupingOptions.byDate.quotesOutboundGroups;
   if (!quotesGroup) return <></>;
 
   let topPrice = 0;
   sortByDate(quotesGroup).map((quoteKey) => {
-    const quotesFilteredFirst = query.return
-      ? getQuoteNumberFromDate(
-          quoteKey.quoteIds,
-          ((query.return) || "").replace(/-/g, "")
-        )[0]
-      : quoteKey.quoteIds[0];
+    const quotesFilteredFirst = quoteKey.quoteIds[0];
     if (!quotesFilteredFirst) return <></>;
     const quotePrice = Number(
       search?.content.results.quotes[quotesFilteredFirst]?.minPrice.amount
@@ -106,7 +76,7 @@ export const DatesGraph = ({
 
   const handleDateSelected = (date: string, price: string) => {
     onSelected && onSelected(date, price);
-  }
+  };
 
   return (
     <>
@@ -117,33 +87,29 @@ export const DatesGraph = ({
         >
           <div className="flex items-end">
             {sortByDate(quotesGroup).map((quoteKey, key) => {
-              const quotesFilteredFirst = query.return
-                ? getQuoteNumberFromDate(
-                    quoteKey.quoteIds,
-                    ((query.return) || "").replace(
-                      /-/g,
-                      ""
-                    )
-                  )[0]
-                : quoteKey.quoteIds[0];
+              const quotesFilteredFirst = quoteKey.quoteIds[0];
               if (!quotesFilteredFirst) return <></>;
 
               const quote = search.content.results.quotes[quotesFilteredFirst];
               const departDateYYYYMMDD = getDateDisplay(
                 quote.outboundLeg.departureDateTime
               );
-              const selectedDate = selected === departDateYYYYMMDD;
+              const selectedDate = isReturn
+                ? query.return === departDateYYYYMMDD
+                : query.depart === departDateYYYYMMDD;
               const dateMoment = moment(departDateYYYYMMDD);
 
               return (
                 <div
-                key={quoteKey.quoteIds[0]}
+                  key={quoteKey.quoteIds[0]}
                   className={`flex flex-col flex-1 mx-1 items-end text-xs text-center content-center`}
                 >
                   <div className="h-60 flex items-end w-full">
                     <div
                       className={`${
-                        selectedDate ? "bg-blue-700 hover:bg-blue-600" : "bg-slate-700"
+                        selectedDate
+                          ? "bg-blue-700 hover:bg-blue-600"
+                          : "bg-slate-700"
                       } hover:bg-slate-600 p-1 w-full cursor-pointer`}
                       style={{
                         height: `${getPercentageBar(
@@ -151,7 +117,12 @@ export const DatesGraph = ({
                           Number(topPrice)
                         )}%`,
                       }}
-                      onClick={() => handleDateSelected(departDateYYYYMMDD, quote?.minPrice.amount)}
+                      onClick={() =>
+                        handleDateSelected(
+                          departDateYYYYMMDD,
+                          quote?.minPrice.amount
+                        )
+                      }
                     >
                       <div>£{quote?.minPrice.amount}</div>
                     </div>

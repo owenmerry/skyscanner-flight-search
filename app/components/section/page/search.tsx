@@ -351,18 +351,18 @@ export const ExplorePage = ({ country }: { country?: Place }) => {
   );
 };
 
-export const ExplorePageButton = ({ country }: { country?: Place }) => {
+export const ExplorePageButton = ({ country, city }: { country?: Place, city?: Place }) => {
   return (
     <>
       {country ? (
         <div>
           <Link
-            to={`/country/${country.slug}`}
+            to={city ? `/city/${country.slug}/${city.slug}` : `/country/${country.slug}`}
             target="_blank"
-            className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center"
+            className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
           >
             <IoLocationSharp className="mr-2" />
-             Explore {country.name}{" "}
+             Explore {city ? city.name : country.name}{" "}
           </Link>
         </div>
       ) : (

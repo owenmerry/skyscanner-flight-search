@@ -7,7 +7,7 @@ import { useLoaderData } from "@remix-run/react";
 import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { Query, QueryPlace } from "~/types/search";
-import { getCountryEntityId } from "~/helpers/sdk/data";
+import { getCityyEntityId, getCountryEntityId } from "~/helpers/sdk/data";
 import type { Place } from "~/helpers/sdk/place";
 import type { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
 import { waitSeconds } from "~/helpers/utils";
@@ -63,6 +63,9 @@ export const loader = async ({ params }: LoaderArgs) => {
   const country = getPlaceFromEntityId(
     getCountryEntityId(flightQuery.to.entityId)
   );
+  const city = getPlaceFromEntityId(
+    getCityyEntityId(flightQuery.to.entityId)
+  );
 
   //images
   const fromImage = await getImages({
@@ -79,6 +82,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     flightQuery,
     headerImage: fromImage[0] || "",
     country,
+    city,
   };
 };
 
@@ -97,6 +101,7 @@ export default function Search() {
     flightParams,
     flightQuery,
     country,
+    city,
   }: {
     apiUrl: string;
     googleApiKey: string;
@@ -105,6 +110,7 @@ export default function Search() {
     flightQuery: QueryPlace;
     headerImage: string;
     country: Place;
+    city: Place;
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<
@@ -231,7 +237,7 @@ export default function Search() {
       <div className="">
         <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
           <div className="relative z-10 md:hidden bg-white dark:bg-gray-900  py-4 rounded-lg mb-2 cursor-pointer dark:text-white ">
-            <div className="flex gap-2">
+          <div className="flex overflow-y-scroll scrollbar-hide gap-2">
             <FiltersDrawer
               onClear={() => {
                 setFilters({});
@@ -255,6 +261,7 @@ export default function Search() {
               />
             </GraphDrawer>
             <ExplorePageButton country={country} />
+            <ExplorePageButton country={country} city={city} />
             </div>
           </div>
           <div className={`hidden md:block w-96 p-2`}>

@@ -128,44 +128,10 @@ export const FlightControlsApp = ({
       }`}
     >
       <div className="mx-auto max-w-screen-xl lg:px-12 px-4 sm:py-4 sm:px-4">
-        <div className="py-2 hidden sm:block">
-          <div className="flex items-center gap-2">
-            <div>
-              <SearchLabels
-                selected={form}
-                onChange={(form) => setForm(form)}
-              />
-            </div>
-            <div>
-              {form === "flights" ? (
-                <FlightsSearchForm
-                  apiUrl={apiUrl}
-                  buttonLoading={buttonLoading}
-                  flightDefault={flightDefault}
-                  showPreviousSearches={showPreviousSearches}
-                  onSearch={onSearch}
-                  onChange={onSearch}
-                  from={from}
-                />
-              ) : (
-                ""
-              )}
-              {form === "explore" ? (
-                <ExploreSearchForm
-                  apiUrl={apiUrl}
-                  flightDefault={flightDefault}
-                  from={from}
-                />
-              ) : (
-                ""
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="p-4 sm:hidden flex">
+      <div className="p-4 sm:p-1 flex">
           <div className="flex-1">
             {flightDefaultPlace ? (
-              <>
+              <div className="sm:flex gap-6">
                 <div>
                   <span className="font-bold">
                     {flightDefaultPlace?.from.name}
@@ -204,12 +170,12 @@ export const FlightControlsApp = ({
                     ""
                   )}
                 </div>
-              </>
+              </div>
             ) : (
               <div className="font-bold">{from?.name} to Everywhere</div>
             )}
           </div>
-          <div className="">
+          <div className="sm:hidden">
             <FlightControlsDrawer>
               <div className="px-6 py-8">
                 <h2 className="text-2xl font-bold mb-4">Change Search</h2>
@@ -241,6 +207,40 @@ export const FlightControlsApp = ({
                 )}
               </div>
             </FlightControlsDrawer>
+          </div>
+        </div>
+        <div className="py-2 hidden sm:block">
+          <div className="flex items-center gap-2">
+            <div>
+              <SearchLabels
+                selected={form}
+                onChange={(form) => setForm(form)}
+              />
+            </div>
+            <div>
+              {form === "flights" ? (
+                <FlightsSearchForm
+                  apiUrl={apiUrl}
+                  buttonLoading={buttonLoading}
+                  flightDefault={flightDefault}
+                  showPreviousSearches={showPreviousSearches}
+                  onSearch={onSearch}
+                  onChange={onSearch}
+                  from={from}
+                />
+              ) : (
+                ""
+              )}
+              {form === "explore" ? (
+                <ExploreSearchForm
+                  apiUrl={apiUrl}
+                  flightDefault={flightDefault}
+                  from={from}
+                />
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
       </div>

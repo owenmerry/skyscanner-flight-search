@@ -89,7 +89,6 @@ export const PriceGraph = ({
               ...query,
               return: undefined,
             }}
-            selected={selected.depart}
             onSelected={(date) => setSelected({ ...query, depart: date })}
           />
           {showReturn ? (
@@ -101,7 +100,6 @@ export const PriceGraph = ({
                   ...query,
                   return: undefined,
                 }}
-                selected={selected.depart}
                 onSelected={(date) => setSelected({ ...query, return: date })}
               />
             </>

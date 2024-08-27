@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { QueryPlace } from "~/types/search";
 import moment from "moment";
-import { getNextXMonthsStartDayAndEndDay } from "~/helpers/date";
+import { getNextXMonthsStartDayAndEndDay, getTripDays } from "~/helpers/date";
 
 export const PriceGraph = ({
   apiUrl,
@@ -22,7 +22,7 @@ export const PriceGraph = ({
   const [month, setMonth] = useState<string>(
     query.depart || moment().startOf("month").format("YYYY-MM-DD")
   );
-  const [selected, setSelected] = useState<QueryPlace>(query);
+  const [selectedQuery, setSelectedQuery] = useState<QueryPlace>(query);
 
   useEffect(() => {
     runIndicativeDates();
@@ -85,24 +85,17 @@ export const PriceGraph = ({
         <div className="text-lg font-bold my-4">Departure</div>
           <DatesGraph
             search={searchIndicativeDates}
-            query={{
-              ...query,
-              return: undefined,
-            }}
-            selected={selected.depart}
-            onSelected={(date) => setSelected({ ...query, depart: date })}
+            query={selectedQuery}
+            onSelected={(date) => setSelectedQuery({ ...selectedQuery, depart: date })}
           />
           {showReturn ? (
             <>
               <div className="text-lg font-bold my-4">Return</div>
               <DatesGraph
                 search={searchIndicativeDatesReturn}
-                query={{
-                  ...query,
-                  return: undefined,
-                }}
-                selected={selected.return ? selected.return : ''}
-                onSelected={(date) => setSelected({ ...query, return: date })}
+                query={selectedQuery}
+                onSelected={(date) => setSelectedQuery({ ...selectedQuery, return: date })}
+                isReturn
               />
             </>
           ) : (
@@ -110,12 +103,12 @@ export const PriceGraph = ({
           )}
           <div className="my-6">
           <a
-            href={`/search/${selected.from.iata}/${selected.to.iata}/${
-              selected.depart
-            }/${selected.return ? selected.return : ""}`}
+            href={`/search/${selectedQuery.from.iata}/${selectedQuery.to.iata}/${
+              selectedQuery.depart
+            }/${selectedQuery.return ? selectedQuery.return : ""}`}
             className="justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
           >
-            See Flights ({moment(selected.depart).format('ddd, DD MMM')} - {moment(selected.return).format('ddd, DD MMM')})
+            See Flights ({moment(selectedQuery.depart).format('ddd, DD MMM')} - {moment(selectedQuery.return).format('ddd, DD MMM')}) {selectedQuery.return ? `${getTripDays(selectedQuery.depart, selectedQuery.return)} days` : ''}
           </a>
           </div>
         </>

@@ -37,6 +37,22 @@ export const getCountryEntityId = (entityId: string): string => {
   return "";
 };
 
+export const getCityyEntityId = (entityId: string): string => {
+  var entityCheck = entityId;
+
+  for (let count = 0; count < 10; count++) {
+    const place = getPlaceFromEntityId(entityCheck);
+    if (!place) return "";
+    if (place.type === "PLACE_TYPE_CITY") {
+      return place.entityId;
+    } else {
+      entityCheck = place.parentId;
+    }
+  }
+
+  return "";
+};
+
 export const updateGEOSlug = () => {
   return geoExtra.map((geo) => {
     // const parents = getAllParents(geo.parentId);
