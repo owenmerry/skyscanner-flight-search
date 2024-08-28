@@ -11,11 +11,13 @@ interface ExploreSearchFormProps {
   apiUrl?: string;
   flightDefault?: Query;
   from?: Place;
+  hasBackground?: boolean;
 }
 export const ExploreSearchForm: React.FC<ExploreSearchFormProps> = ({
   apiUrl = "",
   flightDefault,
   from,
+  hasBackground = true,
 }) => {
   const defaultQuery: Query = flightDefault
     ? flightDefault
@@ -40,7 +42,7 @@ export const ExploreSearchForm: React.FC<ExploreSearchFormProps> = ({
   return (
     <Form
       method="post"
-      className="grid items-center gap-y-4 w-full bg-white rounded lg:flex lg:gap-4 dark:bg-gray-800"
+      className={`grid items-center gap-y-4 w-full rounded lg:flex lg:gap-4 ${ hasBackground ? `dark:bg-gray-800 bg-white` : ''}`}
     >
       <input
         type="hidden"

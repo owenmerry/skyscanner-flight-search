@@ -19,6 +19,7 @@ export interface FlightsSearchFormProps {
   useForm?: boolean;
   selected?: SearchForm;
   rounded?: boolean;
+  hasBackground?: boolean;
   from?: Place;
 }
 
@@ -31,6 +32,7 @@ export const FlightsSearchForm: React.FC<FlightsSearchFormProps> = ({
   from,
   onSearch,
   onChange,
+  hasBackground = true,
 }) => {
   const defaultQuery: Query = flightDefault
     ? flightDefault
@@ -110,7 +112,7 @@ export const FlightsSearchForm: React.FC<FlightsSearchFormProps> = ({
   return (
     <Form
       method="post"
-      className="grid gap-y-4 w-full bg-white rounded lg:gap-x-4 lg:grid-cols-9 dark:bg-gray-800"
+      className={`grid gap-y-4 w-full rounded lg:gap-x-4 lg:grid-cols-9 ${hasBackground ? `dark:bg-gray-800 bg-white` : ''}`}
     >
       <input
         type="hidden"

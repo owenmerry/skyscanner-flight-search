@@ -216,7 +216,7 @@ const Label = ({
 }: LabelProps) => {
   return (
     <span
-      className={` ${color} text-xs font-semibold mr-2 px-2.5 py-0.5 rounded whitespace-nowrap`}
+      className={` ${color} text-xs font-semibold px-2.5 py-0.5 rounded whitespace-nowrap`}
     >
       {text}
     </span>
@@ -283,6 +283,13 @@ const Flight = ({
       show:
         flight.prices.filter((price) => price.deepLinks.length > 1).length > 0,
     },
+    // {
+    //   text: "Outside Work Hours",
+    //   labelBg:
+    //     "bg-pink-100 text-pink-800 dark:bg-pink-200 dark:text-pink-900",
+    //   show:
+    //     flight.prices.filter((price) => price.deepLinks.length > 1).length > 0,
+    // },
   ];
 
   return (
