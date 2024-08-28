@@ -22,7 +22,8 @@ type Filters =
   | "in south america"
   | "in africa"
   | "in europe"
-  | "weekend";
+  | "weekend"
+  | "november";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -168,6 +169,9 @@ export default function Search() {
           check =
             check && deal.parentsString.includes(continentEurope.entityId);
         }
+      }
+      if (filters.includes("november")) {
+        check = check && moment(deal.legs.depart.dateString).month() === 10;
       }
       if (filters.includes("weekend")) {
         const departDate = moment(deal.legs.depart.dateString).day();
@@ -337,6 +341,16 @@ export default function Search() {
               >
                 🇪🇺 In Europe
               </div>
+              <div
+                onClick={() => addFilter("november")}
+                className={`${
+                  filters.includes("november")
+                    ? `border-blue-600 bg-blue-600 hover:border-blue-600`
+                    : `border-slate-600 bg-slate-800 hover:border-slate-500`
+                } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
+              >
+               November
+              </div>
             </>
           ) : (
             <>
@@ -356,7 +370,7 @@ export default function Search() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {searchFiltered.map((deal, key) => {
-            if (key + 1 > 21) return "";
+            if (key + 1 > 41) return "";
             return (
               <div key={deal.id} className="">
                 <a
