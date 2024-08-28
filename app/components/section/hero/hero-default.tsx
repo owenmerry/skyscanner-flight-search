@@ -1,6 +1,5 @@
 import { Link } from "@remix-run/react";
-import { Query } from "~/types/search";
-import { FlightControls } from "../../ui/flight-controls/flight-controls-default";
+import type { Query } from "~/types/search";
 import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
 
 export const Overlay = () => {
@@ -89,7 +88,6 @@ interface HeroDefaultProps {
   showText?: boolean;
   buttonLoading?: boolean;
   flightDefault?: Query;
-  useForm?: boolean;
 }
 
 export const HeroDefault = ({
@@ -99,7 +97,6 @@ export const HeroDefault = ({
   showText = true,
   buttonLoading = false,
   flightDefault,
-  useForm,
 }: HeroDefaultProps) => {
   return (
     <section className="relative overflow-visible">
@@ -116,6 +113,8 @@ export const HeroDefault = ({
           flightDefault={flightDefault}
           useForm
           rounded
+          hideFlightFormOnMobile={false}
+          showFlightDetails={false}
         />
       </div>
     </section>

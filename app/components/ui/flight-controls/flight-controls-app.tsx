@@ -58,9 +58,7 @@ const FlightControlsDrawer: React.FC<{ children: ReactNode }> = ({
       >
         <div className="dark">
           <div className="max-h-[80vh]">
-            <div className="dark:bg-gray-900 dark:text-white">
-              {children}
-            </div>
+            <div className="dark:bg-gray-900 dark:text-white">{children}</div>
           </div>
         </div>
       </Drawer>
@@ -111,6 +109,9 @@ export interface FlightControlsAppProps {
   selected?: SearchForm;
   rounded?: boolean;
   from?: Place;
+  hideFlightFormOnMobile?: boolean;
+  showFlightDetails?: boolean;
+  showBackground?: boolean;
 }
 export const FlightControlsApp = ({
   apiUrl = "",
@@ -122,6 +123,9 @@ export const FlightControlsApp = ({
   useForm,
   selected = "flights",
   rounded = false,
+  hideFlightFormOnMobile = true,
+  showFlightDetails = true,
+  showBackground = true,
 }: FlightControlsAppProps) => {
   const [form, setForm] = useState<SearchForm>(selected);
   const flightDefaultPlace =
@@ -129,59 +133,63 @@ export const FlightControlsApp = ({
   console.log("check here", flightDefault);
   return (
     <div
-      className={`bg-white dark:bg-slate-800 border-slate-300 border-b dark:border-0 ${
+      className={`${showBackground ? 'bg-white dark:bg-slate-800 border-slate-300 border-b dark:border-0' : ''} ${
         rounded ? "rounded-2xl" : ""
       }`}
     >
       <div className="mx-auto max-w-screen-xl lg:px-12 px-4 sm:py-4 sm:px-4">
-        <div className="p-4 sm:p-1 flex">
-          <div className="flex-1">
-            {flightDefaultPlace ? (
-              <div className="sm:flex gap-6">
-                <div>
-                  <span className="font-bold">
-                    {flightDefaultPlace?.from.name}
-                  </span>{" "}
-                  to{" "}
-                  <span className="font-bold">
-                    {flightDefaultPlace?.to.name}
-                  </span>
+        <div className={`${showBackground ? 'p-4 sm:p-1' : ''} flex`}>
+          {showFlightDetails ? (
+            <div className="flex-1">
+              {flightDefaultPlace ? (
+                <div className="sm:flex gap-6">
+                  <div>
+                    <span className="font-bold">
+                      {flightDefaultPlace?.from.name}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-bold">
+                      {flightDefaultPlace?.to.name}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-bold">
+                      {getDateYYYYMMDDToDisplay(
+                        flightDefaultPlace?.depart,
+                        "ddd, D MMM"
+                      )}{" "}
+                    </span>
+                    {flightDefaultPlace?.return ? (
+                      <>
+                        to{" "}
+                        <span className="font-bold">
+                          {getDateYYYYMMDDToDisplay(
+                            flightDefaultPlace.return,
+                            "ddd, D MMM"
+                          )}
+                        </span>{" "}
+                        <span className="italic text-sm">
+                          (
+                          {getTripDays(
+                            flightDefaultPlace.depart,
+                            flightDefaultPlace.return
+                          )}{" "}
+                          days)
+                        </span>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <span className="font-bold">
-                    {getDateYYYYMMDDToDisplay(
-                      flightDefaultPlace?.depart,
-                      "ddd, D MMM"
-                    )}{" "}
-                  </span>
-                  {flightDefaultPlace?.return ? (
-                    <>
-                      to{" "}
-                      <span className="font-bold">
-                        {getDateYYYYMMDDToDisplay(
-                          flightDefaultPlace.return,
-                          "ddd, D MMM"
-                        )}
-                      </span>{" "}
-                      <span className="italic text-sm">
-                        (
-                        {getTripDays(
-                          flightDefaultPlace.depart,
-                          flightDefaultPlace.return
-                        )}{" "}
-                        days)
-                      </span>
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
-            ) : (
-              <div className="font-bold">{from?.name} to Everywhere</div>
-            )}
-          </div>
-          <div className="sm:hidden">
+              ) : (
+                <div className="font-bold">{from?.name} to Everywhere</div>
+              )}
+            </div>
+          ) : (
+            ""
+          )}
+          <div className={`${showFlightDetails ? 'sm:hidden' : 'hidden' }`}>
             <FlightControlsDrawer>
               <div className="px-6 py-8">
                 <h2 className="text-2xl font-bold mb-4">Change Search</h2>
@@ -217,8 +225,10 @@ export const FlightControlsApp = ({
             </FlightControlsDrawer>
           </div>
         </div>
-        <div className="py-2 hidden sm:block">
-          <div className="flex items-center gap-2">
+        <div
+          className={`py-2 ${hideFlightFormOnMobile ? "hidden sm:block" : ""}`}
+        >
+          <div className="lg:flex items-center gap-2">
             <div>
               <SearchLabels
                 selected={form}

@@ -1,6 +1,6 @@
 import { Link } from "@remix-run/react";
-import { Query } from "~/types/search";
-import { FlightControls } from "../../ui/flight-controls/flight-controls-default";
+import type { Query } from "~/types/search";
+import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
 
 export const Overlay = () => {
   return (
@@ -50,7 +50,7 @@ export const HeroFlight = ({
       <Gradient />
       <div className="relative py-16 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12 text-center">
         <Text />
-        <FlightControls
+        <FlightControlsApp
           apiUrl={apiUrl}
           buttonLoading={buttonLoading}
           flightDefault={flightDefault}

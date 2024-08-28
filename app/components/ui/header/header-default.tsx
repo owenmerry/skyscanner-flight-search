@@ -4,6 +4,8 @@ import { Link } from "@remix-run/react";
 import { ReactNode, useState } from "react";
 import { Search } from "~/components/section/search/search.component";
 import { NavSidebar } from "./header-sidebar";
+import { FaSearch } from "react-icons/fa";
+import { SearchControlsDrawer } from "../drawer/drawer-search-controls";
 
 const MenuDrawer: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false);
@@ -166,6 +168,16 @@ export const HeaderDefault = ({
                   />
                 </svg>
               )}
+            </div>
+            <div className="cursor-pointer p-3 sm:hidden">
+              <SearchControlsDrawer anchor="bottom">
+              <FaSearch className="text-slate-900 dark:text-white" />
+              </SearchControlsDrawer>
+            </div>
+            <div className="cursor-pointer p-3 hidden sm:block">
+              <SearchControlsDrawer anchor="top">
+              <FaSearch className="text-slate-900 dark:text-white" />
+              </SearchControlsDrawer>
             </div>
             <MenuDrawer>
               <NavSidebar />

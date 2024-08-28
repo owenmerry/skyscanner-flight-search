@@ -110,23 +110,23 @@ export const replaceDate = (page: string, slug?: string): string => {
   for (let num = 0; num < 12; num++) {
     const nextMonth = num === 0 ? `` : `${num}.`;
     page = page.replaceAll(
-      `@@date.month.${nextMonth}number@@`,
+      `@@date.month.${nextMonth}.number@@`,
       moment().add(num, "months").format("M") || ""
     );
     page = page.replaceAll(
-      `@@date.month.${nextMonth}numberLong@@`,
+      `@@date.month.${nextMonth}.numberLong@@`,
       moment().add(num, "months").format("MM") || ""
     );
     page = page.replaceAll(
-      `@@date.month.${nextMonth}name@@`,
+      `@@date.month.${nextMonth}.name@@`,
       moment().add(num, "months").format("MMMM") || ""
     );
     page = page.replaceAll(
-      `@@date.month.${nextMonth}nameLower@@`,
+      `@@date.month.${nextMonth}.nameLower@@`,
       moment().add(num, "months").format("MMMM").toLowerCase() || ""
     );
     page = page.replaceAll(
-      `@@date.month.${nextMonth}nameShort@@`,
+      `@@date.month.${nextMonth}.nameShort@@`,
       moment().add(num, "months").format("MMM") || ""
     );
   }
