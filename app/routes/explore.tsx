@@ -51,6 +51,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     googleMapId,
     googleApiKey,
     countries,
+    apiUrl,
   });
 };
 
@@ -62,6 +63,7 @@ export default function SEOAnytime() {
     googleMapId,
     googleApiKey,
     countries,
+    apiUrl,
   } : {
     from: Place;
     exploreImages: string[];
@@ -69,10 +71,11 @@ export default function SEOAnytime() {
     googleMapId: string;
     googleApiKey: string;
     countries: Place[];
+    apiUrl: string;
   } = useLoaderData();
 
   return (
-    <Layout selectedUrl="/explore">
+    <Layout selectedUrl="/explore" apiUrl={apiUrl}>
       <div className="relative">
         <div
           className="absolute top-0 left-0 w-full bg-top bg-cover bg-no-repeat h-[60rem]"

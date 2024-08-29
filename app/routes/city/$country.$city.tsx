@@ -79,7 +79,7 @@ export default function SEOAnytime() {
   } = useLoaderData();
 
   return (
-    <Layout selectedUrl="/explore">
+    <Layout selectedUrl="/explore" apiUrl={apiUrl}>
       <div className="relative">
         <div className="absolute top-0 left-0 w-full bg-top bg-cover bg-no-repeat h-[60rem]"
         style={{backgroundImage: `url(${cityImages[0]})`}}>

@@ -87,11 +87,13 @@ interface HeaderDefaultProps {
   selectedUrl?: string;
   isDarkMode?: boolean;
   onDarkModeClick?: () => void;
+  apiUrl: string;
 }
 export const HeaderDefault = ({
   selectedUrl = "",
   isDarkMode,
   onDarkModeClick,
+  apiUrl,
 }: HeaderDefaultProps) => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -170,7 +172,7 @@ export const HeaderDefault = ({
               )}
             </div>
             <div className="cursor-pointer p-3 sm:hidden">
-              <SearchControlsDrawer anchor="bottom">
+              <SearchControlsDrawer anchor="bottom" apiUrl={apiUrl}>
               <FaSearch className="text-slate-900 dark:text-white" />
               </SearchControlsDrawer>
             </div>

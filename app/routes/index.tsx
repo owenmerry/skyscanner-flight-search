@@ -86,7 +86,7 @@ export default function Index() {
   }, [runIndicative]);
 
   return (
-    <Layout selectedUrl="/">
+    <Layout selectedUrl="/" apiUrl={apiUrl}>
       <HeroDefault
         apiUrl={apiUrl}
         newFeature="We are always adding new features. See All New Features"

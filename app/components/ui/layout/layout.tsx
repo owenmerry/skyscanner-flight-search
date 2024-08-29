@@ -9,9 +9,10 @@ import {
 interface LayoutProps {
   children: React.ReactNode;
   selectedUrl?: string;
+  apiUrl: string;
 }
 
-export const Layout = ({ children, selectedUrl }: LayoutProps) => {
+export const Layout = ({ children, selectedUrl, apiUrl }: LayoutProps) => {
   const [darkMode, setDarkMode] = useState(getDarkModeFromLocalStorage());
   const localDarkMode = getDarkModeFromLocalStorage();
 
@@ -38,6 +39,7 @@ export const Layout = ({ children, selectedUrl }: LayoutProps) => {
         selectedUrl={selectedUrl}
         isDarkMode={darkMode}
         onDarkModeClick={handleDarkModeChange}
+        apiUrl={apiUrl}
       />
       <div className="bg-gray-100 text-black dark:bg-gray-900 dark:text-white min-h-screen">
         {children}

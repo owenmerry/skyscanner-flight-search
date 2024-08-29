@@ -6,7 +6,7 @@ import { FlightControlsApp } from "../flight-controls/flight-controls-app";
 interface SearchControlsDrawer {
   children: ReactNode;
   onClear?: () => void;
-  apiUrl?: string;
+  apiUrl: string;
   anchor?: "top" | "bottom";
 }
 
