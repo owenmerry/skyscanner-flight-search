@@ -109,8 +109,8 @@ export const DatesGraph = ({
                       className={`${
                         selectedDate
                           ? "bg-blue-700 hover:bg-blue-600"
-                          : "bg-slate-700"
-                      } hover:bg-slate-600 p-1 w-full cursor-pointer`}
+                          : "bg-slate-700 hover:bg-slate-600"
+                      } p-1 w-full cursor-pointer`}
                       style={{
                         height: `${getPercentageBar(
                           Number(quote?.minPrice.amount),
