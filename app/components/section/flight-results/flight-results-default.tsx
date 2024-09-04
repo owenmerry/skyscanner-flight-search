@@ -303,12 +303,12 @@ const Flight = ({
         <div className="mb-2">
           <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 hover:dark:border-gray-600 dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md transition ease-in-out">
             <Labels flight={flight} labels={labels} />
-            <fetcher.Form method="post">
+            {/* <fetcher.Form method="post">
               <input type="hidden" name='liked' value={1}/>
               <button disabled={isDeleting} type="submit">
                 {isDeleting ? "Deleting..." : `Delete ${formLiked}`}
               </button>
-            </fetcher.Form>
+            </fetcher.Form> */}
             <div className="flex">
               <Legs flight={flight} />
               <ButtonColumn
