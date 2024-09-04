@@ -114,6 +114,33 @@ export const DateSelector = ({ query, onDateChange }: DateSelectorProps) => {
   );
 };
 
+const Arrow = ({
+  
+}) => {
+
+  return ( <div
+    className={`rounded-full p-1 bg-blue-600 shadow hover:scale-110 hover:bg-blue-500 transition cursor-pointer`}
+  >
+    <svg
+      className="w-4 h-4 text-white"
+      aria-hidden="true"
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="m16 10 3-3m0 0-3-3m3 3H5v3m3 4-3 3m0 0 3 3m-3-3h14v-3"
+      />
+    </svg>
+  </div>)
+}
+
 export const DateInputs = ({
   handleDateClick,
   isDepartSelected,
@@ -129,7 +156,6 @@ export const DateInputs = ({
     <div className="grid grid-cols-2 gap-x-4 lg:col-span-3">
       <div
         className="relative cursor-pointer"
-        onClick={() => handleDateClick("depart")}
       >
         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
           <svg
@@ -145,7 +171,14 @@ export const DateInputs = ({
             />
           </svg>
         </div>
+        {/* <div className="absolute -left-2 top-1/2 transform -translate-y-1/2">
+        <Arrow />
+        </div>
+        <div className="absolute -right-2 top-1/2 transform -translate-y-1/2">
+        <Arrow /> 
+        </div> */}
         <div
+                onClick={() => handleDateClick("depart")}
           className={`text-left bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5  dark:bg-gray-700 ${
             isDepartSelected
               ? "dark:border-primary-600"
@@ -157,7 +190,6 @@ export const DateInputs = ({
       </div>
       <div
         className="relative cursor-pointer"
-        onClick={() => handleDateClick("return")}
       >
         <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
           <svg
@@ -173,7 +205,14 @@ export const DateInputs = ({
             />
           </svg>
         </div>
+        {/* <div className="absolute -left-2 top-1/2 transform -translate-y-1/2">
+        <Arrow />
+        </div>
+        <div className="absolute -right-2 top-1/2 transform -translate-y-1/2">
+        <Arrow />
+        </div> */}
         <div
+                onClick={() => handleDateClick("return")}
           className={`text-left bg-gray-50 border border-grey-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5  dark:bg-gray-700 ${
             isReturnSelected
               ? "dark:border-primary-600"

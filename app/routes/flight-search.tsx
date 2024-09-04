@@ -3,14 +3,13 @@ import { Layout } from "~/components/ui/layout/layout";
 import type { LoaderFunction } from "@remix-run/node";
 import { HeroFlight } from "~/components/section/hero/hero-flight";
 import { getImages } from "~/helpers/sdk/query";
-import { getRandomNumber } from "~/helpers/utils";
 
 export const loader: LoaderFunction = async () => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
 
   const backgroundImage = await getImages({
     apiUrl,
-    query: "flight",
+    query: "travel",
   });
 
   return {
@@ -25,7 +24,7 @@ export default function SearchFlight() {
     backgroundImage: string[];
   }>();
   const randomHeroImage =
-    backgroundImage[getRandomNumber(backgroundImage.length)];
+    backgroundImage[0];
 
   return (
     <div>

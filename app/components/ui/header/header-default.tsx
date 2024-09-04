@@ -109,20 +109,15 @@ export const HeaderDefault = ({
       selected: selectedUrl === "/search",
     },
     {
+      title: "Planner",
+      to: "/planner",
+      selected: selectedUrl === "/planner",
+    },
+    {
       title: "News",
       to: "/news",
       selected: selectedUrl === "/news",
     },
-    // {
-    //   title: "Hotels",
-    //   to: "/search",
-    //   selected: selectedUrl === "/search-hotels",
-    // },
-    // {
-    //   title: "Cars",
-    //   to: "/search",
-    //   selected: selectedUrl === "/search-cars",
-    // },
   ];
 
   return (

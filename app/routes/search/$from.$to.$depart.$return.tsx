@@ -28,6 +28,7 @@ import { FiltersDrawer } from "~/components/ui/drawer/drawer-filter";
 import { PriceGraph } from "~/components/ui/graph/price-graph";
 import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
 import { actionsSearchForm } from "~/actions/search-form";
+import { actionsSaveFlight } from "~/actions/save-flight";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -86,7 +87,8 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export async function action({ request }: ActionArgs) {
   let action;
-  action = actionsSearchForm({ request });
+  //action = await actionsSearchForm({ request });
+  action = await actionsSaveFlight({ request });
 
   return action;
 }
