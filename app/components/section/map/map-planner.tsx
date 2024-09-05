@@ -27,6 +27,7 @@ export const MapPlanner = ({
   googleApiKey,
 }: MapPlannerProps) => {
   const [map, setMap] = useState<google.maps.Map>();
+  const [mapMarkers, setMapMarkers] = useState<google.maps.marker.AdvancedMarkerElement[]>();
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
   const parents = to ? getAllParents(to.parentId) : [];
   const getMarkers = (search: IndicativeQuotesSDK[]): Markers[] => {
@@ -99,6 +100,16 @@ export const MapPlanner = ({
     setSelected(quote[0]);
   };
 
+  const handleMapLoaded = (map: google.maps.Map, markers: google.maps.marker.AdvancedMarkerElement[]) => {
+    setMap(map);
+    setMapMarkers(markers);
+  }
+
+  const removeMarkers = () => {
+    if(!map || !mapMarkers) return;
+    mapMarkers.forEach((marker) => marker.setMap(null));
+  };
+
   useEffect(() => {
     if (map) return;
     map;
@@ -121,7 +132,7 @@ export const MapPlanner = ({
           </a>
           <div
             className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-            onClick={centerMap}
+            onClick={removeMarkers}
           >
             <FaMapMarkerAlt className="pr-2 text-lg" />
             <span>Add to trip</span>
@@ -142,6 +153,18 @@ export const MapPlanner = ({
             Explore {selected.city.name}
           </a>
           ) : ''}
+                    <div
+          onClick={() => setSelected(undefined)}
+            className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+          >
+            Close
+          </div>
+                    <div
+          onClick={() => removeMarkers()}
+            className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+          >
+            Remove Markers
+          </div>
           </div>
         </div>
       </div>
@@ -163,7 +186,7 @@ export const MapPlanner = ({
                 : `${getAllParents(from.parentId)[0]}`
             }
             onMarkerClick={(map, marker) => handleMarkerClick(marker)}
-            onMapLoaded={(map) => setMap(map)}
+            onMapLoaded={handleMapLoaded}
           />
         </Wrapper>
       </div>

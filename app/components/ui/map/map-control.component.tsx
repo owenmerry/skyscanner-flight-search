@@ -20,7 +20,7 @@ export interface MapControlsProps {
   showPlaces?: boolean;
   placesList?: MapMarker[];
   markers?: MapMarker[] | null;
-  onMapLoaded?: (map: google.maps.Map) => void;
+  onMapLoaded?: (map: google.maps.Map, markers?: google.maps.marker.AdvancedMarkerElement[]) => void;
   onMarkerClick?: (map: google.maps.Map, marker: MapMarker) => void;
 }
 
@@ -53,10 +53,12 @@ export const MapControls = ({
       disableDefaultUI: true,
       ...(isMobile ? { gestureHandling: "greedy" } : {}),
     });
+    const markersRef: google.maps.marker.AdvancedMarkerElement[] = [];
 
     if (markers) {
       for (const marker of markers) {
-        addMarker(googleMap, marker, onMarkerClick);
+        const markerRef = await addMarker(googleMap, marker, onMarkerClick);
+        markersRef.push(markerRef);
       }
 
       //fit map screen
@@ -78,7 +80,7 @@ export const MapControls = ({
 
     }
 
-    onMapLoaded && onMapLoaded(googleMap);
+    onMapLoaded && onMapLoaded(googleMap, markersRef);
   };
 
   const fitMapToCityBounds = useCallback(
@@ -147,6 +149,9 @@ export const MapControls = ({
         onMarkerClick(map, marker);
       });
     }
+
+    return googleMarker;
+
   };
 
   const addDirections = (map: google.maps.Map, markers: MapMarker[]) => {
