@@ -113,6 +113,12 @@ export const MapPlanner = ({
           <div className="p-4">
           <h2 className="text-xl font-bold">{selected.city?.name}, {selected.country.name}</h2>
           <p>{selected.price.display}</p>
+          <a
+          href={`/${selected.query.from.iata}/${selected.query.to.iata}/${selected.query.depart}/${selected.query.return}`}
+            className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+          >
+            <span>See Deal {selected.price.display}</span>
+          </a>
           <div
             className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
             onClick={centerMap}
