@@ -1,7 +1,9 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   MapControls,
+  MapControlsOptions,
+  MapControlsProps,
   MapMarker,
 } from "~/components/ui/map/map-control.component";
 import type { Markers } from "~/helpers/map";
@@ -27,7 +29,12 @@ export const MapPlanner = ({
   googleApiKey,
 }: MapPlannerProps) => {
   const [map, setMap] = useState<google.maps.Map>();
-  const [mapMarkers, setMapMarkers] = useState<google.maps.marker.AdvancedMarkerElement[]>();
+  const [mapControls, setMapControls] = useState<{
+    map: google.maps.Map;
+    controls?: MapControlsOptions;
+  }>();
+  const [mapMarkers, setMapMarkers] =
+    useState<google.maps.marker.AdvancedMarkerElement[]>();
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
   const parents = to ? getAllParents(to.parentId) : [];
   const getMarkers = (search: IndicativeQuotesSDK[]): Markers[] => {
@@ -67,108 +74,145 @@ export const MapPlanner = ({
   };
   const [markers] = useState<Markers[]>(getMarkers(search));
 
-  const centerMap = () => {
-    if (!map) return;
-
-    map.panTo({
-      lat: to ? to.coordinates.latitude : from.coordinates.latitude,
-      lng: to ? to.coordinates.longitude : from.coordinates.longitude,
-    });
-  };
-  const moveToMarker = (map: google.maps.Map, marker: MapMarker) => {
-    console.log("run marker");
-    if (!map) return;
-    console.log("move marker");
-
-    map.panTo({
-      lat: marker.location.lat,
-      lng: marker.location.lng,
-    });
-    console.log("zoom to marker");
-    map.setZoom(16);
-  };
-
   const handleMarkerClick = (marker: MapMarker) => {
-    const quote = search.filter(quote => {
-      const isSameLat = quote.query.to.coordinates.latitude === marker.location.lat;
-      const isSameLng = quote.query.to.coordinates.longitude === marker.location.lng;
+    const quote = search.filter((quote) => {
+      const isSameLat =
+        quote.query.to.coordinates.latitude === marker.location.lat;
+      const isSameLng =
+        quote.query.to.coordinates.longitude === marker.location.lng;
 
       return isSameLat && isSameLng;
-    })
-    if(quote.length === 0) return; 
+    });
+    if (quote.length === 0) return;
 
     setSelected(quote[0]);
   };
 
-  const handleMapLoaded = (map: google.maps.Map, markers: google.maps.marker.AdvancedMarkerElement[]) => {
+  const handleMapLoaded: MapControlsProps["onMapLoaded"] = (map, options) => {
     setMap(map);
-    setMapMarkers(markers);
-  }
-
-  const removeMarkers = () => {
-    if(!map || !mapMarkers) return;
-    mapMarkers.forEach((marker) => marker.setMap(null));
+    setMapControls({ map, controls: options });
+    if (!options?.markers) return;
+    setMapMarkers(options.markers);
   };
 
-  useEffect(() => {
-    if (map) return;
-    map;
-  }, [markers]);
+  const handleAddToTrip = () => {
+    if (!mapControls || !mapControls?.controls?.addLine || !mapControls?.controls?.addMarker || !selected) return;
+
+    mapControls.controls.addLine(mapControls.map,[
+      {
+        lat: from.coordinates.latitude,
+        lng: from.coordinates.longitude,
+      },
+      {
+        lat: selected.query.to.coordinates.latitude,
+        lng: selected.query.to.coordinates.longitude,
+      }
+    ], true);
+
+    removeMarkers();
+
+    const fromMarker = {
+      location: {
+        lat: selected.query.from.coordinates.latitude,
+        lng: selected.query.from.coordinates.longitude,
+      },
+      label: `
+          <div class="group/marker relative bg-blue-600 p-2 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-2xl transition">
+          <div class=" text-white text-sm text-center">
+           <svg class='inline' stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M448 336v-40L288 192V79.2c0-17.7-14.8-31.2-32-31.2s-32 13.5-32 31.2V192L64 296v40l160-48v113.6l-48 31.2V464l80-16 80 16v-31.2l-48-31.2V288l160 48z"></path></svg>
+            <div class='font-bold'>${selected.query.from.name}</div>
+          </div>
+          <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-blue-600 group-hover/marker:bg-blue-700 transition"></div>
+          </div>`,
+      link: `/`,
+      icon: "\ue539",
+    
+  }
+    mapControls.controls.addMarker(mapControls.map,fromMarker,() => handleMarkerClick(toMarker));
+
+    const toMarker = {
+      location: {
+        lat: selected.query.to.coordinates.latitude,
+        lng: selected.query.to.coordinates.longitude,
+      },
+      label: `
+          <div class="group/marker relative bg-blue-600 p-2 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-2xl transition">
+          <div class=" text-white text-sm text-center">
+           <svg class='inline' stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 512 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M448 336v-40L288 192V79.2c0-17.7-14.8-31.2-32-31.2s-32 13.5-32 31.2V192L64 296v40l160-48v113.6l-48 31.2V464l80-16 80 16v-31.2l-48-31.2V288l160 48z"></path></svg>
+            <div class='font-bold'>${selected.query.to.name}</div>
+          </div>
+          <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-blue-600 group-hover/marker:bg-blue-700 transition"></div>
+          </div>`,
+      link: `/`,
+      icon: "\ue539",
+    
+  }
+    mapControls.controls.addMarker(mapControls.map,toMarker,() => handleMarkerClick(toMarker));
+
+  };
+
+  const removeMarkers = () => {
+    if (!map || !mapMarkers) return;
+    mapMarkers.forEach((marker) => (marker.map = null));
+  };
 
   return (
     <div className="relative h-full">
       {selected ? (
-      <div className="absolute top-4 left-4 w-60 h-full z-20">
-        <div className="text-slate-900 rounded-xl text-sm bg-white font-bold overflow-hidden">
-          <div className="h-64 bg-cover" style={{backgroundImage: `url(${selected.country.images[0]})`}}></div>
-          <div className="p-4">
-          <h2 className="text-xl font-bold">{selected.city?.name}, {selected.country.name}</h2>
-          <p>{selected.price.display}</p>
-          <a
-          href={`/search/${selected.query.from.iata}/${selected.query.to.iata}/${selected.query.depart}/${selected.query.return}`}
-            className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-          >
-            <span>See Deal {selected.price.display}</span>
-          </a>
-          <div
-            className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-            onClick={removeMarkers}
-          >
-            <FaMapMarkerAlt className="pr-2 text-lg" />
-            <span>Add to trip</span>
-          </div>
-          <a
-          href={`/country/${selected.country.slug}`}
-            className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-          >
-            <FaMapMarkerAlt className="pr-2 text-lg" />
-            Explore {selected.country.name}
-          </a>
-          {selected.city ? (
-          <a
-          href={`/city/${selected.country.slug}/${selected.city.slug}`}
-            className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-          >
-            <FaMapMarkerAlt className="pr-2 text-lg" />
-            Explore {selected.city.name}
-          </a>
-          ) : ''}
-                    <div
-          onClick={() => setSelected(undefined)}
-            className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-          >
-            Close
-          </div>
-                    <div
-          onClick={() => removeMarkers()}
-            className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-          >
-            Remove Markers
-          </div>
+        <div className="absolute top-4 left-4 w-60 h-full z-20">
+          <div className="text-slate-900 rounded-xl text-sm bg-white font-bold overflow-hidden">
+            <div
+              className="h-64 bg-cover"
+              style={{ backgroundImage: `url(${selected.country.images[0]})` }}
+            ></div>
+            <div className="p-4">
+              <h2 className="text-xl font-bold">
+                {selected.city?.name}, {selected.country.name}
+              </h2>
+              <p>{selected.price.display}</p>
+              <a
+                href={`/search/${selected.query.from.iata}/${selected.query.to.iata}/${selected.query.depart}/${selected.query.return}`}
+                className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+              >
+                <span>See Deal {selected.price.display}</span>
+              </a>
+              <div
+                className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+                onClick={handleAddToTrip}
+              >
+                <FaMapMarkerAlt className="pr-2 text-lg" />
+                <span>Add to trip</span>
+              </div>
+              <a
+                href={`/country/${selected.country.slug}`}
+                className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+              >
+                <FaMapMarkerAlt className="pr-2 text-lg" />
+                Explore {selected.country.name}
+              </a>
+              {selected.city ? (
+                <a
+                  href={`/city/${selected.country.slug}/${selected.city.slug}`}
+                  className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+                >
+                  <FaMapMarkerAlt className="pr-2 text-lg" />
+                  Explore {selected.city.name}
+                </a>
+              ) : (
+                ""
+              )}
+              <div
+                onClick={() => setSelected(undefined)}
+                className="justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+              >
+                Close
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      ) : ''}
+      ) : (
+        ""
+      )}
       <div className="absolute top-0 left-0 bottom-0 w-full h-full z-10">
         <Wrapper apiKey={googleApiKey}>
           <MapControls

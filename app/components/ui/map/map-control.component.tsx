@@ -20,8 +20,21 @@ export interface MapControlsProps {
   showPlaces?: boolean;
   placesList?: MapMarker[];
   markers?: MapMarker[] | null;
-  onMapLoaded?: (map: google.maps.Map, markers?: google.maps.marker.AdvancedMarkerElement[]) => void;
   onMarkerClick?: (map: google.maps.Map, marker: MapMarker) => void;
+  onMapLoaded?: (map: google.maps.Map, options?: MapControlsOptions) => void;
+}
+export interface MapControlsOptions {
+  markers?: google.maps.marker.AdvancedMarkerElement[];
+  addMarker?: (
+    map: google.maps.Map,
+    marker: MapMarker,
+    onMarkerClick: MapControlsProps["onMarkerClick"]
+  ) => void;
+  addLine?: (
+    map: google.maps.Map,
+    line: google.maps.LatLngLiteral[],
+    curved?: boolean,
+  ) => void;
 }
 
 export const MapControls = ({
@@ -77,10 +90,14 @@ export const MapControls = ({
       if (showDirections) {
         addDirections(googleMap, markers);
       }
-
     }
 
-    onMapLoaded && onMapLoaded(googleMap, markersRef);
+    onMapLoaded &&
+      onMapLoaded(googleMap, {
+        markers: markersRef,
+        addMarker,
+        addLine,
+      });
   };
 
   const fitMapToCityBounds = useCallback(
@@ -113,13 +130,19 @@ export const MapControls = ({
     map.fitBounds(bounds);
   };
 
-  const addLine = (map: google.maps.Map, line: MapControlsProps["line"]) => {
+
+  const addLine = (
+    map: google.maps.Map,
+    line: google.maps.LatLngLiteral[],
+    curved: boolean = false
+  ) => {
     const flightPath = new google.maps.Polyline({
       path: line,
       geodesic: false,
       strokeColor: "#53638e",
       strokeOpacity: 1.0,
       strokeWeight: 2,
+
     });
 
     flightPath.setMap(map);
@@ -151,7 +174,6 @@ export const MapControls = ({
     }
 
     return googleMarker;
-
   };
 
   const addDirections = (map: google.maps.Map, markers: MapMarker[]) => {
@@ -200,6 +222,19 @@ export const MapControls = ({
         }
       }
     );
+  };
+
+  const centerMap = (map: google.maps.Map, location: google.maps.LatLng) => {
+    if (!map) return;
+
+    map.panTo(location);
+  };
+
+  const moveToMarker = (map: google.maps.Map, location: google.maps.LatLng) => {
+    if (!map) return;
+
+    map.panTo(location);
+    map.setZoom(16);
   };
 
   useEffect(() => {
