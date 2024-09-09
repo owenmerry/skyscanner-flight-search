@@ -14,7 +14,7 @@ export const FlightDetails = ({ flight, query }: FlightDetailsProps) => {
   return (
     <div className="">
       <PanelTop
-      icon={<FaPlaneDeparture className="inline mr-2 text-blue-600" />}
+        icon={<FaPlaneDeparture className="inline mr-2 text-blue-600" />}
         title="Departure"
         detailsTitle="Trip Details"
         childrenTop={
@@ -27,20 +27,24 @@ export const FlightDetails = ({ flight, query }: FlightDetailsProps) => {
           <FlightTimeline query={query} leg={flight.legs[0]} showStopOvers />
         </div>
       </PanelTop>
-      <PanelTop
-        icon={<FaPlaneArrival className="inline mr-2 text-blue-600" />}
-        title="Return"
-        detailsTitle="Trip Details"
-        childrenTop={
+      {flight.legs[1] ? (
+        <PanelTop
+          icon={<FaPlaneArrival className="inline mr-2 text-blue-600" />}
+          title="Return"
+          detailsTitle="Trip Details"
+          childrenTop={
+            <div className="m-5">
+              <Leg leg={flight.legs[1]} />
+            </div>
+          }
+        >
           <div className="m-5">
-            <Leg leg={flight.legs[1]} />
+            <FlightTimeline query={query} leg={flight.legs[1]} showStopOvers />
           </div>
-        }
-      >
-        <div className="m-5">
-          <FlightTimeline query={query} leg={flight.legs[1]} showStopOvers />
-        </div>
-      </PanelTop>
+        </PanelTop>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
