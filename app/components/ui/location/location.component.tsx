@@ -2,14 +2,16 @@ import { useEffect, useState } from "react";
 import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
 
 import { searchAutoSuggest } from "~/helpers/sdk/autosuggest";
-import type { Place } from "~/helpers/sdk/autosuggest";
+import type { Place as PlaceAutosuggest } from "~/helpers/sdk/autosuggest";
+import type { Place } from "~/helpers/sdk/place";
+import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 
 interface LocationProps {
   name?: string;
   apiUrl?: string;
   defaultValue?: string;
   onChange?: (value: string) => void;
-  onSelect?: (value: string, iataCode: string) => void;
+  onSelect?: (value: string, iataCode: string, place: Place) => void;
 }
 
 export const Location = ({
@@ -20,7 +22,7 @@ export const Location = ({
   onSelect,
 }: LocationProps): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState(defaultValue);
-  const [searchOrigin, setSearchOrigin] = useState<Place[]>([]);
+  const [searchOrigin, setSearchOrigin] = useState<PlaceAutosuggest[]>([]);
   const [showAutoSuggest, setShowAutoSuggest] = useState(false);
   const refAutoSuggest = useOutsideClick(() => {
     setShowAutoSuggest(false);
@@ -46,11 +48,13 @@ export const Location = ({
     geoId: string,
     iataCode: string
   ) => {
+    const place = await getPlaceFromEntityId(geoId);
+    if(!place) return;
     setSearchTerm(placeId);
     setSearchOrigin([]);
     setShowAutoSuggest(false);
     onChange && onChange(geoId);
-    onSelect && onSelect(geoId, iataCode);
+    onSelect && onSelect(geoId, iataCode, place);
   };
 
   const handleInputClick = () => {

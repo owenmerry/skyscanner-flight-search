@@ -28,8 +28,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export default function Index() {
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
+  const [loading, setLoading] = useState(false);
   const {
     apiUrl,
     from,
@@ -41,32 +40,6 @@ export default function Index() {
     googleMapId: string;
     from: Place;
   } = useLoaderData();
-
-  const runSearch = async () => {
-    const indicativeSearch = await skyscanner().indicative({
-      apiUrl,
-      query: {
-        from: from.entityId,
-        to: "anywhere",
-        tripType: "return",
-      },
-      groupType: "month",
-      month: Number(moment().format("MM")),
-      year: Number(moment().format("YYYY")),
-      endMonth: Number(moment().add(10, "months").format("MM")),
-      endYear: Number(moment().add(10, "months").format("YYYY")),
-    });
-
-    if ("error" in indicativeSearch.search) return;
-
-    setSearch(indicativeSearch.quotes);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    setLoading(true);
-    runSearch();
-  }, []);
 
   return (
     <Layout selectedUrl="/planner" apiUrl={apiUrl}>
@@ -84,17 +57,13 @@ export default function Index() {
       ) : (
         ""
       )}
-      {search ? (
         <MapPlanner
           level="everywhere"
           from={from}
           googleApiKey={googleApiKey}
           googleMapId={googleMapId}
-          search={search}
+          apiUrl={apiUrl}
         />
-      ) : (
-        ""
-      )}
     </Layout>
   );
 }

@@ -29,7 +29,7 @@ export interface MapControlsOptions {
     map: google.maps.Map,
     marker: MapMarker,
     onMarkerClick: MapControlsProps["onMarkerClick"]
-  ) => void;
+  ) => Promise<google.maps.marker.AdvancedMarkerElement>;
   addLine?: (
     map: google.maps.Map,
     line: google.maps.LatLngLiteral[],
@@ -168,7 +168,8 @@ export const MapControls = ({
     });
 
     if (onMarkerClick) {
-      googleMarker.addListener("click", () => {
+      googleMarker.addListener("click", (e) => {
+        e.stopPropagation();
         onMarkerClick(map, marker);
       });
     }

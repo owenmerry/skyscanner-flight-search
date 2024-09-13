@@ -168,7 +168,6 @@ export default function Search() {
         from: flightQuery.from,
         to: flightQuery.to,
         depart: flightQuery.depart || "",
-        return: flightQuery.return,
       },
     });
     if ("error" in flightSearch) return;

@@ -1,6 +1,5 @@
 import { useState, Fragment } from "react";
 import { Tooltip } from "flowbite-react";
-import { toHoursAndMinutes } from "~/helpers/sdk/dateTime";
 import type { SearchFilters } from "~/helpers/sdk/filters";
 import type { QueryPlace } from "~/types/search";
 import { addSearchResultFilters } from "~/helpers/sdk/filters";
@@ -18,7 +17,6 @@ import { FlightDetails } from "./flight-details";
 import { Legs } from "./flight-leg";
 import { MapRoute } from "../map/map-route";
 import { Panel } from "./flight-panel";
-import { Loading } from "~/components/ui/loading";
 import { WaitForDisplay } from "~/components/ui/wait-for-display/ait-for-display.component";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { useFetcher } from "@remix-run/react";

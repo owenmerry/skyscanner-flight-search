@@ -24,6 +24,7 @@ interface LegProps {
   showCarriers?: boolean;
 }
 export const Leg = ({ leg, showCarriers = true }: LegProps) => {
+
   return (
     <>
     <div className="grid grid-cols-2 pb-4 last:pb-0">
