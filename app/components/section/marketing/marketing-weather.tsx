@@ -1,7 +1,8 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import type { Place } from "~/helpers/sdk/place";
-import type { WeatherForcastOpenMeteoResponse } from "~/types/weather";
+import type { WeatherHistoryOpenMeteoResponse } from "~/types/weather";
+import { getMonthlyAverageTemperature  } from "./helpers/weather";
 
 interface MarketingWeatherProps {
   to: Place;
@@ -9,20 +10,28 @@ interface MarketingWeatherProps {
 }
 
 export const MarketingWeather = ({ to, apiUrl }: MarketingWeatherProps) => {
-  const [weather, setWeather] = useState<WeatherForcastOpenMeteoResponse>();
-  const maxTempeture = weather ? Math.max(...weather.hourly.temperature_2m) : undefined;
-  const minTempeture = weather ?  Math.min(...weather.hourly.temperature_2m) : undefined;
-  const getPercentageBar = (number: number, numberPercentage: number) => {
-    return (
-      100 - Math.ceil(((numberPercentage - number) / numberPercentage) * 100)
-    );
-  };
+  const [weather, setWeather] = useState<WeatherHistoryOpenMeteoResponse>();
+  // const maxTempeture = weather
+  //   ? Math.max(...weather.hourly.temperature_2m)
+  //   : undefined;
+  // const minTempeture = weather
+  //   ? Math.min(...weather.hourly.temperature_2m)
+  //   : undefined;
+  // const getPercentageBar = (number: number, numberPercentage: number) => {
+  //   return (
+  //     100 - Math.ceil(((numberPercentage - number) / numberPercentage) * 100)
+  //   );
+  // };
 
   const runWeather = async () => {
     const res = await fetch(
-      `${apiUrl}/service/weather/forcast?latitude=${to.coordinates.latitude}&longitude=${to.coordinates.longitude}`
+      `${apiUrl}/service/weather/history?latitude=${
+        to.coordinates.latitude
+      }&longitude=${
+        to.coordinates.longitude
+      }&start_date=${"2023-01-01"}&end_date=${"2023-12-01"}`
     );
-    const data: WeatherForcastOpenMeteoResponse = await res.json();
+    const data: WeatherHistoryOpenMeteoResponse = await res.json();
 
     setWeather(data);
   };
@@ -30,6 +39,9 @@ export const MarketingWeather = ({ to, apiUrl }: MarketingWeatherProps) => {
   useEffect(() => {
     runWeather();
   }, []);
+
+  if (!weather) return "";
+  const weatherMonthly = getMonthlyAverageTemperature(weather);
 
   return (
     <div className="bg-blue-600 shadow-inner">
@@ -63,32 +75,26 @@ export const MarketingWeather = ({ to, apiUrl }: MarketingWeatherProps) => {
         </p>
         <div className="relative my-8">
           <div className="grid grid-cols-1 gap-4">
-            {weather?.hourly.time.map((time, key) => {
-              const tempeture = weather.hourly.temperature_2m[key];
+            {weatherMonthly.map((weatherMonth, key) => {
+              const hightlightBar = weatherMonth.percentage > 90;
               return (
-                <div key={`${time}`}>
+                <div key={`${key}`}>
                   <div className="grid grid-cols-10 content-center justify-items-center gap-1">
                     <div className="self-center font-bold">
-                      {moment(time).format("ddd ha")}
+                      {moment(`${weatherMonth.month}-01`).format('MMM')}
                     </div>
                     <div className="bg-blue-800 w-full flex-1 rounded-lg col-span-9">
                       <div
-                        className={`bg-blue-500 rounded-lg p-2 flex flex-row-reverse`}
+                        className={`${hightlightBar ? `bg-blue-500` : `bg-blue-500`} rounded-lg p-2 flex flex-row-reverse`}
                         style={{
-                          width: `${
-                            maxTempeture && minTempeture
-                              ? getPercentageBar(
-                                  Number(tempeture),
-                                  Number(maxTempeture)
-                                )
-                              : "0"
-                          }%`,
+                          width: `${weatherMonth.percentage}%`,
                         }}
                       >
                         <div
-                          className={`bg-blue-600 text-white inline-block rounded-lg p-1 text-sm sm:p-2`}
+                          className={`${hightlightBar ? `bg-blue-600` : `bg-blue-600`} text-white inline-block rounded-lg p-1 text-sm sm:p-2 ${weatherMonth.percentage < 10 ? `relative left-11 md:left-14` : ''}`}
                         >
-                          {tempeture}{weather.current_units.temperature_2m}
+                          {Math.trunc(weatherMonth.averageTemperature)}
+                          {weather.hourly_units.temperature_2m}
                         </div>
                       </div>
                     </div>
