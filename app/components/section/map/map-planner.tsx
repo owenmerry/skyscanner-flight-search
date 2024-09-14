@@ -22,6 +22,10 @@ import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { Loading } from "~/components/ui/loading";
 import { useSearchParams } from "@remix-run/react";
 import { waitSeconds } from "~/helpers/utils";
+import { SearchDrawer } from "~/components/ui/drawer/drawer-search";
+import { FlightResultsDefault } from "../flight-results/flight-results-default";
+import { getDateYYYYMMDDToDisplay } from "~/helpers/date";
+import { DateInputs, DateSelector } from "~/components/ui/date/date-selector";
 
 interface TripPrice {
   query: QueryPlace;
@@ -57,12 +61,26 @@ export const MapPlanner = ({
   const [searchRefs, setSearchRefs] = useState<
     google.maps.marker.AdvancedMarkerElement[]
   >([]);
-  const queryTrip = getPlacesFromIatas(searchParams.get("trip") !== '' ? searchParams.get("trip")?.split(" ") : []);
+  const queryTrip = getPlacesFromIatas(
+    searchParams.get("trip") !== "" ? searchParams.get("trip")?.split(" ") : []
+  );
+  const queryStartDate =
+    searchParams.get("startDate") !== ""
+      ? searchParams.get("startDate")
+      : undefined;
+  const queryDays =
+    searchParams.get("days") !== ""
+      ? Number(searchParams.get("days"))
+      : undefined;
   const [stops, setStops] = useState<Place[]>(queryTrip);
   const [prices, setPrices] = useState<TripPrice[]>([]);
   const pricesRef = useRef<TripPrice[]>([]);
   const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
+  const [days, setDays] = useState<number>(queryDays || 3);
+  const [startDate, setStartDate] = useState<string>(
+    queryStartDate || "2024-12-01"
+  );
   const parents = to ? getAllParents(to.parentId) : [];
   const getMarkers = (search: IndicativeQuotesSDK[]): Markers[] => {
     const markers: Markers[] = [];
@@ -153,7 +171,7 @@ export const MapPlanner = ({
   };
 
   const handleRefresh = () => {
-    if(!mapControls) return;
+    if (!mapControls) return;
     mapRefs.forEach((mapRef) => {
       if (!("setMap" in mapRef)) return;
       mapRef.setMap(null);
@@ -163,7 +181,7 @@ export const MapPlanner = ({
     pricesRef.current = [];
     clearSearch();
     setLocationsOnStart({ mapControls });
-  }
+  };
   const handleMapLoaded: MapControlsProps["onMapLoaded"] = (map, options) => {
     if (!options) return;
     const mapControls = { map, controls: options };
@@ -198,7 +216,9 @@ export const MapPlanner = ({
     setSearchParams(newParams);
   };
 
-  const setLocationsOnStart = async ({mapControls} : {
+  const setLocationsOnStart = async ({
+    mapControls,
+  }: {
     mapControls: {
       map: google.maps.Map;
       controls: MapControlsOptions;
@@ -232,7 +252,9 @@ export const MapPlanner = ({
           query: {
             from: previous,
             to: stop,
-            depart: "2024-12-01",
+            depart: moment(startDate)
+              .add(days * (i - 1), "days")
+              .format("YYYY-MM-DD"),
           },
         });
       }
@@ -259,22 +281,25 @@ export const MapPlanner = ({
     setStops([...stops, place]);
     setQueryString([...stops, place]);
     clearSearch();
+    console.log('check has before', hasStopsBefore);
     if (hasStopsBefore) {
+      console.log('run price on change', hasStopsBefore);
       getPrice({
         query: {
           from: stopsBefore[stopsBefore.length - 1],
           to: place,
-          depart: "2024-12-01",
+          depart: moment(prices[prices.length - 1].query.depart)
+            .add(days, "days")
+            .format("YYYY-MM-DD"),
         },
       });
     }
   };
 
-  const getPrice = async ({
-    query,
-  }: {
-    query: QueryPlace;
-  }) => {
+  const getPrice = async ({ query }: { query: QueryPlace }) => {
+    console.log('run price');
+    console.log(query);
+    console.log(pricesRef.current);
     const pricesSaved: TripPrice[] = pricesRef.current;
     setPrices([...pricesSaved, { query, loading: true }]);
     pricesRef.current = [...pricesSaved, { query, loading: true }];
@@ -319,10 +344,21 @@ export const MapPlanner = ({
     setMapRefs([...mapRefs, ...updateRefs]);
   };
 
+  const handleDateChange = async (date: DatesQuery) => {
+    setStartDate(date.depart);
+    setPrices([]);
+    pricesRef.current = [];
+    await waitSeconds(1);
+    let newParams = new URLSearchParams(searchParams);
+    newParams.set("startDate", date.depart);
+    setSearchParams(newParams);
+    handleRefresh();
+  };
+
   return (
     <div className="md:grid grid-cols-10">
       <div className="p-4 col-span-4">
-      <div className="flex overflow-y-scroll scrollbar-hide gap-2 py-3">
+        <div className="flex overflow-y-scroll scrollbar-hide gap-2 py-3">
           <div
             className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
             onClick={clearTrip}
@@ -352,6 +388,13 @@ export const MapPlanner = ({
             <span>Refresh</span>
           </div>
         </div>
+        <DateSelector
+          query={{
+            depart: startDate,
+          }}
+          onDateChange={(date) => handleDateChange(date)}
+          showReturn={false}
+        />
 
         {stops.map((stop, key) => {
           const previous = stops[key - 1];
@@ -365,25 +408,46 @@ export const MapPlanner = ({
           return (
             <div
               key={`${stop.entityId}_${key}`}
-              className="py-6 px-4 border-b-slate-700 grid grid-cols-3 items-center gap-2"
+              className="py-6 px-4 border-b-slate-700 border-b-2 grid grid-cols-3 items-center gap-4"
             >
-              <div>
-                <MdLocalAirport className="inline-block mr-2" />
-                {stop.name} ({stop.iata}){" "}
+              <div className="flex gap-2">
+                <MdLocalAirport />
+                <div>
+                  <div>
+                    {stop.name} ({stop.iata}){" "}
+                  </div>
+                  <div className="text-slate-400 text-sm">
+                    {price?.query.depart ? (
+                      <>
+                        {getDateYYYYMMDDToDisplay(
+                          price?.query.depart,
+                          "ddd, D MMM"
+                        )}{" "}
+                        ({days} days)
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                </div>
               </div>
               <div>
                 {price ? (
                   <>
                     {price.loading ? (
-                      <div className="inline-block">
-                        <Loading height="5" />
+                      <div className="inline-block text-slate-400 text-sm">
+                        {/* <Loading height="5" /> */}
+                        Getting Prices...
                       </div>
                     ) : (
                       <>
                         <div className="text-slate-400">
                           {price.price}
                           <div className="text-sm">
-                            {price.search?.cheapest.length} Results
+                            {price.search?.cheapest[0].isDirectFlights
+                              ? "Direct"
+                              : `${price.search?.cheapest[0].legs[0].stops} Stops`}{" "}
+                            {price.search?.cheapest[0].legs[0].departureTime}
                           </div>
                         </div>
                       </>
@@ -396,14 +460,23 @@ export const MapPlanner = ({
               <div>
                 {price && !price.loading ? (
                   <>
-                    <a
-                      className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-                      href={`/search/${price.query.from.iata}/${price.query.to.iata}/${price.query.depart}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      See Search
-                    </a>
+                    <SearchDrawer>
+                      <div className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap">
+                        See Search
+                      </div>
+                      <div className="p-9 max-w-screen-md xl:p-9 xl:mx-auto">
+                        <FlightResultsDefault
+                          flights={price.search}
+                          filters={{}}
+                          query={price.query}
+                          apiUrl={apiUrl}
+                          googleApiKey={googleApiKey}
+                          googleMapId={googleMapId}
+                          loading={false}
+                          headerSticky={false}
+                        />
+                      </div>
+                    </SearchDrawer>
                   </>
                 ) : (
                   ""
@@ -413,12 +486,15 @@ export const MapPlanner = ({
           );
         })}
 
+<div className="my-2">
+<div className="text-lg font-bold mb-2">{stops.length === 0 ? "Where will you start" : "Add Stop"}</div>
         <Location
           name={stops.length === 0 ? "Fly from" : "Fly to"}
           clearOnSelect={true}
           apiUrl={apiUrl}
           onSelect={(value, iataCode, place) => handleLocationChange(place)}
         />
+</div>
 
         {stops.length > 1 ? (
           <div className="text-2xl font-bold py-2">
