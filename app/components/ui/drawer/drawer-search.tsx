@@ -30,7 +30,7 @@ export const SearchDrawer: React.FC<JourneyDrawer> = ({ children }) => {
         ModalProps={{ keepMounted: true }} // Better open performance on mobile
       >
         <div className="dark">
-          <div className="min-h-screen w-screen md:w-[80vw] dark:bg-gray-900">
+          <div className="min-h-screen w-screen md:w-[70vw] dark:bg-gray-900">
             <Header onClose={() => setOpen(false)}>Search Details</Header>
             <div className="pb-16 dark:text-white">{children[1]}</div>
           </div>

@@ -10,7 +10,7 @@ import type { Markers } from "~/helpers/map";
 import { getAllParents } from "~/helpers/sdk/data";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { getPlacesFromIatas, type Place } from "~/helpers/sdk/place";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaPlaneDeparture } from "react-icons/fa";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import moment from "moment";
 import { Location } from "~/components/ui/location";
@@ -256,6 +256,7 @@ export const MapPlanner = ({
               .add(days * (i - 1), "days")
               .format("YYYY-MM-DD"),
           },
+          useRefPrices: true,
         });
       }
     }
@@ -281,26 +282,37 @@ export const MapPlanner = ({
     setStops([...stops, place]);
     setQueryString([...stops, place]);
     clearSearch();
-    console.log('check has before', hasStopsBefore);
+    console.log("check has before", hasStopsBefore);
     if (hasStopsBefore) {
-      console.log('run price on change', hasStopsBefore);
+      console.log(
+        "run price on change",
+        hasStopsBefore,
+        prices,
+        prices[prices.length - 1]
+      );
       getPrice({
         query: {
           from: stopsBefore[stopsBefore.length - 1],
           to: place,
-          depart: moment(prices[prices.length - 1].query.depart)
+          depart: prices.length > 0 ? moment(prices[prices.length - 1].query.depart)
             .add(days, "days")
-            .format("YYYY-MM-DD"),
+            .format("YYYY-MM-DD") : startDate,
         },
       });
     }
   };
 
-  const getPrice = async ({ query }: { query: QueryPlace }) => {
-    console.log('run price');
+  const getPrice = async ({
+    query,
+    useRefPrices = false,
+  }: {
+    query: QueryPlace;
+    useRefPrices?: boolean;
+  }) => {
+    console.log("run price");
     console.log(query);
     console.log(pricesRef.current);
-    const pricesSaved: TripPrice[] = pricesRef.current;
+    const pricesSaved: TripPrice[] = useRefPrices ? pricesRef.current : prices;
     setPrices([...pricesSaved, { query, loading: true }]);
     pricesRef.current = [...pricesSaved, { query, loading: true }];
     const search = await skyscanner().flight().createAndPoll({
@@ -397,12 +409,14 @@ export const MapPlanner = ({
         />
 
         {stops.map((stop, key) => {
-          const previous = stops[key - 1];
-          const price = previous
+          const first = key === 0;
+          const last = stops.length - 1 === key;
+          const next = stops[key + 1];
+          const price = next
             ? prices.filter(
                 (price) =>
-                  price.query.from.entityId === previous.entityId &&
-                  price.query.to.entityId === stop.entityId
+                  price.query.to.entityId === next.entityId &&
+                  price.query.from.entityId === stop.entityId
               )[0]
             : undefined;
           return (
@@ -410,7 +424,7 @@ export const MapPlanner = ({
               key={`${stop.entityId}_${key}`}
               className="py-6 px-4 border-b-slate-700 border-b-2 grid grid-cols-3 items-center gap-4"
             >
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 <MdLocalAirport />
                 <div>
                   <div>
@@ -423,7 +437,7 @@ export const MapPlanner = ({
                           price?.query.depart,
                           "ddd, D MMM"
                         )}{" "}
-                        ({days} days)
+                        {first || last ? "" : <>({days} days)</>}
                       </>
                     ) : (
                       ""
@@ -444,6 +458,7 @@ export const MapPlanner = ({
                         <div className="text-slate-400">
                           {price.price}
                           <div className="text-sm">
+                          <FaPlaneDeparture className="inline-block mr-1" />
                             {price.search?.cheapest[0].isDirectFlights
                               ? "Direct"
                               : `${price.search?.cheapest[0].legs[0].stops} Stops`}{" "}
@@ -486,15 +501,17 @@ export const MapPlanner = ({
           );
         })}
 
-<div className="my-2">
-<div className="text-lg font-bold mb-2">{stops.length === 0 ? "Where will you start" : "Add Stop"}</div>
-        <Location
-          name={stops.length === 0 ? "Fly from" : "Fly to"}
-          clearOnSelect={true}
-          apiUrl={apiUrl}
-          onSelect={(value, iataCode, place) => handleLocationChange(place)}
-        />
-</div>
+        <div className="my-2">
+          <div className="text-lg font-bold mb-2">
+            {stops.length === 0 ? "Where will you start" : "Add Stop"}
+          </div>
+          <Location
+            name={stops.length === 0 ? "Fly from" : "Fly to"}
+            clearOnSelect={true}
+            apiUrl={apiUrl}
+            onSelect={(value, iataCode, place) => handleLocationChange(place)}
+          />
+        </div>
 
         {stops.length > 1 ? (
           <div className="text-2xl font-bold py-2">
