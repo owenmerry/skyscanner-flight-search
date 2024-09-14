@@ -321,7 +321,7 @@ export const MapPlanner = ({
 
   return (
     <div className="md:grid grid-cols-10">
-      <div className="p-4 col-span-4 overflow-y-scroll">
+      <div className="p-4 col-span-4">
       <div className="flex overflow-y-scroll scrollbar-hide gap-2 py-3">
           <div
             className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"

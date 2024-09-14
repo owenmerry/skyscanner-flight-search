@@ -172,6 +172,32 @@ export const NavSidebar = () => {
             </li>
             <li>
               <a
+                href="/planner"
+                className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+              >
+                <svg
+                  className="w-6 h-6 text-gray-400 dark:text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m12 18-7 3 7-18 7 18-7-3Zm0 0v-5"
+                  />
+                </svg>
+
+                <span className="ml-3">Planner</span>
+              </a>
+            </li>
+            <li>
+              <a
                 href="/news"
                 className="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
               >
