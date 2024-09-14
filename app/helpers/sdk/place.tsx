@@ -22,6 +22,19 @@ export const getPlaceFromIata = (iata: string): Place | false => {
   return found.length > 0 ? found[0] : false;
 };
 
+export const getPlacesFromIatas = (iatas?: string[]): Place[] => {
+  if(!iatas) return [];
+  const places: Place[] = [];
+  iatas.forEach(iata => {
+    const place = getPlaceFromIata(iata);
+    if(place){
+      places.push(place);
+    }
+  })
+
+  return places;
+};
+
 export const getPlaceFromSlug = (
   slug: string,
   type: string,

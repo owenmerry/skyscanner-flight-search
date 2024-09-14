@@ -10,6 +10,7 @@ interface LocationProps {
   name?: string;
   apiUrl?: string;
   defaultValue?: string;
+  clearOnSelect?: boolean;
   onChange?: (value: string) => void;
   onSelect?: (value: string, iataCode: string, place: Place) => void;
 }
@@ -18,6 +19,7 @@ export const Location = ({
   name = "location",
   apiUrl = "",
   defaultValue,
+  clearOnSelect = false,
   onChange,
   onSelect,
 }: LocationProps): JSX.Element => {
@@ -55,6 +57,7 @@ export const Location = ({
     setShowAutoSuggest(false);
     onChange && onChange(geoId);
     onSelect && onSelect(geoId, iataCode, place);
+    if(clearOnSelect) setSearchTerm('');
   };
 
   const handleInputClick = () => {

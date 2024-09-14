@@ -1,4 +1,4 @@
-import type { FlightQuery } from "~/types/search";
+import type { FlightQuery, QueryPlace } from "~/types/search";
 import { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
 
 export const getImages = async ({
@@ -46,3 +46,7 @@ export const getHotelSearch = async ({
 
   return hotels || { error };
 };
+
+export const queryToString = (query: QueryPlace) => {
+  return JSON.stringify(query);
+}

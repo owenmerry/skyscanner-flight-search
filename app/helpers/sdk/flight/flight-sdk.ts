@@ -1,4 +1,4 @@
-import { FlightQuery, QueryPlace } from "~/types/search";
+import { QueryPlace } from "~/types/search";
 import { waitSeconds } from "~/helpers/utils";
 import { skyscanner } from "../skyscannerSDK";
 import { SkyscannerAPICreateResponse } from "./flight-response";
@@ -140,6 +140,11 @@ export const getSearchWithCreateAndPoll = async ({
     });
     if ("error" in flightSearch) return;
     sessionToken = flightSearch.sessionToken;
+    
+    if (flightSearch.status === "RESULT_STATUS_COMPLETE") {
+      console.log("got complete", flightSearch.stats.minPrice);
+      return flightSearch;
+    }
   }
 
   const flightPoll = await getFlightLivePoll({

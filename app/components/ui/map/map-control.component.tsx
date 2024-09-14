@@ -33,8 +33,9 @@ export interface MapControlsOptions {
   addLine?: (
     map: google.maps.Map,
     line: google.maps.LatLngLiteral[],
-    curved?: boolean,
-  ) => void;
+    curved?: boolean
+  ) => google.maps.Polyline;
+  fitMapToBounds?: (map: google.maps.Map, markers: MapMarker[]) => void;
 }
 
 export const MapControls = ({
@@ -97,6 +98,7 @@ export const MapControls = ({
         markers: markersRef,
         addMarker,
         addLine,
+        fitMapToBounds,
       });
   };
 
@@ -130,7 +132,6 @@ export const MapControls = ({
     map.fitBounds(bounds);
   };
 
-
   const addLine = (
     map: google.maps.Map,
     line: google.maps.LatLngLiteral[],
@@ -142,10 +143,11 @@ export const MapControls = ({
       strokeColor: "#53638e",
       strokeOpacity: 1.0,
       strokeWeight: 2,
-
     });
 
     flightPath.setMap(map);
+
+    return flightPath;
   };
 
   const addMarker = async (
@@ -168,8 +170,8 @@ export const MapControls = ({
     });
 
     if (onMarkerClick) {
-      googleMarker.addListener("click", (e) => {
-        e.stopPropagation();
+      googleMarker.addListener("click", () => {
+        //e.stopPropagation();
         onMarkerClick(map, marker);
       });
     }

@@ -16,7 +16,7 @@ export interface IndicativeQuotesSDK {
   isDirect: boolean;
   price: {
     display: string;
-    raw: string;
+    raw?: number;
     amount: string;
     unit: string;
   };

@@ -1,5 +1,5 @@
 interface LoadingProps {
-  height?: "5" | "8";
+  height?: "8" | "5" | "4" | "3" | "2";
   light?: boolean;
 }
 
@@ -11,9 +11,11 @@ export const Loading = ({
     <>
       <svg
         aria-hidden="true"
-        className={`${height === "5" ? "w-5 h-5" : ""} ${
+        className={`${height === "5" ? "w-5 h-5" : ""}${
           height === "8" ? "w-8 h-8" : ""
-        } ${
+        }${height === "4" ? "w-4 h-4" : ""}${height === "3" ? "w-3 h-3" : ""}${
+          height === "2" ? "w-2 h-2" : ""
+        }${
           light
             ? "text-gray-200 dark:text-blue-800 fill-white"
             : "text-gray-200 dark:text-gray-600 fill-blue-600"

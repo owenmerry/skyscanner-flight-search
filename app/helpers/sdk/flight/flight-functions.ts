@@ -2,7 +2,7 @@ import { getDateTime, getDateTimeFormat, getMinutesToDuration, getTime, getTimeD
 import { hasDirectFlights, isDirectFlights } from "../flight";
 import { convertDeepLink } from "../link";
 import { Place, getPlaceFromEntityId } from "../place";
-import { getPrice } from "../price";
+import { getPrice, getPriceRaw } from "../price";
 import { SkyscannerAPICreateResponse } from "./flight-response";
 import type { Segment, Leg, Carrier, Itinerary } from "./flight-response";
 
@@ -214,6 +214,12 @@ export const getSortingOptions = (
             flight.pricingOptions[0].price.unit
           )) ||
         "",
+      priceRaw:
+        (flight.pricingOptions[0] &&
+          getPriceRaw(
+            flight.pricingOptions[0].price.amount,
+            flight.pricingOptions[0].price.unit
+          )),
       deepLink:
         (flight.pricingOptions[0] &&
           flight.pricingOptions[0].items[0].deepLink) ||
@@ -231,6 +237,10 @@ export const stats = (res: SkyscannerAPICreateResponse): StatsSDK => {
   return {
     total: res.content.stats.itineraries.total.count,
     minPrice: getPrice(
+      res.content.stats.itineraries.total.minPrice.amount,
+      res.content.stats.itineraries.total.minPrice.unit
+    ),
+    minPriceRaw: getPriceRaw(
       res.content.stats.itineraries.total.minPrice.amount,
       res.content.stats.itineraries.total.minPrice.unit
     ),
@@ -260,6 +270,7 @@ export interface FlightSDK {
 
 export interface PriceSDK {
   price: string;
+  priceRaw?: number;
   deepLinks: DeepLinkSDK[];
 }
 export interface DeepLinkSDK {
@@ -274,6 +285,7 @@ export interface DeepLinkSDK {
 export interface StatsSDK {
   total: number;
   minPrice: string;
+  minPriceRaw?: number;
   hasDirectFlights: boolean;
 }
 export interface SegmentSDK {
