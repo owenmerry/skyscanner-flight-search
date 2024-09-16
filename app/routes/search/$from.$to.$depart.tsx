@@ -189,6 +189,7 @@ export default function Search() {
       apiUrl,
       token: sessionToken,
       wait: 1,
+      query: flightQuery,
     });
 
     if ("error" in res) {

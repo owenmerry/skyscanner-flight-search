@@ -87,10 +87,12 @@ export const getFlightLivePoll = async ({
   apiUrl,
   token,
   wait,
+  query,
 }: {
   apiUrl: string;
   token: string;
   wait?: number;
+  query?: QueryPlace;
 }): Promise<SearchSDK | { error: string }> => {
   let error: string = `Sorry, something happened and we couldnt do this (code: 1def)`;
   let search: SearchSDK | null = null;
@@ -99,7 +101,15 @@ export const getFlightLivePoll = async ({
     if (wait) {
       await waitSeconds(wait);
     }
-    const res = await fetch(`${apiUrl}/poll/${token}`);
+    const res = await fetch(
+      `${apiUrl}/poll/${token}${
+        query
+          ? `?from=${query.from.entityId}&to=${query.to.entityId}&depart=${
+              query.depart
+            }${query?.return ? `&return=${query.return}` : ""}`
+          : ""
+      }`
+    );
     const json = await res.json();
 
     if (
@@ -140,7 +150,7 @@ export const getSearchWithCreateAndPoll = async ({
     });
     if ("error" in flightSearch) return;
     sessionToken = flightSearch.sessionToken;
-    
+
     if (flightSearch.status === "RESULT_STATUS_COMPLETE") {
       console.log("got complete", flightSearch.stats.minPrice);
       return flightSearch;
@@ -151,6 +161,7 @@ export const getSearchWithCreateAndPoll = async ({
     apiUrl,
     token: sessionToken || "",
     wait: 5,
+    query,
   });
   //check status
   if ("error" in flightPoll) {

@@ -21,7 +21,7 @@ export const getPriceRaw = (amount: string, unit: string): number | undefined =>
   };
   if (unit === 'PRICE_UNIT_UNSPECIFIED') return undefined;
 
-  const price = (Number(amount) / map[unit]).toFixed(0);
+  const price = (Number(amount) / map[unit]).toFixed(2);
 
   return Number(price);
 };
