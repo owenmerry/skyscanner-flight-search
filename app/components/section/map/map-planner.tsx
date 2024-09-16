@@ -294,9 +294,12 @@ export const MapPlanner = ({
         query: {
           from: stopsBefore[stopsBefore.length - 1],
           to: place,
-          depart: prices.length > 0 ? moment(prices[prices.length - 1].query.depart)
-            .add(days, "days")
-            .format("YYYY-MM-DD") : startDate,
+          depart:
+            prices.length > 0
+              ? moment(prices[prices.length - 1].query.depart)
+                  .add(days, "days")
+                  .format("YYYY-MM-DD")
+              : startDate,
         },
       });
     }
@@ -419,6 +422,7 @@ export const MapPlanner = ({
                   price.query.from.entityId === stop.entityId
               )[0]
             : undefined;
+          const selected = price?.search?.cheapest[0];
           return (
             <div
               key={`${stop.entityId}_${key}`}
@@ -456,14 +460,20 @@ export const MapPlanner = ({
                     ) : (
                       <>
                         <div className="text-slate-400">
-                          {price.price}
-                          <div className="text-sm">
-                          <FaPlaneDeparture className="inline-block mr-1" />
-                            {price.search?.cheapest[0].isDirectFlights
-                              ? "Direct"
-                              : `${price.search?.cheapest[0].legs[0].stops} Stops`}{" "}
-                            {price.search?.cheapest[0].legs[0].departureTime}
-                          </div>
+                          {selected ? (
+                            <>
+                              {price.price}
+                              <div className="text-sm">
+                                <FaPlaneDeparture className="inline-block mr-1" />
+                                {selected.isDirectFlights
+                                  ? "Direct"
+                                  : `${selected.legs[0].stops} Stops`}{" "}
+                                {selected.legs[0].departureTime}
+                              </div>
+                            </>
+                          ) : (
+                            <>No flights found</>
+                          )}
                         </div>
                       </>
                     )}
