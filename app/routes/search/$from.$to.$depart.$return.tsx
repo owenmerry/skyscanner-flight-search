@@ -29,6 +29,7 @@ import { PriceGraph } from "~/components/ui/graph/price-graph";
 import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
 import { actionsSearchForm } from "~/actions/search-form";
 import { actionsSaveFlight } from "~/actions/save-flight";
+import { BarChartHistoryPrice } from "~/components/ui/bar-chart/bar-chart-history-price";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -268,7 +269,8 @@ export default function Search() {
               query={flightQuery}
             />
           </div>
-          <div className="w-full md:ml-2">
+          <div className="w-full md:ml-2 md:max-w-[730px]">
+            <BarChartHistoryPrice query={flightQuery} interval="hour" />
             <FlightResultsDefault
               flights={search && "error" in search ? undefined : search}
               filters={filters}
