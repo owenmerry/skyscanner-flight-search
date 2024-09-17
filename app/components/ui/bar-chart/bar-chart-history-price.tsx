@@ -43,7 +43,7 @@ export const BarChartHistoryPrice = ({
   const chart = buildBarChartData(prices, interval, 100, 50);
 
   return (
-    <div className="border-2 dark:bg-gray-900 bg-white border-slate-100 rounded-lg dark:text-white cursor-pointer dark:border-gray-800 hover:dark:border-gray-700 mb-2">
+    <div className="border-2 dark:bg-gray-900 bg-white border-slate-100 rounded-lg dark:text-white dark:border-gray-800 hover:dark:border-gray-700 mb-2">
       <div className="flex flex-col">
         <div
           className="font-bold text-base text-slate-300 hover:text-slate-200 cursor-pointer py-4 px-4"
