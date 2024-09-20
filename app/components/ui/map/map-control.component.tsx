@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { isMobile } from "react-device-detect";
+import { waitSeconds } from "~/helpers/utils";
 
 export interface MapMarker {
   location: google.maps.LatLngLiteral;

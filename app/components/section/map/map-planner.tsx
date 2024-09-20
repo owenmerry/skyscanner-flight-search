@@ -74,7 +74,6 @@ export const MapPlanner = ({
       : undefined;
   const [stops, setStops] = useState<Place[]>(queryTrip);
   const [prices, setPrices] = useState<TripPrice[]>([]);
-  const pricesRef = useRef<TripPrice[]>([]);
   const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
   const [days, setDays] = useState<number>(queryDays || 3);
@@ -170,7 +169,7 @@ export const MapPlanner = ({
     setSelected(quote[0]);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = ({ startDate }: { startDate: string }) => {
     if (!mapControls) return;
     mapRefs.forEach((mapRef) => {
       if (!("setMap" in mapRef)) return;
@@ -178,15 +177,14 @@ export const MapPlanner = ({
     });
     setMapRefs([]);
     setPrices([]);
-    pricesRef.current = [];
     clearSearch();
-    setLocationsOnStart({ mapControls });
+    setLocationsOnStart({ mapControls, startDate });
   };
-  const handleMapLoaded: MapControlsProps["onMapLoaded"] = (map, options) => {
+  const handleMapLoaded: MapControlsProps["onMapLoaded"] = async (map, options) => {
     if (!options) return;
     const mapControls = { map, controls: options };
     setMapControls(mapControls);
-    setLocationsOnStart({ mapControls });
+    setLocationsOnStart({ mapControls, startDate });
   };
 
   const clearTrip = () => {
@@ -199,7 +197,6 @@ export const MapPlanner = ({
     setMapRefs([]);
     setPrices([]);
     setQueryString([]);
-    pricesRef.current = [];
     clearSearch();
   };
   const clearSearch = () => {
@@ -218,11 +215,13 @@ export const MapPlanner = ({
 
   const setLocationsOnStart = async ({
     mapControls,
+    startDate,
   }: {
     mapControls: {
       map: google.maps.Map;
       controls: MapControlsOptions;
     };
+    startDate: string;
   }) => {
     if (stops.length <= 1) return;
     for (let i = 0; i < stops.length; i++) {
@@ -284,12 +283,12 @@ export const MapPlanner = ({
     clearSearch();
     console.log("check has before", hasStopsBefore);
     if (hasStopsBefore) {
-      console.log(
-        "run price on change",
-        hasStopsBefore,
-        prices,
-        prices[prices.length - 1]
-      );
+      // console.log(
+      //   "run price on change",
+      //   hasStopsBefore,
+      //   prices,
+      //   prices[prices.length - 1]
+      // );
       getPrice({
         query: {
           from: stopsBefore[stopsBefore.length - 1],
@@ -305,38 +304,36 @@ export const MapPlanner = ({
     }
   };
 
-  const getPrice = async ({
-    query,
-    useRefPrices = false,
-  }: {
-    query: QueryPlace;
-    useRefPrices?: boolean;
-  }) => {
-    console.log("run price");
-    console.log(query);
-    console.log(pricesRef.current);
-    const pricesSaved: TripPrice[] = useRefPrices ? pricesRef.current : prices;
-    setPrices([...pricesSaved, { query, loading: true }]);
-    pricesRef.current = [...pricesSaved, { query, loading: true }];
+  const getPrice = async ({ query, useRefPrices = false }) => {
+    setPrices((previous) => [...previous, { query, loading: true }]);
     const search = await skyscanner().flight().createAndPoll({
       apiUrl,
       query,
     });
-    const pricesUpdated = pricesRef.current.map((price) => {
-      if (queryToString(query) === queryToString(price.query)) {
-        return {
-          query: price.query,
-          price: search?.stats.minPrice,
-          search,
-          loading: false,
-        };
-      }
-      return price;
-    });
-    setPrices(pricesUpdated);
-    pricesRef.current = pricesUpdated;
-
-    return pricesUpdated;
+    // const pricesUpdated = pricesRef.current.map((price) => {
+    //   if (queryToString(query) === queryToString(price.query)) {
+    //     return {
+    //       query: price.query,
+    //       price: search?.stats.minPrice,
+    //       search,
+    //       loading: false,
+    //     };
+    //   }
+    //   return price;
+    // });
+    setPrices((previous) => [
+      ...previous.map((price) => {
+        if (queryToString(query) === queryToString(price.query)) {
+          return {
+            query: price.query,
+            price: search?.stats.minPrice,
+            search,
+            loading: false,
+          };
+        }
+        return price;
+      }),
+    ]);
   };
 
   const updateRefs = (
@@ -356,18 +353,16 @@ export const MapPlanner = ({
         updateRefs.push(ref);
       }
     });
-    setMapRefs([...mapRefs, ...updateRefs]);
+    setMapRefs((previous) => [...previous, ...updateRefs]);
   };
 
   const handleDateChange = async (date: DatesQuery) => {
+    console.log(date.depart);
     setStartDate(date.depart);
-    setPrices([]);
-    pricesRef.current = [];
-    await waitSeconds(1);
     let newParams = new URLSearchParams(searchParams);
     newParams.set("startDate", date.depart);
     setSearchParams(newParams);
-    handleRefresh();
+    handleRefresh({ startDate: date.depart });
   };
 
   return (
@@ -397,7 +392,7 @@ export const MapPlanner = ({
           </div>
           <div
             className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-            onClick={handleRefresh}
+            onClick={() => handleRefresh({ startDate })}
           >
             <FaMapMarkerAlt className="pr-2 text-lg" />
             <span>Refresh</span>
@@ -472,7 +467,9 @@ export const MapPlanner = ({
                               </div>
                             </>
                           ) : (
-                            <>No flights found</>
+                            <>
+                              {price.price ? price.price : "No flights found"}
+                            </>
                           )}
                         </div>
                       </>
@@ -526,14 +523,16 @@ export const MapPlanner = ({
         {stops.length > 1 ? (
           <div className="text-2xl font-bold py-2">
             Total: £
-            {prices.reduce(
-              (sum, current) =>
-                sum +
-                (current.search?.stats.minPriceRaw
-                  ? Number(current.search?.stats.minPriceRaw)
-                  : 0),
-              0
-            )}
+            {Number(
+              prices.reduce(
+                (sum, current) =>
+                  sum +
+                  (current.search?.stats.minPriceRaw
+                    ? Number(current.search?.stats.minPriceRaw)
+                    : 0),
+                0
+              )
+            ).toFixed(2)}
           </div>
         ) : (
           ""
