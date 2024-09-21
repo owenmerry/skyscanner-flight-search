@@ -27,7 +27,7 @@ export const JourneyDrawer: React.FC<JourneyDrawer> = ({ children }) => {
         anchor="right"
         open={open}
         onClose={toggleDrawer(false)}
-        ModalProps={{ keepMounted: true }} // Better open performance on mobile
+        ModalProps={{ keepMounted: false }} // Better open performance on mobile
       >
         <div className="dark">
           <div className="min-h-screen w-screen md:w-[50vw] dark:bg-gray-900">

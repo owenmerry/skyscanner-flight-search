@@ -10,18 +10,22 @@ export interface FlightSDK {
   create: ({
     apiUrl,
     query,
+    mode,
   }: {
     apiUrl: string;
     query: QueryPlace;
+    mode?: "complete";
   }) => Promise<SearchSDK | { error: string }>;
   poll: ({
     apiUrl,
     token,
     wait,
+    mode,
   }: {
     apiUrl: string;
     token: string;
     wait?: number;
+    mode?: "complete";
   }) => Promise<SearchSDK | { error: string }>;
   createAndPoll: ({
     apiUrl,
@@ -56,9 +60,11 @@ export const getFlightSDK = (): FlightSDK => {
 export const getFlightLiveCreate = async ({
   apiUrl,
   query,
+  mode,
 }: {
   apiUrl: string;
   query: QueryPlace;
+  mode?: "complete";
 }): Promise<SearchSDK | { error: string }> => {
   let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
   let search: SearchSDK | null = null;
@@ -67,7 +73,9 @@ export const getFlightLiveCreate = async ({
     const res = await fetch(
       `${apiUrl}/create?from=${query.from.entityId}&to=${
         query.to.entityId
-      }&depart=${query.depart}${query?.return ? `&return=${query.return}` : ""}`
+      }&depart=${query.depart}${
+        query?.return ? `&return=${query.return}` : ""
+      }${mode ? `&mode=${mode}` : ""}`
     );
     const json = await res.json();
 
@@ -83,16 +91,60 @@ export const getFlightLiveCreate = async ({
   return search ? search : { error };
 };
 
+export const getFlightLiveCreateLite = async ({
+  apiUrl,
+  query,
+  mode,
+}: {
+  apiUrl: string;
+  query: QueryPlace;
+  mode?: "complete";
+}): Promise<
+  SearchSDK | { error: string } | { status: string; sessionToken: string }
+> => {
+  let error: string = `Sorry, something happened and we couldnt do this (code:1def)`;
+  let search: SearchSDK | null = null;
+
+  try {
+    const res = await fetch(
+      `${apiUrl}/create?from=${query.from.entityId}&to=${
+        query.to.entityId
+      }&depart=${query.depart}${
+        query?.return ? `&return=${query.return}` : ""
+      }${mode ? `&mode=${mode}` : ""}`
+    );
+    const json = await res.json();
+
+    if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+      error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
+    } else {
+      if (mode !== "complete" || json.status === "RESULT_STATUS_COMPLETE") {
+        console.time('sdk check');
+        search = skyscanner().flight().search(json);
+        console.timeEnd('sdk check');
+      } else {
+        search = json;
+      }
+    }
+  } catch (ex) {
+    //error = `Sorry, something happened and we couldnt do this (code:3catch)`;
+  }
+
+  return search ? search : { error };
+};
+
 export const getFlightLivePoll = async ({
   apiUrl,
   token,
   wait,
   query,
+  mode,
 }: {
   apiUrl: string;
   token: string;
   wait?: number;
   query?: QueryPlace;
+  mode?: "complete";
 }): Promise<SearchSDK | { error: string }> => {
   let error: string = `Sorry, something happened and we couldnt do this (code: 1def)`;
   let search: SearchSDK | null = null;
@@ -106,7 +158,9 @@ export const getFlightLivePoll = async ({
         query
           ? `?from=${query.from.entityId}&to=${query.to.entityId}&depart=${
               query.depart
-            }${query?.return ? `&return=${query.return}` : ""}`
+            }${query?.return ? `&return=${query.return}` : ""}${
+              mode ? `&mode=${mode}` : ""
+            }`
           : ""
       }`
     );
@@ -144,14 +198,16 @@ export const getSearchWithCreateAndPoll = async ({
 }): Promise<SearchSDK | undefined> => {
   if (!query) return;
   if (!sessionToken) {
-    const flightSearch = await getFlightLiveCreate({
+    const flightSearch = await getFlightLiveCreateLite({
       apiUrl,
       query,
+      mode: "complete",
     });
     if ("error" in flightSearch) return;
     sessionToken = flightSearch.sessionToken;
 
     if (flightSearch.status === "RESULT_STATUS_COMPLETE") {
+      if (!("cheapest" in flightSearch)) return;
       console.log("got complete", flightSearch.stats.minPrice);
       return flightSearch;
     }
@@ -162,6 +218,7 @@ export const getSearchWithCreateAndPoll = async ({
     token: sessionToken || "",
     wait: 5,
     query,
+    mode: "complete",
   });
   //check status
   if ("error" in flightPoll) {
