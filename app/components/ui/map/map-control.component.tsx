@@ -140,7 +140,7 @@ export const MapControls = ({
   ) => {
     const flightPath = new google.maps.Polyline({
       path: line,
-      geodesic: false,
+      geodesic: true,
       strokeColor: "#53638e",
       strokeOpacity: 1.0,
       strokeWeight: 2,
