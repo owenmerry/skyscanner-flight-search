@@ -26,6 +26,9 @@ import { SearchDrawer } from "~/components/ui/drawer/drawer-search";
 import { FlightResultsDefault } from "../flight-results/flight-results-default";
 import { getDateYYYYMMDDToDisplay } from "~/helpers/date";
 import { DateInputs, DateSelector } from "~/components/ui/date/date-selector";
+import { DradAndDropList } from "~/components/ui/drag-and-drop/drag-and-drop";
+import { moveItemInArray } from "~/helpers/array";
+import { DropResult } from "react-beautiful-dnd";
 
 interface TripPrice {
   query: QueryPlace;
@@ -55,7 +58,7 @@ export const MapPlanner = ({
     map: google.maps.Map;
     controls: MapControlsOptions;
   }>();
-  const [mapRefs, setMapRefs] = useState<
+  const mapRefs = useRef<
     (google.maps.Polyline | google.maps.marker.AdvancedMarkerElement)[]
   >([]);
   const [searchRefs, setSearchRefs] = useState<
@@ -170,17 +173,22 @@ export const MapPlanner = ({
   };
 
   const handleRefresh = ({ startDate }: { startDate: string }) => {
+    console.time("refresh");
     if (!mapControls) return;
-    mapRefs.forEach((mapRef) => {
+    mapRefs.current.forEach((mapRef) => {
       if (!("setMap" in mapRef)) return;
       mapRef.setMap(null);
     });
-    setMapRefs([]);
+    mapRefs.current = [];
     setPrices([]);
     clearSearch();
     setLocationsOnStart({ mapControls, startDate });
+    console.timeEnd("refresh");
   };
-  const handleMapLoaded: MapControlsProps["onMapLoaded"] = async (map, options) => {
+  const handleMapLoaded: MapControlsProps["onMapLoaded"] = async (
+    map,
+    options
+  ) => {
     if (!options) return;
     const mapControls = { map, controls: options };
     setMapControls(mapControls);
@@ -189,12 +197,12 @@ export const MapPlanner = ({
 
   const clearTrip = () => {
     if (!mapControls) return;
-    mapRefs.forEach((mapRef) => {
+    mapRefs.current.forEach((mapRef) => {
       if (!("setMap" in mapRef)) return;
       mapRef.setMap(null);
     });
     setStops([]);
-    setMapRefs([]);
+    mapRefs.current = [];
     setPrices([]);
     setQueryString([]);
     clearSearch();
@@ -255,7 +263,6 @@ export const MapPlanner = ({
               .add(days * (i - 1), "days")
               .format("YYYY-MM-DD"),
           },
-          useRefPrices: true,
         });
       }
     }
@@ -304,11 +311,12 @@ export const MapPlanner = ({
     }
   };
 
-  const getPrice = async ({ query, useRefPrices = false }) => {
+  const getPrice = async ({ query }: { query: QueryPlace }) => {
     setPrices((previous) => [...previous, { query, loading: true }]);
     const search = await skyscanner().flight().createAndPoll({
       apiUrl,
       query,
+      preCall: true,
     });
     // const pricesUpdated = pricesRef.current.map((price) => {
     //   if (queryToString(query) === queryToString(price.query)) {
@@ -353,7 +361,8 @@ export const MapPlanner = ({
         updateRefs.push(ref);
       }
     });
-    setMapRefs((previous) => [...previous, ...updateRefs]);
+    const previous = mapRefs.current;
+    mapRefs.current = [...previous, ...updateRefs];
   };
 
   const handleDateChange = async (date: DatesQuery) => {
@@ -363,6 +372,21 @@ export const MapPlanner = ({
     newParams.set("startDate", date.depart);
     setSearchParams(newParams);
     handleRefresh({ startDate: date.depart });
+  };
+
+  const handleReorderChange = async (result: DropResult) => {
+    if (!result.destination?.droppableId) return;
+
+    const startIndex = result.source.index;
+    const endIndex = result.destination.index;
+    console.log(result);
+    const stopsUpdated = stops;
+    const [removed] = stopsUpdated.splice(startIndex, 1);
+    stopsUpdated.splice(endIndex, 0, removed);
+    console.log(stopsUpdated);
+    setStops(stopsUpdated);
+    setQueryString(stopsUpdated);
+    handleRefresh({ startDate });
   };
 
   return (
@@ -406,107 +430,111 @@ export const MapPlanner = ({
           showReturn={false}
         />
 
-        {stops.map((stop, key) => {
-          const first = key === 0;
-          const last = stops.length - 1 === key;
-          const next = stops[key + 1];
-          const price = next
-            ? prices.filter(
-                (price) =>
-                  price.query.to.entityId === next.entityId &&
-                  price.query.from.entityId === stop.entityId
-              )[0]
-            : undefined;
-          const selected = price?.search?.cheapest[0];
-          return (
-            <div
-              key={`${stop.entityId}_${key}`}
-              className="py-6 px-4 border-b-slate-700 border-b-2 grid grid-cols-3 items-center gap-4"
-            >
-              <div className="flex gap-2 items-center">
-                <MdLocalAirport />
-                <div>
+        <DradAndDropList
+          onItemsReorder={handleReorderChange}
+        >
+          {stops.map((stop, key) => {
+            const first = key === 0;
+            const last = stops.length - 1 === key;
+            const next = stops[key + 1];
+            const price = next
+              ? prices.filter(
+                  (price) =>
+                    price.query.to.entityId === next.entityId &&
+                    price.query.from.entityId === stop.entityId
+                )[0]
+              : undefined;
+            const selected = price?.search?.cheapest[0];
+            return (
+              <div
+                key={`${stop.entityId}_${key}`}
+                className="py-6 px-4 border-b-slate-700 border-b-2 grid grid-cols-3 items-center gap-4"
+              >
+                <div className="flex gap-2 items-center">
+                  <MdLocalAirport />
                   <div>
-                    {stop.name} ({stop.iata}){" "}
-                  </div>
-                  <div className="text-slate-400 text-sm">
-                    {price?.query.depart ? (
-                      <>
-                        {getDateYYYYMMDDToDisplay(
-                          price?.query.depart,
-                          "ddd, D MMM"
-                        )}{" "}
-                        {first || last ? "" : <>({days} days)</>}
-                      </>
-                    ) : (
-                      ""
-                    )}
+                    <div>
+                      {stop.name} ({stop.iata}){" "}
+                    </div>
+                    <div className="text-slate-400 text-sm">
+                      {price?.query.depart ? (
+                        <>
+                          {getDateYYYYMMDDToDisplay(
+                            price?.query.depart,
+                            "ddd, D MMM"
+                          )}{" "}
+                          {first || last ? "" : <>({days} days)</>}
+                        </>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div>
-                {price ? (
-                  <>
-                    {price.loading ? (
-                      <div className="inline-block text-slate-400 text-sm">
-                        {/* <Loading height="5" /> */}
-                        Getting Prices...
-                      </div>
-                    ) : (
-                      <>
-                        <div className="text-slate-400">
-                          {selected ? (
-                            <>
-                              {price.price}
-                              <div className="text-sm">
-                                <FaPlaneDeparture className="inline-block mr-1" />
-                                {selected.isDirectFlights
-                                  ? "Direct"
-                                  : `${selected.legs[0].stops} Stops`}{" "}
-                                {selected.legs[0].departureTime}
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              {price.price ? price.price : "No flights found"}
-                            </>
-                          )}
+                <div>
+                  {price ? (
+                    <>
+                      {price.loading ? (
+                        <div className="inline-block text-slate-400 text-sm">
+                          <Loading height="5" />
+                          {/* Getting Prices... */}
                         </div>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  ""
-                )}
+                      ) : (
+                        <>
+                          <div className="text-slate-400">
+                            {selected ? (
+                              <>
+                                {price.price}
+                                <div className="text-sm">
+                                  <FaPlaneDeparture className="inline-block mr-1" />
+                                  {selected.isDirectFlights
+                                    ? "Direct"
+                                    : `${selected.legs[0].stops} Stops`}{" "}
+                                  {selected.legs[0].departureTime}
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                {price.price ? price.price : "No flights found"}
+                              </>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div>
+                  {price && !price.loading ? (
+                    <>
+                      <SearchDrawer>
+                        <div className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap">
+                          See Search
+                        </div>
+                        <div className="p-9 max-w-screen-md xl:p-9 xl:mx-auto">
+                          <FlightResultsDefault
+                            flights={price.search}
+                            filters={{}}
+                            query={price.query}
+                            apiUrl={apiUrl}
+                            googleApiKey={googleApiKey}
+                            googleMapId={googleMapId}
+                            loading={false}
+                            headerSticky={false}
+                          />
+                        </div>
+                      </SearchDrawer>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
-              <div>
-                {price && !price.loading ? (
-                  <>
-                    <SearchDrawer>
-                      <div className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap">
-                        See Search
-                      </div>
-                      <div className="p-9 max-w-screen-md xl:p-9 xl:mx-auto">
-                        <FlightResultsDefault
-                          flights={price.search}
-                          filters={{}}
-                          query={price.query}
-                          apiUrl={apiUrl}
-                          googleApiKey={googleApiKey}
-                          googleMapId={googleMapId}
-                          loading={false}
-                          headerSticky={false}
-                        />
-                      </div>
-                    </SearchDrawer>
-                  </>
-                ) : (
-                  ""
-                )}
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </DradAndDropList>
 
         <div className="my-2">
           <div className="text-lg font-bold mb-2">

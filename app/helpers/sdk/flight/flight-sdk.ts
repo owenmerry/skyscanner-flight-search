@@ -31,10 +31,14 @@ export interface FlightSDK {
     apiUrl,
     query,
     sessionToken,
+    preCall,
+    preCallWait
   }: {
     apiUrl?: string;
     sessionToken?: string;
     query?: QueryPlace;
+    preCall?: boolean;
+    preCallWait?: number;
   }) => Promise<SearchSDK | undefined>;
 }
 
@@ -106,6 +110,7 @@ export const getFlightLiveCreateLite = async ({
   let search: SearchSDK | null = null;
 
   try {
+
     const res = await fetch(
       `${apiUrl}/create?from=${query.from.entityId}&to=${
         query.to.entityId
@@ -191,13 +196,27 @@ export const getSearchWithCreateAndPoll = async ({
   apiUrl = "",
   query,
   sessionToken = "",
+  preCall = false,
+  preCallWait = 5,
 }: {
   apiUrl?: string;
   sessionToken?: string;
   query?: QueryPlace;
+  preCall?: boolean;
+  preCallWait?: number;
 }): Promise<SearchSDK | undefined> => {
   if (!query) return;
   if (!sessionToken) {
+
+    if(preCall){
+      getFlightLiveCreateLite({
+        apiUrl,
+        query,
+        mode: "complete",
+      });
+      await waitSeconds(preCallWait);
+    }
+
     const flightSearch = await getFlightLiveCreateLite({
       apiUrl,
       query,
