@@ -250,22 +250,21 @@ export const MapPlanner = ({
       );
     }
 
-    for (let i = 0; i < stops.length; i++) {
-      const stop = stops[i];
-      const previous = stops[i - 1];
-      if (previous) {
-        //await waitSeconds(1);
-        getPrice({
-          query: {
-            from: previous,
-            to: stop,
-            depart: moment(startDate)
-              .add(days * (i - 1), "days")
-              .format("YYYY-MM-DD"),
-          },
-        });
-      }
-    }
+    // for (let i = 0; i < stops.length; i++) {
+    //   const stop = stops[i];
+    //   const previous = stops[i - 1];
+    //   if (previous) {
+    //     getPrice({
+    //       query: {
+    //         from: previous,
+    //         to: stop,
+    //         depart: moment(startDate)
+    //           .add(days * (i - 1), "days")
+    //           .format("YYYY-MM-DD"),
+    //       },
+    //     });
+    //   }
+    // }
   };
   const handleLocationChange = async (place: Place, previousStop?: Place) => {
     if (!mapControls) return;
@@ -289,26 +288,20 @@ export const MapPlanner = ({
     setQueryString([...stops, place]);
     clearSearch();
     console.log("check has before", hasStopsBefore);
-    if (hasStopsBefore) {
-      // console.log(
-      //   "run price on change",
-      //   hasStopsBefore,
-      //   prices,
-      //   prices[prices.length - 1]
-      // );
-      getPrice({
-        query: {
-          from: stopsBefore[stopsBefore.length - 1],
-          to: place,
-          depart:
-            prices.length > 0
-              ? moment(prices[prices.length - 1].query.depart)
-                  .add(days, "days")
-                  .format("YYYY-MM-DD")
-              : startDate,
-        },
-      });
-    }
+    // if (hasStopsBefore) {
+    //   getPrice({
+    //     query: {
+    //       from: stopsBefore[stopsBefore.length - 1],
+    //       to: place,
+    //       depart:
+    //         prices.length > 0
+    //           ? moment(prices[prices.length - 1].query.depart)
+    //               .add(days, "days")
+    //               .format("YYYY-MM-DD")
+    //           : startDate,
+    //     },
+    //   });
+    // }
   };
 
   const getPrice = async ({ query }: { query: QueryPlace }) => {
