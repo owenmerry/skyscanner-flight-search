@@ -144,6 +144,7 @@ export const MarketingNearby = ({
                           <img
                             src={location.details.rating_image_url}
                             alt="tripadvisor rating"
+                            loading="lazy"
                           />
                         ) : (
                           ""

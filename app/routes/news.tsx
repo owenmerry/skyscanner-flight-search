@@ -20,8 +20,7 @@ export const loader: LoaderFunction = async () => {
 
 export default function Index() {
   const { apiUrl, backgroundImage } = useLoaderData();
-  const randomHeroImage =
-    backgroundImage[0];
+  const randomHeroImage = backgroundImage[0];
 
   return (
     <Layout selectedUrl="/news">
@@ -48,6 +47,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2024-03-13 at 21.34.52.png"
+            loading="lazy"
           />
         </div>
 
@@ -58,6 +58,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2024-03-13 at 21.33.26.png"
+            loading="lazy"
           />
         </div>
 
@@ -68,6 +69,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2024-03-13 at 21.30.17.png"
+            loading="lazy"
           />
         </div>
 
@@ -78,6 +80,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2024-02-07 at 21.36.37.png"
+            loading="lazy"
           />
         </div>
 
@@ -90,6 +93,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2024-02-07 at 19.07.25.png"
+            loading="lazy"
           />
         </div>
 
@@ -101,10 +105,12 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-10-02 at 17.58.45.png"
+            loading="lazy"
           />
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-10-02 at 17.27.38.png"
+            loading="lazy"
           />
         </div>
 
@@ -116,6 +122,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-09-27 at 18.50.00.png"
+            loading="lazy"
           />
         </div>
 
@@ -126,6 +133,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-09-27 at 18.39.10.png"
+            loading="lazy"
           />
         </div>
 
@@ -137,6 +145,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-07-29 at 20.10.54.png"
+            loading="lazy"
           />
         </div>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
@@ -144,6 +153,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-07-29 at 20.12.18.png"
+            loading="lazy"
           />
         </div>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
@@ -153,6 +163,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-07-28 at 19.01.42.png"
+            loading="lazy"
           />
         </div>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
@@ -160,6 +171,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-07-28 at 18.03.48.png"
+            loading="lazy"
           />
         </div>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
@@ -167,6 +179,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot 2023-07-28 at 13.33.22.png"
+            loading="lazy"
           />
         </div>
         <div className="border-slate-200 dark:border-slate-800 p-4 my-4 border-b-2">
@@ -176,6 +189,7 @@ export default function Index() {
           <img
             className="object-scale-down my-4"
             src="/images/news/Screenshot%202023-07-27%20at%2000.46.50.png"
+            loading="lazy"
           />
         </div>
       </div>
