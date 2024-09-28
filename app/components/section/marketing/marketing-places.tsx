@@ -91,7 +91,7 @@ export const MarketingPlaces = ({
                       <div
                         className="flex-1 rounded-t-lg h-32 md:rounded-none md:rounded-s-lg bg-cover bg-center"
                         style={{
-                          backgroundImage: `url(${childPlace.place.images[0]})`,
+                          backgroundImage: `url(${childPlace.place.images[0]}&w=250)`,
                         }}
                       ></div>
                     ) : (
