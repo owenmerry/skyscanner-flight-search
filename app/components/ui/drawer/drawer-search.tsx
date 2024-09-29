@@ -4,9 +4,10 @@ import { useState } from "react";
 
 interface JourneyDrawer {
   children: ReactNode[];
+  keepMounted?: boolean;
 }
 
-export const SearchDrawer: React.FC<JourneyDrawer> = ({ children }) => {
+export const SearchDrawer: React.FC<JourneyDrawer> = ({ children, keepMounted = true }) => {
   const [open, setOpen] = useState(false);
   type ToggleDrawer = (
     open: boolean
@@ -27,7 +28,7 @@ export const SearchDrawer: React.FC<JourneyDrawer> = ({ children }) => {
         anchor="right"
         open={open}
         onClose={toggleDrawer(false)}
-        ModalProps={{ keepMounted: true }} // Better open performance on mobile
+        ModalProps={{ keepMounted }} // Better open performance on mobile
       >
         <div className="dark">
           <div className="min-h-screen w-screen md:w-[70vw] dark:bg-gray-900">

@@ -1,5 +1,5 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   MapControls,
   MapControlsOptions,
@@ -29,15 +29,16 @@ import { DateInputs, DateSelector } from "~/components/ui/date/date-selector";
 import { DradAndDropList } from "~/components/ui/drag-and-drop/drag-and-drop";
 import { moveItemInArray } from "~/helpers/array";
 import { DropResult } from "react-beautiful-dnd";
+import { PlannerStop } from "./components/stop.component";
 
-interface TripPrice {
+export interface TripPrice {
   query: QueryPlace;
   price?: string;
   search?: SearchSDK;
   loading: boolean;
 }
 
-interface MapPlannerProps {
+export interface MapPlannerProps {
   googleMapId: string;
   googleApiKey: string;
   to?: Place;
@@ -277,7 +278,7 @@ export const MapPlanner = ({
       mapControls,
       handleMarkerClick: () => {},
     });
-    if (mapControls.controls.fitMapToBounds) {
+    if (mapControls.controls.fitMapToBounds && stops.length > 0) {
       mapControls.controls.fitMapToBounds(
         mapControls.map,
         placesToMarkers([...stops, place])
@@ -423,9 +424,7 @@ export const MapPlanner = ({
           showReturn={false}
         />
 
-        <DradAndDropList
-          onItemsReorder={handleReorderChange}
-        >
+        <DradAndDropList onItemsReorder={handleReorderChange}>
           {stops.map((stop, key) => {
             const first = key === 0;
             const last = stops.length - 1 === key;
@@ -439,92 +438,19 @@ export const MapPlanner = ({
               : undefined;
             const selected = price?.search?.cheapest[0];
             return (
-              <div
-                key={`${stop.entityId}_${key}`}
-                className="py-6 px-4 border-b-slate-700 border-b-2 grid grid-cols-3 items-center gap-4"
-              >
-                <div className="flex gap-2 items-center">
-                  <MdLocalAirport />
-                  <div>
-                    <div>
-                      {stop.name} ({stop.iata}){" "}
-                    </div>
-                    <div className="text-slate-400 text-sm">
-                      {price?.query.depart ? (
-                        <>
-                          {getDateYYYYMMDDToDisplay(
-                            price?.query.depart,
-                            "ddd, D MMM"
-                          )}{" "}
-                          {first || last ? "" : <>({days} days)</>}
-                        </>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  {price ? (
-                    <>
-                      {price.loading ? (
-                        <div className="inline-block text-slate-400 text-sm">
-                          <Loading height="5" />
-                          {/* Getting Prices... */}
-                        </div>
-                      ) : (
-                        <>
-                          <div className="text-slate-400">
-                            {selected ? (
-                              <>
-                                {price.price}
-                                <div className="text-sm">
-                                  <FaPlaneDeparture className="inline-block mr-1" />
-                                  {selected.isDirectFlights
-                                    ? "Direct"
-                                    : `${selected.legs[0].stops} Stops`}{" "}
-                                  {selected.legs[0].departureTime}
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                {price.price ? price.price : "No flights found"}
-                              </>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </div>
-                <div>
-                  {price && !price.loading ? (
-                    <>
-                      <SearchDrawer>
-                        <div className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap">
-                          See Search
-                        </div>
-                        <div className="p-9 max-w-screen-md xl:p-9 xl:mx-auto">
-                          <FlightResultsDefault
-                            flights={price.search}
-                            filters={{}}
-                            query={price.query}
-                            apiUrl={apiUrl}
-                            googleApiKey={googleApiKey}
-                            googleMapId={googleMapId}
-                            loading={false}
-                            headerSticky={false}
-                          />
-                        </div>
-                      </SearchDrawer>
-                    </>
-                  ) : (
-                    ""
-                  )}
-                </div>
-              </div>
+              <React.Fragment key={`${stop.entityId}_${key}`}>
+                <PlannerStop
+                  apiUrl={apiUrl}
+                  days={days}
+                  first={first}
+                  last={last}
+                  googleApiKey={googleApiKey}
+                  googleMapId={googleMapId}
+                  price={price}
+                  selected={selected}
+                  stop={stop}
+                />
+              </React.Fragment>
             );
           })}
         </DradAndDropList>

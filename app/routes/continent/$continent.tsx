@@ -91,7 +91,7 @@ export default function SEOAnytime() {
         />
         <MarketingDeals from={from} search={search} to={continent} />
         <MarketingGraph search={search} />
-        <MarketingNearby search={search} to={continent} apiUrl={apiUrl} />
+        {/* <MarketingNearby search={search} to={continent} apiUrl={apiUrl} /> */}
         <MarketingMap
           search={search}
           to={continent}

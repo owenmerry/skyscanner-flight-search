@@ -50,20 +50,20 @@ export const MarketingMap = ({
               </div>
               <div class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-blue-700 "></div>
               </div>`,
-              link: `/search/${flight.query.from.iata}/${flight.query.to.iata}/${flight.query.depart}/${flight.query.return}`,
+          link: `/search/${flight.query.from.iata}/${flight.query.to.iata}/${flight.query.depart}/${flight.query.return}`,
           icon: "\ue539",
         });
       }
     }
 
     //from
-    markers.push({
-      location: {
-        lat: from.coordinates.latitude,
-        lng: from.coordinates.longitude,
-      },
-      label: `<div class='rounded-full w-5 h-5 bg-pink-600 border-white border-2 shadow animate-bounce'></div>`,
-    });
+    // markers.push({
+    //   location: {
+    //     lat: from.coordinates.latitude,
+    //     lng: from.coordinates.longitude,
+    //   },
+    //   label: `<div class='rounded-full w-5 h-5 bg-pink-600 border-white border-2 shadow animate-bounce'></div>`,
+    // });
 
     return markers;
   };
@@ -112,7 +112,8 @@ export const MarketingMap = ({
               }}
               markers={markers}
               zoom={level === "everywhere" ? 5 : 0}
-              fitLocationAddress={to ? `${to?.name}${getAllParents(from.parentId)[0] ? `, ${parents[0]?.name}` : ''}` : `${getAllParents(from.parentId)[0]}`}
+              isFitZoomToMarkers
+              //fitLocationAddress={to ? `${to?.name}${getAllParents(from.parentId)[0] ? `, ${parents[0]?.name}` : ''}` : `${getAllParents(from.parentId)[0]}`}
             />
           </Wrapper>
         </div>
