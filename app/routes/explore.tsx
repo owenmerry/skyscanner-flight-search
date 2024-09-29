@@ -16,6 +16,7 @@ import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import moment from "moment";
 import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { AllCountries } from "~/components/section/page/explore";
+import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -27,7 +28,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     apiUrl,
     query: `Summer Holidays`,
   });
-  const fromCookie = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON");
+  const fromCookie = cookie.from
+    ? JSON.parse(cookie.from)
+    : getPlaceFromIata("LON");
   const from = fromCookie || getPlaceFromIata("LON");
   const countries = skyscanner().geo().countries;
   const indicativeSearch = await skyscanner().indicative({
@@ -37,10 +40,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       to: "anywhere",
       tripType: "return",
     },
-    month: Number(moment().format('MM')),
-    year: Number(moment().format('YYYY')),
-    endMonth: Number(moment().add(10,'months').format('MM')),
-    endYear: Number(moment().add(10,'months').format('YYYY')),
+    month: Number(moment().format("MM")),
+    year: Number(moment().format("YYYY")),
+    endMonth: Number(moment().add(10, "months").format("MM")),
+    endYear: Number(moment().add(10, "months").format("YYYY")),
   });
   const search = indicativeSearch.quotes;
 
@@ -64,7 +67,7 @@ export default function SEOAnytime() {
     googleApiKey,
     countries,
     apiUrl,
-  } : {
+  }: {
     from: Place;
     exploreImages: string[];
     search: IndicativeQuotesSDK[];
@@ -76,25 +79,21 @@ export default function SEOAnytime() {
 
   return (
     <Layout selectedUrl="/explore" apiUrl={apiUrl}>
-      <div className="relative">
-        <div
-          className="absolute top-0 left-0 w-full bg-top bg-cover bg-no-repeat h-[60rem]"
-          style={{ backgroundImage: `url(${exploreImages[0]})` }}
-        >
-          <div className="opacity-80 bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>
-          <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>
-        </div>
-      </div>
+      <MarketingBackgroundImage image={exploreImages[0]} />
       <div className="text-center relative z-10">
         <MarketingHeroExplore />
         <MarketingGallery images={exploreImages} />
         <MarketingPlaces url="/continent/" from={from} search={search} />
         <MarketingDeals from={from} search={search} />
         <MarketingGraph search={search} />
-        <MarketingMap search={search} from={from} googleMapId={googleMapId} googleApiKey={googleApiKey} level="everywhere" />
-        <AllCountries
-          countries={countries}
+        <MarketingMap
+          search={search}
+          from={from}
+          googleMapId={googleMapId}
+          googleApiKey={googleApiKey}
+          level="everywhere"
         />
+        <AllCountries countries={countries} />
       </div>
     </Layout>
   );

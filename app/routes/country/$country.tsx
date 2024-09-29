@@ -13,9 +13,9 @@ import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-fu
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import moment from "moment";
-import { MarketingNearby } from "~/components/section/marketing/marketing-nearby";
 import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { MarketingWeather } from "~/components/section/marketing/marketing-weather";
+import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -29,14 +29,14 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     apiUrl,
     query: {
       from: from.entityId,
-      to: country ? country.entityId : 'anywhere',
+      to: country ? country.entityId : "anywhere",
       tripType: "return",
     },
-    groupType: 'month',
-    month: Number(moment().format('MM')),
-    year: Number(moment().format('YYYY')),
-    endMonth: Number(moment().add(10,'months').format('MM')),
-    endYear: Number(moment().add(10,'months').format('YYYY')),
+    groupType: "month",
+    month: Number(moment().format("MM")),
+    year: Number(moment().format("YYYY")),
+    endMonth: Number(moment().add(10, "months").format("MM")),
+    endYear: Number(moment().add(10, "months").format("YYYY")),
   });
   const search = indicativeSearch.quotes;
 
@@ -63,29 +63,33 @@ export default function SEOAnytime() {
     from: Place;
     search: IndicativeQuotesSDK[];
     apiUrl: string;
-    googleMapId:string;
-    googleApiKey:string;
+    googleMapId: string;
+    googleApiKey: string;
   } = useLoaderData();
 
   return (
     <Layout selectedUrl="/explore" apiUrl={apiUrl}>
-      <div className="relative">
-        <div className="absolute top-0 left-0 w-full bg-top bg-cover bg-no-repeat h-[60rem]"
-        style={{backgroundImage: `url(${country.images[0]})`}}>
-           <div className="opacity-80 bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0"></div>
-           <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[70%] z-0"></div>
-        </div>
-      </div>
+      <MarketingBackgroundImage image={country.images[0]} />
       <div className="text-center relative z-10">
         <MarketingHero place={country} />
         <MarketingGallery images={country.images} />
-        <MarketingPlaces place={country} url={`/city/${country.slug}/`} from={from} search={search} />
+        <MarketingPlaces
+          place={country}
+          url={`/city/${country.slug}/`}
+          from={from}
+          search={search}
+        />
         <MarketingDeals from={from} search={search} to={country} level="city" />
         <MarketingGraph search={search} />
-        <MarketingMap search={search} to={country} from={from} googleMapId={googleMapId} googleApiKey={googleApiKey} />
+        <MarketingMap
+          search={search}
+          to={country}
+          from={from}
+          googleMapId={googleMapId}
+          googleApiKey={googleApiKey}
+        />
         <MarketingWeather to={country} apiUrl={apiUrl} />
       </div>
-        
     </Layout>
   );
 }
