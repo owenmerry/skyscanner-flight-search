@@ -125,7 +125,7 @@ export const PlannerStop = ({
       </div>
       {showCity ? (
         <div className="py-4">
-          <div className="pb-2 text-sm text-slate-500">[coming soon, still working on it 👷‍♂️]</div>
+          <div className="pb-2 text-sm text-slate-500">Coming soon, still working on it 👷‍♂️</div>
           <div className="pb-2">Explore {stop.name}</div>
           <LocationPlaces />
         </div>
