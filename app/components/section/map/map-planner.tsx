@@ -30,6 +30,7 @@ import { DradAndDropList } from "~/components/ui/drag-and-drop/drag-and-drop";
 import { moveItemInArray } from "~/helpers/array";
 import { DropResult } from "react-beautiful-dnd";
 import { PlannerStop } from "./components/stop.component";
+import { MapDrawer } from "~/components/ui/drawer/drawer-map";
 
 export interface TripPrice {
   query: QueryPlace;
@@ -84,6 +85,7 @@ export const MapPlanner = ({
   const [startDate, setStartDate] = useState<string>(
     queryStartDate || "2024-12-01"
   );
+  const [showDetails, setShowDetails] = useState<boolean>(true);
   const parents = to ? getAllParents(to.parentId) : [];
   const getMarkers = (search: IndicativeQuotesSDK[]): Markers[] => {
     const markers: Markers[] = [];
@@ -385,7 +387,7 @@ export const MapPlanner = ({
 
   return (
     <div className="md:grid grid-cols-10">
-      <div className="p-4 col-span-4">
+      <div className={`p-4 col-span-4 ${!showDetails ? 'hidden md:block' : ''}`}>
         <div className="flex overflow-y-scroll scrollbar-hide gap-2 py-3">
           <div
             className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
@@ -548,23 +550,25 @@ export const MapPlanner = ({
         ) : (
           ""
         )}
-        <Wrapper apiKey={googleApiKey}>
-          <MapControls
-            googleMapId={googleMapId}
-            center={{
-              lat: to ? to.coordinates.latitude : from.coordinates.latitude,
-              lng: to ? to.coordinates.longitude : from.coordinates.longitude,
-            }}
-            height="100vh"
-            zoom={level === "everywhere" ? 5 : 0}
-            fitAddress={
-              to
-                ? `${to?.name}${parents[0] ? `, ${parents[0].name}` : ""}`
-                : `${getAllParents(from.parentId)[0]}`
-            }
-            onMapLoaded={(map, options) => handleMapLoaded(map, options)}
-          />
-        </Wrapper>
+        <MapDrawer onlyMobile onChange={(open) => setShowDetails(!open)}>
+          <Wrapper apiKey={googleApiKey}>
+            <MapControls
+              googleMapId={googleMapId}
+              center={{
+                lat: to ? to.coordinates.latitude : from.coordinates.latitude,
+                lng: to ? to.coordinates.longitude : from.coordinates.longitude,
+              }}
+              height="100vh"
+              zoom={level === "everywhere" ? 5 : 0}
+              fitAddress={
+                to
+                  ? `${to?.name}${parents[0] ? `, ${parents[0].name}` : ""}`
+                  : `${getAllParents(from.parentId)[0]}`
+              }
+              onMapLoaded={(map, options) => handleMapLoaded(map, options)}
+            />
+          </Wrapper>
+        </MapDrawer>
       </div>
     </div>
   );

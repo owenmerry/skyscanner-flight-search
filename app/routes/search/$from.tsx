@@ -349,7 +349,7 @@ export default function Search() {
                     : `border-slate-600 bg-slate-800 hover:border-slate-500`
                 } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
               >
-               November
+                November
               </div>
             </>
           ) : (
@@ -367,160 +367,169 @@ export default function Search() {
           )}
         </div>
         <div className="">
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {searchFiltered.map((deal, key) => {
-            if (key + 1 > 41) return "";
-            return (
-              <div key={deal.id} className="">
-                <a
-                  href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
-                  className="group/link relative block rounded-lg shadow md:flex-row md:max-w-xl border border-slate-700 bg-slate-800 hover:border-slate-600 transition"
-                >
-                  <div
-                    className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
-                    style={{
-                      backgroundImage: `url(${
-                        deal.country.images[key % deal.country.images.length]
-                      }&w=500)`,
-                    }}
-                  ></div>
-                  <div className="opacity-80 group-hover/link:opacity-60 transition ease-in bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
-                  <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[80%] z-0 rounded-lg"></div>
-                  <div className="relative z-10 p-4 leading-normal">
-                    <div className="flex gap-2 justify-between mb-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-left">
-                      <div className="truncate">
-                        {deal.city?.name || deal.query.to.name},{" "}
-                        {deal.country.name}
-                      </div>
-                      <div className="whitespace-nowrap">{deal.tripDays}</div>
-                    </div>
-                    {/* ---------- */}
-                    <div className="grid grid-cols-3 mb-6 place-items-center">
-                      <div className="col-span-2">
-                        <div className="text-[1.1rem] text-white font-bold">
-                          {moment(deal.legs.depart.dateString).format(
-                            "ddd, MMM Do"
-                          )}
-                        </div>
-                        <div className="text-xs mt-2 truncate">
-                          {deal.from.iata} - {deal.to.iata} with{" "}
-                          {deal.legs.depart.carrier.name}
-                        </div>
-                      </div>
-                      <div>{deal.isDirect ? "Direct" : "1 Stop"}</div>
-                    </div>
-                    {/* ---------- */}
-                    {/* ---------- */}
-                    <div className="grid grid-cols-3 place-items-center mb-4">
-                      <div className="col-span-2">
-                        <div className="text--[1.1rem] text-white font-bold">
-                          {moment(deal.legs.return.dateString).format(
-                            "ddd, MMM Do"
-                          )}
-                        </div>
-                        <div className="text-xs mt-2 truncate">
-                          {deal.to.iata} - {deal.from.iata} with{" "}
-                          {deal.legs.return.carrier.name}
-                        </div>
-                      </div>
-                      <div>{deal.isDirect ? "Direct" : "1 Stop"}</div>
-                    </div>
-                    {/* ---------- */}
-                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-right">
-                      {deal.price.display.split(".")[0]}{" "}
-                      <span className="text-sm">Return</span>
-                    </h5>
-                  </div>
-                </a>
-              </div>
-            );
-          })}
-          {loading ? (
-            <>
-              {Array.from(Array(21)).map((e, k) => (
-                <div key={k} className="">
-                  <div className="group/link relative block rounded-lg shadow md:flex-row md:max-w-xl border border-slate-700 bg-slate-800 hover:border-slate-600 transition">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {searchFiltered.map((deal, key) => {
+              if (key + 1 > 41) return "";
+              return (
+                <div key={deal.id} className="">
+                  <a
+                    href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
+                    className="group/link relative block rounded-lg shadow md:flex-row md:max-w-xl border border-slate-700 bg-slate-800 hover:border-slate-600 transition"
+                  >
+                    <div
+                      className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
+                      style={{
+                        backgroundImage: `url(${
+                          deal.country.images[key % deal.country.images.length]
+                        }&w=500)`,
+                      }}
+                    ></div>
+                    <div className="opacity-80 group-hover/link:opacity-60 transition ease-in bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
+                    <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[80%] z-0 rounded-lg"></div>
                     <div className="relative z-10 p-4 leading-normal">
-                      <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        <Skeleton />
-                      </h5>
+                      <div className="flex gap-2 justify-between mb-4 text-xl font-bold tracking-tight text-gray-900 dark:text-white text-left">
+                        <div className="truncate">
+                          {deal.city?.name || deal.query.to.name},{" "}
+                          {deal.country.name}
+                        </div>
+                        <div className="whitespace-nowrap">{deal.tripDays}</div>
+                      </div>
                       {/* ---------- */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="">
-                          <div className=" text-white font-bold">
-                            <Skeleton />
+                      <div className="grid grid-cols-3 mb-6 place-items-center">
+                        <div className="col-span-2">
+                          <div className="text-[1.1rem] text-white font-bold">
+                            {moment(deal.legs.depart.dateString).format(
+                              "ddd, MMM Do"
+                            )}
                           </div>
-                          <div className="mt-2">
-                            <Skeleton />
+                          <div className="text-xs mt-2 truncate">
+                            {deal.from.iata} - {deal.to.iata} with{" "}
+                            {deal.legs.depart.carrier.name}
                           </div>
                         </div>
-                        <div>
-                          <Skeleton />
-                        </div>
+                        <div>{deal.isDirect ? "Direct" : "1 Stop"}</div>
                       </div>
                       {/* ---------- */}
                       {/* ---------- */}
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="">
-                          <div className=" text-white font-bold">
-                            <Skeleton />
+                      <div className="grid grid-cols-3 place-items-center mb-4">
+                        <div className="col-span-2">
+                          <div className="text--[1.1rem] text-white font-bold">
+                            {moment(deal.legs.return.dateString).format(
+                              "ddd, MMM Do"
+                            )}
                           </div>
-                          <div className="mt-2">
-                            <Skeleton />
+                          <div className="text-xs mt-2 truncate">
+                            {deal.to.iata} - {deal.from.iata} with{" "}
+                            {deal.legs.return.carrier.name}
                           </div>
                         </div>
-                        <div>
-                          <Skeleton />
-                        </div>
+                        <div>{deal.isDirect ? "Direct" : "1 Stop"}</div>
                       </div>
                       {/* ---------- */}
-                      <h5 className="mb-2 text-2xl text-right font-bold tracking-tight text-gray-900 dark:text-white">
-                        <div className="flex justify-end">
-                          <Skeleton width="40%" />
-                        </div>
+                      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-right">
+                        {deal.price.display.split(".")[0]}{" "}
+                        <span className="text-sm">Return</span>
                       </h5>
                     </div>
+                  </a>
+                </div>
+              );
+            })}
+            {loading ? (
+              <>
+                {Array.from(Array(21)).map((e, k) => (
+                  <div key={k} className="">
+                    <div className="group/link relative block rounded-lg shadow md:flex-row md:max-w-xl border border-slate-700 bg-slate-800 hover:border-slate-600 transition">
+                      <div className="relative z-10 p-4 leading-normal">
+                        <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                          <Skeleton />
+                        </h5>
+                        {/* ---------- */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="">
+                            <div className=" text-white font-bold">
+                              <Skeleton />
+                            </div>
+                            <div className="mt-2">
+                              <Skeleton />
+                            </div>
+                          </div>
+                          <div>
+                            <Skeleton />
+                          </div>
+                        </div>
+                        {/* ---------- */}
+                        {/* ---------- */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="">
+                            <div className=" text-white font-bold">
+                              <Skeleton />
+                            </div>
+                            <div className="mt-2">
+                              <Skeleton />
+                            </div>
+                          </div>
+                          <div>
+                            <Skeleton />
+                          </div>
+                        </div>
+                        {/* ---------- */}
+                        <h5 className="mb-2 text-2xl text-right font-bold tracking-tight text-gray-900 dark:text-white">
+                          <div className="flex justify-end">
+                            <Skeleton width="40%" />
+                          </div>
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+          {!loading && searchFiltered.length === 0 ? (
+            <div className="border border-slate-700 bg-slate-800 rounded-lg p-6">
+              <h5 className="text-2xl font-bold pb-4">No Results Found</h5>
+              {filters.length > 0 ? (
+                <div>
+                  Try changing your filters as you didnt get any results with
+                  this trip{" "}
+                  <div
+                    className="underline cursor-pointer pt-4"
+                    onClick={() => setFilters([])}
+                  >
+                    Remove Filters
                   </div>
                 </div>
-              ))}
-            </>
+              ) : (
+                <div>
+                  Try a differnt location as there is'nt any results for this
+                  search.
+                </div>
+              )}
+              <p></p>
+            </div>
           ) : (
             ""
           )}
         </div>
-        {!loading && searchFiltered.length === 0 ? (
-          <div className="border border-slate-700 bg-slate-800 rounded-lg p-6">
-            <h5 className="text-2xl font-bold pb-4">No Results Found</h5>
-            {filters.length > 0 ? (
-              <div>
-                Try changing your filters as you didnt get any results with this
-                trip{" "}
-                <div
-                  className="underline cursor-pointer pt-4"
-                  onClick={() => setFilters([])}
-                >
-                  Remove Filters
-                </div>
-              </div>
-            ) : (
-              <div>
-                Try a differnt location as there is'nt any results for this
-                search.
-              </div>
-            )}
-            <p></p>
-          </div>
-        ) : (
-          ""
-        )}
-        </div>
       </div>
-        {!loading && search ? (
-          <MapDrawer><div>
-            <MapExplore level="everywhere" from={from} googleApiKey={googleApiKey} googleMapId={googleMapId} search={searchFiltered}  />
-            </div></MapDrawer>
-        ) : ''}
+      {!loading && search ? (
+        <MapDrawer>
+          <div>
+            <MapExplore
+              level="everywhere"
+              from={from}
+              googleApiKey={googleApiKey}
+              googleMapId={googleMapId}
+              search={searchFiltered}
+            />
+          </div>
+        </MapDrawer>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

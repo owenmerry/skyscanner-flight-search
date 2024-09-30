@@ -129,7 +129,7 @@ export const PlannerStop = ({
             Coming soon, still working on it 👷‍♂️
           </div>
           <div className="pb-2">Explore {stop.name}</div>
-          <LocationPlaces apiUrl={apiUrl} />
+          <LocationPlaces apiUrl={apiUrl} place={stop} />
         </div>
       ) : (
         ""

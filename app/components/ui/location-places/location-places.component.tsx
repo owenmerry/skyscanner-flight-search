@@ -3,7 +3,11 @@ import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
 
 import { searchAutoSuggest } from "~/helpers/sdk/autosuggest";
 import type { Place as PlaceAutosuggest } from "~/helpers/sdk/autosuggest";
-import { Prediction } from "~/helpers/sdk/google-autosuggest/google-autosuggest-response";
+import {
+  GoogleAutosuggestResponse,
+  PlacePrediction,
+  Prediction,
+} from "~/helpers/sdk/google-autosuggest/google-autosuggest-response";
 import type { Place } from "~/helpers/sdk/place";
 import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
@@ -13,6 +17,7 @@ interface LocationProps {
   apiUrl?: string;
   defaultValue?: string;
   clearOnSelect?: boolean;
+  place?: Place;
   onChange?: (value: string) => void;
   onSelect?: (value: string, iataCode: string, place: Place) => void;
 }
@@ -24,9 +29,10 @@ export const LocationPlaces = ({
   clearOnSelect = false,
   onChange,
   onSelect,
+  place,
 }: LocationProps): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState(defaultValue);
-  const [predictions, setPredictions] = useState<google.maps.places.AutocompletePrediction[]>([]);
+  const [predictions, setPredictions] = useState<PlacePrediction[]>([]);
   const [showAutoSuggest, setShowAutoSuggest] = useState(false);
   const refAutoSuggest = useOutsideClick(() => {
     setShowAutoSuggest(false);
@@ -39,9 +45,17 @@ export const LocationPlaces = ({
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     setSearchTerm(inputValue);
+    const locationBias = place
+      ? {
+          latitude: place.coordinates.latitude,
+          longitude: place.coordinates.longitude,
+          radius: 500,
+        }
+      : undefined;
     const autosuggest = await skyscanner().services.google.autosuggest({
       apiUrl,
       search: inputValue,
+      ...locationBias,
     });
     if ("error" in autosuggest) return;
     console.log(autosuggest.suggestions);
@@ -97,17 +111,26 @@ export const LocationPlaces = ({
       {showAutoSuggest && predictions.length > 0 && (
         <div ref={refAutoSuggest} className="relative z-50">
           <ul className="bg-white border border-slate-100 w-full mt-2 absolute dark:bg-slate-800 dark:border-slate-600">
-            {predictions.map((prediction, key) => (
+            {predictions.map((prediction) => (
               <li
-                key={prediction.place_id}
-                onClick={() => handleSelect(prediction.place_id)}
+                key={prediction.placePrediction.placeId}
+                onClick={() => handleSelect(prediction.placePrediction.placeId)}
                 className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-slate-100 relative cursor-pointer hover:bg-slate-100  dark:hover:bg-slate-900 dark:border-slate-600"
               >
                 <div className="text-left">
-                  <div>{prediction.structured_formatting.main_text}</div>
-                  <div className="text-xs">{prediction.structured_formatting.secondary_text}</div>
+                  <div>
+                    {prediction.placePrediction.text.text.split(",")[0]}
+                  </div>
+                  <div className="text-xs truncate">
+                    {
+                      prediction.placePrediction.structuredFormat.secondaryText
+                        ?.text
+                    }
+                  </div>
                 </div>
-                <div className="text-right text-xs self-center">{prediction.types[0]}</div>
+                <div className="text-right text-xs self-center">
+                  {prediction.placePrediction.types[0]}
+                </div>
               </li>
             ))}
           </ul>
