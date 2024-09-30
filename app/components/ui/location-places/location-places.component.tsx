@@ -3,8 +3,10 @@ import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
 
 import { searchAutoSuggest } from "~/helpers/sdk/autosuggest";
 import type { Place as PlaceAutosuggest } from "~/helpers/sdk/autosuggest";
+import { Prediction } from "~/helpers/sdk/google-autosuggest/google-autosuggest-response";
 import type { Place } from "~/helpers/sdk/place";
 import { getPlaceFromEntityId } from "~/helpers/sdk/place";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 interface LocationProps {
   name?: string;
@@ -24,7 +26,7 @@ export const LocationPlaces = ({
   onSelect,
 }: LocationProps): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState(defaultValue);
-  const [searchOrigin, setSearchOrigin] = useState<PlaceAutosuggest[]>([]);
+  const [predictions, setPredictions] = useState<google.maps.places.AutocompletePrediction[]>([]);
   const [showAutoSuggest, setShowAutoSuggest] = useState(false);
   const refAutoSuggest = useOutsideClick(() => {
     setShowAutoSuggest(false);
@@ -35,14 +37,17 @@ export const LocationPlaces = ({
   }, [defaultValue]);
 
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    // onChange && onChange(e.target.value);
-    // const originResults = await searchAutoSuggest(e.target.value, apiUrl);
-    // const originResultsFiltered = originResults.filter(
-    //   (suggest) => suggest.iataCode
-    // );
-    // setSearchOrigin(originResultsFiltered);
-    // setShowAutoSuggest(true);
+    const inputValue = e.target.value;
+    setSearchTerm(inputValue);
+    const autosuggest = await skyscanner().services.google.autosuggest({
+      apiUrl,
+      search: inputValue,
+    });
+    if ("error" in autosuggest) return;
+    console.log(autosuggest.suggestions);
+    onChange && onChange(e.target.value);
+    setPredictions(autosuggest.suggestions);
+    setShowAutoSuggest(true);
   };
 
   const handleSelect = async (selected: string) => {
@@ -89,24 +94,20 @@ export const LocationPlaces = ({
           placeholder={name || "From"}
         />
       </div>
-      {showAutoSuggest && searchOrigin.length > 0 && (
+      {showAutoSuggest && predictions.length > 0 && (
         <div ref={refAutoSuggest} className="relative z-50">
           <ul className="bg-white border border-slate-100 w-full mt-2 absolute dark:bg-slate-800 dark:border-slate-600">
-            {searchOrigin.map((place, key) => (
+            {predictions.map((prediction, key) => (
               <li
-                key={place.entityId}
-                onClick={() => handleSelect("selected")}
+                key={prediction.place_id}
+                onClick={() => handleSelect(prediction.place_id)}
                 className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-slate-100 relative cursor-pointer hover:bg-slate-100  dark:hover:bg-slate-900 dark:border-slate-600"
               >
                 <div className="text-left">
-                  <div>
-                    item
-                  </div>
-                  <div className="text-xs">item</div>
+                  <div>{prediction.structured_formatting.main_text}</div>
+                  <div className="text-xs">{prediction.structured_formatting.secondary_text}</div>
                 </div>
-                <div className="text-right text-xs self-center">
-                 item
-                </div>
+                <div className="text-right text-xs self-center">{prediction.types[0]}</div>
               </li>
             ))}
           </ul>

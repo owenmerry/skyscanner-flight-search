@@ -21,10 +21,10 @@ import type {
   CarHireIndicativeQuery,
   CarHireIndicativeSDK,
 } from "./car-hire-indicative/car-hire-indicative-sdk";
-import {
-  getCarHireIndicativeSDK,
-} from "./car-hire-indicative/car-hire-indicative-sdk";
+import { getCarHireIndicativeSDK } from "./car-hire-indicative/car-hire-indicative-sdk";
 import type { SkyscannerAPICarHireIndicativeResponse } from "./car-hire-indicative/care-hire-indicative-response";
+import { getGoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
+import type { GoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
 
 // types (Response)
 
@@ -77,6 +77,22 @@ export interface SkyscannerSDK {
     query?: CarHireIndicativeQuery;
     apiUrl?: string;
   }) => Promise<CarHireIndicativeSDK>;
+  services: {
+    google: {
+      autosuggest: ({
+        search,
+        latitude,
+        longitude,
+        radius,
+      }: {
+        apiUrl: string;
+        search: string;
+        latitude?: number;
+        longitude?: number;
+        radius?: number;
+      }) => Promise<GoogleAutosuggestSDK>;
+    };
+  };
 }
 
 // functions (SDK)
@@ -89,5 +105,10 @@ export const skyscanner = (): SkyscannerSDK => {
     indicative: getIndicativeSDK,
     content: getContentSDK,
     carHire: getCarHireIndicativeSDK,
+    services: {
+      google: {
+        autosuggest: getGoogleAutosuggestSDK,
+      },
+    },
   };
 };
