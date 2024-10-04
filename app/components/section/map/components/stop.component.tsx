@@ -1,11 +1,11 @@
-import { FaAngleDown, FaAngleUp, FaPlaneDeparture } from "react-icons/fa";
+import { FaAngleDown, FaAngleUp, FaMapMarkerAlt, FaPlaneDeparture } from "react-icons/fa";
 import { MdLocalAirport } from "react-icons/md";
 import { Loading } from "~/components/ui/loading";
 import { SearchDrawer } from "~/components/ui/drawer/drawer-search";
 import { FlightResultsDefault } from "../../flight-results/flight-results-default";
 import { getDateYYYYMMDDToDisplay } from "~/helpers/date";
 import type { Place } from "~/helpers/sdk/place";
-import type { TripPrice } from "../map-planner";
+import type { Holiday, PlaceGoogle, TripPrice } from "../map-planner";
 import type { FlightSDK } from "~/helpers/sdk/flight/flight-functions";
 import { useState } from "react";
 import { LocationPlaces } from "~/components/ui/location-places";
@@ -20,6 +20,14 @@ interface PlannerStopProps {
   googleMapId: string;
   selected?: FlightSDK;
   price?: TripPrice;
+  holiday: Holiday;
+  onGooglePlaceSelected: ({
+    placeGoogle,
+    stop,
+  }: {
+    placeGoogle: PlaceGoogle;
+    stop: Place;
+  }) => void;
 }
 
 export const PlannerStop = ({
@@ -32,8 +40,23 @@ export const PlannerStop = ({
   googleMapId,
   selected,
   price,
+  holiday,
+  onGooglePlaceSelected,
 }: PlannerStopProps) => {
   const [showCity, setShowCity] = useState(false);
+  const holidayLocations = holiday.locations.filter(
+    (item) => item.cityId === stop.entityId
+  )[0];
+
+  const handleGooglePlaceSelected = ({
+    placeGoogle,
+  }: {
+    placeGoogle: PlaceGoogle;
+  }) => {
+    console.log(placeGoogle, stop);
+    onGooglePlaceSelected({ placeGoogle, stop });
+  };
+
   return (
     <div className="border-b-slate-700 border-b-2 py-6">
       <div className="px-4 grid grid-cols-3 items-center gap-4">
@@ -125,11 +148,19 @@ export const PlannerStop = ({
       </div>
       {showCity ? (
         <div className="py-4">
-          <div className="pb-2 text-sm text-slate-500">
-            Coming soon, still working on it 👷‍♂️
-          </div>
-          <div className="pb-2">Explore {stop.name}</div>
-          <LocationPlaces apiUrl={apiUrl} place={stop} />
+          {holidayLocations.placesGoogle.map((placeGoogle) => {
+            return (
+              <div className="py-4 text-sm text-white border-b-slate-600 border-b-2" key={placeGoogle.id}>
+                <FaMapMarkerAlt className="inline-block pr-4 text-blue-600 text-4xl" /> {placeGoogle.name}
+              </div>
+            );
+          })}
+          <div className="py-2">Explore {stop.name}</div>
+          <LocationPlaces
+            apiUrl={apiUrl}
+            place={stop}
+            onSelect={handleGooglePlaceSelected}
+          />
         </div>
       ) : (
         ""

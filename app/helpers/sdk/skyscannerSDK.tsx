@@ -25,6 +25,10 @@ import { getCarHireIndicativeSDK } from "./car-hire-indicative/car-hire-indicati
 import type { SkyscannerAPICarHireIndicativeResponse } from "./car-hire-indicative/care-hire-indicative-response";
 import { getGoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
 import type { GoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
+import {
+  getGoogleDetailsSDK,
+  GoogleDetailsSDK,
+} from "./google-details/google-details-sdk";
 
 // types (Response)
 
@@ -91,6 +95,12 @@ export interface SkyscannerSDK {
         longitude?: number;
         radius?: number;
       }) => Promise<GoogleAutosuggestSDK>;
+      details: ({
+        placeId,
+      }: {
+        apiUrl: string;
+        placeId: string;
+      }) => Promise<GoogleDetailsSDK>;
     };
   };
 }
@@ -108,6 +118,7 @@ export const skyscanner = (): SkyscannerSDK => {
     services: {
       google: {
         autosuggest: getGoogleAutosuggestSDK,
+        details: getGoogleDetailsSDK,
       },
     },
   };

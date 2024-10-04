@@ -39,6 +39,26 @@ export interface TripPrice {
   loading: boolean;
 }
 
+export interface Holiday {
+  name?: string;
+  locations: HolidayLocation[];
+}
+export interface HolidayLocation {
+  cityId: string;
+  flight?: TripPrice;
+  placesGoogle: PlaceGoogle[];
+}
+export interface PlaceGoogle {
+  id: string;
+  name: string;
+  types: string[];
+  images: string[];
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
 export interface MapPlannerProps {
   googleMapId: string;
   googleApiKey: string;
@@ -77,6 +97,18 @@ export const MapPlanner = ({
     searchParams.get("days") !== ""
       ? Number(searchParams.get("days"))
       : undefined;
+  const blankHoliday: Holiday = {
+    name: "My Holiday",
+    locations: [],
+  };
+  const defaultHoliday: Holiday = {
+    name: "My Holiday",
+    locations: queryTrip.map((item) => ({
+      cityId: item.entityId,
+      placesGoogle: [],
+    })),
+  };
+  const [holiday, setHoliday] = useState<Holiday>(defaultHoliday);
   const [stops, setStops] = useState<Place[]>(queryTrip);
   const [prices, setPrices] = useState<TripPrice[]>([]);
   const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
@@ -208,6 +240,7 @@ export const MapPlanner = ({
     mapRefs.current = [];
     setPrices([]);
     setQueryString([]);
+    setHoliday(blankHoliday);
     clearSearch();
   };
   const clearSearch = () => {
@@ -288,6 +321,13 @@ export const MapPlanner = ({
     }
     updateRefs([refs?.lineRef, refs?.markerRef]);
     setStops([...stops, place]);
+    setHoliday({
+      name: holiday.name,
+      locations: [
+        ...holiday.locations,
+        { cityId: place.entityId, placesGoogle: [] },
+      ],
+    });
     setQueryString([...stops, place]);
     clearSearch();
     console.log("check has before", hasStopsBefore);
@@ -385,9 +425,35 @@ export const MapPlanner = ({
     handleRefresh({ startDate });
   };
 
+  const handleOnGooglePlaceSelected = ({
+    placeGoogle,
+    stop,
+  }: {
+    placeGoogle: PlaceGoogle;
+    stop: Place;
+  }) => {
+    const locations = holiday.locations.map((location) => {
+      if (location.cityId === stop.entityId) {
+        return {
+          ...location,
+          placesGoogle: [...location.placesGoogle, placeGoogle],
+        };
+      }
+
+      return location;
+    });
+
+    setHoliday({
+      name: holiday.name,
+      locations,
+    });
+  };
+
   return (
     <div className="md:grid grid-cols-10">
-      <div className={`p-4 col-span-4 ${!showDetails ? 'hidden md:block' : ''}`}>
+      <div
+        className={`p-4 col-span-4 ${!showDetails ? "hidden md:block" : ""}`}
+      >
         <div className="flex overflow-y-scroll scrollbar-hide gap-2 py-3">
           <div
             className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
@@ -451,6 +517,8 @@ export const MapPlanner = ({
                   price={price}
                   selected={selected}
                   stop={stop}
+                  holiday={holiday}
+                  onGooglePlaceSelected={handleOnGooglePlaceSelected}
                 />
               </React.Fragment>
             );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { PlaceGoogle } from "~/components/section/map/map-planner";
 import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
 
 import { searchAutoSuggest } from "~/helpers/sdk/autosuggest";
@@ -19,7 +20,7 @@ interface LocationProps {
   clearOnSelect?: boolean;
   place?: Place;
   onChange?: (value: string) => void;
-  onSelect?: (value: string, iataCode: string, place: Place) => void;
+  onSelect?: ({ placeGoogle }: { placeGoogle: PlaceGoogle }) => void;
 }
 
 export const LocationPlaces = ({
@@ -66,13 +67,29 @@ export const LocationPlaces = ({
 
   const handleSelect = async (selected: string) => {
     console.log(selected);
+    const details = await skyscanner().services.google.details({
+      placeId: selected,
+      apiUrl,
+    });
+    if (!details || "error" in details) return;
+    console.log(details);
+
     // const place = await getPlaceFromEntityId(geoId);
     // if (!place) return;
-    // setSearchTerm(placeId);
+    setSearchTerm('');
     // setSearchOrigin([]);
     // setShowAutoSuggest(false);
     // onChange && onChange(geoId);
-    // onSelect && onSelect(geoId, iataCode, place);
+    onSelect &&
+      onSelect({
+        placeGoogle: {
+          id: details.id,
+          name: details.displayName.text,
+          images: details.photos.map((image) => image.name),
+          location: details.location,
+          types: details.types,
+        },
+      });
     // if (clearOnSelect) setSearchTerm("");
   };
 
