@@ -117,6 +117,13 @@ export const NavigationMiniApps = () => {
             description="Find out who your valentine with this app"
             to="/valentines"
           />
+          <Article
+            label="Game"
+            labelBg="yellow"
+            title="Around The World App"
+            description="Try to fly around the world for less then £1000"
+            to="/around-the-world"
+          />
         </div>
       </div>
     </section>

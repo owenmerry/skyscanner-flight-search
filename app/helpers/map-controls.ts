@@ -12,11 +12,13 @@ export const addToTrip = async ({
   previous,
   current,
   handleMarkerClick,
+  moveTo,
 }: {
   mapControls?: MapControls;
   current: Place;
   previous?: Place;
   handleMarkerClick: (map: google.maps.Map, marker: Markers) => void;
+  moveTo?: boolean;
 }) => {
   if (
     !mapControls ||
@@ -36,7 +38,7 @@ export const addToTrip = async ({
     mapControls,
   });
 
-  moveTo({ location: current, mapControls });
+  if(moveTo) moveTo({ location: current, mapControls });
 
   return {
     markerRef,
