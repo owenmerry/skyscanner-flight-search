@@ -7,7 +7,11 @@ import type {
   MapMarker,
 } from "~/components/ui/map/map-control.component";
 import type { Markers } from "~/helpers/map";
-import { getAllParents } from "~/helpers/sdk/data";
+import {
+  getAllParents,
+  getCityEntityId,
+  getCityPlaceFromEntityId,
+} from "~/helpers/sdk/data";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { getPlacesFromIatas, type Place } from "~/helpers/sdk/place";
 import { FaMapMarkerAlt } from "react-icons/fa";
@@ -23,6 +27,7 @@ import { DateSelector } from "~/components/ui/date/date-selector";
 import { PlannerStop } from "./components/stop.component";
 import { MapDrawer } from "~/components/ui/drawer/drawer-map";
 import { getBearingBetweenPoints } from "./helpers/bearing";
+import { waitSeconds } from "~/helpers/utils";
 
 export interface TripPrice {
   query: QueryPlace;
@@ -96,6 +101,9 @@ export const AroundTheWorld = ({
   };
   const [holiday, setHoliday] = useState<Holiday>(defaultHoliday);
   const [stops, setStops] = useState<Place[]>(queryTrip);
+  const [gameMode, setGameMode] = useState<"start" | "playing" | "end">(
+    "start"
+  );
   const [prices, setPrices] = useState<number[]>([]);
   const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
@@ -108,6 +116,9 @@ export const AroundTheWorld = ({
   const priceTotal = prices.reduce(
     (acc, currentValue) => acc + currentValue,
     0
+  );
+  const locationCity = getCityPlaceFromEntityId(
+    stops[stops.length - 1].entityId
   );
   const getMarkers = (search: IndicativeQuotesSDK[]): Markers[] => {
     const markers: Markers[] = [];
@@ -219,6 +230,7 @@ export const AroundTheWorld = ({
 
     // handleLocationChange(quote[0].query.to);
     // setSelected(undefined);
+    //handleLocationChange(quote[0]);
 
     setSelected(quote[0]);
   };
@@ -277,9 +289,15 @@ export const AroundTheWorld = ({
       handleMarkerClick: () => {},
       moveTo: false,
     });
+    const updatedPrices = [...prices, selected.price.raw || 0];
+    const priceTotal = updatedPrices.reduce(
+      (acc, currentValue) => acc + currentValue,
+      0
+    );
+    const gameOver = priceTotal > 1000;
     updateRefs([refs?.lineRef, refs?.markerRef]);
     setStops([...stops, place]);
-    setPrices([...prices, selected.price.raw || 0]);
+    setPrices(updatedPrices);
     setHoliday({
       name: holiday.name,
       locations: [
@@ -288,6 +306,10 @@ export const AroundTheWorld = ({
       ],
     });
     clearSearch();
+    if (gameOver) {
+      setGameMode("end");
+      return;
+    }
     addSearchMarkers({ stopBefore: place, mapControls });
   };
 
@@ -312,60 +334,148 @@ export const AroundTheWorld = ({
     mapRefs.current = [...previous, ...updateRefs];
   };
 
+  const startGame = async () => {
+    if (!mapControls) return;
+    setGameMode("playing");
+  };
+  const restartGame = async () => {
+    if (!mapControls) return;
+    mapRefs.current.forEach((mapRef) => {
+      if (!("setMap" in mapRef)) return;
+      mapRef.setMap(null);
+    });
+    setStops(queryTrip);
+    mapRefs.current = [];
+    setPrices([]);
+    clearSearch();
+    setGameMode("start");
+    const refs = await addToTrip({
+      previous: undefined,
+      current: queryTrip[0],
+      mapControls,
+      handleMarkerClick: () => {},
+    });
+    updateRefs([refs?.lineRef, refs?.markerRef]);
+    addSearchMarkers({ stopBefore: queryTrip[0], mapControls });
+  };
+
   return (
     <div className="relative">
-      <div className="">
-        {priceTotal > 1000 ? (
-          <div className="absolute z-30 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2">
-            <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-4 text-center">
-              <div className="text-3xl bold mb-2">Your out of Budget</div>
-              <a className="text-2xl text-blue-600" href="/around-the-world">Try Again</a>
+      <div className="h-screen">
+        {gameMode !== "playing" ? (
+          <>
+            <div className="opacity-80 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-30"></div>
+            <div className="absolute z-30 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-10 text-center shadow-lg">
+                {gameMode == "start" ? (
+                  <>
+                    {" "}
+                    <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-2">
+                      Around The World
+                    </h1>
+                    <p className="text-lg my-4">
+                      Your mission is simple: travel the globe, visiting amazing
+                      destinations while staying within a strict budget of
+                      £1,000.
+                    </p>
+                    <button
+                      className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                      onClick={startGame}
+                    >
+                      Start Game
+                    </button>
+                  </>
+                ) : (
+                  ""
+                )}
+                {gameMode === "end" ? (
+                  <>
+                    {priceTotal > 1000 ? (
+                      <>
+                        <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
+                          Oh no. You ran out of money
+                        </h1>
+                        <p className="text-lg py-2">
+                          Looks like you will be staying in{" "}
+                          <span className="bold">{locationCity ? locationCity.name : ""}</span> for now.
+                        </p>
+                        <button
+                          className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                          onClick={restartGame}
+                        >
+                          Try Again
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
+                          You made it
+                        </h1>
+                        <button
+                          className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                          onClick={restartGame}
+                        >
+                          Try Again
+                        </button>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
-          </div>
+          </>
         ) : (
           ""
         )}
         <div className="absolute top-0 left-0 h-64 z-20 overflow-y-auto p-4">
-          <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-4">
-            <div className="text-lg bold">Total £{priceTotal}</div>
-            {priceTotal !== 0 ? (
-              <div className="text-slate-500 pt-2">
-                £{1000 - priceTotal} Left
-              </div>
-            ) : (
-              ""
-            )}
+          <div className="flex gap-2">
+            <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-4">
+              <div className="text-lg bold">Total £{priceTotal}</div>
+              {priceTotal !== 0 ? (
+                <div className="text-slate-500 pt-2">
+                  £{1000 - priceTotal} Left
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+            <div>
+              {gameMode === "playing" && stops.length === 1 ? (
+                <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-4">
+                  <div className="text-lg bold">Select a location</div>
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
         {selected ? (
-          <div className="absolute top-0 right-0 h-64 z-20 overflow-y-auto p-4">
-            <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold overflow-hidden w-80 h-full">
-              <div className="p-4">
-                <h2 className="text-xl font-bold">
-                  {selected.city?.name}, {selected.country.name}
-                </h2>
-                <p>{selected.price.display}</p>
-                <div
-                  className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
-                  onClick={() => {
-                    handleLocationChange(selected);
-                    setSelected(undefined);
-                  }}
-                >
-                  <FaMapMarkerAlt className="pr-2 text-lg" />
-                  <span>Add to trip</span>
-                </div>
-                <div className="absolute top-0 right-0 p-2">
+          <>
+            <div onClick={() => setSelected(undefined)} className="opacity-80 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-30"></div>
+            <div className="absolute z-30 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold overflow-hidden w-80 h-full">
+                <div className="p-4">
+                  <h2 className="text-4xl font-extrabold tracking-tight leading-none mb-2">
+                    {selected.city?.name}, {selected.country.name}
+                  </h2>
+                  <p className="text-lg py-2">{selected.price.display}</p>
                   <div
-                    onClick={() => setSelected(undefined)}
-                    className=" justify-center  mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+                    className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
+                    onClick={() => {
+                      handleLocationChange(selected);
+                      setSelected(undefined);
+                    }}
                   >
-                    Close
+                    <FaMapMarkerAlt className="pr-2 text-lg" />
+                    <span>Add to trip</span>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         ) : (
           ""
         )}

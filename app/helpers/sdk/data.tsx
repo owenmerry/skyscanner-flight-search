@@ -37,7 +37,7 @@ export const getCountryEntityId = (entityId: string): string => {
   return "";
 };
 
-export const getCityyEntityId = (entityId: string): string => {
+export const getCityEntityId = (entityId: string): string => {
   var entityCheck = entityId;
 
   for (let count = 0; count < 10; count++) {
@@ -51,6 +51,22 @@ export const getCityyEntityId = (entityId: string): string => {
   }
 
   return "";
+};
+
+export const getCityPlaceFromEntityId = (entityId: string): Place | undefined => {
+  var entityCheck = entityId;
+
+  for (let count = 0; count < 10; count++) {
+    const place = getPlaceFromEntityId(entityCheck);
+    if (!place) return "";
+    if (place.type === "PLACE_TYPE_CITY") {
+      return place;
+    } else {
+      entityCheck = place.parentId;
+    }
+  }
+
+  return undefined;
 };
 
 export const updateGEOSlug = () => {

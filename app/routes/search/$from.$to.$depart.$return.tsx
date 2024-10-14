@@ -7,7 +7,7 @@ import { useLoaderData } from "@remix-run/react";
 import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { Query, QueryPlace } from "~/types/search";
-import { getCityyEntityId, getCountryEntityId } from "~/helpers/sdk/data";
+import { getCityEntityId, getCountryEntityId } from "~/helpers/sdk/data";
 import type { Place } from "~/helpers/sdk/place";
 import type { SkyscannerAPIHotelSearchResponse } from "~/helpers/sdk/hotel/hotel-response";
 import { waitSeconds } from "~/helpers/utils";
@@ -65,7 +65,7 @@ export const loader = async ({ params }: LoaderArgs) => {
   const country = getPlaceFromEntityId(
     getCountryEntityId(flightQuery.to.entityId)
   );
-  const city = getPlaceFromEntityId(getCityyEntityId(flightQuery.to.entityId));
+  const city = getPlaceFromEntityId(getCityEntityId(flightQuery.to.entityId));
 
   //images
   const fromImage = await getImages({
