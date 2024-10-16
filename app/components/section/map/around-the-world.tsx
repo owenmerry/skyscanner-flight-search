@@ -13,7 +13,11 @@ import {
   getCityPlaceFromEntityId,
 } from "~/helpers/sdk/data";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
-import { getPlacesFromIatas, type Place } from "~/helpers/sdk/place";
+import {
+  getPlaceFromEntityId,
+  getPlacesFromIatas,
+  type Place,
+} from "~/helpers/sdk/place";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import moment from "moment";
@@ -294,7 +298,9 @@ export const AroundTheWorld = ({
       (acc, currentValue) => acc + currentValue,
       0
     );
-    const gameOver = priceTotal > 1000;
+    const placeCity = getCityPlaceFromEntityId(place.entityId);
+    const gameOver =
+      priceTotal > 1000 || (placeCity && placeCity.iata === "LON");
     updateRefs([refs?.lineRef, refs?.markerRef]);
     setStops([...stops, place]);
     setPrices(updatedPrices);
@@ -397,7 +403,10 @@ export const AroundTheWorld = ({
                         </h1>
                         <p className="text-lg py-2">
                           Looks like you will be staying in{" "}
-                          <span className="bold">{locationCity ? locationCity.name : ""}</span> for now.
+                          <span className="bold">
+                            {locationCity ? locationCity.name : ""}
+                          </span>{" "}
+                          for now.
                         </p>
                         <button
                           className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
@@ -409,8 +418,43 @@ export const AroundTheWorld = ({
                     ) : (
                       <>
                         <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
-                          You made it
+                          You made it with £{1000 - priceTotal} still left
                         </h1>
+                        <p className="text-lg py-2">
+                          Great job at gettting around the world.
+                        </p>
+                        <div className="py-2 text-left text-lg">
+                          <p>Your Locations</p>
+                          <ul>
+                            {stops.map((item) => {
+                              const country = getPlaceFromEntityId(
+                                item.countryEntityId
+                              );
+                              return (
+                                <li key={item.entityId}>
+                                  {item.name}
+                                  {country ? `, ${country.name}` : ""}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                        <div className="py-4">
+                          {stops.length - 2 < 5 ? (
+                            <p className="text-lg">
+                              <span className="text-blue-600">Tip:</span> You
+                              did it with {stops.length - 2} stops, now try to
+                              do it with 5 or more stops.
+                            </p>
+                          ) : (
+                            <p>
+                              <span className="text-blue-600">Wow:</span> You
+                              did it in {stops.length - 2} stops, now try to go
+                              around the world twice for £1000. I am not even
+                              sure its possible{" "}
+                            </p>
+                          )}
+                        </div>
                         <button
                           className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
                           onClick={restartGame}
@@ -454,7 +498,10 @@ export const AroundTheWorld = ({
         </div>
         {selected ? (
           <>
-            <div onClick={() => setSelected(undefined)} className="opacity-80 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-30"></div>
+            <div
+              onClick={() => setSelected(undefined)}
+              className="opacity-80 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-30"
+            ></div>
             <div className="absolute z-30 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold overflow-hidden w-80 h-full">
                 <div className="p-4">
