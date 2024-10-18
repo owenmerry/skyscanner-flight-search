@@ -92,9 +92,8 @@ export default function Index() {
         newFeature="We are always adding new features. See All New Features"
         newFeatureURL="/news"
         flightDefault={defaultSearch}
-        useForm
       />
-      <div className="relative z-10">
+      <div className="relative">
         {search ? (
           <>
             <MarketingMap
