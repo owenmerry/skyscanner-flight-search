@@ -1,5 +1,5 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { MapControls } from "~/components/ui/map/map-control.component";
 import type {
   MapControlsOptions,
@@ -7,31 +7,24 @@ import type {
   MapMarker,
 } from "~/components/ui/map/map-control.component";
 import type { Markers } from "~/helpers/map";
-import {
-  getAllParents,
-  getCityEntityId,
-  getCityPlaceFromEntityId,
-} from "~/helpers/sdk/data";
+import { getAllParents, getCityPlaceFromEntityId } from "~/helpers/sdk/data";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import {
   getPlaceFromEntityId,
   getPlacesFromIatas,
   type Place,
 } from "~/helpers/sdk/place";
-import { FaMapMarkerAlt } from "react-icons/fa";
+import { FaMapMarkerAlt, FaRegLightbulb } from "react-icons/fa";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import moment from "moment";
-import { Location } from "~/components/ui/location";
 import { addToTrip } from "~/helpers/map-controls";
 import type { QueryPlace } from "~/types/search";
-import { queryToString } from "~/helpers/sdk/query";
 import type { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { useSearchParams } from "@remix-run/react";
-import { DateSelector } from "~/components/ui/date/date-selector";
-import { PlannerStop } from "./components/stop.component";
-import { MapDrawer } from "~/components/ui/drawer/drawer-map";
 import { getBearingBetweenPoints } from "./helpers/bearing";
-import { waitSeconds } from "~/helpers/utils";
+import { BiWorld } from "react-icons/bi";
+import { MdLocationPin } from "react-icons/md";
+import { LuPartyPopper } from "react-icons/lu";
 
 export interface TripPrice {
   query: QueryPlace;
@@ -76,7 +69,7 @@ export const AroundTheWorld = ({
   googleMapId,
   googleApiKey,
 }: AroundTheWorldProps) => {
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
   const [mapControls, setMapControls] = useState<{
     map: google.maps.Map;
     controls: MapControlsOptions;
@@ -92,10 +85,6 @@ export const AroundTheWorld = ({
     searchParams.get("startDate") !== ""
       ? searchParams.get("startDate")
       : undefined;
-  const queryDays =
-    searchParams.get("days") !== ""
-      ? Number(searchParams.get("days"))
-      : undefined;
   const defaultHoliday: Holiday = {
     name: "My Holiday",
     locations: queryTrip.map((item) => ({
@@ -109,13 +98,9 @@ export const AroundTheWorld = ({
     "start"
   );
   const [prices, setPrices] = useState<number[]>([]);
-  const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
-  const [days] = useState<number>(queryDays || 3);
-  const [startDate, setStartDate] = useState<string>(
-    queryStartDate || "2024-12-01"
-  );
-  const [showDetails, setShowDetails] = useState<boolean>(true);
+  const [flights, setFlights] = useState<IndicativeQuotesSDK[]>([]);
+  const [startDate] = useState<string>(queryStartDate || "2024-12-01");
   const parents = to ? getAllParents(to.parentId) : [];
   const priceTotal = prices.reduce(
     (acc, currentValue) => acc + currentValue,
@@ -188,7 +173,6 @@ export const AroundTheWorld = ({
 
     if ("error" in indicativeSearch.search) return;
 
-    setSearch(indicativeSearch.quotes);
     let markers = getMarkers(indicativeSearch.quotes);
     if (stopBefore) {
       markers = markers.filter((item) => {
@@ -304,6 +288,7 @@ export const AroundTheWorld = ({
     updateRefs([refs?.lineRef, refs?.markerRef]);
     setStops([...stops, place]);
     setPrices(updatedPrices);
+    setFlights([...flights, selected]);
     setHoliday({
       name: holiday.name,
       locations: [
@@ -353,6 +338,7 @@ export const AroundTheWorld = ({
     setStops(queryTrip);
     mapRefs.current = [];
     setPrices([]);
+    setFlights([]);
     clearSearch();
     setGameMode("start");
     const refs = await addToTrip({
@@ -363,6 +349,11 @@ export const AroundTheWorld = ({
     });
     updateRefs([refs?.lineRef, refs?.markerRef]);
     addSearchMarkers({ stopBefore: queryTrip[0], mapControls });
+    mapControls.map.panTo({
+      lat: queryTrip[0].coordinates.latitude,
+      lng: queryTrip[0].coordinates.longitude,
+    });
+    mapControls.map.setZoom(5);
   };
 
   return (
@@ -371,11 +362,12 @@ export const AroundTheWorld = ({
         {gameMode !== "playing" ? (
           <>
             <div className="opacity-80 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-30"></div>
-            <div className="absolute z-30 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+            <div className="absolute z-30 m-8 md:m-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2">
               <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-10 text-center shadow-lg">
                 {gameMode == "start" ? (
                   <>
                     {" "}
+                    <BiWorld className="inline-block text-4xl text-blue-600" />
                     <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-2">
                       Around The World
                     </h1>
@@ -408,6 +400,36 @@ export const AroundTheWorld = ({
                           </span>{" "}
                           for now.
                         </p>
+                        <div className="py-2 text-left text-lg">
+                          <h2 className="text-2xl mt-4">Your Locations</h2>
+                          <ul className="mt-2">
+                            {stops.map((item, key) => {
+                              const country = getPlaceFromEntityId(
+                                item.countryEntityId
+                              );
+                              if (key === 0) return "";
+                              return (
+                                <li key={item.entityId} className="border-b-2 border-gray-300 py-2">
+                                  {item.name}
+                                  {country ? `, ${country.name}` : ""} £{" "}
+                                  {prices[key - 1]} -{" "}
+                                  <a
+                                    className="text-blue-600 underline hover:no-underline"
+                                    target="_blank"
+                                    href={`/search/${
+                                      flights[key - 1].query.from.iata
+                                    }/${flights[key - 1].query.to.iata}/${
+                                      flights[key - 1].query.depart
+                                    }`}
+                                    rel="noreferrer"
+                                  >
+                                    See Flight (in new window)
+                                  </a>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
                         <button
                           className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
                           onClick={restartGame}
@@ -424,16 +446,30 @@ export const AroundTheWorld = ({
                           Great job at gettting around the world.
                         </p>
                         <div className="py-2 text-left text-lg">
-                          <p>Your Locations</p>
-                          <ul>
-                            {stops.map((item) => {
+                        <h2 className="text-2xl mt-4">Your Locations</h2>
+                          <ul className="mt-2">
+                            {stops.map((item, key) => {
                               const country = getPlaceFromEntityId(
                                 item.countryEntityId
                               );
+                              if (key === 0) return "";
                               return (
-                                <li key={item.entityId}>
+                                <li key={item.entityId} className="border-b-2 border-gray-300 py-2">
                                   {item.name}
-                                  {country ? `, ${country.name}` : ""}
+                                  {country ? `, ${country.name}` : ""} £{" "}
+                                  {prices[key - 1]} -{" "}
+                                  <a
+                                    className="text-blue-600 underline hover:no-underline"
+                                    target="_blank"
+                                    href={`/search/${
+                                      flights[key - 1].query.from.iata
+                                    }/${flights[key - 1].query.to.iata}/${
+                                      flights[key - 1].query.depart
+                                    }`}
+                                    rel="noreferrer"
+                                  >
+                                    See Flight (in new window)
+                                  </a>
                                 </li>
                               );
                             })}
@@ -442,15 +478,21 @@ export const AroundTheWorld = ({
                         <div className="py-4">
                           {stops.length - 2 < 5 ? (
                             <p className="text-lg">
-                              <span className="text-blue-600">Tip:</span> You
-                              did it with {stops.length - 2} stops, now try to
-                              do it with 5 or more stops.
+                              <span className="text-blue-600">
+                                <FaRegLightbulb className="inline-block pr-2" />{" "}
+                                Tip:
+                              </span>{" "}
+                              You did it with {stops.length - 2} stops, now try
+                              to do it with 5 or more stops.
                             </p>
                           ) : (
                             <p>
-                              <span className="text-blue-600">Wow:</span> You
-                              did it in {stops.length - 2} stops, now try to go
-                              around the world twice for £1000. I am not even
+                              <span className="text-blue-600">
+                                <LuPartyPopper className="inline-block pr-2" />{" "}
+                                Wow:
+                              </span>{" "}
+                              You did it in {stops.length - 2} stops, now try to
+                              go around the world twice for £1000. I am not even
                               sure its possible{" "}
                             </p>
                           )}
@@ -476,9 +518,9 @@ export const AroundTheWorld = ({
         <div className="absolute top-0 left-0 h-64 z-20 overflow-y-auto p-4">
           <div className="flex gap-2">
             <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-4">
-              <div className="text-lg bold">Total £{priceTotal}</div>
+              <div className="text-2xl bold">Total £{priceTotal}</div>
               {priceTotal !== 0 ? (
-                <div className="text-slate-500 pt-2">
+                <div className="text-slate-500 pt-2 text-lg">
                   £{1000 - priceTotal} Left
                 </div>
               ) : (
@@ -488,7 +530,9 @@ export const AroundTheWorld = ({
             <div>
               {gameMode === "playing" && stops.length === 1 ? (
                 <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-4">
-                  <div className="text-lg bold">Select a location</div>
+                  <div className="text-2xl bold">
+                    Select a location to continue
+                  </div>
                 </div>
               ) : (
                 ""
@@ -505,10 +549,21 @@ export const AroundTheWorld = ({
             <div className="absolute z-30 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold overflow-hidden w-80 h-full">
                 <div className="p-4">
+                  <MdLocationPin className="inline-block text-4xl text-blue-600" />
                   <h2 className="text-4xl font-extrabold tracking-tight leading-none mb-2">
                     {selected.city?.name}, {selected.country.name}
                   </h2>
                   <p className="text-lg py-2">{selected.price.display}</p>
+                  <div className="pb-4">
+                    <a
+                      className="text-blue-600 underline hover:no-underline"
+                      target="_blank"
+                      href={`/search/${selected.query.from.iata}/${selected.query.to.iata}/${selected.query.depart}`}
+                      rel="noreferrer"
+                    >
+                      See Flight (in new window)
+                    </a>
+                  </div>
                   <div
                     className="justify-center mb-2 cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
                     onClick={() => {
@@ -517,7 +572,7 @@ export const AroundTheWorld = ({
                     }}
                   >
                     <FaMapMarkerAlt className="pr-2 text-lg" />
-                    <span>Add to trip</span>
+                    <span>Add to Location</span>
                   </div>
                 </div>
               </div>
