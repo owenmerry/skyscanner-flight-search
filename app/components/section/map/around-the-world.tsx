@@ -669,8 +669,8 @@ export const AroundTheWorld = ({
               className="cursor-pointer relative text-white rounded-xl text-sm bg-blue-600 font-bold p-4"
             >
               <div className="text-2xl bold">
-                <FaTrophy className="inline-block mr-2" />{" "}
-                <span className="hidden md:inline-block">Leaderboard</span>
+                <FaTrophy className="inline-block md:mr-2" />
+                <span className="hidden md:inline-block"> Leaderboard</span>
               </div>
             </div>
           </div>
