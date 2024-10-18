@@ -409,9 +409,12 @@ export const AroundTheWorld = ({
                               );
                               if (key === 0) return "";
                               return (
-                                <li key={item.entityId} className="border-b-2 border-gray-300 py-2">
+                                <li
+                                  key={item.entityId}
+                                  className="border-b-2 border-gray-300 py-2"
+                                >
                                   {item.name}
-                                  {country ? `, ${country.name}` : ""} £{" "}
+                                  {country ? `, ${country.name}` : ""} £
                                   {prices[key - 1]} -{" "}
                                   <a
                                     className="text-blue-600 underline hover:no-underline"
@@ -446,7 +449,7 @@ export const AroundTheWorld = ({
                           Great job at gettting around the world.
                         </p>
                         <div className="py-2 text-left text-lg">
-                        <h2 className="text-2xl mt-4">Your Locations</h2>
+                          <h2 className="text-2xl mt-4">Your Locations</h2>
                           <ul className="mt-2">
                             {stops.map((item, key) => {
                               const country = getPlaceFromEntityId(
@@ -454,9 +457,12 @@ export const AroundTheWorld = ({
                               );
                               if (key === 0) return "";
                               return (
-                                <li key={item.entityId} className="border-b-2 border-gray-300 py-2">
+                                <li
+                                  key={item.entityId}
+                                  className="border-b-2 border-gray-300 py-2"
+                                >
                                   {item.name}
-                                  {country ? `, ${country.name}` : ""} £{" "}
+                                  {country ? `, ${country.name}` : ""} £
                                   {prices[key - 1]} -{" "}
                                   <a
                                     className="text-blue-600 underline hover:no-underline"
