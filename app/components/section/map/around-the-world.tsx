@@ -14,9 +14,9 @@ import {
   getPlacesFromIatas,
   type Place,
 } from "~/helpers/sdk/place";
-import { FaMapMarkerAlt, FaRegLightbulb } from "react-icons/fa";
+import { FaMapMarkerAlt, FaRegLightbulb, FaTrophy } from "react-icons/fa";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { addToTrip } from "~/helpers/map-controls";
 import type { QueryPlace } from "~/types/search";
 import type { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
@@ -97,6 +97,18 @@ export const AroundTheWorld = ({
   const [gameMode, setGameMode] = useState<"start" | "playing" | "end">(
     "start"
   );
+  const [gameReason, setGameReason] = useState<"No flights">();
+  const [leaderboard, setLeaderBoard] = useState<
+    {
+      name: string;
+      award: string;
+      amount: number;
+      created_at: string;
+      updated_at: string;
+    }[]
+  >([]);
+  const [showLeaderboard, setShowLeaderBoard] = useState<boolean>(false);
+  const [gameName, setGameName] = useState<string>("");
   const [prices, setPrices] = useState<number[]>([]);
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
   const [flights, setFlights] = useState<IndicativeQuotesSDK[]>([]);
@@ -148,7 +160,9 @@ export const AroundTheWorld = ({
   const addSearchMarkers = async ({
     stopBefore,
     mapControls,
+    month,
   }: {
+    month?: Moment;
     stopBefore?: Place;
     mapControls?: {
       map: google.maps.Map;
@@ -157,6 +171,7 @@ export const AroundTheWorld = ({
   } = {}) => {
     if (!mapControls) return;
     console.log("stop before", stopBefore);
+    const searchDate = month ? month : moment();
     const indicativeSearch = await skyscanner().indicative({
       apiUrl,
       query: {
@@ -165,15 +180,32 @@ export const AroundTheWorld = ({
         tripType: "single",
       },
       groupType: "month",
-      month: Number(moment().format("MM")),
-      year: Number(moment().format("YYYY")),
-      endMonth: Number(moment().add(3, "months").format("MM")),
-      endYear: Number(moment().add(3, "months").format("YYYY")),
+      month: Number(searchDate.format("MM")),
+      year: Number(searchDate.format("YYYY")),
+      endMonth: Number(searchDate.add(3, "months").format("MM")),
+      endYear: Number(searchDate.add(3, "months").format("YYYY")),
     });
 
     if ("error" in indicativeSearch.search) return;
 
-    let markers = getMarkers(indicativeSearch.quotes);
+    var date1 = moment("2023-10-18"); // Example date 1
+    var date2 = moment("2024-01-01"); // Example date 2
+
+    if (date2.isAfter(date1)) {
+      console.log("Date 2 is after Date 1");
+    } else {
+      console.log("Date 2 is not after Date 1");
+    }
+
+    const quotesFilteredByDate = indicativeSearch.quotes.filter((item) =>
+      searchDate.isAfter(moment(item.query.depart))
+    );
+    if (quotesFilteredByDate.length === 0) {
+      setGameMode("end");
+      setGameReason("No flights");
+    }
+
+    let markers = getMarkers(quotesFilteredByDate);
     if (stopBefore) {
       markers = markers.filter((item) => {
         return (
@@ -299,9 +331,31 @@ export const AroundTheWorld = ({
     clearSearch();
     if (gameOver) {
       setGameMode("end");
+
+      if (priceTotal < 1000) {
+        const data = {
+          name: gameName,
+          award: "price-left",
+          amount: 1000 - priceTotal,
+        };
+
+        // Send a POST request using fetch
+        await fetch(`${apiUrl}/game/save`, {
+          method: "POST", // Method type
+          headers: {
+            "Content-Type": "application/json", // Tells the server you're sending JSON
+          },
+          body: JSON.stringify(data), // Convert the data to JSON string
+        });
+      }
+
       return;
     }
-    addSearchMarkers({ stopBefore: place, mapControls });
+    addSearchMarkers({
+      stopBefore: place,
+      mapControls,
+      month: moment(selected.query.depart),
+    });
   };
 
   const updateRefs = (
@@ -355,165 +409,227 @@ export const AroundTheWorld = ({
     });
     mapControls.map.setZoom(5);
   };
+  const toggleLeaderBoard = async () => {
+    if (!showLeaderboard) {
+      const leaderboardRes = await fetch(`${apiUrl}/game/top/price-left`);
+      const leaderboardJson = await leaderboardRes.json();
+      setLeaderBoard(leaderboardJson);
+    }
+    setShowLeaderBoard(!showLeaderboard);
+  };
 
   return (
     <div className="relative">
-      <div className="h-screen">
-        {gameMode !== "playing" ? (
+      <div className="min-h-screen over">
+        {gameMode !== "playing" || showLeaderboard ? (
           <>
             <div className="opacity-80 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-30"></div>
-            <div className="absolute z-30 m-8 md:m-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2">
+            <div className="absolute z-30 p-8 md:m-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:max-w-[800px]">
               <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-10 text-center shadow-lg">
-                {gameMode == "start" ? (
+                {showLeaderboard ? (
                   <>
-                    {" "}
-                    <BiWorld className="inline-block text-4xl text-blue-600" />
-                    <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-2">
-                      Around The World
-                    </h1>
-                    <p className="text-lg my-4">
-                      Your mission is simple: travel the globe, visiting amazing
-                      destinations while staying within a strict budget of
-                      £1,000.
-                    </p>
-                    <button
-                      className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
-                      onClick={startGame}
-                    >
-                      Start Game
-                    </button>
+                    <>
+                      {" "}
+                      <FaTrophy className="inline-block text-2xl text-blue-600" />
+                      <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight leading-none mb-2">
+                        Leaderboard
+                      </h1>
+                      <ul className="my-2">
+                        {leaderboard.map((item) => {
+                          return (
+                            <li
+                              key={item.created_at}
+                              className="border-b-2 border-gray-300 py-2"
+                            >
+                              {item.name} - £{item.amount} Left
+                            </li>
+                          );
+                        })}
+                      </ul>
+                      <button
+                        className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                        onClick={toggleLeaderBoard}
+                      >
+                        Hide
+                      </button>
+                    </>
                   </>
                 ) : (
-                  ""
-                )}
-                {gameMode === "end" ? (
                   <>
-                    {priceTotal > 1000 ? (
+                    {gameMode == "start" ? (
                       <>
-                        <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
-                          Oh no. You ran out of money
+                        {" "}
+                        <BiWorld className="inline-block text-4xl text-blue-600" />
+                        <h1 className="text-6xl md:text-8xl font-extrabold tracking-tight leading-none mb-2">
+                          Around The World
                         </h1>
-                        <p className="text-lg py-2">
-                          Looks like you will be staying in{" "}
-                          <span className="bold">
-                            {locationCity ? locationCity.name : ""}
-                          </span>{" "}
-                          for now.
+                        <p className="text-lg my-4">
+                          Your mission is simple: travel the globe, visiting
+                          amazing destinations while staying within a strict
+                          budget of £1,000.
                         </p>
-                        <div className="py-2 text-left text-lg">
-                          <h2 className="text-2xl mt-4">Your Locations</h2>
-                          <ul className="mt-2">
-                            {stops.map((item, key) => {
-                              const country = getPlaceFromEntityId(
-                                item.countryEntityId
-                              );
-                              if (key === 0) return "";
-                              return (
-                                <li
-                                  key={item.entityId}
-                                  className="border-b-2 border-gray-300 py-2"
-                                >
-                                  {item.name}
-                                  {country ? `, ${country.name}` : ""} £
-                                  {prices[key - 1]} -{" "}
-                                  <a
-                                    className="text-blue-600 underline hover:no-underline"
-                                    target="_blank"
-                                    href={`/search/${
-                                      flights[key - 1].query.from.iata
-                                    }/${flights[key - 1].query.to.iata}/${
-                                      flights[key - 1].query.depart
-                                    }`}
-                                    rel="noreferrer"
-                                  >
-                                    See Flight (in new window)
-                                  </a>
-                                </li>
-                              );
-                            })}
-                          </ul>
+                        <div className="my-2">
+                          <input
+                            className="p-4 text-center border-gray-300 border-2"
+                            placeholder="Add your Name.."
+                            value={gameName}
+                            onChange={(e) => setGameName(e.target.value)}
+                          />
                         </div>
                         <button
-                          className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
-                          onClick={restartGame}
+                          className="inline-block disabled:bg-gray-400 p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                          onClick={startGame}
+                          disabled={gameName === ""}
                         >
-                          Try Again
+                          Start Game{" "}
+                          {gameName === "" ? <>(Add your name)</> : ""}
                         </button>
                       </>
                     ) : (
+                      ""
+                    )}
+                    {gameMode === "end" ? (
                       <>
-                        <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
-                          You made it with £{1000 - priceTotal} still left
-                        </h1>
-                        <p className="text-lg py-2">
-                          Great job at gettting around the world.
-                        </p>
-                        <div className="py-2 text-left text-lg">
-                          <h2 className="text-2xl mt-4">Your Locations</h2>
-                          <ul className="mt-2">
-                            {stops.map((item, key) => {
-                              const country = getPlaceFromEntityId(
-                                item.countryEntityId
-                              );
-                              if (key === 0) return "";
-                              return (
-                                <li
-                                  key={item.entityId}
-                                  className="border-b-2 border-gray-300 py-2"
-                                >
-                                  {item.name}
-                                  {country ? `, ${country.name}` : ""} £
-                                  {prices[key - 1]} -{" "}
-                                  <a
-                                    className="text-blue-600 underline hover:no-underline"
-                                    target="_blank"
-                                    href={`/search/${
-                                      flights[key - 1].query.from.iata
-                                    }/${flights[key - 1].query.to.iata}/${
-                                      flights[key - 1].query.depart
-                                    }`}
-                                    rel="noreferrer"
-                                  >
-                                    See Flight (in new window)
-                                  </a>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        </div>
-                        <div className="py-4">
-                          {stops.length - 2 < 5 ? (
-                            <p className="text-lg">
-                              <span className="text-blue-600">
-                                <FaRegLightbulb className="inline-block pr-2" />{" "}
-                                Tip:
+                        {priceTotal > 1000 ? (
+                          <>
+                            <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
+                              Oh no. You ran out of money
+                            </h1>
+                            <p className="text-lg py-2">
+                              Looks like you will be staying in{" "}
+                              <span className="bold">
+                                {locationCity ? locationCity.name : ""}
                               </span>{" "}
-                              You did it with {stops.length - 2} stops, now try
-                              to do it with 5 or more stops.
+                              for now.
                             </p>
-                          ) : (
-                            <p>
-                              <span className="text-blue-600">
-                                <LuPartyPopper className="inline-block pr-2" />{" "}
-                                Wow:
-                              </span>{" "}
-                              You did it in {stops.length - 2} stops, now try to
-                              go around the world twice for £1000. I am not even
-                              sure its possible{" "}
+                            <div className="py-2 text-left text-lg">
+                              <h2 className="text-2xl mt-4">Your Locations</h2>
+                              <ul className="mt-2">
+                                {stops.map((item, key) => {
+                                  const country = getPlaceFromEntityId(
+                                    item.countryEntityId
+                                  );
+                                  if (key === 0) return "";
+                                  return (
+                                    <li
+                                      key={item.entityId}
+                                      className="border-b-2 border-gray-300 py-2"
+                                    >
+                                      {item.name}
+                                      {country ? `, ${country.name}` : ""} £
+                                      {prices[key - 1]} -{" "}
+                                      <a
+                                        className="text-blue-600 underline hover:no-underline"
+                                        target="_blank"
+                                        href={`/search/${
+                                          flights[key - 1].query.from.iata
+                                        }/${flights[key - 1].query.to.iata}/${
+                                          flights[key - 1].query.depart
+                                        }`}
+                                        rel="noreferrer"
+                                      >
+                                        See Flight (in new window)
+                                      </a>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </div>
+                            <button
+                              className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                              onClick={restartGame}
+                            >
+                              Try Again
+                            </button>
+                            <button
+                              className="inline-block ml-2 p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                              onClick={toggleLeaderBoard}
+                            >
+                              See Leaderboard
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
+                              You made it with £{1000 - priceTotal} still left
+                            </h1>
+                            <p className="text-lg py-2">
+                              Great job at gettting around the world.
                             </p>
-                          )}
-                        </div>
-                        <button
-                          className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
-                          onClick={restartGame}
-                        >
-                          Try Again
-                        </button>
+                            <div className="py-2 text-left text-lg">
+                              <h2 className="text-2xl mt-4">Your Locations</h2>
+                              <ul className="mt-2">
+                                {stops.map((item, key) => {
+                                  const country = getPlaceFromEntityId(
+                                    item.countryEntityId
+                                  );
+                                  if (key === 0) return "";
+                                  return (
+                                    <li
+                                      key={item.entityId}
+                                      className="border-b-2 border-gray-300 py-2"
+                                    >
+                                      {item.name}
+                                      {country ? `, ${country.name}` : ""} £
+                                      {prices[key - 1]} -{" "}
+                                      <a
+                                        className="text-blue-600 underline hover:no-underline"
+                                        target="_blank"
+                                        href={`/search/${
+                                          flights[key - 1].query.from.iata
+                                        }/${flights[key - 1].query.to.iata}/${
+                                          flights[key - 1].query.depart
+                                        }`}
+                                        rel="noreferrer"
+                                      >
+                                        See Flight (in new window)
+                                      </a>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </div>
+                            <div className="py-4">
+                              {stops.length - 2 < 5 ? (
+                                <p className="text-lg">
+                                  <span className="text-blue-600">
+                                    <FaRegLightbulb className="inline-block pr-2" />{" "}
+                                    Tip:
+                                  </span>{" "}
+                                  You did it with {stops.length - 2} stops, now
+                                  try to do it with 5 or more stops.
+                                </p>
+                              ) : (
+                                <p>
+                                  <span className="text-blue-600">
+                                    <LuPartyPopper className="inline-block pr-2" />{" "}
+                                    Wow:
+                                  </span>{" "}
+                                  You did it in {stops.length - 2} stops, now
+                                  try to go around the world twice for £1000. I
+                                  am not even sure its possible{" "}
+                                </p>
+                              )}
+                            </div>
+                            <button
+                              className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                              onClick={restartGame}
+                            >
+                              Try Again
+                            </button>
+                            <button
+                              className="inline-block ml-2 p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                              onClick={toggleLeaderBoard}
+                            >
+                              See Leaderboard
+                            </button>
+                          </>
+                        )}
                       </>
+                    ) : (
+                      ""
                     )}
                   </>
-                ) : (
-                  ""
                 )}
               </div>
             </div>
@@ -533,7 +649,7 @@ export const AroundTheWorld = ({
                 ""
               )}
             </div>
-            <div>
+            {/* <div>
               {gameMode === "playing" && stops.length === 1 ? (
                 <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-4">
                   <div className="text-2xl bold">
@@ -543,6 +659,19 @@ export const AroundTheWorld = ({
               ) : (
                 ""
               )}
+            </div> */}
+          </div>
+        </div>
+        <div className="absolute top-0 right-0 h-64 z-20 overflow-y-auto p-4">
+          <div className="flex gap-2">
+            <div
+              onClick={toggleLeaderBoard}
+              className="cursor-pointer relative text-white rounded-xl text-sm bg-blue-600 font-bold p-4"
+            >
+              <div className="text-2xl bold">
+                <FaTrophy className="inline-block mr-2" />{" "}
+                <span className="hidden md:inline-block">Leaderboard</span>
+              </div>
             </div>
           </div>
         </div>
