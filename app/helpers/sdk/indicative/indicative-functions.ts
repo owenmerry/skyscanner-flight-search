@@ -1,8 +1,16 @@
-import { getTripDays, getUpdatedFromTimestamps, getYYYYMMDDFromSkyscannerDate } from "~/helpers/date";
+import {
+  getTripDays,
+  getUpdatedFromTimestamps,
+  getYYYYMMDDFromSkyscannerDate,
+} from "~/helpers/date";
 import { getAllParents } from "../data";
 import { getPlaceFromEntityId, type Place } from "../place";
 import { getPrice, getPriceRaw } from "../price";
-import type { IndicitiveCarrier, SkyscannerAPIIndicativeResponse, SkyscannerDateTimeObject } from "./indicative-response";
+import type {
+  IndicitiveCarrier,
+  SkyscannerAPIIndicativeResponse,
+  SkyscannerDateTimeObject,
+} from "./indicative-response";
 
 export interface IndicativeQuotesSDK {
   id: string;
@@ -25,18 +33,18 @@ export interface IndicativeQuotesSDK {
     to: Place;
     depart: string;
     return: string;
-  },
+  };
   legs: {
     depart: {
-        date: SkyscannerDateTimeObject,
-        dateString: string;
-        carrier: IndicitiveCarrier;
-    },
+      date: SkyscannerDateTimeObject;
+      dateString: string;
+      carrier: IndicitiveCarrier;
+    };
     return: {
-        date: SkyscannerDateTimeObject,
-        dateString: string;
-        carrier: IndicitiveCarrier;
-    }
+      date: SkyscannerDateTimeObject;
+      dateString: string;
+      carrier: IndicitiveCarrier;
+    };
   };
   days: number;
   tripDays: string;
@@ -45,20 +53,30 @@ export interface IndicativeQuotesSDK {
 
 export const getIndicativeQuotesSDK = (
   search: SkyscannerAPIIndicativeResponse
-) : IndicativeQuotesSDK[] => {
+): IndicativeQuotesSDK[] => {
   const quote = Object.keys(search.content.results.quotes).map((quoteKey) => {
     const quote = search.content.results.quotes[quoteKey];
     const from = getPlaceFromEntityId(quote.outboundLeg.originPlaceId);
     const to = getPlaceFromEntityId(quote.outboundLeg.destinationPlaceId);
     if (!from || !to) return undefined;
     const parents = getAllParents(to.entityId);
-    const parentsString = parents.map(parent => parent.entityId);
-    const outboundDateString = getYYYYMMDDFromSkyscannerDate(quote.outboundLeg.departureDateTime);
-    const inboundDateString = getYYYYMMDDFromSkyscannerDate(quote.inboundLeg.departureDateTime);
-    const country = parents.filter(parent => parent.type === 'PLACE_TYPE_COUNTRY')[0];
-    const continent = parents.filter(parent => parent.type === 'PLACE_TYPE_CONTINENT')[0];
-    const city = parents.filter(parent => parent.type === 'PLACE_TYPE_CITY')[0];
-    const days = getTripDays(outboundDateString ,inboundDateString);
+    const parentsString = parents.map((parent) => parent.entityId);
+    const outboundDateString = getYYYYMMDDFromSkyscannerDate(
+      quote.outboundLeg.departureDateTime
+    );
+    const inboundDateString = getYYYYMMDDFromSkyscannerDate(
+      quote.inboundLeg.departureDateTime
+    );
+    const country = parents.filter(
+      (parent) => parent.type === "PLACE_TYPE_COUNTRY"
+    )[0];
+    const continent = parents.filter(
+      (parent) => parent.type === "PLACE_TYPE_CONTINENT"
+    )[0];
+    const city = parents.filter(
+      (parent) => parent.type === "PLACE_TYPE_CITY"
+    )[0];
+    const days = getTripDays(outboundDateString, inboundDateString);
 
     return {
       id: quoteKey,
@@ -84,29 +102,40 @@ export const getIndicativeQuotesSDK = (
       },
       legs: {
         depart: {
-            date: quote.outboundLeg.departureDateTime,
-            dateString: outboundDateString,
-            carrier: search.content.results.carriers[quote.outboundLeg.marketingCarrierId],
+          date: quote.outboundLeg.departureDateTime,
+          dateString: outboundDateString,
+          carrier:
+            search.content.results.carriers[
+              quote.outboundLeg.marketingCarrierId
+            ],
         },
         return: {
-            date: quote.inboundLeg.departureDateTime,
-            dateString: inboundDateString,
-            carrier: search.content.results.carriers[quote.inboundLeg.marketingCarrierId],
+          date: quote.inboundLeg.departureDateTime,
+          dateString: inboundDateString,
+          carrier:
+            search.content.results.carriers[
+              quote.inboundLeg.marketingCarrierId
+            ],
         },
       },
       days,
-      tripDays: days > 1 ? `${days} days` : `${days} day`,
-      updated: getUpdatedFromTimestamps(quote.outboundLeg.quoteCreationTimestamp, quote.inboundLeg.quoteCreationTimestamp),
+      tripDays: days + 1 > 1 ? `${days + 1} days` : `${days + 1} day`,
+      updated: getUpdatedFromTimestamps(
+        quote.outboundLeg.quoteCreationTimestamp,
+        quote.inboundLeg.quoteCreationTimestamp
+      ),
     };
   });
-  const quoteAll = quote.filter((item) => item !== undefined).sort((a, b) => {
-    // Convert the amount strings to numbers
-    const priceA = parseFloat(a.price.amount);
-    const priceB = parseFloat(b.price.amount);
-  
-    // Sort in ascending order
-    return priceA - priceB;
-  });
+  const quoteAll = quote
+    .filter((item) => item !== undefined)
+    .sort((a, b) => {
+      // Convert the amount strings to numbers
+      const priceA = parseFloat(a.price.amount);
+      const priceB = parseFloat(b.price.amount);
+
+      // Sort in ascending order
+      return priceA - priceB;
+    });
 
   return quoteAll;
 };
