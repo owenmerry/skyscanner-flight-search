@@ -25,6 +25,7 @@ import { getBearingBetweenPoints } from "./helpers/bearing";
 import { BiWorld } from "react-icons/bi";
 import { MdLocationPin } from "react-icons/md";
 import { LuPartyPopper } from "react-icons/lu";
+import AchievementNotification from "~/components/ui/game/AchievementNotification";
 
 export interface TripPrice {
   query: QueryPlace;
@@ -122,12 +123,20 @@ export const AroundTheWorld = ({
   const [prices, setPrices] = useState<number[]>([]);
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
   const [flights, setFlights] = useState<IndicativeQuotesSDK[]>([]);
+  const [viewingMarkers, setViewingMarkers] = useState<Markers[]>([]);
   const [startDate] = useState<string>(queryStartDate || "2024-12-01");
   const parents = to ? getAllParents(to.parentId) : [];
   const priceTotal = prices.reduce(
     (acc, currentValue) => acc + currentValue,
     0
   );
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationAwardMessage, setNotificationAwardMessage] = useState("");
+
+  const triggerNotification = () => {
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 5000);
+  };
   const locationCity = getCityPlaceFromEntityId(
     stops[stops.length - 1].entityId
   );
@@ -229,6 +238,8 @@ export const AroundTheWorld = ({
         );
       });
     }
+    setViewingMarkers(markers);
+    if (markers.length === 0) setGameMode("end");
     const updateMarkers: google.maps.marker.AdvancedMarkerElement[] = [];
     markers.forEach(async (marker) => {
       if (!mapControls?.controls?.addMarker) return;
@@ -339,6 +350,14 @@ export const AroundTheWorld = ({
       ],
     });
     clearSearch();
+    if ([...stops, place].length === 6) {
+      setNotificationAwardMessage("More then 5 stop overs");
+      triggerNotification();
+    }
+    if ([...stops, place].length === 11) {
+      setNotificationAwardMessage("More then 10 stop overs");
+      triggerNotification();
+    }
     if (gameOver) {
       setGameMode("end");
 
@@ -438,7 +457,7 @@ export const AroundTheWorld = ({
           <>
             <div className="opacity-80 bg-gray-900 absolute top-0 left-0 w-[100%] h-[100%] z-30"></div>
             <div className="absolute z-30 p-8 md:m-0 md:top-1/2 md:left-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 w-full md:max-w-[800px]">
-              <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-10 text-center shadow-lg">
+              <div className="relative text-slate-900 rounded-xl text-sm bg-white font-bold p-10 text-center shadow-lg overflow-y-scroll max-h-screen">
                 {showLeaderboard ? (
                   <>
                     <>
@@ -529,10 +548,14 @@ export const AroundTheWorld = ({
                     )}
                     {gameMode === "end" ? (
                       <>
-                        {priceTotal > 1000 ? (
+                        {priceTotal > 1000 || viewingMarkers.length === 0 ? (
                           <>
                             <h1 className="text-6xl font-extrabold tracking-tight leading-none mb-2">
-                              Oh no. You ran out of money
+                              {priceTotal > 1000
+                                ? `Oh no. You ran out of money`
+                                : viewingMarkers.length === 0
+                                ? "Oh no. You ran into a deadend and we have no flights"
+                                : ""}
                             </h1>
                             <p className="text-lg py-2">
                               Looks like you will be staying in{" "}
@@ -575,13 +598,13 @@ export const AroundTheWorld = ({
                               </ul>
                             </div>
                             <button
-                              className="inline-block p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                              className="inline-block m-2 p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
                               onClick={restartGame}
                             >
                               Try Again
                             </button>
                             <button
-                              className="inline-block ml-2 p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
+                              className="inline-block m-2 p-5 bg-blue-600 hover:bg-blue-500 rounded-2xl cursor-pointer text-2xl text-white"
                               onClick={toggleLeaderBoard}
                             >
                               See Leaderboard
@@ -772,6 +795,9 @@ export const AroundTheWorld = ({
             onMapLoaded={(map, options) => handleMapLoaded(map, options)}
           />
         </Wrapper>
+        {showNotification && (
+          <AchievementNotification message={notificationAwardMessage} />
+        )}
       </div>
     </div>
   );
