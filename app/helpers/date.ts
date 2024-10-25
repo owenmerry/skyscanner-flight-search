@@ -208,7 +208,7 @@ export const getTripDays = (
   const returnMoment = moment(returnDate);
   const days = returnMoment.diff(departMoment, "days");
 
-  return days;
+  return days + 1;
 };
 
 export const getUpdatedFromTimestamps = (outboundLegTimestamp : string, inboundLegTimestamp :string) => {

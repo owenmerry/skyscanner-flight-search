@@ -133,12 +133,14 @@ export const FlightControlsApp = ({
   console.log("check here", flightDefault);
   return (
     <div
-      className={`${showBackground ? 'bg-white dark:bg-slate-800 border-slate-300 border-b dark:border-0' : ''} ${
-        rounded ? "rounded-2xl" : ""
-      }`}
+      className={`${
+        showBackground
+          ? "bg-white dark:bg-slate-800 border-slate-300 border-b dark:border-0"
+          : ""
+      } ${rounded ? "rounded-2xl" : ""}`}
     >
       <div className="mx-auto max-w-screen-xl lg:px-12 px-4 sm:py-4 sm:px-4">
-        <div className={`${showBackground ? 'p-4 sm:p-1' : ''} flex`}>
+        <div className={`${showBackground ? "p-4 sm:p-1" : ""} flex`}>
           {showFlightDetails ? (
             <div className="flex-1">
               {flightDefaultPlace ? (
@@ -174,7 +176,14 @@ export const FlightControlsApp = ({
                             flightDefaultPlace.depart,
                             flightDefaultPlace.return
                           )}{" "}
-                          days)
+                          day
+                          {getTripDays(
+                            flightDefaultPlace.depart,
+                            flightDefaultPlace.return
+                          ) === 1
+                            ? ""
+                            : "s"}
+                          )
                         </span>
                       </>
                     ) : (
@@ -189,7 +198,7 @@ export const FlightControlsApp = ({
           ) : (
             ""
           )}
-          <div className={`${showFlightDetails ? 'sm:hidden' : 'hidden' }`}>
+          <div className={`${showFlightDetails ? "sm:hidden" : "hidden"}`}>
             <FlightControlsDrawer>
               <div className="px-6 py-8">
                 <h2 className="text-2xl font-bold mb-4">Change Search</h2>

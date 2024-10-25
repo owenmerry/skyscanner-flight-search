@@ -119,7 +119,7 @@ export const getIndicativeQuotesSDK = (
         },
       },
       days,
-      tripDays: days + 1 > 1 ? `${days + 1} days` : `${days + 1} day`,
+      tripDays: days === 1 ? `${days} day` : `${days} days`,
       updated: getUpdatedFromTimestamps(
         quote.outboundLeg.quoteCreationTimestamp,
         quote.inboundLeg.quoteCreationTimestamp
