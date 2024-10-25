@@ -510,6 +510,7 @@ export const AroundTheWorld = ({
                           <input
                             className="p-4 text-center border-gray-300 border-2"
                             placeholder="Add your Name.."
+                            name="full name"
                             value={gameName}
                             onChange={(e) => setGameName(e.target.value)}
                           />
