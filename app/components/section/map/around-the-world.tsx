@@ -98,7 +98,17 @@ export const AroundTheWorld = ({
     "start"
   );
   const [gameReason, setGameReason] = useState<"No flights">();
+  const [leaderboardMode, setLeaderboardMode] = useState("left");
   const [leaderboard, setLeaderBoard] = useState<
+    {
+      name: string;
+      award: string;
+      amount: number;
+      created_at: string;
+      updated_at: string;
+    }[]
+  >([]);
+  const [leaderboardClose, setLeaderBoardClose] = useState<
     {
       name: string;
       award: string;
@@ -335,12 +345,12 @@ export const AroundTheWorld = ({
       if (priceTotal < 1000) {
         const data = {
           name: gameName,
-          award: "price-left",
-          amount: 1000 - priceTotal,
+          stops: [...stops.map((item) => item.entityId), place.entityId].join(
+            ","
+          ),
         };
 
-        // Send a POST request using fetch
-        await fetch(`${apiUrl}/game/save`, {
+        await fetch(`${apiUrl}/game/won`, {
           method: "POST", // Method type
           headers: {
             "Content-Type": "application/json", // Tells the server you're sending JSON
@@ -413,7 +423,10 @@ export const AroundTheWorld = ({
     if (!showLeaderboard) {
       const leaderboardRes = await fetch(`${apiUrl}/game/top/price-left`);
       const leaderboardJson = await leaderboardRes.json();
+      const leaderboardCloseRes = await fetch(`${apiUrl}/game/top/price-close`);
+      const leaderboardCloseJson = await leaderboardCloseRes.json();
       setLeaderBoard(leaderboardJson);
+      setLeaderBoardClose(leaderboardCloseJson);
     }
     setShowLeaderBoard(!showLeaderboard);
   };
@@ -434,8 +447,33 @@ export const AroundTheWorld = ({
                       <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight leading-none mb-2">
                         Leaderboard
                       </h1>
+                      <div className="flex gap-2 justify-center">
+                        <button
+                          className={`inline-block p-2 ${
+                            leaderboardMode === "left"
+                              ? "bg-blue-600 hover:bg-blue-500 text-white"
+                              : "bg-white hover:bg-blue-400 hover:text-white text-gray-700"
+                          }  rounded-xl cursor-pointer text-xl `}
+                          onClick={() => setLeaderboardMode("left")}
+                        >
+                          Top Budget Left
+                        </button>
+                        <button
+                          className={`inline-block p-2 ${
+                            leaderboardMode === "close"
+                              ? "bg-blue-600 hover:bg-blue-500 text-white"
+                              : "bg-white hover:bg-blue-400 hover:text-white text-gray-700"
+                          }  rounded-xl cursor-pointer text-xl `}
+                          onClick={() => setLeaderboardMode("close")}
+                        >
+                          Closest to £1000
+                        </button>
+                      </div>
                       <ul className="my-2">
-                        {leaderboard.map((item) => {
+                        {(leaderboardMode === "left"
+                          ? leaderboard
+                          : leaderboardClose
+                        ).map((item) => {
                           return (
                             <li
                               key={item.created_at}
