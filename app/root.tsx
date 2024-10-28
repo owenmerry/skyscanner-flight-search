@@ -1,5 +1,9 @@
 import * as amplitude from "@amplitude/analytics-browser";
-import type { MetaFunction, LinksFunction } from "@remix-run/node";
+import {
+  type MetaFunction,
+  type LinksFunction,
+  redirect,
+} from "@remix-run/node";
 import {
   Links,
   LiveReload,
@@ -7,6 +11,9 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  useLocation,
+  useNavigate
 } from "@remix-run/react";
 import stylesheet from "~/tailwind.css";
 
@@ -63,7 +70,6 @@ const Document = withEmotionCache(
             rel="stylesheet"
           ></link>
 
-          
           <Meta />
           <Links />
         </head>
@@ -78,12 +84,39 @@ const Document = withEmotionCache(
   }
 );
 
+const isMaintenanceMode = false;
+
+export let loader = async ({ request }: { request: Request }) => {
+  const url = new URL(request.url);
+
+  // Redirect all routes to maintenance page except for the maintenance route itself
+  if (isMaintenanceMode && url.pathname !== "/maintenance") {
+    return redirect("/maintenance");
+  }
+
+  // Pass `isMaintenanceMode` down to the client
+  return { isMaintenanceMode };
+};
+
 export default function App() {
+  const { isMaintenanceMode } = useLoaderData();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
-    amplitude.init("db590d6781718f23151b150759366db4",{
+    amplitude.init("db590d6781718f23151b150759366db4", {
       defaultTracking: true,
     });
   }, []);
+
+  useEffect(() => {
+    if (isMaintenanceMode && location.pathname !== "/maintenance") {
+      navigate("/maintenance", { replace: true });
+    }
+  }, [isMaintenanceMode, location.pathname, navigate]);
+
+  if(isMaintenanceMode) return <Document>
+      <Layout>Maintenance Mode</Layout></Document>;
 
   return (
     <Document>
