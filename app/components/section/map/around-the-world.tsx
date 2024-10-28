@@ -337,7 +337,7 @@ export const AroundTheWorld = ({
     );
     const placeCity = getCityPlaceFromEntityId(place.entityId);
     const gameOver =
-      priceTotal > 1000 || (placeCity && placeCity.iata === "LON");
+      (priceTotal > 1000 || (placeCity && placeCity.iata === "LON")) && [...stops, place].length > 3;
     updateRefs([refs?.lineRef, refs?.markerRef]);
     setStops([...stops, place]);
     setPrices(updatedPrices);
