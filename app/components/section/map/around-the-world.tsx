@@ -358,6 +358,14 @@ export const AroundTheWorld = ({
       setNotificationAwardMessage("10 stopovers");
       triggerNotification();
     }
+    if ([...stops, place].length === 16 && !gameOver) {
+      setNotificationAwardMessage("15 stopovers");
+      triggerNotification();
+    }
+    if ([...stops, place].length === 21 && !gameOver) {
+      setNotificationAwardMessage("20 stopovers");
+      triggerNotification();
+    }
     if (gameOver) {
       setGameMode("end");
 
