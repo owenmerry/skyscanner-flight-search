@@ -351,11 +351,11 @@ export const AroundTheWorld = ({
     });
     clearSearch();
     if ([...stops, place].length === 6) {
-      setNotificationAwardMessage("More then 5 stop overs");
+      setNotificationAwardMessage("More then 5 stopovers");
       triggerNotification();
     }
     if ([...stops, place].length === 11) {
-      setNotificationAwardMessage("More then 10 stop overs");
+      setNotificationAwardMessage("More then 10 stopovers");
       triggerNotification();
     }
     if (gameOver) {
