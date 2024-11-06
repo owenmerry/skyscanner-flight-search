@@ -53,7 +53,7 @@ export let loader = async ({ request }: LoaderArgs) => {
         .map((city) => {
           return `
           <url>
-            <loc>${baseUrl}/city/${city.parent.slug}/${city.slug}</loc>
+            <loc>${baseUrl}/city/${city.country.slug}/${city.slug}</loc>
             <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
             <changefreq>weekly</changefreq>
             <priority>0.8</priority>

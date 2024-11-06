@@ -1,6 +1,7 @@
 import type { SkyscannerAPIGeoResponse, Geo } from "./geo-response";
 import slugify from "slugify";
 import geoAll from "~/data/geo.json";
+import geoCountries from "~/data/geo-country.json";
 import geoImages from "~/data/geo-images.json";
 import geoAirports from "~/data/geo-airport.json";
 
@@ -17,7 +18,7 @@ export interface GeoSDK {
 export type Place = Geo & {
   images: string[];
   countryEntityId: string;
-  parent: {
+  country: {
     slug?: string;
   };
   slug: string;
@@ -35,25 +36,23 @@ export const getGeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
     const airportWithCountryId = geoAirports.filter(
       (geoAirport) => geoAirport.entityId === place.entityId
     );
+    const country = geoCountries.filter(
+      (geoCountry) => geoCountry.entityId === place.parentId
+    );
     const countryEntityId =
       airportWithCountryId.length > 0
         ? airportWithCountryId[0].countryEntityId
         : "";
-    const parent = geoPlaces.find(
-      (geoPlace) => geoPlace.entityId === place.parentId
-    );
-    const parentSlug =
-      parent &&
-      slugify(parent.name, {
-        lower: true,
-        strict: true,
-      });
+    const countrySlug =
+      country.length > 0
+        ? country[0].slug
+        : "";
 
     return {
       ...place,
       countryEntityId,
-      parent: {
-        slug: parentSlug,
+      country: {
+        slug: countrySlug,
       },
       images: images,
       slug: place.name
