@@ -95,9 +95,7 @@ export const MarketingMap = ({
           Explore {level !== "everywhere" ? to?.name : "Everywhere"} by Map
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
-          We are strategists, designers and developers. Innovators and problem
-          solvers. Small enough to be simple and quick, but big enough to
-          deliver the scope you want at the pace you need {search.length}.
+        Use our map to discover flights from {from.name} to {level !== "everywhere" ? to?.name : "Everywhere"}.         
         </p>
         {/* <div className="flex py-3">
           <div onClick={addLondon} className="py-3 px-3 rounded-lg cursor-pointer bg-slate-600 text-white font-bold text-sm">Add London (markers: {markers.length})</div>

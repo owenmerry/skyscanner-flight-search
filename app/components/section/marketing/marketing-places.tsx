@@ -57,9 +57,8 @@ export const MarketingPlaces = ({
         Popular places {place ? `in ${place.name}` : `to Explore`}
       </h2>
       <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
-        We are strategists, designers and developers. Innovators and problem
-        solvers. Small enough to be simple and quick, but big enough to deliver
-        the scope you want at the pace you need.
+        Checkout all the places in {place ? place.name : ""} that you can
+        discover flights and things to do.
       </p>
       <div className="relative my-8">
         <div className="bg-gradient-to-l from-slate-900 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-20 sm:hidden"></div>
@@ -106,11 +105,23 @@ export const MarketingPlaces = ({
                         {childPlace.price?.display ? (
                           <>
                             {childPlace.price?.display}
-                            <svg className="w-4 h-4 text-gray-500 rotate-90 ml-1 inline-block" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"/>
-</svg>
-
-
+                            <svg
+                              className="w-4 h-4 text-gray-500 rotate-90 ml-1 inline-block"
+                              aria-hidden="true"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke="currentColor"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M8 20V7m0 13-4-4m4 4 4-4m4-12v13m0-13 4 4m-4-4-4 4"
+                              />
+                            </svg>
                           </>
                         ) : (
                           ""

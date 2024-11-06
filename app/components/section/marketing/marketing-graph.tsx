@@ -41,9 +41,7 @@ export const MarketingGraph = ({ search }: MarketingGraphProps) => {
         Cheapest months to travel
       </h2>
       <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
-        We are strategists, designers and developers. Innovators and problem
-        solvers. Small enough to be simple and quick, but big enough to deliver
-        the scope you want at the pace you need.
+        See all our flight prices by month to see when its best to select your holiday.
       </p>
       <div className="m-8 grid grid-cols-1 gap-2">
         {monthsPrice.map((month) => {

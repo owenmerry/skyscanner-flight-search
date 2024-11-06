@@ -69,9 +69,7 @@ export const MarketingWeather = ({ to, apiUrl }: MarketingWeatherProps) => {
           Weather in {to.name}
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-white">
-          We are strategists, designers and developers. Innovators and problem
-          solvers. Small enough to be simple and quick, but big enough to
-          deliver the scope you want at the pace you need.
+          Check out the weather for trips to {to.name}. This is a 12 month graph using last years weather data.
         </p>
         <div className="relative my-8">
           <div className="grid grid-cols-1 gap-4">

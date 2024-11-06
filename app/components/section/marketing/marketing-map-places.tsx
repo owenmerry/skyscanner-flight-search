@@ -166,9 +166,7 @@ export const MarketingMapPlaces = ({
           Explore {level !== "everywhere" ? to?.name : "Everywhere"} by Map
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
-          We are strategists, designers and developers. Innovators and problem
-          solvers. Small enough to be simple and quick, but big enough to
-          deliver the scope you want at the pace you need {search.length}.
+        Use our interative map to find intresting cafe's, restaurants or locations to visit in {to?.name}.
         </p>
         <div className="flex overflow-y-scroll scrollbar-hide gap-2 py-3 pt-6">
           <>

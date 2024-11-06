@@ -11,7 +11,6 @@ import type {
   TripadvisorNearByData,
   TripadvisorNearByResponse,
 } from "~/types/tripadvisor-near-by";
-import { tripSDKData } from "./helpers/data-tripadvisor";
 import { getAllParents } from "~/helpers/sdk/data";
 
 export interface TripadvisorSDK {
@@ -104,9 +103,7 @@ export const MarketingNearby = ({
           {parents[0] ? `, ${parents[0].name}` : ""}
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-white">
-          We are strategists, designers and developers. Innovators and problem
-          solvers. Small enough to be simple and quick, but big enough to
-          deliver the scope you want at the pace you need.
+          We have gathered a list of intresting places to visit in {to.name} that you can use on your travels.
         </p>
         <div className="relative my-8">
           <div className="bg-gradient-to-l from-blue-600 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-10 sm:hidden"></div>

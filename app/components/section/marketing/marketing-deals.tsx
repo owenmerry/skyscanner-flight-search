@@ -40,9 +40,7 @@ export const MarketingDeals = ({
           Cheap flights to {to ? to.name : "Everywhere"}
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
-          We are strategists, designers and developers. Innovators and problem
-          solvers. Small enough to be simple and quick, but big enough to
-          deliver the scope you want at the pace you need {search.length}.
+          We have {search.length} differnet flight deals for {from.name} to {to ? to.name : "Everywhere"}.
         </p>
         <div className="relative my-8">
           <div className="bg-gradient-to-l from-slate-950 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-20 sm:hidden"></div>

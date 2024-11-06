@@ -17,6 +17,9 @@ export interface GeoSDK {
 export type Place = Geo & {
   images: string[];
   countryEntityId: string;
+  parent: {
+    slug?: string;
+  };
   slug: string;
 };
 
@@ -36,10 +39,22 @@ export const getGeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
       airportWithCountryId.length > 0
         ? airportWithCountryId[0].countryEntityId
         : "";
+    const parent = geoPlaces.find(
+      (geoPlace) => geoPlace.entityId === place.parentId
+    );
+    const parentSlug =
+      parent &&
+      slugify(parent.name, {
+        lower: true,
+        strict: true,
+      });
 
     return {
       ...place,
       countryEntityId,
+      parent: {
+        slug: parentSlug,
+      },
       images: images,
       slug: place.name
         ? slugify(place.name, {
