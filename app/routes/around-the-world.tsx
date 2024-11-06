@@ -1,15 +1,19 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 import type { Place } from "~/helpers/sdk/place";
-import moment from "moment";
-import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { useEffect, useState } from "react";
-import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
+import { useState } from "react";
 import { Box, LinearProgress } from "@mui/material";
-import { MapPlanner } from "~/components/section/map/map-planner";
 import { AroundTheWorld } from "~/components/section/map/around-the-world";
+
+
+export const meta: MetaFunction = () => {
+  return {
+    title: `Travel Around the World for less then £1000 | Flights.owenmerry.com`,
+    description: `See if you can fly around the world with a budget of only £1000`,
+  };
+};
 
 export const loader: LoaderFunction = async () => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";

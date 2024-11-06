@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -17,6 +17,13 @@ import moment from "moment";
 import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { AllCountries } from "~/components/section/page/explore";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
+
+export const meta: MetaFunction = () => {
+  return {
+    title: `Explore Everywhere | Flights.owenmerry.com`,
+    description: `Discover everywhere in the world with maps, images and suggested must try locations`,
+  };
+};
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";

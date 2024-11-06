@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -8,16 +8,27 @@ import { userPrefs } from "~/helpers/cookies";
 import { MarketingHero } from "~/components/section/marketing/marketing-hero";
 import { MarketingGallery } from "~/components/section/marketing/marketing-gallery";
 import { getImages } from "~/helpers/sdk/query";
-import { MarketingPlaces } from "~/components/section/marketing/marketing-places";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import moment from "moment";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
-import { MarketingNearby } from "~/components/section/marketing/marketing-nearby";
 import { MarketingWeather } from "~/components/section/marketing/marketing-weather";
 import { MarketingMapPlaces } from "~/components/section/marketing/marketing-map-places";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
+
+export const meta: MetaFunction = ({ params }) => {
+  const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
+  const city = getPlaceFromSlug(params.city || "", "PLACE_TYPE_CITY", {
+    parentId: country ? country.entityId : undefined,
+  });
+  return {
+    title: `Explore ${city ? city.name : ""}, ${country ? country.name : ""} | Flights.owenmerry.com`,
+    description: `Discover ${
+      city ? city.name : ""
+    }, ${country ? country.name : ""} with maps, images and suggested must try locations`,
+  };
+};
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";

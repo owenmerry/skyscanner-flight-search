@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroDefault } from "~/components/section/hero/hero-default";
 import { Layout } from "~/components/ui/layout/layout";
@@ -16,6 +16,13 @@ import moment from "moment";
 import { MarketingPlaces } from "~/components/section/marketing/marketing-places";
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { actionsSearchForm } from "~/actions/search-form";
+
+export const meta: MetaFunction = ({ params }) => {
+  return {
+    title: `Explore the World | Flights.owenmerry.com`,
+    description: `Discover the world with maps, images and suggested must try locations`,
+  };
+};
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
