@@ -40,7 +40,8 @@ export const MarketingDeals = ({
           Cheap flights to {to ? to.name : "Everywhere"}
         </h2>
         <p className="font-light text-gray-500 sm:text-lg md:px-20 lg:px-38 xl:px-48 dark:text-gray-400">
-          We have {search.length} differnet flight deals for {from.name} to {to ? to.name : "Everywhere"}.
+          We have {search.length} differnet flight deals for {from.name} to{" "}
+          {to ? to.name : "Everywhere"}.
         </p>
         <div className="relative my-8">
           <div className="bg-gradient-to-l from-slate-950 to-transparent absolute bottom-0 right-0 w-[20px] h-[100%] z-20 sm:hidden"></div>
@@ -68,7 +69,7 @@ export const MarketingDeals = ({
                       <div className="relative z-10 p-4 leading-normal">
                         <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                           {deal.tripDays} in{" "}
-                          {level === "city"
+                          {level === "city" && deal.city
                             ? deal.city.name
                             : deal.country.name}
                         </h5>
