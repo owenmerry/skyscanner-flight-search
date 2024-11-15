@@ -26,6 +26,8 @@ import { BiWorld } from "react-icons/bi";
 import { MdLocationPin } from "react-icons/md";
 import { LuPartyPopper } from "react-icons/lu";
 import AchievementNotification from "~/components/ui/game/AchievementNotification";
+import ReactConfetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 export interface TripPrice {
   query: QueryPlace;
@@ -71,6 +73,10 @@ export const AroundTheWorld = ({
   googleApiKey,
 }: AroundTheWorldProps) => {
   let [searchParams] = useSearchParams();
+  const { width, height } = useWindowSize();
+  const [showConfetti, setShowConfetti] = useState(false);
+  debugger;
+  console.log('window size', width, height);
   const [mapControls, setMapControls] = useState<{
     map: google.maps.Map;
     controls: MapControlsOptions;
@@ -135,7 +141,8 @@ export const AroundTheWorld = ({
 
   const triggerNotification = () => {
     setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 5000);
+    runConfetti();
+    setTimeout(() => setShowNotification(false), 3000);
   };
   const locationCity = getCityPlaceFromEntityId(
     stops[stops.length - 1].entityId
@@ -337,7 +344,8 @@ export const AroundTheWorld = ({
     );
     const placeCity = getCityPlaceFromEntityId(place.entityId);
     const gameOver =
-      (priceTotal > 1000 || (placeCity && placeCity.iata === "LON")) && [...stops, place].length > 3;
+      (priceTotal > 1000 || (placeCity && placeCity.iata === "LON")) &&
+      [...stops, place].length > 3;
     updateRefs([refs?.lineRef, refs?.markerRef]);
     setStops([...stops, place]);
     setPrices(updatedPrices);
@@ -370,6 +378,7 @@ export const AroundTheWorld = ({
       setGameMode("end");
 
       if (priceTotal < 1000) {
+        runConfetti();
         const data = {
           name: gameName,
           stops: [...stops.map((item) => item.entityId), place.entityId].join(
@@ -456,6 +465,15 @@ export const AroundTheWorld = ({
       setLeaderBoardClose(leaderboardCloseJson);
     }
     setShowLeaderBoard(!showLeaderboard);
+  };
+
+  const runConfetti = () => {
+    setShowConfetti(true);
+
+    // Hide confetti after a few seconds
+    setTimeout(() => {
+      setShowConfetti(false);
+    }, 3000); // Adjust time as needed
   };
 
   return (
@@ -786,6 +804,7 @@ export const AroundTheWorld = ({
         ) : (
           ""
         )}
+        {showConfetti &&  <ReactConfetti className="z-50" width={1512} height={719} recycle={false} numberOfPieces={1200} />}
         <Wrapper apiKey={googleApiKey}>
           <MapControls
             googleMapId={googleMapId}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { ActionArgs, LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import { getImages } from "~/helpers/sdk/query";
@@ -29,6 +29,22 @@ import { PriceGraph } from "~/components/ui/graph/price-graph";
 import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
 import moment from "moment";
 import { actionsSearchForm } from "~/actions/search-form";
+
+export const meta: MetaFunction = ({ params }) => {
+  const defaultMeta = {
+    title: 'Search for Flights | Flights.owenmerry.com',
+    description: 'Search for Flights | Flights.owenmerry.com',
+  }
+  if (!params.from || !params.to) return defaultMeta;
+  const fromPlace = getPlaceFromIata(params.from);
+  const toPlace = getPlaceFromIata(params.to);
+  if (!fromPlace || !toPlace) return defaultMeta;
+
+  return {
+    title: `${fromPlace.name} (${fromPlace.iata}) to ${toPlace.name} (${toPlace.iata}) flights | Flights.owenmerry.com`,
+    description: `Discover flights from ${fromPlace.name} (${fromPlace.iata}) to ${toPlace.name} (${toPlace.iata}) flights with maps, images and suggested must try locations`,
+  };
+};
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";

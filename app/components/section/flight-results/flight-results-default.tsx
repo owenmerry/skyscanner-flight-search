@@ -130,27 +130,6 @@ const ButtonColumn = ({
         </div>
       </div>
       <div className="sm:display hidden">
-        <a
-          target="_blank"
-          className="ml-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-          href={`/booking/${query.from.iata}/${query.to.iata}/${query.depart}${
-            query.return ? `/${query.return}` : ``
-          }/${encodeURIComponent(flight.itineraryId)}`}
-        >
-          Details{" "}
-          <svg
-            width="13.5"
-            height="13.5"
-            aria-hidden="true"
-            viewBox="0 0 24 24"
-            className="ml-1 inline-block"
-          >
-            <path
-              fill="currentColor"
-              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
-            ></path>
-          </svg>
-        </a>
         <button
           className="ml-2 mt-2 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
           onClick={onButtonSelect}
@@ -346,15 +325,6 @@ const Flight = ({
           <Deals flight={flight} query={query} />
         </div>
       </JourneyDrawer>
-      {/* <a
-      target="_blank"
-      className="cursor-pointer"
-      href={`/booking/${query.from.iata}/${query.to.iata}/${query.depart}${
-        query.return ? `/${query.return}` : ``
-      }/${encodeURIComponent(flight.itineraryId)}`}
-    >
-
-    </a> */}
     </>
   );
 };
