@@ -29,20 +29,42 @@ import { PriceGraph } from "~/components/ui/graph/price-graph";
 import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
 import { actionsSaveFlight } from "~/actions/save-flight";
 import { BarChartHistoryPrice } from "~/components/ui/bar-chart/bar-chart-history-price";
+import moment from "moment";
+import type { IndicativeSDK } from "~/helpers/sdk/indicative/indicative-sdk";
+import { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
+import { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
 
-export const meta: MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
-    title: 'Search for Flights | Flights.owenmerry.com',
-    description: 'Search for Flights | Flights.owenmerry.com',
-  }
-  if (!params.from || !params.to) return defaultMeta;
-  const fromPlace = getPlaceFromIata(params.from);
-  const toPlace = getPlaceFromIata(params.to);
-  if (!fromPlace || !toPlace) return defaultMeta;
+    title: "Search for Flights | Flights.owenmerry.com",
+    description: "Search for Flights | Flights.owenmerry.com",
+  };
+  if (!data) return defaultMeta;
+  const {
+    flightQuery,
+    indicativeSearchFlight,
+    flightHistoryPrices,
+  }: {
+    flightQuery: QueryPlace;
+    indicativeSearchFlight: IndicativeQuotesSDK[];
+    flightHistoryPrices: FlightHistorySDK;
+  } = data;
+  const historyPrice =
+    "error" in flightHistoryPrices
+      ? undefined
+      : flightHistoryPrices.length > 0
+      ? `£${flightHistoryPrices[0].price.toFixed(0)}`
+      : undefined;
+  const indicativePrice = indicativeSearchFlight.length > 0 ? indicativeSearchFlight[0].price.display : undefined;
+  const flightPrice = historyPrice || indicativePrice;
 
   return {
-    title: `${fromPlace.name} (${fromPlace.iata}) to ${toPlace.name} (${toPlace.iata}) return flights | Flights.owenmerry.com`,
-    description: `Discover flights from ${fromPlace.name} (${fromPlace.iata}) to ${toPlace.name} (${toPlace.iata}) return flights with maps, images and suggested must try locations`,
+    title: `${
+      flightPrice ? `${flightPrice} ` : ""
+    }Cheap Return Flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${
+      flightQuery.to.name
+    } (${flightQuery.to.iata}) | Flights.owenmerry.com`,
+    description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
   };
 };
 
@@ -88,6 +110,32 @@ export const loader = async ({ params }: LoaderArgs) => {
     query: `${toPlace.name}${country ? `, ${country.name}` : ""}`,
   });
 
+  const indicativeSearch = await skyscanner().indicative({
+    apiUrl,
+    query: {
+      from: flightQuery.from.entityId,
+      to: flightQuery.to ? flightQuery.to.entityId : "",
+      tripType: "return",
+    },
+    month: Number(moment(flightQuery.depart).startOf("month").format("MM")),
+    year: Number(moment(flightQuery.depart).startOf("month").format("YYYY")),
+    groupType: "date",
+  });
+  
+  const indicativeSearchFlight = indicativeSearch.quotes
+  .filter((item) => item.price.raw)
+  .filter(
+    (item) =>
+      item.query.depart === flightQuery.depart &&
+    item.query.return === flightQuery.return
+  )
+  .sort((a, b) => (a.price.raw || 0) - (b.price.raw || 0));
+  
+  const flightHistoryPrices = await skyscanner().flightHistory({
+    apiUrl,
+    query: flightQuery,
+  });
+  
   return {
     apiUrl,
     googleApiKey,
@@ -98,6 +146,9 @@ export const loader = async ({ params }: LoaderArgs) => {
     headerImage: fromImage[0] || "",
     country,
     city,
+    indicativeSearch,
+    indicativeSearchFlight,
+    flightHistoryPrices,
   };
 };
 
@@ -105,7 +156,7 @@ export async function action({ request }: ActionArgs) {
   let action;
   //action = await actionsSearchForm({ request });
   action = await actionsSaveFlight({ request });
-
+  
   return action;
 }
 
@@ -127,23 +178,25 @@ export default function Search() {
     headerImage: string;
     country: Place;
     city: Place;
+    indicativeSearch: IndicativeSDK;
+    indicativeSearchFlight: IndicativeSDK;
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<
-    SearchSDK | { error: string } | undefined
+  SearchSDK | { error: string } | undefined
   >();
   const [searchHotel, setSearchHotel] =
-    useState<SkyscannerAPIHotelSearchResponse>();
+  useState<SkyscannerAPIHotelSearchResponse>();
   const [filters, setFilters] = useState({});
   const [showFilters] = useState(false);
   const [query] = useState(flightParams);
-
+  
   useEffect(() => {
     setLoading(true);
     runCreateSearch();
     runHotel();
   }, []);
-
+  
   const runHotel = async () => {
     const hotelSearch = await skyscanner().hotel({
       apiUrl,
@@ -285,7 +338,11 @@ export default function Search() {
             />
           </div>
           <div className="w-full md:ml-2 md:max-w-[730px]">
-            <BarChartHistoryPrice query={flightQuery} interval="hour" />
+            <BarChartHistoryPrice
+              query={flightQuery}
+              interval="hour"
+              apiUrl={apiUrl}
+            />
             <FlightResultsDefault
               flights={search && "error" in search ? undefined : search}
               filters={filters}

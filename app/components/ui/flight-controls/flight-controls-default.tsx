@@ -39,7 +39,6 @@ export const FlightControls = ({
     });
   };
   const handleLocationSwap = () => {
-    console.log("swap", query);
     setSwitchRotate(!switchRotate);
     setQuery({
       ...query,

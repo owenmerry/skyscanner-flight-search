@@ -58,7 +58,6 @@ export const PlannerStop = ({
   }: {
     placeGoogle: PlaceGoogle;
   }) => {
-    console.log(placeGoogle, stop);
     onGooglePlaceSelected({ placeGoogle, stop });
   };
 

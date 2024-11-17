@@ -26,9 +26,7 @@ export const CarHireList = ({
       query,
       apiUrl,
     });
-    console.log("car hire data", carHireRes);
     if ("error" in carHireRes.search) return;
-    console.log("added results to search");
 
     setSearch(carHireRes.search);
   };

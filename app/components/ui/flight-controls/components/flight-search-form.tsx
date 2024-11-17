@@ -63,7 +63,6 @@ export const FlightsSearchForm: React.FC<FlightsSearchFormProps> = ({
     });
   };
   const handleLocationSwap = () => {
-    console.log("swap", query);
     setSwitchRotate(!switchRotate);
     setQuery({
       ...query,
@@ -102,9 +101,6 @@ export const FlightsSearchForm: React.FC<FlightsSearchFormProps> = ({
   useEffect(() => {
     const queryPlace = convertQuerytoQueryPlace(query);
     if (!queryPlace) return;
-    console.log("changed query", {
-      query,
-    });
 
     onChange && onChange(queryPlace);
   }, [query]);

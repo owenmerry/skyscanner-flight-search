@@ -4,15 +4,12 @@ import { useLoaderData } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { HotelList } from "~/components/section/hotels-list";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
-import type { FlightQuery, FlightUrl } from "~/types/search";
 import { FlightDetails } from "~/components/section/flight-details";
 import { getImages } from "~/helpers/sdk/query";
-import type { Query as OldQuery, QueryPlace } from "~/types/search";
+import type { Query as OldQuery, QueryPlace, FlightUrl } from "~/types/search";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
-import { MapComponent } from "~/components/section/page/search";
 import { MapRoute } from "~/components/section/map/map-route";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { Loading } from "~/components/ui/loading";
 
 export const loader = async ({ params }: LoaderArgs) => {

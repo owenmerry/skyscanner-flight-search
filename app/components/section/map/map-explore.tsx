@@ -74,15 +74,12 @@ export const MapExplore = ({
     });
   };
   const moveToMarker = (map: google.maps.Map, marker: MapMarker) => {
-    console.log("run marker");
     if (!map) return;
-    console.log("move marker");
 
     map.panTo({
       lat: marker.location.lat,
       lng: marker.location.lng,
     });
-    console.log("zoom to marker");
     map.setZoom(16);
   };
 

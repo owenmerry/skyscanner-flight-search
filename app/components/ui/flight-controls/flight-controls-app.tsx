@@ -130,7 +130,6 @@ export const FlightControlsApp = ({
   const [form, setForm] = useState<SearchForm>(selected);
   const flightDefaultPlace =
     (flightDefault && convertQuerytoQueryPlace(flightDefault)) || null;
-  console.log("check here", flightDefault);
   return (
     <div
       className={`${

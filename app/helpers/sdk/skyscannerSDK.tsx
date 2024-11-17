@@ -6,7 +6,11 @@ import { getGeoSDK } from "./geo/geo-sdk";
 import type { SkyscannerAPIHotelSearchResponse } from "./hotel/hotel-response";
 import type { HotelSDK } from "./hotel/hotel-sdk";
 import { getHotelSDK } from "./hotel/hotel-sdk";
-import type { FlightQuery, FlightQueryIndicative } from "~/types/search";
+import type {
+  FlightQuery,
+  FlightQueryIndicative,
+  QueryPlace,
+} from "~/types/search";
 //indicative
 import type { SkyscannerAPIIndicativeResponse } from "./indicative/indicative-response";
 import type { IndicativeSDK } from "./indicative/indicative-sdk";
@@ -25,10 +29,12 @@ import { getCarHireIndicativeSDK } from "./car-hire-indicative/car-hire-indicati
 import type { SkyscannerAPICarHireIndicativeResponse } from "./car-hire-indicative/care-hire-indicative-response";
 import { getGoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
 import type { GoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
+import type { GoogleDetailsSDK } from "./google-details/google-details-sdk";
+import { getGoogleDetailsSDK } from "./google-details/google-details-sdk";
 import {
-  getGoogleDetailsSDK,
-  GoogleDetailsSDK,
-} from "./google-details/google-details-sdk";
+  FlightHistorySDK,
+  getFlightHistorySDK,
+} from "./flight-history/flight-history-sdk";
 
 // types (Response)
 
@@ -64,6 +70,13 @@ export interface SkyscannerSDK {
     query?: FlightQuery;
     apiUrl?: string;
   }) => Promise<HotelSDK>;
+  flightHistory: ({
+    query,
+    apiUrl,
+  }: {
+    query: QueryPlace;
+    apiUrl: string;
+  }) => Promise<FlightHistorySDK>;
   content: ({
     res,
     slug,
@@ -110,6 +123,7 @@ export interface SkyscannerSDK {
 export const skyscanner = (): SkyscannerSDK => {
   return {
     flight: getFlightSDK,
+    flightHistory: getFlightHistorySDK,
     geo: (res?: SkyscannerAPIGeoResponse) => getGeoSDK(res),
     hotel: getHotelSDK,
     indicative: getIndicativeSDK,

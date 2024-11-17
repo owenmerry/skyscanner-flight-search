@@ -73,6 +73,13 @@ export const getIndicative = async ({
     error = "";
   if (!query) return { error: "Query is required" };
   try {
+    console.log(`${apiUrl}/price?from=${query.from}&to=${
+        query.to
+      }&month=${month}&year=${year}&tripType=${query.tripType}${
+        endMonth ? `&endMonth=${endMonth}` : ""
+      }${endYear ? `&endYear=${endYear}` : ""}${
+        groupType ? `&groupType=${groupType}` : ``
+      }`);
     const res = await fetch(
       `${apiUrl}/price?from=${query.from}&to=${
         query.to

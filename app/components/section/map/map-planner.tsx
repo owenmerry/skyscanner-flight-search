@@ -185,7 +185,6 @@ export const MapPlanner = ({
       );
       updateMarkers?.push(markerRef);
     });
-    console.log(updateMarkers);
     setSearchRefs(updateMarkers);
   };
 
@@ -330,7 +329,6 @@ export const MapPlanner = ({
     });
     setQueryString([...stops, place]);
     clearSearch();
-    console.log("check has before", hasStopsBefore);
     if (hasStopsBefore) {
       getPrice({
         query: {
@@ -393,7 +391,6 @@ export const MapPlanner = ({
     )[] = [];
     refs.forEach((ref) => {
       if (ref) {
-        console.log("added ref");
         updateRefs.push(ref);
       }
     });
@@ -402,7 +399,6 @@ export const MapPlanner = ({
   };
 
   const handleDateChange = async (date: DatesQuery) => {
-    console.log(date.depart);
     setStartDate(date.depart);
     let newParams = new URLSearchParams(searchParams);
     newParams.set("startDate", date.depart);
@@ -415,11 +411,9 @@ export const MapPlanner = ({
 
     const startIndex = result.source.index;
     const endIndex = result.destination.index;
-    console.log(result);
     const stopsUpdated = stops;
     const [removed] = stopsUpdated.splice(startIndex, 1);
     stopsUpdated.splice(endIndex, 0, removed);
-    console.log(stopsUpdated);
     setStops(stopsUpdated);
     setQueryString(stopsUpdated);
     handleRefresh({ startDate });

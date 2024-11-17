@@ -1,45 +1,41 @@
 import { useEffect, useState } from "react";
 import { buildBarChartData } from "./helpers/bar-chart";
 import moment from "moment";
-import { QueryPlace } from "~/types/search";
+import type { QueryPlace } from "~/types/search";
 import { MdHistory } from "react-icons/md";
-
-export interface PriceHistory {
-  id: number;
-  searchHash: string;
-  price: number;
-  created_at: string;
-  updated_at: string;
-}
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
 
 export interface BarChartHistoryPriceProps {
   query: QueryPlace;
   interval?: "day" | "hour";
+  apiUrl: string,
+  flightPrices?: FlightHistorySDK,
 }
 
 export const BarChartHistoryPrice = ({
   query,
+  flightPrices,
   interval = "day",
+  apiUrl,
 }: BarChartHistoryPriceProps) => {
-  const [prices, setPrices] = useState<PriceHistory[]>();
+  const [prices, setPrices] = useState<FlightHistorySDK | undefined>(flightPrices);
   const [show, setShow] = useState(false);
   useEffect(() => {
-    runPriceHistory();
+    if(!prices){
+      runPriceHistory();
+    }
   }, []);
 
   const runPriceHistory = async () => {
-    const res = await fetch(
-      `https://api.flights.owenmerry.com/flight/history?from=${
-        query.from.entityId
-      }&to=${query.to.entityId}&depart=${query.depart}${
-        query.return ? `&return=${query.return}` : ""
-      }`
-    );
-    const prices: PriceHistory[] = await res.json();
+    const prices = await skyscanner().flightHistory({
+      apiUrl,
+      query
+    });
 
     setPrices(prices);
   };
-  if (!prices || prices.length === 0) return "";
+  if (!prices || 'error' in prices || prices.length === 0) return "";
   const chart = buildBarChartData(prices, interval, 100, 50);
 
   return (

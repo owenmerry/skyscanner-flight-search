@@ -29,20 +29,41 @@ import { PriceGraph } from "~/components/ui/graph/price-graph";
 import { GraphDrawer } from "~/components/ui/drawer/drawer-graph";
 import moment from "moment";
 import { actionsSearchForm } from "~/actions/search-form";
+import { BarChartHistoryPrice } from "~/components/ui/bar-chart/bar-chart-history-price";
+import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
+import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
 
-export const meta: MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
-    title: 'Search for Flights | Flights.owenmerry.com',
-    description: 'Search for Flights | Flights.owenmerry.com',
-  }
-  if (!params.from || !params.to) return defaultMeta;
-  const fromPlace = getPlaceFromIata(params.from);
-  const toPlace = getPlaceFromIata(params.to);
-  if (!fromPlace || !toPlace) return defaultMeta;
+    title: "Search for Flights | Flights.owenmerry.com",
+    description: "Search for Flights | Flights.owenmerry.com",
+  };
+  if (!data) return defaultMeta;
+  const {
+    flightQuery,
+    indicativeSearchFlight,
+    flightHistoryPrices,
+  }: {
+    flightQuery: QueryPlace;
+    indicativeSearchFlight: IndicativeQuotesSDK[];
+    flightHistoryPrices: FlightHistorySDK;
+  } = data;
+  const historyPrice =
+    "error" in flightHistoryPrices
+      ? undefined
+      : flightHistoryPrices.length > 0
+      ? `£${flightHistoryPrices[0].price.toFixed(0)}`
+      : undefined;
+  const indicativePrice = indicativeSearchFlight.length > 0 ? indicativeSearchFlight[0].price.display : undefined;
+  const flightPrice = historyPrice || indicativePrice;
 
   return {
-    title: `${fromPlace.name} (${fromPlace.iata}) to ${toPlace.name} (${toPlace.iata}) flights | Flights.owenmerry.com`,
-    description: `Discover flights from ${fromPlace.name} (${fromPlace.iata}) to ${toPlace.name} (${toPlace.iata}) flights with maps, images and suggested must try locations`,
+    title: `${
+      flightPrice ? `${flightPrice} ` : ""
+    }Cheap One-way Flights from (${flightQuery.from.iata}) to ${
+      flightQuery.to.name
+    } (${flightQuery.to.iata}) | Flights.owenmerry.com`,
+    description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) flights with maps, images and suggested must try locations`,
   };
 };
 
@@ -81,21 +102,42 @@ export const loader = async ({ params }: LoaderArgs) => {
     from: fromPlace,
     to: toPlace,
     depart: params.depart || "",
-    return: moment(params.depart).add(2 ,'days').format('YYYY-MM-DD') || "",
+    return: moment(params.depart).add(2, "days").format("YYYY-MM-DD") || "",
   };
   const country = getPlaceFromEntityId(
     getCountryEntityId(flightQuery.to.entityId)
   );
-  const city = getPlaceFromEntityId(
-    getCityEntityId(flightQuery.to.entityId)
-  );
-
-
+  const city = getPlaceFromEntityId(getCityEntityId(flightQuery.to.entityId));
 
   //images
   const fromImage = await getImages({
     apiUrl,
     query: `${toPlace.name}${country ? `, ${country.name}` : ""}`,
+  });
+
+  const indicativeSearch = await skyscanner().indicative({
+    apiUrl,
+    query: {
+      from: flightQuery.from.entityId,
+      to: flightQuery.to ? flightQuery.to.entityId : "",
+      tripType: "single",
+    },
+    month: Number(moment(flightQuery.depart).startOf("month").format("MM")),
+    year: Number(moment(flightQuery.depart).startOf("month").format("YYYY")),
+    groupType: "date",
+  });
+
+  const indicativeSearchFlight = indicativeSearch.quotes
+    .filter((item) => item.price.raw)
+    .filter(
+      (item) =>
+        item.query.depart === flightQuery.depart
+    )
+    .sort((a, b) => (a.price.raw || 0) - (b.price.raw || 0));
+
+  const flightHistoryPrices = await skyscanner().flightHistory({
+    apiUrl,
+    query: flightQuery,
   });
 
   return {
@@ -109,12 +151,15 @@ export const loader = async ({ params }: LoaderArgs) => {
     headerImage: fromImage[0] || "",
     country,
     city,
+    indicativeSearch,
+    indicativeSearchFlight,
+    flightHistoryPrices,
   };
 };
 
 export async function action({ request }: ActionArgs) {
   let action;
-  action = actionsSearchForm({request});
+  action = actionsSearchForm({ request });
 
   return action;
 }
@@ -163,7 +208,7 @@ export default function Search() {
         from: hotelQuery.from.entityId,
         to: hotelQuery.to.entityId,
         depart: hotelQuery.depart,
-        return: moment(hotelQuery.depart).add(2 ,'days').format('YYYY-MM-DD'),
+        return: moment(hotelQuery.depart).add(2, "days").format("YYYY-MM-DD"),
         tripType: "return",
       },
     });
@@ -265,31 +310,27 @@ export default function Search() {
       <div className="">
         <div className="md:flex justify-between mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
           <div className="relative z-10 md:hidden bg-white dark:bg-gray-900  py-4 rounded-lg mb-2 cursor-pointer dark:text-white ">
-          <div className="flex overflow-y-scroll scrollbar-hide gap-2">
-            <FiltersDrawer
-              onClear={() => {
-                setFilters({});
-              }}
-            >
-              <div className="px-6 py-8">
-                <h2 className="text-2xl font-bold mb-4">Change Search</h2>
-                <FiltersDefault
-                  flights={search && "error" in search ? undefined : search}
-                  onFilterChange={(filters) => setFilters(filters)}
-                  query={flightQuery}
-                  defaultFilters={filters}
-                />
-              </div>
-            </FiltersDrawer>
-            <GraphDrawer>
-            <PriceGraph
-                apiUrl={apiUrl}
-                query={flightQuery}
-                showReturn
-              />
-            </GraphDrawer>
-            <ExplorePageButton country={country} />
-            <ExplorePageButton country={country} city={city} />
+            <div className="flex overflow-y-scroll scrollbar-hide gap-2">
+              <FiltersDrawer
+                onClear={() => {
+                  setFilters({});
+                }}
+              >
+                <div className="px-6 py-8">
+                  <h2 className="text-2xl font-bold mb-4">Change Search</h2>
+                  <FiltersDefault
+                    flights={search && "error" in search ? undefined : search}
+                    onFilterChange={(filters) => setFilters(filters)}
+                    query={flightQuery}
+                    defaultFilters={filters}
+                  />
+                </div>
+              </FiltersDrawer>
+              <GraphDrawer>
+                <PriceGraph apiUrl={apiUrl} query={flightQuery} showReturn />
+              </GraphDrawer>
+              <ExplorePageButton country={country} />
+              <ExplorePageButton country={country} city={city} />
             </div>
           </div>
           <div className={`hidden md:block w-96 p-2`}>
@@ -300,6 +341,11 @@ export default function Search() {
             />
           </div>
           <div className="w-full md:ml-2">
+            <BarChartHistoryPrice
+              query={flightQuery}
+              interval="hour"
+              apiUrl={apiUrl}
+            />
             <FlightResultsDefault
               flights={search && "error" in search ? undefined : search}
               filters={filters}
@@ -320,14 +366,10 @@ export default function Search() {
             )} */}
           </div>
           <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
-          <div className="mb-2">
-          <GraphDrawer>
-            <PriceGraph
-                apiUrl={apiUrl}
-                query={flightQuery}
-                showReturn
-              />
-            </GraphDrawer>
+            <div className="mb-2">
+              <GraphDrawer>
+                <PriceGraph apiUrl={apiUrl} query={flightQuery} showReturn />
+              </GraphDrawer>
             </div>
             <CompetitorCheck
               query={flightQuery}
@@ -346,11 +388,10 @@ export default function Search() {
                 />
               </div> */}
             <ExplorePage country={country} />
-
           </div>
         </div>
         <div>
-        {/* <CarHireList
+          {/* <CarHireList
                   query={{
                     from: flightQuery.from.entityId,
                     depart: flightQuery.depart,

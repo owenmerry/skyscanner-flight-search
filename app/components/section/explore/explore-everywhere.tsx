@@ -92,13 +92,6 @@ export const ExploreEverywhere = ({
       endYear: 2024,
     });
 
-    console.log({
-      month: Number(moment(month).startOf("month").format("MM")),
-      year: Number(moment(month).startOf("month").format("YYYY")),
-      endMonth: 12,
-      endYear: 2024,
-    });
-
     if ("error" in indicativeSearch.search) return;
 
     setSearch(indicativeSearch.search);

@@ -40,7 +40,6 @@ export const FiltersDefault = ({
   };
 
   useEffect(() => {
-    console.log(filtersDebounced);
     onFilterChange && onFilterChange(filtersDebounced);
   }, [filtersDebounced]);
 

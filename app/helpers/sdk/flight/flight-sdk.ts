@@ -227,7 +227,6 @@ export const getSearchWithCreateAndPoll = async ({
 
     if (flightSearch.status === "RESULT_STATUS_COMPLETE") {
       if (!("cheapest" in flightSearch)) return;
-      console.log("got complete", flightSearch.stats.minPrice);
       return flightSearch;
     }
   }
@@ -241,13 +240,10 @@ export const getSearchWithCreateAndPoll = async ({
   });
   //check status
   if ("error" in flightPoll) {
-    console.log("got error, retry");
     return await getSearchWithCreateAndPoll({ query, apiUrl, sessionToken });
   } else if (flightPoll.status === "RESULT_STATUS_COMPLETE") {
-    console.log("got complete", flightPoll.stats.minPrice);
     return flightPoll;
   } else {
-    console.log(`got ${flightPoll.status}, retry`);
     return await getSearchWithCreateAndPoll({ query, apiUrl, sessionToken });
   }
 };

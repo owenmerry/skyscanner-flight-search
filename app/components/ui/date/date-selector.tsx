@@ -35,7 +35,6 @@ export const DateSelector = ({
   const isReturnSelected = !isDepart && showCalender;
 
   useEffect(() => {
-    console.log("update dates", query);
     setDates({
       depart: query.depart,
       ...(query.return ? { return: query.return } : {}),

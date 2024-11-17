@@ -59,7 +59,6 @@ export const LocationPlaces = ({
       ...locationBias,
     });
     if ("error" in autosuggest) return;
-    console.log(autosuggest.suggestions);
     onChange && onChange(e.target.value);
     setPredictions(autosuggest.suggestions);
     setShowAutoSuggest(true);

@@ -25,7 +25,6 @@ export const CompetitorCheck = ({
     if (!query) return;
     const kiwiFlights = await fetchFlightsKiwi(query, apiUrl);
     if ("error" in kiwiFlights) return;
-    console.log("kiwiFlights", kiwiFlights);
     setKiwiSearch(kiwiFlights);
   };
 

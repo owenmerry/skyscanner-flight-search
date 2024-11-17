@@ -73,10 +73,8 @@ export const AroundTheWorld = ({
   googleApiKey,
 }: AroundTheWorldProps) => {
   let [searchParams] = useSearchParams();
-  const { width, height } = useWindowSize();
+ // const { width, height } = useWindowSize();
   const [showConfetti, setShowConfetti] = useState(false);
-  debugger;
-  console.log('window size', width, height);
   const [mapControls, setMapControls] = useState<{
     map: google.maps.Map;
     controls: MapControlsOptions;
@@ -196,7 +194,6 @@ export const AroundTheWorld = ({
     };
   } = {}) => {
     if (!mapControls) return;
-    console.log("stop before", stopBefore);
     const searchDate = month ? month : moment();
     const indicativeSearch = await skyscanner().indicative({
       apiUrl,
@@ -213,15 +210,6 @@ export const AroundTheWorld = ({
     });
 
     if ("error" in indicativeSearch.search) return;
-
-    var date1 = moment("2023-10-18"); // Example date 1
-    var date2 = moment("2024-01-01"); // Example date 2
-
-    if (date2.isAfter(date1)) {
-      console.log("Date 2 is after Date 1");
-    } else {
-      console.log("Date 2 is not after Date 1");
-    }
 
     const quotesFilteredByDate = indicativeSearch.quotes.filter((item) =>
       searchDate.isAfter(moment(item.query.depart))
@@ -257,7 +245,6 @@ export const AroundTheWorld = ({
       );
       updateMarkers?.push(markerRef);
     });
-    console.log(updateMarkers);
     setSearchRefs(updateMarkers);
   };
 
@@ -417,7 +404,6 @@ export const AroundTheWorld = ({
     )[] = [];
     refs.forEach((ref) => {
       if (ref) {
-        console.log("added ref");
         updateRefs.push(ref);
       }
     });
@@ -804,7 +790,7 @@ export const AroundTheWorld = ({
         ) : (
           ""
         )}
-        {showConfetti &&  <ReactConfetti className="z-50" width={1512} height={719} recycle={false} numberOfPieces={1200} />}
+        {/* {showConfetti &&  <ReactConfetti className="z-50" width={1512} height={719} recycle={false} numberOfPieces={1200} />} */}
         <Wrapper apiKey={googleApiKey}>
           <MapControls
             googleMapId={googleMapId}
