@@ -72,21 +72,21 @@ export default function Search() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<IndicativeQuotesSDK[]>();
   const [filters, setFilters] = useState<Filters[]>([]);
-  const continentAsia = getPlaceFromSlug("asia" || "", "PLACE_TYPE_CONTINENT");
+  const continentAsia = getPlaceFromSlug("asia", "PLACE_TYPE_CONTINENT");
   const continentNorthAmerica = getPlaceFromSlug(
-    "north-america" || "",
+    "north-america",
     "PLACE_TYPE_CONTINENT"
   );
   const continentSouthAmerica = getPlaceFromSlug(
-    "south-america" || "",
+    "south-america",
     "PLACE_TYPE_CONTINENT"
   );
   const continentAfrica = getPlaceFromSlug(
-    "africa" || "",
+    "africa",
     "PLACE_TYPE_CONTINENT"
   );
   const continentEurope = getPlaceFromSlug(
-    "europe" || "",
+    "europe",
     "PLACE_TYPE_CONTINENT"
   );
 

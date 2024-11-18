@@ -8,7 +8,7 @@ export const Breadcrumbs = ({ items = [] }: BreadcrumbsProps) => {
   return (
     <Wrapper>
       <nav className="flex" aria-label="Breadcrumb">
-        <ol className="inline-flex items-center space-x-1 md:space-x-3">
+        <ol className="inline-flex items-center">
           <li className="inline-flex items-center">
             <a
               href="/"

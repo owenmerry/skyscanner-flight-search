@@ -62,7 +62,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightPrice ? `${flightPrice} ` : ""
     }Cheap One-way Flights from (${flightQuery.from.iata}) to ${
       flightQuery.to.name
-    } (${flightQuery.to.iata}) | Flights.owenmerry.com`,
+    } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format('MMMM')}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) flights with maps, images and suggested must try locations`,
   };
 };

@@ -1,21 +1,48 @@
 import { useEffect, useState } from "react";
-import type { LoaderArgs } from "@remix-run/node";
+import type { LoaderArgs, MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { HotelList } from "~/components/section/hotels-list";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
-import type { Place } from "~/helpers/sdk/geo/geo-sdk";
-import type { FlightQuery, FlightUrl } from "~/types/search";
-import { FlightDetails } from "~/components/section/flight-details";
 import { getImages } from "~/helpers/sdk/query";
-import type { Query as OldQuery, QueryPlace } from "~/types/search";
+import type { Query as OldQuery, QueryPlace, FlightUrl } from "~/types/search";
 import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.component";
-import { MapComponent } from "~/components/section/page/search";
 import { MapRoute } from "~/components/section/map/map-route";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import type {
+  FlightSDK,
+  SearchSDK,
+} from "~/helpers/sdk/flight/flight-functions";
 import { Loading } from "~/components/ui/loading";
 import { CarHireList } from "~/components/section/car-hire-list";
+import { FlightDetails } from "~/components/section/flight-results/flight-details";
+import { Panel } from "~/components/section/flight-results/flight-panel";
+import { FaMapLocationDot } from "react-icons/fa6";
+import { Deals } from "~/components/section/flight-results/flight-results-default";
+import moment from "moment";
+
+
+
+export const meta: MetaFunction = ({ data }) => {
+  const defaultMeta = {
+    title: "Search for Flights | Flights.owenmerry.com",
+    description: "Search for Flights | Flights.owenmerry.com",
+  };
+  if (!data) return defaultMeta;
+  const {
+    query,
+  }: {
+    query: QueryPlace;
+  } = data;
+
+  return {
+    title: `Book ${query.from.name} (${query.from.iata}) to ${
+      query.to.name
+    } (${query.to.iata}) - Depart ${moment(query.depart).format('Do, MMMM')} and Return ${moment(query.return).format('Do, MMMM')}`,
+    description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) return flights with maps, images and suggested must try locations`,
+  };
+};
+
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -128,57 +155,79 @@ export default function Search() {
         flightDefault={oldQuery}
         showFlightForm={false}
       />
-      <Breadcrumbs
-        items={[
-          {
-            name: "Flight Search",
-            link: "/flight-search",
-          },
-          {
-            name: `${query.from.name} to ${query.to.name}`,
-            link: `/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}`,
-          },
-          {
-            name: `Flight Details`,
-          },
-        ]}
-      />
       {search && flight ? (
         <>
-          <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-            <MapRoute
-              flightQuery={query}
-              googleMapId={googleMapId}
-              googleApiKey={googleApiKey}
-              key="map-component"
-              height={500}
-              itineraryId={url.itineraryId}
-              apiUrl={apiUrl}
-              flight={flight}
+          <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto relative">
+            <Breadcrumbs
+              items={[
+                {
+                  name: "Flight Search",
+                  link: "/flight-search",
+                },
+                {
+                  name: `${query.from.name} to ${query.to.name}`,
+                  link: `/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}`,
+                },
+                {
+                  name: `Flight Details`,
+                },
+              ]}
             />
+            <FlightDetails flight={flight} query={query} />
+            <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
+              Route Map
+            </h2>
+            <Panel
+              title="Map"
+              icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
+              open={true}
+            >
+              <MapRoute
+                flightQuery={query}
+                googleMapId={googleMapId}
+                googleApiKey={googleApiKey}
+                key="map-component"
+                height={500}
+                itineraryId={url.itineraryId}
+                apiUrl={apiUrl}
+                flight={flight}
+              />
+            </Panel>
+            <Panel
+              title="Bookings"
+              icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
+              open={true}
+            >
+              <Deals flight={flight} query={query} />
+            </Panel>
+            {/* Extras */}
+            <Panel
+              title="Car Hire"
+              icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
+              open={true}
+            >
+              <CarHireList
+                query={{
+                  from: query.to.entityId,
+                  depart: query.depart,
+                  return: query.return,
+                }}
+                apiUrl={apiUrl}
+              />
+            </Panel>
+            <Panel
+              title="Hotels"
+              icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
+              open={true}
+            >
+              <HotelList query={query} apiUrl={apiUrl} />
+            </Panel>
           </div>
-          <FlightDetails
-            url={url}
-            query={query}
-            apiUrl={apiUrl}
-            itineraryId={url.itineraryId}
-            flight={flight}
-            sessionToken={search.sessionToken}
-          />
-          <CarHireList
-            query={{
-              from: query.to.entityId,
-              depart: query.depart,
-              return: query.return,
-            }}
-            apiUrl={apiUrl}
-          />
-          <HotelList query={query} apiUrl={apiUrl} />
         </>
       ) : (
         <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
-          <div className="relative z-10 max-w-screen-xl text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800">
-            Loading Flight Details and Prices... <Loading />
+          <div className="relative z-10 max-w-screen-xl text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800 flex gap-2 items-center justify-center">
+          <Loading /> Loading Flight Details and Prices...
           </div>
         </div>
       )}

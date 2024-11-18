@@ -31,8 +31,8 @@ import { actionsSaveFlight } from "~/actions/save-flight";
 import { BarChartHistoryPrice } from "~/components/ui/bar-chart/bar-chart-history-price";
 import moment from "moment";
 import type { IndicativeSDK } from "~/helpers/sdk/indicative/indicative-sdk";
-import { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
-import { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
+import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
+import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
 
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
@@ -53,7 +53,7 @@ export const meta: MetaFunction = ({ data }) => {
     "error" in flightHistoryPrices
       ? undefined
       : flightHistoryPrices.length > 0
-      ? `£${flightHistoryPrices[0].price.toFixed(0)}`
+      ? `£${flightHistoryPrices[flightHistoryPrices.length - 1].price.toFixed(0)}`
       : undefined;
   const indicativePrice = indicativeSearchFlight.length > 0 ? indicativeSearchFlight[0].price.display : undefined;
   const flightPrice = historyPrice || indicativePrice;
@@ -63,7 +63,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightPrice ? `${flightPrice} ` : ""
     }Cheap Return Flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${
       flightQuery.to.name
-    } (${flightQuery.to.iata}) | Flights.owenmerry.com`,
+    } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format('MMMM')}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
   };
 };
@@ -99,6 +99,15 @@ export const loader = async ({ params }: LoaderArgs) => {
     depart: params.depart || "",
     return: params.return || "",
   };
+  // getFlightLiveCreate({
+  //   apiUrl,
+  //   query: {
+  //     from: flightQuery.from,
+  //     to: flightQuery.to,
+  //     depart: flightQuery.depart || "",
+  //     return: flightQuery.return,
+  //   },
+  // });
   const country = getPlaceFromEntityId(
     getCountryEntityId(flightQuery.to.entityId)
   );

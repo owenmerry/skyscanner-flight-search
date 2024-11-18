@@ -25,7 +25,7 @@ interface DealsProps {
   flight: FlightSDK;
   query: QueryPlace;
 }
-const Deals = ({ flight, query }: DealsProps) => {
+export const Deals = ({ flight, query }: DealsProps) => {
   return (
     <div className="pt-2">
       {flight.prices.map((price, key) => (
@@ -68,7 +68,10 @@ const Deals = ({ flight, query }: DealsProps) => {
                 {price.price !== "£0.00" ? price.price : "See Website"}
                 {deepLink.type === "AGENT_TYPE_AIRLINE" ? (
                   <div className="md:hidden">
-                    <Label color="bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900" text="Airline Option" />
+                    <Label
+                      color="bg-green-100 text-green-800 dark:bg-green-200 dark:text-green-900"
+                      text="Airline Option"
+                    />
                   </div>
                 ) : (
                   ""
@@ -130,6 +133,26 @@ const ButtonColumn = ({
         </div>
       </div>
       <div className="sm:display hidden">
+        <a
+          className="ml-2 block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+          href={`/booking/${query.from.iata}/${query.to.iata}/${query.depart}${
+            query.return ? `/${query.return}` : ``
+          }/${encodeURIComponent(flight.itineraryId)}`}
+        >
+          Details{" "}
+          <svg
+            width="13.5"
+            height="13.5"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="ml-1 inline-block"
+          >
+            <path
+              fill="currentColor"
+              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+            ></path>
+          </svg>
+        </a>
         <button
           className="ml-2 mt-2 text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
           onClick={onButtonSelect}
@@ -220,8 +243,7 @@ const Flight = ({
   const [showDeals, setShowDeals] = useState(false);
   const fetcher = useFetcher();
   const isDeleting = fetcher.state !== "idle";
-  const formLiked = 
-    fetcher.data?.liked || 0;
+  const formLiked = fetcher.data?.liked || 0;
   const labels = [
     {
       text: "Direct",
@@ -301,7 +323,10 @@ const Flight = ({
           <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
             Route Map
           </h2>
-          <Panel title="Map" icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}>
+          <Panel
+            title="Map"
+            icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
+          >
             <WaitForDisplay delay={300} height="400px">
               <MapRoute
                 flightQuery={query}
@@ -323,6 +348,28 @@ const Flight = ({
             Choose a booking option
           </h2>
           <Deals flight={flight} query={query} />
+          <a
+            className="block text-slate-400 hover:text-white font-medium rounded-lg text-sm py-2.5 me-2 mb-2"
+            href={`/booking/${query.from.iata}/${query.to.iata}/${
+              query.depart
+            }${query.return ? `/${query.return}` : ``}/${encodeURIComponent(
+              flight.itineraryId
+            )}`}
+          >
+            See Details Page{" "}
+            <svg
+              width="13.5"
+              height="13.5"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="ml-1 inline-block"
+            >
+              <path
+                fill="currentColor"
+                d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+              ></path>
+            </svg>
+          </a>
         </div>
       </JourneyDrawer>
     </>

@@ -43,7 +43,7 @@ export const FlightDetails = ({
             <div className="flight-details">
               {search.legs.map((leg, key) => {
                 return (
-                  <div>
+                  <div key={key}>
                     <div className="mb-6">
                       {key === 0 && (
                         <h3 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
@@ -96,8 +96,8 @@ export const FlightDetails = ({
                       ></path>
                     </svg>
                   </a>
-
-                  <a
+{/* {
+` <a
                     target="_blank"
                     className="ml-4 text-slate-400 text-xs hover:underline"
                     href={`${apiUrl}/refresh?itineraryId=${search.itineraryId}&token=${sessionToken}`}
@@ -116,7 +116,9 @@ export const FlightDetails = ({
                         d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
                       ></path>
                     </svg>
-                  </a>
+                  </a>`
+} */}
+                 
                 </div>
               </div>
             ) : (
