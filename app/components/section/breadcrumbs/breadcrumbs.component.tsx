@@ -6,7 +6,6 @@ interface BreadcrumbsProps {
 
 export const Breadcrumbs = ({ items = [] }: BreadcrumbsProps) => {
   return (
-    <Wrapper>
       <nav className="flex" aria-label="Breadcrumb">
         <ol className="inline-flex items-center">
           <li className="inline-flex items-center">
@@ -64,6 +63,5 @@ export const Breadcrumbs = ({ items = [] }: BreadcrumbsProps) => {
           ))}
         </ol>
       </nav>
-    </Wrapper>
   );
 };

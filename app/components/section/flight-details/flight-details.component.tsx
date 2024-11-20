@@ -9,9 +9,10 @@ import { FlightStructuredContent } from "./flight-structured-content";
 interface FlightDetailsProps {
   flight: FlightSDK;
   query: QueryPlace;
+  open?: boolean
 }
 
-export const FlightDetails = ({ flight, query }: FlightDetailsProps) => {
+export const FlightDetails = ({ flight, query, open }: FlightDetailsProps) => {
   return (
     <div>
       <FlightStructuredContent flight={flight} query={query} />
@@ -19,6 +20,7 @@ export const FlightDetails = ({ flight, query }: FlightDetailsProps) => {
         icon={<FaPlaneDeparture className="inline mr-2 text-blue-600" />}
         title="Departure"
         detailsTitle="Trip Details"
+        open={open}
         childrenTop={
           <div className="my-5">
             <Leg leg={flight.legs[0]} />
@@ -34,6 +36,7 @@ export const FlightDetails = ({ flight, query }: FlightDetailsProps) => {
           icon={<FaPlaneArrival className="inline mr-2 text-blue-600" />}
           title="Return"
           detailsTitle="Trip Details"
+          open={open}
           childrenTop={
             <div className="m-5">
               <Leg leg={flight.legs[1]} />

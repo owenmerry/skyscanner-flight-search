@@ -21,8 +21,6 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { Deals } from "~/components/section/flight-results/flight-results-default";
 import moment from "moment";
 
-
-
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
     title: "Search for Flights | Flights.owenmerry.com",
@@ -36,13 +34,14 @@ export const meta: MetaFunction = ({ data }) => {
   } = data;
 
   return {
-    title: `Book ${query.from.name} (${query.from.iata}) to ${
-      query.to.name
-    } (${query.to.iata}) - Depart ${moment(query.depart).format('Do, MMMM')} and Return ${moment(query.return).format('Do, MMMM')}`,
+    title: `Book ${query.from.name} (${query.from.iata}) to ${query.to.name} (${
+      query.to.iata
+    }) - Depart ${moment(query.depart).format("Do, MMMM")} and Return ${moment(
+      query.return
+    ).format("Do, MMMM")}`,
     description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) return flights with maps, images and suggested must try locations`,
   };
 };
-
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -173,7 +172,10 @@ export default function Search() {
                 },
               ]}
             />
-            <FlightDetails flight={flight} query={query} />
+            <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
+              Trip Details
+            </h2>
+            <FlightDetails flight={flight} query={query} open={true} />
             <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
               Route Map
             </h2>
@@ -193,41 +195,26 @@ export default function Search() {
                 flight={flight}
               />
             </Panel>
-            <Panel
-              title="Bookings"
-              icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
-              open={true}
-            >
-              <Deals flight={flight} query={query} />
-            </Panel>
+            <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
+              Choose a booking option
+            </h2>
+            <Deals flight={flight} query={query} />
             {/* Extras */}
-            <Panel
-              title="Car Hire"
-              icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
-              open={true}
-            >
-              <CarHireList
-                query={{
-                  from: query.to.entityId,
-                  depart: query.depart,
-                  return: query.return,
-                }}
-                apiUrl={apiUrl}
-              />
-            </Panel>
-            <Panel
-              title="Hotels"
-              icon={<FaMapLocationDot className="inline mr-2 text-blue-600" />}
-              open={true}
-            >
-              <HotelList query={query} apiUrl={apiUrl} />
-            </Panel>
+            <CarHireList
+              query={{
+                from: query.to.entityId,
+                depart: query.depart,
+                return: query.return,
+              }}
+              apiUrl={apiUrl}
+            />
+            <HotelList query={query} apiUrl={apiUrl} />
           </div>
         </>
       ) : (
         <div className="mx-4 max-w-screen-xl xl:p-9 xl:mx-auto">
           <div className="relative z-10 max-w-screen-xl text-center p-5 mb-4 text-slate-400 bg-slate-50 rounded-xl dark:bg-gray-800 flex gap-2 items-center justify-center">
-          <Loading /> Loading Flight Details and Prices...
+            <Loading /> Loading Flight Details and Prices...
           </div>
         </div>
       )}
