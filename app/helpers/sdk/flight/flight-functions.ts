@@ -47,6 +47,8 @@ export const getSortingOptions = (
           nextSegment.departureDateTime.minute,
         );
         const journeyDurationMoment = getTimeDurationMoment(arrivalDateTime, nextSegmentDepartureDateTime);
+        const operatingCarrier = res.content.results.carriers[segment.operatingCarrierId];
+        const marketingCarrier = res.content.results.carriers[segment.marketingCarrierId];
 
         return {
           id: segmentRef,
@@ -65,6 +67,10 @@ export const getSortingOptions = (
           duration: segment.durationInMinutes,
           departure: getDateTimeFormat(departureDateTime),
           arrival: getDateTimeFormat(arrivalDateTime),
+          flightNumber: `${marketingCarrier.displayCode}${segment.marketingFlightNumber}`,
+          isOpperatedByDifferentCarrier: marketingCarrier.name !== operatingCarrier.name,
+          marketingCarrier,
+          operatingCarrier,
           waitBreakdown: {
             wait: getTimeDuration(arrivalDateTime, nextSegmentDepartureDateTime),
             hours: journeyDurationMoment ? Math.floor(journeyDurationMoment?.asHours()) : undefined,
@@ -299,6 +305,8 @@ export interface SegmentSDK {
   arrival: string;
   fromPlace?: Place;
   toPlace?: Place;
+  flightNumber: string;
+  isOpperatedByDifferentCarrier: boolean;
   waitBreakdown: {
     wait?: string;
     hours?: number;
@@ -310,6 +318,8 @@ export interface SegmentSDK {
     hasNextSegment: boolean;
     nextSegment?: Segment;
   }
+  marketingCarrier?: CarrierSDK,
+  operatingCarrier?: CarrierSDK,
 }
 
 export interface CarrierSDK {
@@ -317,6 +327,8 @@ export interface CarrierSDK {
   imageUrl: string;
   iata: string;
   allianceId: string;
+  icao: string;
+  displayCode: string;
 }
 
 export interface LegSDK {

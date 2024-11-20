@@ -15,7 +15,7 @@ import type {
 } from "~/helpers/sdk/flight/flight-functions";
 import { Loading } from "~/components/ui/loading";
 import { CarHireList } from "~/components/section/car-hire-list";
-import { FlightDetails } from "~/components/section/flight-results/flight-details";
+import { FlightDetails } from "~/components/section/flight-details/flight-details.component";
 import { Panel } from "~/components/section/flight-results/flight-panel";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { Deals } from "~/components/section/flight-results/flight-results-default";

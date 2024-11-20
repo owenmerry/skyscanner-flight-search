@@ -13,7 +13,7 @@ import type {
 } from "~/helpers/sdk/flight/flight-functions";
 import { FlightResultsSkeleton } from "./flight-results-skeleton";
 import { JourneyDrawer } from "~/components/ui/drawer/drawer-journey";
-import { FlightDetails } from "./flight-details";
+import { FlightDetails } from "../flight-details/flight-details.component";
 import { Legs } from "./flight-leg";
 import { MapRoute } from "../map/map-route";
 import { Panel } from "./flight-panel";

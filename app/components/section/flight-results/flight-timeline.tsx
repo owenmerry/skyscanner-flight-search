@@ -40,6 +40,9 @@ export const FlightTimeline = ({ leg, query, showStopOvers = false }: FlightTime
                   <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
                     {segment.from} ({segment.fromIata})
                   </h3>
+                  <div className="text-sm text-slate-500">
+                  {segment.marketingCarrier?.name} - {segment.flightNumber}{segment.isOpperatedByDifferentCarrier ? ` | Operated by ${segment.operatingCarrier?.name}` : ''}
+                  </div>
                 </li>
                 {/* duration */}
                 <li className="p-5 ml-8 relative">

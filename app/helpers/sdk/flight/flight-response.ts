@@ -79,6 +79,8 @@ export interface Carrier {
   allianceId: string;
   imageUrl: string;
   iata: string;
+  icao: string;
+  displayCode: string;
 }
 
 export interface Itinerary {
@@ -107,6 +109,9 @@ export interface Segment {
   durationInMinutes: number;
   departureDateTime: DateTime;
   arrivalDateTime: DateTime;
+  marketingFlightNumber: string;
+  marketingCarrierId: string;
+  operatingCarrierId: string;
 }
 
 export interface Place {

@@ -1,1 +1,1 @@
-export { FlightDetails } from './flight-details.component';
+export { FlightDetails } from './flight-details-old.component';
