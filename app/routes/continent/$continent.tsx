@@ -1,4 +1,4 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -16,6 +16,7 @@ import moment from "moment";
 import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
+import { actionsSearchForm } from "~/actions/search-form";
 
 export const meta: MetaFunction = ({ params }) => {
   const continent = getPlaceFromSlug(
@@ -69,6 +70,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     googleApiKey,
   });
 };
+
+export async function action({ request }: ActionArgs) {
+  let action;
+  action = actionsSearchForm({ request });
+
+  return action;
+}
 
 export default function SEOAnytime() {
   const {

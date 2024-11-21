@@ -7,7 +7,7 @@ export async function actionsSaveFlight({ request }: { request: Request }) {
   const formData = await request.formData();
   const liked = formData.get("liked");
 
-  cookie.liked = cookie.liked + Number(liked);
+  cookie.liked = Number(cookie.liked) + Number(liked);
 
   //if (saveFlight) {
     

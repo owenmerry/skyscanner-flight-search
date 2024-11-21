@@ -32,6 +32,7 @@ import { actionsSearchForm } from "~/actions/search-form";
 import { BarChartHistoryPrice } from "~/components/ui/bar-chart/bar-chart-history-price";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
+import { actionsSaveFlight } from "~/actions/save-flight";
 
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {

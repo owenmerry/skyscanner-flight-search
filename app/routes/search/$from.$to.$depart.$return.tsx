@@ -33,6 +33,7 @@ import moment from "moment";
 import type { IndicativeSDK } from "~/helpers/sdk/indicative/indicative-sdk";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
+import { actionsSearchForm } from "~/actions/search-form";
 
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
@@ -163,8 +164,10 @@ export const loader = async ({ params }: LoaderArgs) => {
 
 export async function action({ request }: ActionArgs) {
   let action;
-  //action = await actionsSearchForm({ request });
-  action = await actionsSaveFlight({ request });
+  action = await actionsSearchForm({ request });
+  if(!action){
+    action = await actionsSaveFlight({ request });
+  }
   
   return action;
 }
