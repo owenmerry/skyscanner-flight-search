@@ -38,6 +38,24 @@ export const FiltersDefault = ({
     }
     updateFilters({ numberOfStops: stopsUpdated });
   };
+  const updateRoutes = ({
+    value,
+    checked,
+  }: {
+    value: string;
+    checked: boolean;
+  }) => {
+    if(checked){
+      updateFilters({ routes: [value] });
+    }else {
+      updateFilters({ routes: undefined });
+    }
+  };
+  const routes = flights ? Array.from(
+    new Set(
+      flights.cheapest.flatMap((item) => item.route.map((route) => route.name))
+    )
+  ) : [];
 
   useEffect(() => {
     onFilterChange && onFilterChange(filtersDebounced);
@@ -113,7 +131,7 @@ export const FiltersDefault = ({
                   <input
                     id="blue"
                     type="checkbox"
-                    checked={!!filters.numberOfStops!?.includes(0)}
+                    checked={!!filters.numberOfStops?.includes(0)}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateStops(filters.numberOfStops, 0, e.target.checked)
@@ -130,7 +148,7 @@ export const FiltersDefault = ({
                   <input
                     id="gray"
                     type="checkbox"
-                    checked={!!filters.numberOfStops!?.includes(1)}
+                    checked={!!filters.numberOfStops?.includes(1)}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateStops(filters.numberOfStops, 1, e.target.checked)
@@ -147,7 +165,7 @@ export const FiltersDefault = ({
                   <input
                     id="green"
                     type="checkbox"
-                    checked={!!filters.numberOfStops!?.includes(2)}
+                    checked={!!filters.numberOfStops?.includes(2)}
                     className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                     onChange={(e) =>
                       updateStops(filters.numberOfStops, 2, e.target.checked)
@@ -417,6 +435,33 @@ export const FiltersDefault = ({
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="w-full border-b border-gray-300 dark:border-gray-800 pb-6">
+              <h6 className="mb-2 text-sm font-medium text-black dark:text-white">
+                Routes (via)
+              </h6>
+              <div className="space-y-2">
+                {routes.map((route) => (
+                  <div className="flex items-center" key={route}>
+                    <input
+                      id="blue"
+                      type="checkbox"
+                      checked={!!filters.routes?.includes(route)}
+                      className="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      onChange={(e) =>
+                        updateRoutes({ value: route, checked: e.target.checked })
+                      }
+                    />
+                    <label
+                      htmlFor="blue"
+                      className="flex items-center ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    >
+                      {route}
+                    </label>
+                  </div>
+                ))}
               </div>
             </div>
 

@@ -18,7 +18,7 @@ export const Loading = ({
         }${
           light
             ? "text-gray-200 dark:text-blue-800 fill-white"
-            : "text-gray-200 dark:text-gray-600 fill-blue-600"
+            : "text-gray-200 dark:text-gray-600 fill-white"
         } animate-spin `}
         viewBox="0 0 100 101"
         fill="none"

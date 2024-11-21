@@ -174,6 +174,7 @@ export const getSortingOptions = (
           leg.arrivalDateTime.minute
         ),
         route: getLegRoute(segments),
+        routeString: getLegRoute(segments).map(route => route.iata).join(','),
         layovers: getLayoversRoute(segments),
       };
     });
@@ -232,6 +233,7 @@ export const getSortingOptions = (
         "",
       legs: legs,
       route: getFlightRoute(),
+      routeString: getFlightRoute().map(route => route.iata).join(','),
       isDirectFlights: isDirectFlights(legs),
     };
   });
@@ -272,6 +274,7 @@ export interface FlightSDK {
   legs: LegSDK[];
   isDirectFlights: boolean;
   route: Place[];
+  routeString: string;
 }
 
 export interface PriceSDK {
@@ -352,6 +355,7 @@ export interface LegSDK {
   arrivalTime: String;
   carriers: CarrierSDK[];
   route: Place[];
+  routeString: string;
   layovers: LayoverSDK[];
 }
 

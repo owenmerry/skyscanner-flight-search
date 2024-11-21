@@ -13,6 +13,7 @@ export interface SearchFilters {
   outboundTime?: { min: number; max: number };
   returnTime?: { min: number; max: number };
   duration?: number;
+  routes?: string[];
 }
 
 export const filterNumberOfResultsToShow = (
@@ -69,6 +70,10 @@ export const filterDuration = (flights: FlightSDK[], duration: number) => {
   );
 };
 
+export const filterRoutes = (flights: FlightSDK[], routes: string[]) => {
+  return flights.filter((flight) => flight.route.filter(item => routes.includes(item.name)).length > 0);
+};
+
 export const filterAgentTypes = (
   flights: FlightSDK[],
   agentTypes: (
@@ -97,6 +102,7 @@ export const addSearchResultFilters = (
     outboundTime,
     returnTime,
     duration,
+    routes,
   }: SearchFilters
 ) => {
   let flightsFiltered = flights;
@@ -134,6 +140,11 @@ export const addSearchResultFilters = (
   // duration
   if (duration) {
     flightsFiltered = filterDuration(flightsFiltered, duration);
+  }
+  
+  // routes
+  if (routes) {
+    flightsFiltered = filterRoutes(flightsFiltered, routes);
   }
 
   // numbeResultsToShow
