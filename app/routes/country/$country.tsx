@@ -1,4 +1,9 @@
-import type { ActionArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
+import type {
+  ActionArgs,
+  HeadersFunction,
+  LoaderFunction,
+  MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -28,6 +33,10 @@ export const meta: MetaFunction = ({ params }) => {
   };
 };
 
+export const headers: HeadersFunction = () => ({
+  "Cache-Control": "public, max-age=1800",
+});
+
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
@@ -51,14 +60,21 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
   const search = indicativeSearch.quotes;
 
-  return json({
-    country,
-    from,
-    search,
-    apiUrl,
-    googleMapId,
-    googleApiKey,
-  });
+  return json(
+    {
+      country,
+      from,
+      search,
+      apiUrl,
+      googleMapId,
+      googleApiKey,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export async function action({ request }: ActionArgs) {

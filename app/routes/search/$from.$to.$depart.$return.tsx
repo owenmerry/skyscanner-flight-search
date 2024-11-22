@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
+import {
+  HeadersFunction,
+  json,
+  type ActionArgs,
+  type LoaderArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import { getImages } from "~/helpers/sdk/query";
@@ -54,17 +60,22 @@ export const meta: MetaFunction = ({ data }) => {
     "error" in flightHistoryPrices
       ? undefined
       : flightHistoryPrices.length > 0
-      ? `£${flightHistoryPrices[flightHistoryPrices.length - 1].price.toFixed(0)}`
+      ? `£${flightHistoryPrices[flightHistoryPrices.length - 1].price.toFixed(
+          0
+        )}`
       : undefined;
-  const indicativePrice = indicativeSearchFlight.length > 0 ? indicativeSearchFlight[0].price.display : undefined;
+  const indicativePrice =
+    indicativeSearchFlight.length > 0
+      ? indicativeSearchFlight[0].price.display
+      : undefined;
   const flightPrice = historyPrice || indicativePrice;
 
   return {
-    title: `${
-      flightPrice ? `${flightPrice} ` : ""
-    }Cheap Return Flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${
-      flightQuery.to.name
-    } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format('MMMM')}`,
+    title: `${flightPrice ? `${flightPrice} ` : ""}Cheap Return Flights from ${
+      flightQuery.from.name
+    } (${flightQuery.from.iata}) to ${flightQuery.to.name} (${
+      flightQuery.to.iata
+    }) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
   };
 };
@@ -131,44 +142,50 @@ export const loader = async ({ params }: LoaderArgs) => {
     year: Number(moment(flightQuery.depart).startOf("month").format("YYYY")),
     groupType: "date",
   });
-  
+
   const indicativeSearchFlight = indicativeSearch.quotes
-  .filter((item) => item.price.raw)
-  .filter(
-    (item) =>
-      item.query.depart === flightQuery.depart &&
-    item.query.return === flightQuery.return
-  )
-  .sort((a, b) => (a.price.raw || 0) - (b.price.raw || 0));
-  
+    .filter((item) => item.price.raw)
+    .filter(
+      (item) =>
+        item.query.depart === flightQuery.depart &&
+        item.query.return === flightQuery.return
+    )
+    .sort((a, b) => (a.price.raw || 0) - (b.price.raw || 0));
+
   const flightHistoryPrices = await skyscanner().flightHistory({
     apiUrl,
     query: flightQuery,
   });
-  
-  return {
-    apiUrl,
-    googleApiKey,
-    googleMapId,
-    params,
-    flightParams,
-    flightQuery,
-    headerImage: fromImage[0] || "",
-    country,
-    city,
-    indicativeSearch,
-    indicativeSearchFlight,
-    flightHistoryPrices,
-  };
+
+  return json({
+      apiUrl,
+      googleApiKey,
+      googleMapId,
+      params,
+      flightParams,
+      flightQuery,
+      headerImage: fromImage[0] || "",
+      country,
+      city,
+      indicativeSearch,
+      indicativeSearchFlight,
+      flightHistoryPrices,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export async function action({ request }: ActionArgs) {
   let action;
   action = await actionsSearchForm({ request });
-  if(!action){
+  if (!action) {
     action = await actionsSaveFlight({ request });
   }
-  
+
   return action;
 }
 
@@ -195,20 +212,20 @@ export default function Search() {
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<
-  SearchSDK | { error: string } | undefined
+    SearchSDK | { error: string } | undefined
   >();
   const [searchHotel, setSearchHotel] =
-  useState<SkyscannerAPIHotelSearchResponse>();
+    useState<SkyscannerAPIHotelSearchResponse>();
   const [filters, setFilters] = useState({});
   const [showFilters] = useState(false);
   const [query] = useState(flightParams);
-  
+
   useEffect(() => {
     setLoading(true);
     runCreateSearch();
     runHotel();
   }, []);
-  
+
   const runHotel = async () => {
     const hotelSearch = await skyscanner().hotel({
       apiUrl,
