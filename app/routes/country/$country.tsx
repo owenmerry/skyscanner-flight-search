@@ -33,10 +33,6 @@ export const meta: MetaFunction = ({ params }) => {
   };
 };
 
-export const headers: HeadersFunction = () => ({
-  "Cache-Control": "public, max-age=1800",
-});
-
 export const loader: LoaderFunction = async ({ params, request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";

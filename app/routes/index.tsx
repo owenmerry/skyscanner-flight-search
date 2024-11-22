@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
+import { json, type ActionArgs, type LoaderFunction, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroDefault } from "~/components/section/hero/hero-default";
 import { Layout } from "~/components/ui/layout/layout";
@@ -32,19 +32,26 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) || {};
 
-  return {
-    countries: placesSDK.countries,
-    apiUrl,
-    googleApiKey,
-    googleMapId,
-    from: cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON"),
-    fromCookie: cookie.from,
-  };
+  return json(
+    {
+      countries: placesSDK.countries,
+      apiUrl,
+      googleApiKey,
+      googleMapId,
+      from: cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON"),
+      fromCookie: cookie.from,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export async function action({ request }: ActionArgs) {
   let action;
-  action = actionsSearchForm({request});
+  action = actionsSearchForm({ request });
 
   return action;
 }

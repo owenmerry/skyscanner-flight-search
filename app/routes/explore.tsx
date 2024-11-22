@@ -55,15 +55,22 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
   const search = indicativeSearch.quotes;
 
-  return json({
-    exploreImages,
-    from,
-    search,
-    googleMapId,
-    googleApiKey,
-    countries,
-    apiUrl,
-  });
+  return json(
+    {
+      exploreImages,
+      from,
+      search,
+      googleMapId,
+      googleApiKey,
+      countries,
+      apiUrl,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export async function action({ request }: ActionArgs) {

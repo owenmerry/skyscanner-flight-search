@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import type { ActionArgs, LoaderArgs, MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type ActionArgs,
+  type LoaderArgs,
+  type MetaFunction,
+} from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
 import { getImages } from "~/helpers/sdk/query";
@@ -55,7 +60,10 @@ export const meta: MetaFunction = ({ data }) => {
       : flightHistoryPrices.length > 0
       ? `£${flightHistoryPrices[0].price.toFixed(0)}`
       : undefined;
-  const indicativePrice = indicativeSearchFlight.length > 0 ? indicativeSearchFlight[0].price.display : undefined;
+  const indicativePrice =
+    indicativeSearchFlight.length > 0
+      ? indicativeSearchFlight[0].price.display
+      : undefined;
   const flightPrice = historyPrice || indicativePrice;
 
   return {
@@ -63,7 +71,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightPrice ? `${flightPrice} ` : ""
     }Cheap One-way Flights from (${flightQuery.from.iata}) to ${
       flightQuery.to.name
-    } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format('MMMM')}`,
+    } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) flights with maps, images and suggested must try locations`,
   };
 };
@@ -130,10 +138,7 @@ export const loader = async ({ params }: LoaderArgs) => {
 
   const indicativeSearchFlight = indicativeSearch.quotes
     .filter((item) => item.price.raw)
-    .filter(
-      (item) =>
-        item.query.depart === flightQuery.depart
-    )
+    .filter((item) => item.query.depart === flightQuery.depart)
     .sort((a, b) => (a.price.raw || 0) - (b.price.raw || 0));
 
   const flightHistoryPrices = await skyscanner().flightHistory({
@@ -141,21 +146,28 @@ export const loader = async ({ params }: LoaderArgs) => {
     query: flightQuery,
   });
 
-  return {
-    apiUrl,
-    googleApiKey,
-    googleMapId,
-    params,
-    flightParams,
-    flightQuery,
-    hotelQuery,
-    headerImage: fromImage[0] || "",
-    country,
-    city,
-    indicativeSearch,
-    indicativeSearchFlight,
-    flightHistoryPrices,
-  };
+  return json(
+    {
+      apiUrl,
+      googleApiKey,
+      googleMapId,
+      params,
+      flightParams,
+      flightQuery,
+      hotelQuery,
+      headerImage: fromImage[0] || "",
+      country,
+      city,
+      indicativeSearch,
+      indicativeSearchFlight,
+      flightHistoryPrices,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export async function action({ request }: ActionArgs) {

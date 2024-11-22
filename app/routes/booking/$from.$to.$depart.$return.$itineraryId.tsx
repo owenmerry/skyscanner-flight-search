@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { LoaderArgs, MetaFunction } from "@remix-run/node";
+import { json, type LoaderArgs, type MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { HotelList } from "~/components/section/hotels-list";
@@ -65,26 +65,33 @@ export const loader = async ({ params }: LoaderArgs) => {
     tripType: "return",
   };
 
-  return {
-    apiUrl,
-    googleApiKey,
-    googleMapId,
-    headerImage: headerImage[0],
-    query: {
-      from,
-      to,
-      depart: params.depart || "",
-      return: params.return || "",
+  return json(
+    {
+      apiUrl,
+      googleApiKey,
+      googleMapId,
+      headerImage: headerImage[0],
+      query: {
+        from,
+        to,
+        depart: params.depart || "",
+        return: params.return || "",
+      },
+      url: {
+        from: params.from,
+        to: params.to,
+        depart: params.depart,
+        return: params.return,
+        itineraryId: params.itineraryId,
+      },
+      oldQuery,
     },
-    url: {
-      from: params.from,
-      to: params.to,
-      depart: params.depart,
-      return: params.return,
-      itineraryId: params.itineraryId,
-    },
-    oldQuery,
-  };
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export default function Search() {

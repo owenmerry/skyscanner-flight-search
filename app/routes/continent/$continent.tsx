@@ -68,6 +68,10 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     search,
     googleMapId,
     googleApiKey,
+  },{
+    headers: {
+      "Cache-Control": "public, max-age=1800",
+    },
   });
 };
 

@@ -24,10 +24,12 @@ export const meta: MetaFunction = ({ params }) => {
     parentId: country ? country.entityId : undefined,
   });
   return {
-    title: `Explore ${city ? city.name : ""}, ${country ? country.name : ""} | Flights.owenmerry.com`,
-    description: `Discover ${
-      city ? city.name : ""
-    }, ${country ? country.name : ""} with maps, images and suggested must try locations`,
+    title: `Explore ${city ? city.name : ""}, ${
+      country ? country.name : ""
+    } | Flights.owenmerry.com`,
+    description: `Discover ${city ? city.name : ""}, ${
+      country ? country.name : ""
+    } with maps, images and suggested must try locations`,
   };
 };
 
@@ -61,15 +63,22 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
   const search = indicativeSearch.quotes;
 
-  return json({
-    city,
-    cityImages,
-    from,
-    search,
-    googleMapId,
-    googleApiKey,
-    apiUrl,
-  });
+  return json(
+    {
+      city,
+      cityImages,
+      from,
+      search,
+      googleMapId,
+      googleApiKey,
+      apiUrl,
+    },
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export async function action({ request }: ActionArgs) {
