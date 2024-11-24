@@ -8,14 +8,18 @@ interface DayViewDrawer {
   onClose: () => void;
 }
 
-export const DayViewDrawer: React.FC<DayViewDrawer> = ({ children, isOpen, onClose }) => {
+export const DayViewDrawer: React.FC<DayViewDrawer> = ({
+  children,
+  isOpen,
+  onClose,
+}) => {
   const [open, setOpen] = useState(isOpen);
   type ToggleDrawer = (
     open: boolean
   ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
 
   const toggleDrawer: ToggleDrawer = (open) => () => {
-    if(open === false){
+    if (open === false) {
       onClose();
     }
     setOpen(open);
@@ -40,7 +44,14 @@ export const DayViewDrawer: React.FC<DayViewDrawer> = ({ children, isOpen, onClo
       >
         <div className="dark">
           <div className="min-h-screen w-screen md:w-[70vw] dark:bg-gray-900">
-            <Header onClose={() => setOpen(false)}>Trip Details</Header>
+            <Header
+              onClose={() => {
+                setOpen(false);
+                onClose();
+              }}
+            >
+              Trip Details
+            </Header>
             <div className="pb-16 dark:text-white">{children}</div>
           </div>
         </div>

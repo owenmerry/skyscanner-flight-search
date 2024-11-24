@@ -1,25 +1,38 @@
 import { Drawer } from "@mui/material";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface EventViewDrawer {
-  children: ReactNode[];
+  children: ReactNode;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export const EventViewDrawer: React.FC<EventViewDrawer> = ({ children }) => {
-  const [open, setOpen] = useState(false);
+export const EventViewDrawer: React.FC<EventViewDrawer> = ({
+  children,
+  isOpen,
+  onClose,
+}) => {
+  const [open, setOpen] = useState(isOpen);
   type ToggleDrawer = (
     open: boolean
   ) => (event: React.KeyboardEvent | React.MouseEvent) => void;
 
   const toggleDrawer: ToggleDrawer = (open) => () => {
+    if (open === false) {
+      onClose();
+    }
     setOpen(open);
   };
+
+  useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
+
   if (!children) return "";
 
   return (
     <div>
-      <div className="cursor-pointer" onClick={toggleDrawer(true)}>{children[0]}</div>
       <Drawer
         PaperProps={{
           sx: {},
@@ -31,8 +44,15 @@ export const EventViewDrawer: React.FC<EventViewDrawer> = ({ children }) => {
       >
         <div className="dark">
           <div className="min-h-screen w-screen md:w-[50vw] dark:bg-gray-900">
-            <Header onClose={() => setOpen(false)}>Trip Details</Header>
-            <div className="pb-16 dark:text-white">{children[1]}</div>
+            <Header
+              onClose={() => {
+                setOpen(false);
+                onClose();
+              }}
+            >
+              Trip Details
+            </Header>
+            <div className="pb-16 dark:text-white">{children}</div>
           </div>
         </div>
       </Drawer>
