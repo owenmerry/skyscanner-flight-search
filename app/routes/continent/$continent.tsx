@@ -23,14 +23,8 @@ export const meta: MetaFunction = ({ params, data }) => {
     params.continent || "",
     "PLACE_TYPE_CONTINENT"
   );
-  const {
-    search,
-  }: {
-    search: IndicativeQuotesSDK[];
-  } = data;
   return {
-    title: `Explore ${continent ? continent.name : ""}${
-      search[0] ? ` From ${search[0].price.display}` : ""
+    title: `Explore ${continent ? continent.name : ""} : ""
     }  | Flights.owenmerry.com`,
     description: `Discover ${
       continent ? continent.name : ""
