@@ -18,13 +18,20 @@ import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
 
-export const meta: MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ params, data }) => {
   const continent = getPlaceFromSlug(
     params.continent || "",
     "PLACE_TYPE_CONTINENT"
   );
+  const {
+    search,
+  }: {
+    search: IndicativeQuotesSDK[];
+  } = data;
   return {
-    title: `Explore ${continent ? continent.name : ""} | Flights.owenmerry.com`,
+    title: `Explore ${continent ? continent.name : ""}${
+      search[0] ? ` From ${search[0].price.display}` : ""
+    }  | Flights.owenmerry.com`,
     description: `Discover ${
       continent ? continent.name : ""
     } with maps, images and suggested must try locations`,
@@ -60,19 +67,22 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
   const search = indicativeSearch.quotes;
 
-  return json({
-    apiUrl,
-    continent,
-    continentImages,
-    from,
-    search,
-    googleMapId,
-    googleApiKey,
-  },{
-    headers: {
-      "Cache-Control": "public, max-age=1800",
+  return json(
+    {
+      apiUrl,
+      continent,
+      continentImages,
+      from,
+      search,
+      googleMapId,
+      googleApiKey,
     },
-  });
+    {
+      headers: {
+        "Cache-Control": "public, max-age=1800",
+      },
+    }
+  );
 };
 
 export async function action({ request }: ActionArgs) {

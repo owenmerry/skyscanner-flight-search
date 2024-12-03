@@ -18,15 +18,20 @@ import { MarketingMapPlaces } from "~/components/section/marketing/marketing-map
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
 
-export const meta: MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
   const city = getPlaceFromSlug(params.city || "", "PLACE_TYPE_CITY", {
     parentId: country ? country.entityId : undefined,
   });
+  const {
+    search,
+  }: {
+    search: IndicativeQuotesSDK[];
+  } = data;
   return {
     title: `Explore ${city ? city.name : ""}, ${
       country ? country.name : ""
-    } | Flights.owenmerry.com`,
+    }${search[0] ? ` From ${search[0].price.display}` : ''} | Flights.owenmerry.com`,
     description: `Discover ${city ? city.name : ""}, ${
       country ? country.name : ""
     } with maps, images and suggested must try locations`,

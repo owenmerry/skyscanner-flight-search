@@ -23,10 +23,17 @@ import { MarketingWeather } from "~/components/section/marketing/marketing-weath
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
 
-export const meta: MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
+  const {
+    search,
+  }: {
+    search: IndicativeQuotesSDK[];
+  } = data;
   return {
-    title: `Explore ${country ? country.name : ""} | Flights.owenmerry.com`,
+    title: `Explore ${country ? country.name : ""}${
+      search[0] ? ` From ${search[0].price.display}` : ""
+    } | Flights.owenmerry.com`,
     description: `Discover ${
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
