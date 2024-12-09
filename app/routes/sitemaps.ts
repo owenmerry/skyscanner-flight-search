@@ -16,13 +16,13 @@ export let loader = async ({ request }: LoaderArgs) => {
      <url>
       <loc>${baseUrl}/</loc>
       <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-      <changefreq>weekly</changefreq>
+      <changefreq>daily</changefreq>
       <priority>0.8</priority>
     </url>
      <url>
       <loc>${baseUrl}/explore</loc>
       <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-      <changefreq>weekly</changefreq>
+      <changefreq>daily</changefreq>
       <priority>0.8</priority>
     </url>
       ${continents
@@ -31,7 +31,7 @@ export let loader = async ({ request }: LoaderArgs) => {
           <url>
             <loc>${baseUrl}/continent/${continent.slug}</loc>
             <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-            <changefreq>weekly</changefreq>
+            <changefreq>daily</changefreq>
             <priority>0.8</priority>
           </url>
         `;
@@ -43,7 +43,7 @@ export let loader = async ({ request }: LoaderArgs) => {
           <url>
             <loc>${baseUrl}/country/${country.slug}</loc>
             <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-            <changefreq>weekly</changefreq>
+            <changefreq>daily</changefreq>
             <priority>0.8</priority>
           </url>
         `;
@@ -55,7 +55,7 @@ export let loader = async ({ request }: LoaderArgs) => {
           <url>
             <loc>${baseUrl}/city/${city.country.slug}/${city.slug}</loc>
             <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-            <changefreq>weekly</changefreq>
+            <changefreq>daily</changefreq>
             <priority>0.8</priority>
           </url>
         `;
