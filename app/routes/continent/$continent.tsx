@@ -24,8 +24,7 @@ export const meta: MetaFunction = ({ params, data }) => {
     "PLACE_TYPE_CONTINENT"
   );
   return {
-    title: `Explore ${continent ? continent.name : ""} : ""
-    }  | Flights.owenmerry.com`,
+    title: `Explore ${continent ? continent.name : ""}  | Flights.owenmerry.com`,
     description: `Discover ${
       continent ? continent.name : ""
     } with maps, images and suggested must try locations`,
