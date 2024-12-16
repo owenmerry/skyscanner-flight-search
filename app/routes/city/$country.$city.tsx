@@ -17,6 +17,7 @@ import { MarketingWeather } from "~/components/section/marketing/marketing-weath
 import { MarketingMapPlaces } from "~/components/section/marketing/marketing-map-places";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
 export const meta: MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
@@ -25,16 +26,19 @@ export const meta: MetaFunction = ({ params, data }) => {
   });
   const {
     search,
+    canonicalUrl,
   }: {
     search: IndicativeQuotesSDK[];
+    canonicalUrl: string;
   } = data;
   return {
-    title: `Explore ${city ? city.name : ""}, ${
-      country ? country.name : ""
-    }${search[0] ? ` From ${search[0].price.display}` : ''} | Flights.owenmerry.com`,
+    title: `Explore ${city ? city.name : ""}, ${country ? country.name : ""}${
+      search[0] ? ` From ${search[0].price.display}` : ""
+    } | Flights.owenmerry.com`,
     description: `Discover ${city ? city.name : ""}, ${
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
+    canonical: canonicalUrl,
   };
 };
 
@@ -67,6 +71,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     endYear: Number(moment().add(10, "months").format("YYYY")),
   });
   const search = indicativeSearch.quotes;
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return json(
     {
@@ -77,6 +88,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       googleMapId,
       googleApiKey,
       apiUrl,
+      canonicalUrl,
     },
     {
       headers: {

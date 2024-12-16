@@ -18,11 +18,13 @@ import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { AllCountries } from "~/components/section/page/explore";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
-export const meta: MetaFunction = () => {
+export const meta: MetaFunction = ({data}) => {
   return {
     title: `Explore Everywhere | Flights.owenmerry.com`,
     description: `Discover everywhere in the world with maps, images and suggested must try locations`,
+    canonical: data.canonicalUrl,
   };
 };
 
@@ -54,6 +56,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     endYear: Number(moment().add(10, "months").format("YYYY")),
   });
   const search = indicativeSearch.quotes;
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return json(
     {
@@ -64,6 +73,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       googleApiKey,
       countries,
       apiUrl,
+      canonicalUrl,
     },
     {
       headers: {

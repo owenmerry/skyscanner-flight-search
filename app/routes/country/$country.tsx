@@ -1,6 +1,5 @@
 import type {
   ActionArgs,
-  HeadersFunction,
   LoaderFunction,
   MetaFunction,
 } from "@remix-run/node";
@@ -22,13 +21,16 @@ import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { MarketingWeather } from "~/components/section/marketing/marketing-weather";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
 export const meta: MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
   const {
     search,
+    canonicalUrl,
   }: {
     search: IndicativeQuotesSDK[];
+    canonicalUrl: string;
   } = data;
   return {
     title: `Explore ${country ? country.name : ""}${
@@ -37,6 +39,7 @@ export const meta: MetaFunction = ({ params, data }) => {
     description: `Discover ${
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
+    canonical: canonicalUrl,
   };
 };
 
@@ -62,6 +65,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     endYear: Number(moment().add(10, "months").format("YYYY")),
   });
   const search = indicativeSearch.quotes;
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return json(
     {
@@ -71,6 +81,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       apiUrl,
       googleMapId,
       googleApiKey,
+      canonicalUrl,
     },
     {
       headers: {

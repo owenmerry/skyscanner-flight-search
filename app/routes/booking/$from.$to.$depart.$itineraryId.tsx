@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { json, type LoaderArgs } from "@remix-run/node";
+import { json, MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { HotelList } from "~/components/section/hotels-list";
@@ -11,8 +11,34 @@ import { Breadcrumbs } from "~/components/section/breadcrumbs/breadcrumbs.compon
 import { MapRoute } from "~/components/section/map/map-route";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { Loading } from "~/components/ui/loading";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import moment from "moment";
+import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const meta: MetaFunction = ({ data }) => {
+  const defaultMeta = {
+    title: "Search for Flights | Flights.owenmerry.com",
+    description: "Search for Flights | Flights.owenmerry.com",
+  };
+  if (!data) return defaultMeta;
+  const {
+    query,
+    canonicalUrl,
+  }: {
+    query: QueryPlace;
+    canonicalUrl: string;
+  } = data;
+
+  return {
+    title: `Book ${query.from.name} (${query.from.iata}) to ${query.to.name} (${
+      query.to.iata
+    }) - Depart ${moment(query.depart).format("Do, MMMM")}`,
+    description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) flights with maps, images and suggested must try locations`,
+    canonical: canonicalUrl,
+  };
+};
+
+export const loader = async ({ params, request }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
@@ -32,6 +58,14 @@ export const loader = async ({ params }: LoaderArgs) => {
     depart: params.depart || "",
     tripType: "return",
   };
+  // url
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return json(
     {
@@ -51,6 +85,7 @@ export const loader = async ({ params }: LoaderArgs) => {
         itineraryId: params.itineraryId,
       },
       oldQuery,
+      canonicalUrl,
     },
     {
       headers: {

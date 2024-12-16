@@ -17,6 +17,7 @@ import { MarketingGraph } from "~/components/section/marketing/marketing-graph";
 import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
 export const meta: MetaFunction = ({ params, data }) => {
   const continent = getPlaceFromSlug(
@@ -24,10 +25,13 @@ export const meta: MetaFunction = ({ params, data }) => {
     "PLACE_TYPE_CONTINENT"
   );
   return {
-    title: `Explore ${continent ? continent.name : ""}  | Flights.owenmerry.com`,
+    title: `Explore ${
+      continent ? continent.name : ""
+    }  | Flights.owenmerry.com`,
     description: `Discover ${
       continent ? continent.name : ""
     } with maps, images and suggested must try locations`,
+    canonical: data.canonicalUrl,
   };
 };
 
@@ -59,6 +63,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     endYear: Number(moment().add(10, "months").format("YYYY")),
   });
   const search = indicativeSearch.quotes;
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return json(
     {
@@ -69,6 +80,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       search,
       googleMapId,
       googleApiKey,
+      canonicalUrl,
     },
     {
       headers: {

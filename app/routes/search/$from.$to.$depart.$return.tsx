@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  HeadersFunction,
   json,
   type ActionArgs,
   type LoaderArgs,
@@ -40,11 +39,15 @@ import type { IndicativeSDK } from "~/helpers/sdk/indicative/indicative-sdk";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-history-sdk";
 import { actionsSearchForm } from "~/actions/search-form";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { handleOutdatedDate } from "~/helpers/url";
+import { Message } from "~/components/section/message/message.component";
 
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
     title: "Search for Flights | Flights.owenmerry.com",
     description: "Search for Flights | Flights.owenmerry.com",
+    canonical: data.canonicalUrl,
   };
   if (!data) return defaultMeta;
   const {
@@ -80,7 +83,7 @@ export const meta: MetaFunction = ({ data }) => {
   };
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
@@ -111,6 +114,15 @@ export const loader = async ({ params }: LoaderArgs) => {
     depart: params.depart || "",
     return: params.return || "",
   };
+
+  // Call the handler function to check the date
+  const redirectResponse = handleOutdatedDate(flightQuery);
+
+  if (redirectResponse) {
+    // If the function returns a redirect, return it immediately
+    return redirectResponse;
+  }
+
   // getFlightLiveCreate({
   //   apiUrl,
   //   query: {
@@ -157,7 +169,17 @@ export const loader = async ({ params }: LoaderArgs) => {
     query: flightQuery,
   });
 
-  return json({
+  // url
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
+
+  return json(
+    {
       apiUrl,
       googleApiKey,
       googleMapId,
@@ -170,6 +192,8 @@ export const loader = async ({ params }: LoaderArgs) => {
       indicativeSearch,
       indicativeSearchFlight,
       flightHistoryPrices,
+      canonicalUrl,
+      isPastDate: url.searchParams.get('message') === "past-date",
     },
     {
       headers: {
@@ -198,6 +222,7 @@ export default function Search() {
     flightQuery,
     country,
     city,
+    isPastDate,
   }: {
     apiUrl: string;
     googleApiKey: string;
@@ -209,6 +234,7 @@ export default function Search() {
     city: Place;
     indicativeSearch: IndicativeSDK;
     indicativeSearchFlight: IndicativeSDK;
+    isPastDate: boolean;
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<
@@ -367,6 +393,14 @@ export default function Search() {
             />
           </div>
           <div className="w-full md:ml-2 md:max-w-[730px]">
+            {isPastDate ? (
+              <Message
+                title="We've Updated Your Search!"
+                description="It looks like the date you selected has passed. We've updated your search to show flights starting from next week. If you'd like to search for another date, feel free to adjust the calendar above!"
+              />
+            ) : (
+              ""
+            )}
             <BarChartHistoryPrice
               query={flightQuery}
               interval="hour"

@@ -20,6 +20,7 @@ import { Panel } from "~/components/section/flight-results/flight-panel";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { Deals } from "~/components/section/flight-results/flight-results-default";
 import moment from "moment";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
@@ -29,8 +30,10 @@ export const meta: MetaFunction = ({ data }) => {
   if (!data) return defaultMeta;
   const {
     query,
+    canonicalUrl,
   }: {
     query: QueryPlace;
+    canonicalUrl: string;
   } = data;
 
   return {
@@ -40,10 +43,11 @@ export const meta: MetaFunction = ({ data }) => {
       query.return
     ).format("Do, MMMM")}`,
     description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) return flights with maps, images and suggested must try locations`,
+    canonical: canonicalUrl,
   };
 };
 
-export const loader = async ({ params }: LoaderArgs) => {
+export const loader = async ({ params, request }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
@@ -64,6 +68,14 @@ export const loader = async ({ params }: LoaderArgs) => {
     return: params.return || "",
     tripType: "return",
   };
+  // url
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return json(
     {
@@ -85,6 +97,7 @@ export const loader = async ({ params }: LoaderArgs) => {
         itineraryId: params.itineraryId,
       },
       oldQuery,
+      canonicalUrl,
     },
     {
       headers: {

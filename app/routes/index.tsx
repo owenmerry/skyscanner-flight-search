@@ -1,4 +1,9 @@
-import { json, type ActionArgs, type LoaderFunction, type MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type ActionArgs,
+  type LoaderFunction,
+  type MetaFunction,
+} from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroDefault } from "~/components/section/hero/hero-default";
 import { Layout } from "~/components/ui/layout/layout";
@@ -16,11 +21,13 @@ import moment from "moment";
 import { MarketingPlaces } from "~/components/section/marketing/marketing-places";
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { actionsSearchForm } from "~/actions/search-form";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
-export const meta: MetaFunction = ({ params }) => {
+export const meta: MetaFunction = ({ data }) => {
   return {
     title: `Explore the World | Flights.owenmerry.com`,
     description: `Discover the world with maps, images and suggested must try locations`,
+    canonical: data.canonicalUrl,
   };
 };
 
@@ -31,6 +38,13 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
   const placesSDK = skyscanner().geo();
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) || {};
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return json(
     {
@@ -40,6 +54,7 @@ export const loader: LoaderFunction = async ({ request, context, params }) => {
       googleMapId,
       from: cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON"),
       fromCookie: cookie.from,
+      canonicalUrl,
     },
     {
       headers: {
