@@ -3,6 +3,7 @@ import type { Place } from "~/helpers/sdk/geo/geo-sdk";
 export type { Place } from "~/helpers/sdk/geo/geo-sdk";
 
 const geoData = skyscanner().geo();
+const geoDataList = skyscanner().geo().places;
 
 export const getEntityIdFromIata = (iata: string): string => {
   const list = getGeoList();
@@ -76,7 +77,7 @@ export const getPlaceFromEntityId = (entityId: string): Place | false => {
 };
 
 export const getGeoList = (): Place[] => {
-  const list = skyscanner().geo().places;
+  const list = geoDataList;
 
   return list;
 };
