@@ -1,14 +1,37 @@
+import * as Sentry from "@sentry/remix";
 import LogRocket from "logrocket";
-LogRocket.init("xojxaz/owen-merry-flights");
 import * as React from "react";
+import { useEffect } from "react";
 import * as ReactDOM from "react-dom/client";
-import { RemixBrowser } from "@remix-run/react";
+import { RemixBrowser, useLocation, useMatches } from "@remix-run/react";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import ClientStyleContext from "./src/ClientStyleContext";
 import createEmotionCache from "./src/createEmotionCache";
 import theme from "./src/theme";
+
+LogRocket.init("xojxaz/owen-merry-flights");
+
+Sentry.init({
+  dsn: "https://9b482445c8ec7ae4cbaaba7074cc1aa0@o464638.ingest.us.sentry.io/4508480690061312",
+  tracesSampleRate: 1,
+
+  integrations: [
+    Sentry.browserTracingIntegration({
+      useEffect,
+      useLocation,
+      useMatches,
+    }),
+    Sentry.replayIntegration({
+      maskAllText: true,
+      blockAllMedia: true,
+    }),
+  ],
+
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+});
 
 interface ClientCacheProviderProps {
   children: React.ReactNode;

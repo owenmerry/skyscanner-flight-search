@@ -1,3 +1,4 @@
+import { withSentry } from "@sentry/remix";
 import * as amplitude from "@amplitude/analytics-browser";
 import {
   type MetaFunction,
@@ -98,7 +99,7 @@ export let loader = async ({ request }: { request: Request }) => {
   return { isMaintenanceMode };
 };
 
-export default function App() {
+function App() {
   const { isMaintenanceMode } = useLoaderData();
   const location = useLocation();
   const navigate = useNavigate();
@@ -126,3 +127,5 @@ export default function App() {
     </Document>
   );
 }
+
+export default withSentry(App);

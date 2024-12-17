@@ -8,3 +8,5 @@ node_modules
 *storybook.log
 *storybook-static
 *storybook-build
+# Sentry Config File
+.sentryclirc
