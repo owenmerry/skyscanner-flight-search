@@ -2,8 +2,8 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "remix build",
-    "build-and-maps": "remix build --sourcemap && sentry-upload-sourcemaps --org owenmerry --project flightsowenmerrrycom",
+    "build-old": "remix build",
+    "build": "remix build --sourcemap && sentry-upload-sourcemaps --org owenmerry --project flightsowenmerrrycom",
     "dev": "remix dev",
     "start": "remix-serve build",
     "typecheck": "tsc",
