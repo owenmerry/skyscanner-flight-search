@@ -4,7 +4,7 @@
   "scripts": {
     "build": "remix build --sourcemap && sentry-upload-sourcemaps --org owenmerry --project flightsowenmerrrycom",
     "dev": "remix dev",
-    "start": "NODE_OPTIONS='--import ./instrumentation.server.mjs' remix-serve build",
+    "start": "remix-serve build",
     "typecheck": "tsc",
     "tailwind": "tailwindcss -i ./app/tailwind.css -o ./storybook-build/tailwind.css --watch",
     "storybook": "npm run tailwind-build && storybook dev -p 6006",
