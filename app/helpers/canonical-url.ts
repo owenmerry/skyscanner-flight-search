@@ -10,7 +10,7 @@ export const generateCanonicalUrl = ({ origin, path, queryParams, allowedParams 
   const normalizedPath = path.endsWith("/") ? path.slice(0, -1) : path;
 
   // Construct the base URL from origin and normalized path
-  const baseUrl = `${origin}${normalizedPath}`.toLowerCase();
+  const baseUrl = `${origin.replace('http://', 'https://')}${normalizedPath}`.toLowerCase();
 
   // Build the query string based on the allowed parameter order
   const allowedQuery = allowedParams
