@@ -54,8 +54,10 @@ export interface IndicativeQuotesSDK {
 export const getIndicativeQuotesSDK = (
   search: SkyscannerAPIIndicativeResponse
 ): IndicativeQuotesSDK[] => {
-  const quote = Object.keys(search.content.results.quotes).map((quoteKey) => {
-    const quote = search.content.results.quotes[quoteKey];
+  const indicativeContent = search.content;
+  if(!indicativeContent) return [];
+  const quote = Object.keys(indicativeContent.results.quotes).map((quoteKey) => {
+    const quote = indicativeContent.results.quotes[quoteKey];
     const from = getPlaceFromEntityId(quote.outboundLeg.originPlaceId);
     const to = getPlaceFromEntityId(quote.outboundLeg.destinationPlaceId);
     if (!from || !to) return undefined;
@@ -105,7 +107,7 @@ export const getIndicativeQuotesSDK = (
           date: quote.outboundLeg.departureDateTime,
           dateString: outboundDateString,
           carrier:
-            search.content.results.carriers[
+          indicativeContent.results.carriers[
               quote.outboundLeg.marketingCarrierId
             ],
         },
@@ -113,7 +115,7 @@ export const getIndicativeQuotesSDK = (
           date: quote.inboundLeg.departureDateTime,
           dateString: inboundDateString,
           carrier:
-            search.content.results.carriers[
+          indicativeContent.results.carriers[
               quote.inboundLeg.marketingCarrierId
             ],
         },

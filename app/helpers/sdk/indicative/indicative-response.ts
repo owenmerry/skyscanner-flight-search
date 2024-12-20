@@ -1,6 +1,6 @@
 export interface SkyscannerAPIIndicativeResponse {
   status: string;
-  content: {
+  content?: {
     results: IndicitiveResults;
     groupingOptions: {
       byRoute: {
