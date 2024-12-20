@@ -12,7 +12,11 @@ export const ContentfulHero = ({
   return (
     <HeroDynamic
       apiUrl={apiUrl}
-      title={getStringOrDefault(component.fields["title"])}
+      title={`${getStringOrDefault(component.fields["title"])} ${
+        component.fields["tripType"] === undefined
+          ? "undefined"
+          : component.fields["tripType"]
+      }`}
       text={getStringOrDefault(component.fields["subtitle"])}
       showGradient={getBooleanOrDefault(component.fields["gradient"])}
       showOverlay={getBooleanOrDefault(component.fields["overlay"])}

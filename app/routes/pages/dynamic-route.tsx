@@ -8,13 +8,17 @@ import { SkyscannerAPIContentPageResponse } from "~/helpers/sdk/content/content-
 import { replacePlaceholders } from "~/helpers/sdk/placeholders/placeholders";
 
 export const loader: LoaderFunction = async ({ params, request }) => {
+  const url = new URL(request.url);
+
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
+  const preview = url.searchParams.get("preview");
 
   const content = await skyscanner().content({
     apiUrl,
     slug: params["*"] ? encodeURIComponent(params["*"]) : "",
+    preview: preview !== null ? true : false,
   });
   if ("error" in content.page) {
     return redirect("/not-found");
@@ -43,7 +47,7 @@ export default function Index() {
   }>();
 
   return (
-    <Layout>
+    <Layout apiUrl={apiUrl}>
       <Components
         apiUrl={apiUrl}
         list={page.fields.components}

@@ -81,10 +81,12 @@ export interface SkyscannerSDK {
     res,
     slug,
     apiUrl,
+    preview,
   }: {
     res?: SkyscannerAPIContentPageResponse;
     slug?: string;
     apiUrl?: string;
+    preview?: boolean;
   }) => Promise<ContentSDK>;
   carHire: ({
     query,
