@@ -47,7 +47,6 @@ export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
     title: "Search for Flights | Flights.owenmerry.com",
     description: "Search for Flights | Flights.owenmerry.com",
-    canonical: data.canonicalUrl,
   };
   if (!data) return defaultMeta;
   const {
@@ -80,6 +79,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightQuery.to.iata
     }) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
+    canonical: data.canonicalUrl,
   };
 };
 
