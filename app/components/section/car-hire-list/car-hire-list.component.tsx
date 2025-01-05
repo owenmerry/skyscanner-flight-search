@@ -34,7 +34,7 @@ export const CarHireList = ({
   return (
     <>
       {!hasResults ? (
-        <>No Car Hire Details</>
+        <></>
       ) : (
         <>
           <div className="py-8 lg:py-16">
