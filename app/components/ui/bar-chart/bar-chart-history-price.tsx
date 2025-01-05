@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { buildBarChartData } from "./helpers/bar-chart";
 import moment from "moment";
 import type { QueryPlace } from "~/types/search";
@@ -9,8 +9,8 @@ import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-histo
 export interface BarChartHistoryPriceProps {
   query: QueryPlace;
   interval?: "day" | "hour";
-  apiUrl: string,
-  flightPrices?: FlightHistorySDK,
+  apiUrl: string;
+  flightPrices?: FlightHistorySDK;
 }
 
 export const BarChartHistoryPrice = ({
@@ -19,23 +19,28 @@ export const BarChartHistoryPrice = ({
   interval = "day",
   apiUrl,
 }: BarChartHistoryPriceProps) => {
-  const [prices, setPrices] = useState<FlightHistorySDK | undefined>(flightPrices);
+  const [prices, setPrices] = useState<FlightHistorySDK | undefined>(
+    flightPrices
+  );
   const [show, setShow] = useState(false);
-  useEffect(() => {
-    if(!prices){
-      runPriceHistory();
-    }
-  }, []);
 
-  const runPriceHistory = async () => {
+  const runPriceHistory = useCallback(async () => {
     const prices = await skyscanner().flightHistory({
       apiUrl,
-      query
+      query,
     });
 
     setPrices(prices);
-  };
-  if (!prices || 'error' in prices || prices.length === 0) return "";
+  }, [apiUrl, query]);
+  
+  useEffect(() => {
+    if (!prices) {
+      runPriceHistory();
+    }
+  }, [prices, runPriceHistory]);
+
+
+  if (!prices || "error" in prices || prices.length === 0) return "";
   const chart = buildBarChartData(prices, interval, 100, 50);
 
   return (

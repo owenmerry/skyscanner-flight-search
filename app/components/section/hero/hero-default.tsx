@@ -100,7 +100,7 @@ export const HeroDefault = ({
 }: HeroDefaultProps) => {
   return (
     <section className="relative overflow-visible">
-      <div className="bg-[url('/images/hero/landscape.jpg')] bg-top md:bg-top bg-cover bg-no-repeat absolute top-0 left-0 w-[100%] h-[150%] z-0">
+      <div className="bg-[url('/images/hero/landscape02.jpg')] bg-top md:bg-top bg-cover bg-no-repeat absolute top-0 left-0 w-[100%] h-[150%] z-0">
         <Overlay />
         <Gradient />
       </div>

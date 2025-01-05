@@ -343,7 +343,7 @@ const Flight = ({
           <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
             Trip Details
           </h2>
-          <FlightDetails flight={flight} query={query} />
+          <FlightDetails flight={flight} query={query} open={true} />
           <h2 className="mt-10 mb-8 text-2xl font-bold tracking-tight leading-none">
             Choose a booking option
           </h2>
@@ -415,6 +415,7 @@ const ResultsCount = ({
   nonFilteredResults,
   results,
   query,
+  showSkyscannerLink = false,
 }: {
   headerSticky: boolean;
   filteredResults: {
@@ -425,6 +426,7 @@ const ResultsCount = ({
   nonFilteredResults: FlightSDK[];
   results: number;
   query: QueryPlace;
+  showSkyscannerLink?: boolean;
 }) => {
   return (
     <div
@@ -445,25 +447,30 @@ const ResultsCount = ({
       ) : (
         ""
       )}
-      <a
-        target="_blank"
-        className="ml-4 text-slate-400 text-xs hover:underline"
-        href={getSkyscannerSearchLink(query)}
-      >
-        See Search On Skyscanner{" "}
-        <svg
-          width="13.5"
-          height="13.5"
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          className="ml-1 inline-block"
+      {showSkyscannerLink ? (
+        <a
+          target="_blank"
+          rel="noreferrer"
+          className="ml-4 text-slate-400 text-xs hover:underline"
+          href={getSkyscannerSearchLink(query)}
         >
-          <path
-            fill="currentColor"
-            d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
-          ></path>
-        </svg>
-      </a>
+          See Search On Skyscanner{" "}
+          <svg
+            width="13.5"
+            height="13.5"
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            className="ml-1 inline-block"
+          >
+            <path
+              fill="currentColor"
+              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"
+            ></path>
+          </svg>
+        </a>
+      ) : (
+        ""
+      )}
     </div>
   );
 };
@@ -521,6 +528,16 @@ export const FlightResultsDefault = ({
 
   return !loading ? (
     <div>
+      <div>
+        <ResultsCount
+          headerSticky={headerSticky}
+          filteredResults={filteredResultsList}
+          filteredOutResultsTotal={filteredOutResultsTotal}
+          nonFilteredResults={nonFilteredResults}
+          results={results}
+          query={query}
+        />
+      </div>
       <div className="flex gap-2">
         <div
           className={`flex-1 border-2 dark:bg-gray-900 bg-white border-slate-100 py-4 px-4 rounded-lg mb-2 dark:text-white cursor-pointer ${
@@ -562,14 +579,6 @@ export const FlightResultsDefault = ({
           </div>
         </div>
       </div>
-      {/* <ResultsCount
-        headerSticky={headerSticky}
-        filteredResults={filteredResultsList}
-        filteredOutResultsTotal={filteredOutResultsTotal}
-        nonFilteredResults={nonFilteredResults}
-        results={results}
-        query={query}
-      /> */}
       {filteredResultsList.results.map((flight) => {
         return (
           <Flight

@@ -115,7 +115,7 @@ export const MapPlanner = ({
   const [selected, setSelected] = useState<IndicativeQuotesSDK>();
   const [days, setDays] = useState<number>(queryDays || 3);
   const [startDate, setStartDate] = useState<string>(
-    queryStartDate || "2024-12-01"
+    queryStartDate || moment().add(2, 'weeks').format("YYYY-MM-DD")
   );
   const [showDetails, setShowDetails] = useState<boolean>(true);
   const parents = to ? getAllParents(to.parentId) : [];

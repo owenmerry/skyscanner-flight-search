@@ -81,14 +81,21 @@ export const getFlightLiveCreate = async ({
         query?.return ? `&return=${query.return}` : ""
       }${mode ? `&mode=${mode}` : ""}`
     );
+
     const json = await res.json();
 
-    if (!json && json.statusCode === 500 && json.statusCode !== 200) {
+    if (!json && json?.statusCode === 500 && json?.statusCode !== 200) {
+      console.log(1);
       error = `Sorry, something happened and we couldnt do this search, maybe try a differnt search (code:2-${json.statusCode})`;
+    } else if (json?.code === 3) {
+      console.log(2);
+      error = `${json?.message} (code:${json?.code}-invalid-request)`;
     } else {
+      console.log(3);
       search = skyscanner().flight().search(json);
     }
   } catch (ex) {
+    console.log(4);
     //error = `Sorry, something happened and we couldnt do this (code:3catch)`;
   }
 

@@ -42,6 +42,11 @@ import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { handleOutdatedDate } from "~/helpers/url";
 import { Message } from "~/components/section/message/message.component";
+import { MapRoutes } from "~/components/section/map/map-routes";
+import { addSearchResultFilters } from "~/helpers/sdk/filters";
+import { CarHireList } from "~/components/section/car-hire-list";
+import { HotelList } from "~/components/section/hotels-list";
+import { MapStatic } from "~/components/section/map/map-static";
 
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
@@ -58,10 +63,13 @@ export const meta: MetaFunction = ({ data }) => {
     indicativeSearchFlight: IndicativeQuotesSDK[];
     flightHistoryPrices: FlightHistorySDK;
   } = data;
+  console.log("flightHistoryPrices");
+  console.log(flightHistoryPrices);
   const historyPrice =
     "error" in flightHistoryPrices
       ? undefined
-      : flightHistoryPrices.length > 0
+      : flightHistoryPrices.length > 0 &&
+        flightHistoryPrices[flightHistoryPrices.length - 1].price !== null
       ? `£${flightHistoryPrices[flightHistoryPrices.length - 1].price.toFixed(
           0
         )}`
@@ -193,7 +201,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       indicativeSearchFlight,
       flightHistoryPrices,
       canonicalUrl,
-      isPastDate: url.searchParams.get('message') === "past-date",
+      isPastDate: url.searchParams.get("message") === "past-date",
     },
     {
       headers: {
@@ -244,7 +252,15 @@ export default function Search() {
     useState<SkyscannerAPIHotelSearchResponse>();
   const [filters, setFilters] = useState({});
   const [showFilters] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const [query] = useState(flightParams);
+  //   const getFilteredResults = () => {
+  //     if (!search || (search && "error" in search)) return;
+  //     return addSearchResultFilters(search.cheapest, {
+  //       ...filters,
+  //     });
+  //   };
+  // //const filteredResults = getFilteredResults();
 
   useEffect(() => {
     setLoading(true);
@@ -283,7 +299,13 @@ export default function Search() {
         return: flightQuery.return,
       },
     });
-    if ("error" in flightSearch) return;
+    console.log("runCreateSearch", flightSearch);
+    if ("error" in flightSearch) {
+      setSearch({ error: "Invalid-request" });
+      setLoading(false);
+
+      return;
+    }
 
     setSearch(flightSearch);
 
@@ -406,6 +428,20 @@ export default function Search() {
               interval="hour"
               apiUrl={apiUrl}
             />
+            {showMap && search && !("error" in search) ? (
+              <MapRoutes
+                flightQuery={flightQuery}
+                googleMapId={googleMapId}
+                googleApiKey={googleApiKey}
+                apiUrl={apiUrl}
+                key="map-component"
+                height={400}
+                itineraryId={search.cheapest[0].itineraryId}
+                flight={search.cheapest}
+              />
+            ) : (
+              ""
+            )}
             <FlightResultsDefault
               flights={search && "error" in search ? undefined : search}
               filters={filters}
@@ -416,16 +452,51 @@ export default function Search() {
               loading={!search}
               headerSticky={false}
             />
-            {/* {!search || error !== "" ? (
-              <div className="dark:text-white"> {error}</div>
+
+            {search &&
+            !("error" in search) &&
+            search?.status === "RESULT_STATUS_COMPLETE" &&
+            search.cheapest.length === 0 ? (
+              <Message
+                title="No Flights Found"
+                description="It seems there are no flights available for your search criteria. Try adjusting your filters or selecting a different date to find the best options for your trip!"
+              />
             ) : (
+              ""
+            )}
+
+            {search &&
+            "error" in search &&
+            search.error === "Invalid-request" ? (
               <>
-                
-                {/*  }
+                {flightQuery.from.entityId === flightQuery.to.entityId ? (
+                  <Message
+                    title="Oops! Same Departure and Arrival"
+                    description="It looks like you've selected the same airport for both departure and arrival. To plan your trip, please choose different airports and give it another go!"
+                    hasDismiss={false}
+                  />
+                ) : (
+                  <Message
+                    title="No Flights Found"
+                    description="It seems there are no flights available for your search criteria. Try adjusting your filters or selecting a different date to find the best options for your trip!"
+                    hasDismiss={false}
+                  />
+                )}
               </>
-            )} */}
+            ) : (
+              ""
+            )}
           </div>
           <div className={`${showFilters ? "" : "hidden"}  md:block w-96 p-2`}>
+            <div className="mb-4">
+              <div>
+                <MapStatic
+                  altText={`Map of the flight from ${flightQuery.from.name} to ${flightQuery.to.name}`}
+                  imageUrl={`https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}|${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&size=300x200&maptype=roadmap&markers=color:blue%7Clabel:S%7C${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}&markers=color:green%7Clabel:E%7C${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&key=AIzaSyAYYGzly02Z6H1mk0vuvfxRtA3VEDOKNww`}
+                  onShowMap={() => setShowMap(!showMap)}
+                />
+              </div>
+            </div>
             <div className="mb-2">
               <GraphDrawer>
                 <PriceGraph apiUrl={apiUrl} query={flightQuery} showReturn />
@@ -439,27 +510,19 @@ export default function Search() {
               }
             />
             <FlightHotelBundle search={search} searchHotel={searchHotel} />
-            {/* <div className="mt-4">
-                <MapComponent
-                  flightQuery={flightQuery}
-                  googleMapId={googleMapId}
-                  googleApiKey={googleApiKey}
-                  key="map-component"
-                />
-              </div> */}
             <ExplorePage country={country} />
           </div>
         </div>
-        <div>
-          {/* <CarHireList
-                  query={{
-                    from: flightQuery.from.entityId,
-                    depart: flightQuery.depart,
-                    return: flightQuery.return,
-                  }}
-                  apiUrl={apiUrl}
-                />
-                <HotelList query={flightQuery} apiUrl={apiUrl} /> */}
+        <div className="px-4 py-4">
+          <CarHireList
+            query={{
+              from: flightQuery.from.entityId,
+              depart: flightQuery.depart,
+              return: flightQuery.return,
+            }}
+            apiUrl={apiUrl}
+          />
+          <HotelList query={flightQuery} apiUrl={apiUrl} />
         </div>
       </div>
     </div>

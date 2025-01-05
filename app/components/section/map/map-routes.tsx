@@ -1,18 +1,18 @@
 import { Wrapper } from "@googlemaps/react-wrapper";
 import { useEffect, useState } from "react";
 import { Loading } from "~/components/ui/loading";
-import { Map } from "~/components/ui/map";
+import { Map as GoogleMap } from "~/components/ui/map";
 import { getFlightSearch } from "~/helpers/map";
 import {
   FlightSDK,
   LegSDK,
   SegmentSDK,
 } from "~/helpers/sdk/flight/flight-functions";
-import { getPlaceFromIata } from "~/helpers/sdk/place";
+import { getPlaceFromIata, Place } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import { QueryPlace } from "~/types/search";
 
-export const MapRoute = ({
+export const MapRoutes = ({
   apiUrl,
   googleApiKey,
   googleMapId,
@@ -27,12 +27,17 @@ export const MapRoute = ({
   flightQuery: QueryPlace;
   height?: number;
   itineraryId?: string;
-  flight?: FlightSDK;
+  flight?: FlightSDK[];
 }) => {
-  const [search, setSearch] = useState<FlightSDK | undefined>(flight);
+  const [search, setSearch] = useState<FlightSDK[] | undefined>(flight);
   useEffect(() => {
     if (!search) runSearch();
   }, []);
+
+  useEffect(() => {
+    if(!flight) return;
+    setSearch([...flight]);
+  }, [flight]);
 
   const runSearch = async () => {
     const res = await skyscanner().flight().create({
@@ -47,7 +52,7 @@ export const MapRoute = ({
       runPoll({ sessionToken: res.sessionToken });
       return;
     }
-    setSearch(flight[0]);
+    setSearch(flight);
   };
 
   const runPoll = async ({ sessionToken }: { sessionToken: string }) => {
@@ -63,7 +68,7 @@ export const MapRoute = ({
       runPoll({ sessionToken: res.sessionToken });
       return;
     }
-    setSearch(flight[0]);
+    setSearch(flight);
   };
 
   if (!search)
@@ -88,6 +93,7 @@ export const MapRoute = ({
       };
     });
   };
+
   const getLegLatAndLng = (leg: LegSDK, type: "to" | "from") => {
     const location = getPlaceFromIata(
       String(type === "to" ? leg.toIata : leg.fromIata)
@@ -99,19 +105,41 @@ export const MapRoute = ({
     };
   };
 
-  const routeLocations = [
-    getLegLatAndLng(search.legs[0], "from"),
-    ...getSegmentsLatAndLng(search.legs[0].segments, "to"),
-    ...(flightQuery.return
-      ? getSegmentsLatAndLng(search.legs[1].segments, "to")
-      : []),
-    ...(flightQuery.return ? [getLegLatAndLng(search.legs[1], "to")] : []),
-  ];
+  const routesLines = search.map((route) => {
+    return [
+      getLegLatAndLng(route.legs[0], "from"),
+      ...getSegmentsLatAndLng(route.legs[0].segments, "to"),
+      ...(flightQuery.return
+        ? getSegmentsLatAndLng(route.legs[1].segments, "to")
+        : []),
+      ...(flightQuery.return ? [getLegLatAndLng(route.legs[1], "to")] : []),
+    ];
+  });
+
+  const getUniqueLocations = (locationArrays: Place[][]): Place[] => {
+    const locationMap = new Map<string, Place>();
+
+    locationArrays.flat().forEach((location) => {
+      if (!locationMap.has(location.entityId)) {
+        locationMap.set(location.entityId, location);
+      }
+    });
+
+    return Array.from(locationMap.values());
+  };
+
+  const routesStopovers = () => {
+    const stopovers = search.map((route) => {
+      return route.route;
+    });
+
+    return getUniqueLocations(stopovers);
+  };
 
   return (
     <div className="mb-2">
       <Wrapper apiKey={googleApiKey} key="map-component-wrapper">
-        <Map
+        <GoogleMap
           googleMapId={googleMapId}
           key="map-component-map"
           center={{
@@ -120,8 +148,12 @@ export const MapRoute = ({
           }}
           height={`${height}px`}
           zoom={5}
-          line={routeLocations}
-          markers={getFlightSearch([flightQuery.to, flightQuery.from, ...search.route])}
+          lines={routesLines}
+          markers={getFlightSearch([
+            flightQuery.to,
+            flightQuery.from,
+            ...routesStopovers(),
+          ])}
         />
       </Wrapper>
     </div>

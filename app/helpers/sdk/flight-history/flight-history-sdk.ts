@@ -39,7 +39,7 @@ export const getFlightHistory = async ({
       error =
         "Sorry, something happened and we couldnt do this search";
     } else {
-      content = json;
+      content = json.filter(price => price.price !== null);
     }
   } catch (ex) {}
 

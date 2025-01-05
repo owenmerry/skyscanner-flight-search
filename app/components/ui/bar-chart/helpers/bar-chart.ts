@@ -1,5 +1,4 @@
 import moment from "moment";
-import type { PriceHistory } from "../bar-chart-history-price";
 
 type AggregatedData = {
   time: string;
@@ -14,6 +13,14 @@ type BarChartData = {
   minPrice: number;
   firstDate: string;
   lastDate: string;
+};
+
+type PriceHistory = {
+  id: number;
+  searchHash: string;
+  price: number;
+  created_at: string;
+  updated_at: string;
 };
 
 export const buildBarChartData = (

@@ -9,6 +9,7 @@ interface MapProps {
   isFitZoomToMarkers?: boolean;
   fitLocationAddress?: string;
   line?: google.maps.LatLngLiteral[];
+  lines?: google.maps.LatLngLiteral[][];
   onLoadedMap?: (map: google.maps.Map) => void;
   markers?:
     | {
@@ -25,6 +26,7 @@ export const Map = ({
   zoom,
   markers,
   line,
+  lines,
   isFitZoomToMarkers = true,
   height = "600px",
   googleMapId,
@@ -81,9 +83,23 @@ export const Map = ({
             googleMap.fitBounds(bounds);
           }
         }
+      }
+      //add line drawing
+      if (line) {
+        const flightPath = new google.maps.Polyline({
+          path: line,
+          geodesic: false,
+          strokeColor: "#53638e",
+          strokeOpacity: 1.0,
+          strokeWeight: 2,
+        });
 
-        //add line drawing
-        if (line) {
+        flightPath.setMap(googleMap);
+      }
+
+      //add lines drawing
+      if (lines) {
+        lines.forEach((line) => {
           const flightPath = new google.maps.Polyline({
             path: line,
             geodesic: false,
@@ -93,7 +109,7 @@ export const Map = ({
           });
 
           flightPath.setMap(googleMap);
-        }
+        });
       }
     }
 
