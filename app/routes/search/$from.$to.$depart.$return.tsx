@@ -92,8 +92,8 @@ export const loader = async ({ params, request }: LoaderArgs) => {
   if (!params.from || !params.to) return;
 
   //query
-  const fromPlace = getPlaceFromIata(params.from);
-  const toPlace = getPlaceFromIata(params.to);
+  const fromPlace = getPlaceFromIata(params.from.toUpperCase());
+  const toPlace = getPlaceFromIata(params.to.toUpperCase());
   if (!fromPlace || !toPlace) return {};
   const flightParams: Query = {
     from: fromPlace.entityId || "",
