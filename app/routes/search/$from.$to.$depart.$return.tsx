@@ -405,6 +405,7 @@ export default function Search() {
               </GraphDrawer>
               <ExplorePageButton country={country} />
               <ExplorePageButton country={country} city={city} />
+<div onClick={() => setShowMap(!showMap)}>Show Map</div>
             </div>
           </div>
           <div className={`hidden md:block w-96 p-2`}>
