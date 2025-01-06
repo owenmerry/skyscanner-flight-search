@@ -516,7 +516,7 @@ export default function Search() {
         <div className="px-4 py-4">
           <CarHireList
             query={{
-              from: flightQuery.from.entityId,
+              from: flightQuery.to.entityId,
               depart: flightQuery.depart,
               return: flightQuery.return,
             }}
