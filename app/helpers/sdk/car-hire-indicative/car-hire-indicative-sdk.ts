@@ -14,6 +14,7 @@ export interface CarHireIndicativeQuery {
   from: string;
   depart?: string;
   return?: string;
+  groupType?: "month" | "day";
 }
 
 export const getCarHireIndicativeSDK = async ({
@@ -57,7 +58,19 @@ export const getCarHireIndicative = async ({
     const res = await fetch(
       `${apiUrl}/car-hire/price?from=${query.from}${
         query.depart ? `&depart=${query.depart}` : ""
-      }${query.return ? `&return=${query.return}` : ""}`
+      }${query.return ? `&return=${query.return}` : ""}${
+        query.groupType
+          ? `&groupType=${
+              query.groupType === "month"
+                ? "DATE_TIME_GROUPING_TYPE_BY_MONTH"
+                : ""
+            }${
+              query.groupType === "day"
+                ? "DATE_TIME_GROUPING_TYPE_BY_DATE"
+                : ""
+            }`
+          : ""
+      }`
     );
     const json:
       | SkyscannerAPICarHireIndicativeResponse

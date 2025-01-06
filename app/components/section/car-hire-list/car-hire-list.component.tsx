@@ -19,11 +19,32 @@ export const CarHireList = ({
     getCarHireData();
   }, []);
   const [search, setSearch] = useState<CarHireSDK>();
+  const [searchType, setSearchType] = useState<"month" | "day">(
+    query.groupType || "month"
+  );
   const hasResults = !!(search && search.results.length > 0);
 
   const getCarHireData = async () => {
     const carHireRes = await skyscanner().carHire({
-      query,
+      query : {
+        ...query,
+        groupType: searchType,
+      },
+      apiUrl,
+    });
+    if ("error" in carHireRes.search) return;
+
+    setSearch(carHireRes.search);
+  };
+
+  const handleChangeType = async (type: "month" | "day") => {
+    if (type === searchType) return;
+    setSearchType(() => type);
+    const carHireRes = await skyscanner().carHire({
+      query : {
+        ...query,
+        groupType: type,
+      },
       apiUrl,
     });
     if ("error" in carHireRes.search) return;
@@ -40,14 +61,42 @@ export const CarHireList = ({
           <div className="py-8 lg:py-16">
             <div>
               <h2 className="mb-8 text-2xl font-bold tracking-tight leading-none text-gray-800 md:text-2xl lg:text-3xl dark:text-white">
-                Car Hire
+                Car Hire - {searchType === "month" ? "Month" : "Day"}
               </h2>
+            </div>
+
+            <div className="flex pb-2">
+              <div
+                onClick={() => handleChangeType("month")}
+                className={`cursor-pointer mr-2 text-nowrap text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center 
+            ${
+              searchType === "month"
+                ? "bg-blue-800 dark:bg-blue-700 hover:bg-blue-800 hover:dark:bg-blue-800"
+                : "bg-slate-600 dark:bg-slate-600 hover:bg-slate-700 hover:dark:bg-slate-700"
+            } 
+           focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800`}
+              >
+                Month
+              </div>
+
+              <div
+                onClick={() => handleChangeType("day")}
+                className={`cursor-pointer text-nowrap text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center 
+          ${
+            searchType === "day"
+                ? "bg-blue-800 dark:bg-blue-700 hover:bg-blue-800 hover:dark:bg-blue-800"
+                : "bg-slate-600 dark:bg-slate-600 hover:bg-slate-700 hover:dark:bg-slate-700"
+          } 
+          hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800`}
+              >
+                Day
+              </div>
             </div>
 
             <div className="flex overflow-y-scroll scrollbar-hide gap-2 grid-cols-2">
               {search.results
                 .sort((a, b) =>
-                  (a.stats.cheapest && b.stats.cheapest)
+                  a.stats.cheapest && b.stats.cheapest
                     ? Number(a.stats.cheapest.replace("£", "")) -
                       Number(b.stats.cheapest.replace("£", ""))
                     : 0
