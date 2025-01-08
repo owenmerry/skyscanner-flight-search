@@ -24,21 +24,21 @@ export const getPlaceFromIata = (iata: string): Place | false => {
 };
 
 export const getPlacesFromIatas = (iatas?: string[]): Place[] => {
-  if(!iatas) return [];
+  if (!iatas) return [];
   const places: Place[] = [];
-  iatas.forEach(iata => {
+  iatas.forEach((iata) => {
     const place = getPlaceFromIata(iata);
-    if(place){
+    if (place) {
       places.push(place);
     }
-  })
+  });
 
   return places;
 };
 
 export const getPlaceFromSlug = (
   slug: string,
-  type: string,
+  type: string | string[],
   options?: {
     parentId?: string;
   }
@@ -47,7 +47,9 @@ export const getPlaceFromSlug = (
   const found = list.filter(
     (item) =>
       item.slug === slug &&
-      item.type === type &&
+      (typeof type === "string"
+        ? item.type === type
+        : type.includes(item.type)) &&
       (options?.parentId ? options?.parentId === item.parentId : true)
   );
   return found.length > 0 ? found[0] : false;

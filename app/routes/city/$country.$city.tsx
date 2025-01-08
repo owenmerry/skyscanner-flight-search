@@ -18,12 +18,17 @@ import { MarketingMapPlaces } from "~/components/section/marketing/marketing-map
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { useEffect } from "react";
 
 export const meta: MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
-  const city = getPlaceFromSlug(params.city || "", "PLACE_TYPE_CITY", {
-    parentId: country ? country.entityId : undefined,
-  });
+  const city = getPlaceFromSlug(
+    params.city || "",
+    ["PLACE_TYPE_CITY", "PLACE_TYPE_AIRPORT"],
+    {
+      parentId: country ? country.entityId : undefined,
+    }
+  );
   const {
     search,
     canonicalUrl,
@@ -47,14 +52,18 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
-  const city = getPlaceFromSlug(params.city || "", "PLACE_TYPE_CITY", {
-    parentId: country ? country.entityId : undefined,
-  });
+  const city = getPlaceFromSlug(
+    params.city || "",
+    ["PLACE_TYPE_CITY", "PLACE_TYPE_AIRPORT"],
+    {
+      parentId: country ? country.entityId : undefined,
+    }
+  );
   const cookieHeader = request.headers.get("Cookie");
   const cookie = (await userPrefs.parse(cookieHeader)) || {};
   const cityImages = await getImages({
     apiUrl,
-    query: `${city ? city.name : ""},  city`,
+    query: `${city ? city.name : ""}, ${country ? country.name : ""}`,
   });
   const from = cookie.from ? JSON.parse(cookie.from) : getPlaceFromIata("LON");
   const indicativeSearch = await skyscanner().indicative({
@@ -108,6 +117,7 @@ export async function action({ request }: ActionArgs) {
 export default function SEOAnytime() {
   const {
     city,
+    country,
     cityImages,
     from,
     search,
@@ -117,12 +127,26 @@ export default function SEOAnytime() {
   }: {
     apiUrl: string;
     city: Place;
+    country: Place;
     from: Place;
     cityImages: string[];
     search: IndicativeQuotesSDK[];
     googleMapId: string;
     googleApiKey: string;
   } = useLoaderData();
+
+  const getImagesRun = async () => {
+    const cityImages = await getImages({
+      apiUrl,
+      query: `${city ? city.name : ""}, city, ${country ? country.name : ""}`,
+    });
+
+    console.log(cityImages);
+  };
+
+  useEffect(() => {
+    getImagesRun();
+  });
 
   return (
     <Layout selectedUrl="/explore" apiUrl={apiUrl}>
