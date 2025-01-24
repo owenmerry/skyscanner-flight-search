@@ -43,10 +43,10 @@ import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { handleOutdatedDate } from "~/helpers/url";
 import { Message } from "~/components/section/message/message.component";
 import { MapRoutes } from "~/components/section/map/map-routes";
-import { addSearchResultFilters } from "~/helpers/sdk/filters";
 import { CarHireList } from "~/components/section/car-hire-list";
 import { HotelList } from "~/components/section/hotels-list";
 import { MapStatic } from "~/components/section/map/map-static";
+import { imageUrlToBase64 } from "~/helpers/image";
 
 export const meta: MetaFunction = ({ data }) => {
   const defaultMeta = {
@@ -58,10 +58,12 @@ export const meta: MetaFunction = ({ data }) => {
     flightQuery,
     indicativeSearchFlight,
     flightHistoryPrices,
+    imgMapBase64,
   }: {
     flightQuery: QueryPlace;
     indicativeSearchFlight: IndicativeQuotesSDK[];
     flightHistoryPrices: FlightHistorySDK;
+    imgMapBase64: string;
   } = data;
   console.log("flightHistoryPrices");
   console.log(flightHistoryPrices);
@@ -87,7 +89,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightQuery.to.iata
     }) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
-    "og:image": `https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}|${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&size=300x200&maptype=roadmap&markers=color:blue%7Clabel:S%7C${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}&markers=color:green%7Clabel:E%7C${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&key=AIzaSyAYYGzly02Z6H1mk0vuvfxRtA3VEDOKNww`,
+    "og:image": `${imgMapBase64}`,
     canonical: data.canonicalUrl,
   };
 };
@@ -187,6 +189,10 @@ export const loader = async ({ params, request }: LoaderArgs) => {
     queryParams,
   });
 
+  //image map
+  const urlMap = `https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}|${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&size=300x200&maptype=roadmap&markers=color:blue%7Clabel:S%7C${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}&markers=color:green%7Clabel:E%7C${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&key=AIzaSyAYYGzly02Z6H1mk0vuvfxRtA3VEDOKNww`;
+  const imgMapBase64 = await imageUrlToBase64(urlMap);
+
   return json(
     {
       apiUrl,
@@ -202,6 +208,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       indicativeSearchFlight,
       flightHistoryPrices,
       canonicalUrl,
+      imgMapBase64,
       isPastDate: url.searchParams.get("message") === "past-date",
     },
     {
@@ -232,6 +239,7 @@ export default function Search() {
     country,
     city,
     isPastDate,
+    imgMapBase64,
   }: {
     apiUrl: string;
     googleApiKey: string;
@@ -244,6 +252,7 @@ export default function Search() {
     indicativeSearch: IndicativeSDK;
     indicativeSearchFlight: IndicativeSDK;
     isPastDate: boolean;
+    imgMapBase64: string;
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<
@@ -494,7 +503,7 @@ export default function Search() {
               <div>
                 <MapStatic
                   altText={`Map of the flight from ${flightQuery.from.name} to ${flightQuery.to.name}`}
-                  imageUrl={`https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}|${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&size=300x200&maptype=roadmap&markers=color:blue%7Clabel:S%7C${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}&markers=color:green%7Clabel:E%7C${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&key=AIzaSyAYYGzly02Z6H1mk0vuvfxRtA3VEDOKNww`}
+                  imageUrl={imgMapBase64}
                   onShowMap={() => setShowMap(!showMap)}
                 />
               </div>
