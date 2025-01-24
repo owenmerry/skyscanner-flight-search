@@ -77,7 +77,7 @@ export const LocationPlaces = ({
     // if (!place) return;
     setSearchTerm('');
     // setSearchOrigin([]);
-    // setShowAutoSuggest(false);
+    setShowAutoSuggest(false);
     // onChange && onChange(geoId);
     onSelect &&
       onSelect({
@@ -89,7 +89,7 @@ export const LocationPlaces = ({
           types: details.types,
         },
       });
-    // if (clearOnSelect) setSearchTerm("");
+    if (clearOnSelect) setSearchTerm("");
   };
 
   const handleInputClick = () => {

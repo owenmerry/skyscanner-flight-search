@@ -87,6 +87,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightQuery.to.iata
     }) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
+    "og:image": `https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}|${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&size=300x200&maptype=roadmap&markers=color:blue%7Clabel:S%7C${flightQuery.from.coordinates.latitude},${flightQuery.from.coordinates.longitude}&markers=color:green%7Clabel:E%7C${flightQuery.to.coordinates.latitude},${flightQuery.to.coordinates.longitude}&key=AIzaSyAYYGzly02Z6H1mk0vuvfxRtA3VEDOKNww`,
     canonical: data.canonicalUrl,
   };
 };
@@ -405,7 +406,7 @@ export default function Search() {
               </GraphDrawer>
               <ExplorePageButton country={country} />
               <ExplorePageButton country={country} city={city} />
-<div onClick={() => setShowMap(!showMap)}>Show Map</div>
+              <div onClick={() => setShowMap(!showMap)}>Show Map</div>
             </div>
           </div>
           <div className={`hidden md:block w-96 p-2`}>

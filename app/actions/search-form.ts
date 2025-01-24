@@ -29,4 +29,14 @@ export async function actionsSearchForm({ request }: { request: Request }) {
       },
     });
   }
+  if (searchType === "nearby") {
+    const nearby = {
+      name: bodyParams.get("nearby"),
+    };
+    return redirect(`/search/${query.from}?nearby=${nearby.name}`, {
+      headers: {
+        "Set-Cookie": await userPrefs.serialize(cookie),
+      },
+    });
+  }
 }

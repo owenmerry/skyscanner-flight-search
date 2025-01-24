@@ -4,13 +4,11 @@ import type { Query, QueryPlace } from "~/types/search";
 import type { Place } from "~/helpers/sdk/place";
 import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { Drawer } from "@mui/material";
-import {
-  getDateYYYYMMDDToDisplay,
-  getTripDays,
-  getTripDaysLengthFromYYYYMMDD,
-} from "~/helpers/date";
+import { getDateYYYYMMDDToDisplay, getTripDays } from "~/helpers/date";
 import { ExploreSearchForm } from "./components/explore-search-form";
 import { FlightsSearchForm } from "./components/flight-search-form";
+import Dropdown from "../dropdown/dropdown-default";
+import { NearbySearchForm } from "./components/nearby-search-form";
 
 const convertQuerytoQueryPlace = (query: Query): QueryPlace | null => {
   const fromPlace = getPlaceFromEntityId(query.from);
@@ -71,33 +69,40 @@ interface SearchLabelsProps {
   selected: SearchForm;
 }
 const SearchLabels = ({ onChange, selected }: SearchLabelsProps) => {
+  const [buttonText, setButtonText] = useState("Flights");
   return (
-    <div className="flex overflow-y-scroll scrollbar-hide gap-2 mb-2 sm:mb-0">
-      <div
-        onClick={() => onChange("flights")}
-        className={`${
-          selected === "flights"
-            ? `border-blue-600 bg-blue-600 hover:bg-blue-700 text-white`
-            : `dark:border-slate-600 border-slate-500 dark:bg-slate-800 hover:border-slate-500 text-slate-800 dark:text-white`
-        } border py-2 px-3 rounded-xl cursor-pointer font-bold text-sm whitespace-nowrap`}
-      >
-        Flights
-      </div>
-      <div
-        onClick={() => onChange("explore")}
-        className={`${
-          selected === "explore"
-            ? `border-blue-600 bg-blue-600 hover:bg-blue-700 text-white`
-            : `dark:border-slate-600 border-slate-500  dark:bg-slate-800 hover:border-slate-500 text-slate-800 dark:text-white`
-        } border py-2 px-3 rounded-xl cursor-pointer font-bold text-sm whitespace-nowrap`}
-      >
-        Explore
-      </div>
+    <div className="gap-2 mb-2 sm:mb-0">
+      <Dropdown
+        buttonText={buttonText}
+        items={[
+          {
+            label: "Flights",
+            onClick: () => {
+              onChange("flights");
+              setButtonText("Flights");
+            },
+          },
+          {
+            label: "Explore",
+            onClick: () => {
+              onChange("explore");
+              setButtonText("Explore");
+            },
+          },
+          {
+            label: "Nearby",
+            onClick: () => {
+              onChange("nearby");
+              setButtonText("Nearby");
+            },
+          },
+        ]}
+      />
     </div>
   );
 };
 
-export type SearchForm = "flights" | "explore";
+export type SearchForm = "flights" | "explore" | "nearby";
 export interface FlightControlsAppProps {
   apiUrl?: string;
   buttonLoading?: boolean;
@@ -229,6 +234,15 @@ export const FlightControlsApp = ({
                 ) : (
                   ""
                 )}
+                {form === "nearby" ? (
+                  <NearbySearchForm
+                    apiUrl={apiUrl}
+                    flightDefault={flightDefault}
+                    from={from}
+                  />
+                ) : (
+                  ""
+                )}
               </div>
             </FlightControlsDrawer>
           </div>
@@ -259,6 +273,15 @@ export const FlightControlsApp = ({
               )}
               {form === "explore" ? (
                 <ExploreSearchForm
+                  apiUrl={apiUrl}
+                  flightDefault={flightDefault}
+                  from={from}
+                />
+              ) : (
+                ""
+              )}
+              {form === "nearby" ? (
+                <NearbySearchForm
                   apiUrl={apiUrl}
                   flightDefault={flightDefault}
                   from={from}
