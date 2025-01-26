@@ -3,52 +3,53 @@ import { useLoaderData } from "@remix-run/react";
 import { HeroSimple } from "~/components/section/hero/hero-simple";
 import { Layout } from "~/components/ui/layout/layout";
 import { getDistanceOfFromTo } from "~/helpers/distance";
+import {
+  getGoogleLocationFromId,
+  getSkyscannerPlaceNearbyByLatLng,
+} from "~/helpers/google";
 import { imageUrlToBase64 } from "~/helpers/image";
-import { getNearbySearchLink } from "~/helpers/nearby";
-import { GeoSDK } from "~/helpers/sdk/geo/geo-sdk";
+import { getSearchLink } from "~/helpers/nearby";
+import type { GeoSDK } from "~/helpers/sdk/geo/geo-sdk";
 import type { GoogleDetailsResponse } from "~/helpers/sdk/google-details/google-details-response";
+import { GoogleRouteSDK } from "~/helpers/sdk/google-route/google-route-sdk";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
-  const from = await skyscanner().services.google.details({
+  const from = await getGoogleLocationFromId({
     placeId: params.from || "",
     apiUrl,
   });
-  const to = await skyscanner().services.google.details({
+  const to = await getGoogleLocationFromId({
     placeId: params.to || "",
     apiUrl,
   });
   const query = {
-    from: "error" in from ? undefined : from,
-    to: "error" in to ? undefined : to,
+    from,
+    to,
   };
   const fromNearby = query.from
-    ? await skyscanner()
-        .geoAll()
-        .nearby({
-          apiUrl,
-          location: {
-            latitude: query.from.location.latitude,
-            longitude: query.from.location.longitude,
-          },
-        })
+    ? await getSkyscannerPlaceNearbyByLatLng({
+        apiUrl,
+        location: {
+          latitude: query.from.location.latitude,
+          longitude: query.from.location.longitude,
+        },
+      })
     : undefined;
   const toNearby = query.to
-    ? await skyscanner()
-        .geoAll()
-        .nearby({
-          apiUrl,
-          location: {
-            latitude: query.to.location.latitude,
-            longitude: query.to.location.longitude,
-          },
-        })
+    ? await getSkyscannerPlaceNearbyByLatLng({
+        apiUrl,
+        location: {
+          latitude: query.to.location.latitude,
+          longitude: query.to.location.longitude,
+        },
+      })
     : undefined;
 
   const nearby = {
-    from: !fromNearby || "error" in fromNearby ? undefined : fromNearby,
-    to: !toNearby || "error" in toNearby ? undefined : toNearby,
+    from: fromNearby,
+    to: toNearby,
   };
 
   const imageHasData =
@@ -61,12 +62,25 @@ export const loader = async ({ params }: LoaderArgs) => {
     : undefined;
   const imgMapBase64 = urlMap ? await imageUrlToBase64(urlMap) : "";
 
+  const route = await skyscanner().services.google.route({
+    apiUrl,
+    origin: {
+      placeId: query.from?.id,
+    },
+    destination: {
+      placeId: query.to?.id,
+    },
+    travelMode: "TRANSIT",
+    arrivalTime: "2025-02-10T15:00:00Z",
+  });
+
   return {
     apiUrl,
     query,
     imgMapBase64,
-    nearby,
-    searchLink: getNearbySearchLink(nearby.from, nearby.to),
+    nearby: { from: nearby.from?.geo, to: nearby.to?.geo },
+    searchLink: getSearchLink(nearby.from?.iataPlace, nearby.to?.iataPlace),
+    route,
   };
 };
 
@@ -77,6 +91,7 @@ export default function Directions() {
     nearby,
     imgMapBase64,
     searchLink,
+    route,
   }: {
     apiUrl: string;
     query: {
@@ -89,6 +104,7 @@ export default function Directions() {
       to?: GeoSDK;
       from?: GeoSDK;
     };
+    route: GoogleRouteSDK;
   } = useLoaderData();
   console.log("query", query);
   console.log("nearby", nearby);
@@ -162,6 +178,70 @@ export default function Directions() {
               );
             })}
           </div>
+
+          {"error" in route || !route?.routes ? (
+            ""
+          ) : (
+            <div>
+              <h2 className="text-2xl font-bold">Route</h2>
+              <div className="grid grid-cols-1 gap-4">
+                {route?.routes?.map((step, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="grid grid-cols-1 gap-2 rounded-lg break-words"
+                    >
+                      <div>Distance: {step.distanceMeters}</div>
+                      <div>Duration: {step.duration}</div>
+                      <div>Instructions:</div>
+                      {step.legs.map((leg, index) => {
+                        return (
+                          <div key={index} className="grid grid-cols-1 gap-2 ">
+                            <div>
+                              Distance: {leg.localizedValues.distance.text}
+                            </div>
+                            <div>
+                              Duration: {leg.localizedValues.duration.text}
+                            </div>
+                            <div>
+                              Static Duration:{" "}
+                              {leg.localizedValues.staticDuration.text}
+                            </div>
+                            <div>Steps Overview:</div>
+                            {leg.stepsOverview.multiModalSegments.map(
+                              (segment, index) => {
+                                return (
+                                  <div
+                                    key={index}
+                                    className="grid grid-cols-1 gap-2 bg-slate-800 p-4"
+                                  >
+                                    <div>
+                                      Step Start Index: {segment.stepStartIndex}
+                                    </div>
+                                    <div>
+                                      Step End Index: {segment.stepEndIndex}
+                                    </div>
+                                    <div>Travel Mode: {segment.travelMode}</div>
+                                    <div>Navigation Instruction:</div>
+                                    <div>
+                                      {
+                                        segment.navigationInstruction
+                                          ?.instructions
+                                      }
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <div className="mt-8">
             {searchLink ? (

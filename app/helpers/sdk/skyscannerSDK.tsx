@@ -37,6 +37,7 @@ import type {
 import {
   getFlightHistorySDK,
 } from "./flight-history/flight-history-sdk";
+import { getGoogleRouteSDK, GoogleRouteProps, GoogleRouteSDK } from "./google-route/google-route-sdk";
 
 // types (Response)
 
@@ -119,6 +120,7 @@ export interface SkyscannerSDK {
         apiUrl: string;
         placeId: string;
       }) => Promise<GoogleDetailsSDK>;
+      route: (props : GoogleRouteProps) => Promise<GoogleRouteSDK>;
     };
   };
 }
@@ -139,6 +141,7 @@ export const skyscanner = (): SkyscannerSDK => {
       google: {
         autosuggest: getGoogleAutosuggestSDK,
         details: getGoogleDetailsSDK,
+        route: getGoogleRouteSDK,
       },
     },
   };

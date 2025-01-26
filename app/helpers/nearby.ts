@@ -1,10 +1,7 @@
-import type { GeoSDK } from "./sdk/geo/geo-sdk";
+import type { Place } from "./sdk/geo/geo-sdk";
 
-export const getNearbySearchLink = (from?: GeoSDK, to?: GeoSDK) : string | undefined => {
+export const getSearchLink = (from?: Place, to?: Place) : string | undefined => {
     if (!from || !to) return undefined;
-    const fromIata = from.places.find((place) => place.type === "PLACE_TYPE_CITY" && place.iata) || from.places.find((place) => place.type === "PLACE_TYPE_AIRPORT" && place.iata);
-    const toIata = to.places.find((place) => place.type === "PLACE_TYPE_CITY" && place.iata) || to.places.find((place) => place.type === "PLACE_TYPE_AIRPORT" && place.iata);
-    if (!fromIata || !toIata) return undefined;
 
-    return `/search/${fromIata.iata}/${toIata.iata}/2025-06-01/2025-06-10`;
+    return `/search/${from.iata}/${to.iata}/2025-06-01/2025-06-10`;
   }
