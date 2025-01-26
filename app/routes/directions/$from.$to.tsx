@@ -4,6 +4,7 @@ import { HeroSimple } from "~/components/section/hero/hero-simple";
 import { Layout } from "~/components/ui/layout/layout";
 import { getDistanceOfFromTo } from "~/helpers/distance";
 import { imageUrlToBase64 } from "~/helpers/image";
+import { getNearbySearchLink } from "~/helpers/nearby";
 import { GeoSDK } from "~/helpers/sdk/geo/geo-sdk";
 import type { GoogleDetailsResponse } from "~/helpers/sdk/google-details/google-details-response";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
@@ -65,6 +66,7 @@ export const loader = async ({ params }: LoaderArgs) => {
     query,
     imgMapBase64,
     nearby,
+    searchLink: getNearbySearchLink(nearby.from, nearby.to),
   };
 };
 
@@ -74,6 +76,7 @@ export default function Directions() {
     query,
     nearby,
     imgMapBase64,
+    searchLink,
   }: {
     apiUrl: string;
     query: {
@@ -81,6 +84,7 @@ export default function Directions() {
       to?: GoogleDetailsResponse;
     };
     imgMapBase64: string;
+    searchLink?: string;
     nearby: {
       to?: GeoSDK;
       from?: GeoSDK;
@@ -157,6 +161,19 @@ export default function Directions() {
                 </div>
               );
             })}
+          </div>
+
+          <div className="mt-8">
+            {searchLink ? (
+              <a
+                className="inline-block cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700"
+                href={searchLink}
+              >
+                Search {searchLink}
+              </a>
+            ) : (
+              "No Search Found"
+            )}
           </div>
         </div>
 
