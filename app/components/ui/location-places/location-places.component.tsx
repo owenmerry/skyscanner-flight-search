@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
 import { PlaceGoogle } from "~/components/section/map/map-planner";
 import { useOutsideClick } from "~/helpers/hooks/outsideClickHook";
-
-import { searchAutoSuggest } from "~/helpers/sdk/autosuggest";
-import type { Place as PlaceAutosuggest } from "~/helpers/sdk/autosuggest";
 import {
-  GoogleAutosuggestResponse,
   PlacePrediction,
-  Prediction,
 } from "~/helpers/sdk/google-autosuggest/google-autosuggest-response";
 import type { Place } from "~/helpers/sdk/place";
-import { getPlaceFromEntityId } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 interface LocationProps {
   name?: string;
+  placeholder?: string;
   apiUrl?: string;
   defaultValue?: string;
   clearOnSelect?: boolean;
@@ -25,6 +20,7 @@ interface LocationProps {
 
 export const LocationPlaces = ({
   name = "location",
+  placeholder,
   apiUrl = "",
   defaultValue,
   clearOnSelect = false,
@@ -71,7 +67,7 @@ export const LocationPlaces = ({
       apiUrl,
     });
     if (!details || "error" in details) return;
-    console.log(details);
+    console.log('details', details);
 
     // const place = await getPlaceFromEntityId(geoId);
     // if (!place) return;
@@ -84,7 +80,7 @@ export const LocationPlaces = ({
         placeGoogle: {
           id: details.id,
           name: details.displayName.text,
-          images: details.photos.map((image) => image.name),
+          images: details.photos?.map((image) => image.name) || [],
           location: details.location,
           types: details.types,
         },
@@ -121,7 +117,7 @@ export const LocationPlaces = ({
           type="text"
           onChange={(e) => handleSearch(e)}
           className="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2.5  dark:bg-slate-700 dark:border-slate-600 dark:placeholder-slate-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 font-semibold"
-          placeholder={name || "From"}
+          placeholder={placeholder || name || "From"}
         />
       </div>
       {showAutoSuggest && predictions.length > 0 && (

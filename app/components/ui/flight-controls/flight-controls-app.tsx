@@ -8,7 +8,8 @@ import { getDateYYYYMMDDToDisplay, getTripDays } from "~/helpers/date";
 import { ExploreSearchForm } from "./components/explore-search-form";
 import { FlightsSearchForm } from "./components/flight-search-form";
 import Dropdown from "../dropdown/dropdown-default";
-import { NearbySearchForm } from "./components/nearby-search-form";
+import { DirectionsSearchForm } from "./components/directions-search-form";
+import { EverywhereSearchForm } from "./components/everywhere-search-form";
 
 const convertQuerytoQueryPlace = (query: Query): QueryPlace | null => {
   const fromPlace = getPlaceFromEntityId(query.from);
@@ -90,10 +91,17 @@ const SearchLabels = ({ onChange, selected }: SearchLabelsProps) => {
             },
           },
           {
-            label: "Nearby",
+            label: "Everywhere",
             onClick: () => {
-              onChange("nearby");
-              setButtonText("Nearby");
+              onChange("everywhere");
+              setButtonText("Everywhere");
+            },
+          },
+          {
+            label: "Directions",
+            onClick: () => {
+              onChange("directions");
+              setButtonText("Directions");
             },
           },
         ]}
@@ -102,7 +110,7 @@ const SearchLabels = ({ onChange, selected }: SearchLabelsProps) => {
   );
 };
 
-export type SearchForm = "flights" | "explore" | "nearby";
+export type SearchForm = "flights" | "explore" | "directions" | "everywhere";
 export interface FlightControlsAppProps {
   apiUrl?: string;
   buttonLoading?: boolean;
@@ -234,11 +242,20 @@ export const FlightControlsApp = ({
                 ) : (
                   ""
                 )}
-                {form === "nearby" ? (
-                  <NearbySearchForm
+                {form === "everywhere" ? (
+                  <EverywhereSearchForm
                     apiUrl={apiUrl}
                     flightDefault={flightDefault}
                     from={from}
+                    hasBackground={false}
+                  />
+                ) : (
+                  ""
+                )}
+                {form === "directions" ? (
+                  <DirectionsSearchForm
+                    apiUrl={apiUrl}
+                    flightDefault={flightDefault}
                   />
                 ) : (
                   ""
@@ -276,15 +293,25 @@ export const FlightControlsApp = ({
                   apiUrl={apiUrl}
                   flightDefault={flightDefault}
                   from={from}
+                  hasBackground={false}
                 />
               ) : (
                 ""
               )}
-              {form === "nearby" ? (
-                <NearbySearchForm
+              {form === "everywhere" ? (
+                <EverywhereSearchForm
                   apiUrl={apiUrl}
                   flightDefault={flightDefault}
                   from={from}
+                  hasBackground={false}
+                />
+              ) : (
+                ""
+              )}
+              {form === "directions" ? (
+                <DirectionsSearchForm
+                  apiUrl={apiUrl}
+                  flightDefault={flightDefault}
                 />
               ) : (
                 ""

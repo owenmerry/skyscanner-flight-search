@@ -7,13 +7,13 @@ import { Loading } from "~/components/ui/loading/loading.component";
 import type { Place } from "~/helpers/sdk/place";
 import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 
-interface ExploreSearchFormProps {
+interface EverywhereSearchFormProps {
   apiUrl?: string;
   flightDefault?: Query;
   from?: Place;
   hasBackground?: boolean;
 }
-export const ExploreSearchForm: React.FC<ExploreSearchFormProps> = ({
+export const EverywhereSearchForm: React.FC<EverywhereSearchFormProps> = ({
   apiUrl = "",
   flightDefault,
   from,
@@ -35,7 +35,7 @@ export const ExploreSearchForm: React.FC<ExploreSearchFormProps> = ({
       ...query,
       [`${key}`]: value,
       [`${key}Iata`]: iataCode,
-      [`${key}Text`]: place && "iata" in place ? place.country.slug : "",
+      [`${key}Text`]: place && "iata" in place ? place.name : "",
     });
   };
 
@@ -49,7 +49,7 @@ export const ExploreSearchForm: React.FC<ExploreSearchFormProps> = ({
         name="from"
         value={JSON.stringify(getPlaceFromEntityId(query.from))}
       />
-      <input type="hidden" name="search" value={"explore"} />
+      <input type="hidden" name="search" value={"everywhere"} />
       <div className="relative">
         <Location
           name="From"

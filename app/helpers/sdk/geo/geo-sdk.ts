@@ -25,6 +25,9 @@ export type Place = Geo & {
 };
 
 export const getGeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
+  return convertGeoToSeoSDK(res);
+};
+export const convertGeoToSeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
   const geoPlaces = convertGeoToArray(res).sort((a, b) =>
     a.name.localeCompare(b.name)
   );
@@ -43,10 +46,7 @@ export const getGeoSDK = (res?: SkyscannerAPIGeoResponse): GeoSDK => {
       airportWithCountryId.length > 0
         ? airportWithCountryId[0].countryEntityId
         : "";
-    const countrySlug =
-      country.length > 0
-        ? country[0].slug
-        : "";
+    const countrySlug = country.length > 0 ? country[0].slug : "";
 
     return {
       ...place,
@@ -98,4 +98,54 @@ export const convertGeoToArray = (res?: SkyscannerAPIGeoResponse): Place[] => {
   });
 
   return list;
+};
+
+export const getGeoNearby = async ({
+  apiUrl,
+  location: { latitude, longitude },
+}: {
+  apiUrl: string;
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+}): Promise<GeoSDK | { error: string }> => {
+  let content,
+    error = "";
+  try {
+    const res = await fetch(
+      `${apiUrl}/flights/geo/nearest?latitude=${latitude}&longitude=${longitude}`
+    );
+    const json: SkyscannerAPIGeoResponse = await res.json();
+
+    if (!json) {
+      error =
+        "Sorry, something happened and we couldnt do this search, maybe try a differnt search";
+    } else {
+      content = json;
+    }
+  } catch (ex) {}
+
+  return content ? convertGeoToSeoSDK(content) : { error };
+};
+
+export interface GeoAllSDK {
+  all: (res?: SkyscannerAPIGeoResponse) => GeoSDK;
+  nearby: ({
+    apiUrl,
+    location: { latitude, longitude },
+  }: {
+    apiUrl: string;
+    location: {
+      latitude: number;
+      longitude: number;
+    };
+  }) => Promise<GeoSDK | { error: string }>;
+}
+
+export const getGeoAllSDK = (): GeoAllSDK => {
+  return {
+    all: getGeoSDK,
+    nearby: getGeoNearby,
+  };
 };

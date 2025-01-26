@@ -1,7 +1,7 @@
 //geo
 import type { SkyscannerAPIGeoResponse } from "./geo/geo-response";
-import type { GeoSDK } from "./geo/geo-sdk";
-import { getGeoSDK } from "./geo/geo-sdk";
+import type { GeoAllSDK, GeoSDK } from "./geo/geo-sdk";
+import { getGeoAllSDK, getGeoSDK } from "./geo/geo-sdk";
 //hotels
 import type { SkyscannerAPIHotelSearchResponse } from "./hotel/hotel-response";
 import type { HotelSDK } from "./hotel/hotel-sdk";
@@ -31,8 +31,10 @@ import { getGoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest
 import type { GoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
 import type { GoogleDetailsSDK } from "./google-details/google-details-sdk";
 import { getGoogleDetailsSDK } from "./google-details/google-details-sdk";
-import {
+import type {
   FlightHistorySDK,
+} from "./flight-history/flight-history-sdk";
+import {
   getFlightHistorySDK,
 } from "./flight-history/flight-history-sdk";
 
@@ -42,6 +44,7 @@ import {
 export interface SkyscannerSDK {
   flight: () => FlightSDK;
   geo: (res?: SkyscannerAPIGeoResponse) => GeoSDK;
+  geoAll: (res?: SkyscannerAPIGeoResponse) => GeoAllSDK;
   indicative: ({
     res,
     query,
@@ -127,6 +130,7 @@ export const skyscanner = (): SkyscannerSDK => {
     flight: getFlightSDK,
     flightHistory: getFlightHistorySDK,
     geo: (res?: SkyscannerAPIGeoResponse) => getGeoSDK(res),
+    geoAll: (res?: SkyscannerAPIGeoResponse) => getGeoAllSDK(),
     hotel: getHotelSDK,
     indicative: getIndicativeSDK,
     content: getContentSDK,

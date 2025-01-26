@@ -26,7 +26,7 @@ export interface GoogleDetailsResponse {
   shortFormattedAddress: string;
   editorialSummary: EditorialSummary;
   reviews: Review[];
-  photos: Photo[];
+  photos?: Photo[];
   goodForChildren: boolean;
   accessibilityOptions: AccessibilityOptions;
 }

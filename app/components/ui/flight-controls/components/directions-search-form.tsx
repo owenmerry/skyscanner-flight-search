@@ -1,51 +1,33 @@
 import { useState } from "react";
 import { Form } from "@remix-run/react";
 import type { Query } from "~/types/search";
-import { getDefualtFlightQuery } from "~/helpers/sdk/flight";
 import { Loading } from "~/components/ui/loading/loading.component";
 import type { Place } from "~/helpers/sdk/place";
-import { getPlaceFromEntityId, getPlaceFromIata } from "~/helpers/sdk/place";
 import { LocationPlaces } from "../../location-places";
-import { Location } from "../../location";
-import { PlaceGoogle } from "~/components/section/map/map-planner";
+import type { PlaceGoogle } from "~/components/section/map/map-planner";
 
-interface NearbySearchFormProps {
+interface DirectionsSearchFormProps {
   apiUrl?: string;
   flightDefault?: Query;
   from?: Place;
   hasBackground?: boolean;
 }
-export const NearbySearchForm: React.FC<NearbySearchFormProps> = ({
+export const DirectionsSearchForm: React.FC<DirectionsSearchFormProps> = ({
   apiUrl = "",
-  flightDefault,
-  from,
   hasBackground = true,
 }) => {
-  const defaultQuery: Query = flightDefault
-    ? flightDefault
-    : getDefualtFlightQuery({ from });
-  const [query, setQuery] = useState<Query>(defaultQuery);
-  const [nearbyPlace, setNearbyPlace] = useState<PlaceGoogle>();
+  const [query, setQuery] = useState<{
+    from?: PlaceGoogle;
+    to?: PlaceGoogle;
+  }>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleFromLocationChange = (
-    value: string,
-    key: string,
-    iataCode: string
-  ) => {
-    const place = getPlaceFromIata(iataCode);
+  const handleLocationChange = (value: PlaceGoogle, key: "from" | "to") => {
+    console.log('handleChange', value);
     setQuery({
       ...query,
       [`${key}`]: value,
-      [`${key}Iata`]: iataCode,
-      [`${key}Text`]: place && "iata" in place ? place.name : "",
     });
-  };
-
-  const handleNearbyLocationChange = (
-    value: PlaceGoogle
-  ) => {
-    setNearbyPlace(value);
   };
 
   return (
@@ -57,37 +39,36 @@ export const NearbySearchForm: React.FC<NearbySearchFormProps> = ({
     >
       <input
         type="hidden"
-        name="from"
-        value={JSON.stringify(getPlaceFromEntityId(query.from))}
-      />
+        name="googlefrom"
+        value={query?.from?.id}
+        />
       <input
         type="hidden"
-        name="to"
-        value={JSON.stringify(getPlaceFromEntityId(query.from))}
+        name="googleto"
+        value={query?.to?.id}
       />
-      <input
-        type="hidden"
-        name="nearby"
-        value={nearbyPlace?.name}
-      />
-      <input type="hidden" name="search" value={"nearby"} />
+      <input type="hidden" name="search" value={"directions"} />
       <div className="relative">
-        <Location
-          name="From"
-          defaultValue={query.fromText}
+        <LocationPlaces
+          name="googleFrom"
+          placeholder="From"
+          defaultValue={query?.from?.name}
           apiUrl={apiUrl}
-          onSelect={(value, iataCode) =>
-            handleFromLocationChange(value, "from", iataCode)
+          onSelect={(googlePlace) =>
+            handleLocationChange(googlePlace.placeGoogle, "from")
           }
         />
       </div>
-      <div className="relative font-bold whitespace-nowrap">Nearby</div>
+      <div className="relative font-bold whitespace-nowrap">To</div>
       <div className="relative">
-        <LocationPlaces
-          name="From"
-          defaultValue={nearbyPlace?.name}
+      <LocationPlaces
+          name="googleTo"
+          placeholder="To"
+          defaultValue={query?.to?.name}
           apiUrl={apiUrl}
-          onSelect={(googlePlace) => handleNearbyLocationChange(googlePlace.placeGoogle)}
+          onSelect={(googlePlace) =>
+            handleLocationChange(googlePlace.placeGoogle, "to")
+          }
         />
       </div>
       <button

@@ -89,7 +89,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightQuery.to.iata
     }) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
-    "og:image": `${imgMapBase64}`,
+    "og:image": `http://localhost:3001/image?data=${imgMapBase64}`,
     canonical: data.canonicalUrl,
   };
 };
