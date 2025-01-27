@@ -7,7 +7,6 @@ import {
   getGoogleLocationFromId,
   getSkyscannerPlaceNearbyByLatLng,
 } from "~/helpers/google";
-import { imageUrlToBase64 } from "~/helpers/image";
 import { getSearchLink } from "~/helpers/nearby";
 import type { GeoSDK } from "~/helpers/sdk/geo/geo-sdk";
 import type { GoogleDetailsResponse } from "~/helpers/sdk/google-details/google-details-response";
@@ -52,16 +51,6 @@ export const loader = async ({ params }: LoaderArgs) => {
     to: toNearby,
   };
 
-  const imageHasData =
-    query.to?.location.latitude &&
-    query.from?.location.latitude &&
-    query.from?.location.latitude &&
-    query.to?.location.latitude;
-  const urlMap = imageHasData
-    ? `https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${query.from?.location.latitude},${query.from?.location.longitude}|${query.to?.location.latitude},${query.to?.location.longitude}&size=1000x400&maptype=roadmap&markers=color:blue%7Clabel:S%7C${query.from?.location.latitude},${query.from?.location.longitude}&markers=color:green%7Clabel:E%7C${query.to?.location.latitude},${query.to?.location.longitude}&key=AIzaSyAYYGzly02Z6H1mk0vuvfxRtA3VEDOKNww`
-    : undefined;
-  const imgMapBase64 = urlMap ? await imageUrlToBase64(urlMap) : "";
-
   const route = await skyscanner().services.google.route({
     apiUrl,
     origin: {
@@ -77,7 +66,6 @@ export const loader = async ({ params }: LoaderArgs) => {
   return {
     apiUrl,
     query,
-    imgMapBase64,
     nearby: { from: nearby.from?.geo, to: nearby.to?.geo },
     searchLink: getSearchLink(nearby.from?.iataPlace, nearby.to?.iataPlace),
     route,
@@ -89,7 +77,6 @@ export default function Directions() {
     apiUrl,
     query,
     nearby,
-    imgMapBase64,
     searchLink,
     route,
   }: {
@@ -129,7 +116,7 @@ export default function Directions() {
           })`}
         />
         <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 text-center lg:py-16">
-          <img src={imgMapBase64} alt="route" />
+          <img src={`https://flights.owenmerry.com/image?from=${query.from.iata}&to=${query.to.iata}`} alt="route" />
           <div className="flex gap-4">
             {items.map((key) => {
               return (

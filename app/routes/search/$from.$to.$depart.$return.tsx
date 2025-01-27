@@ -86,7 +86,7 @@ export const meta: MetaFunction = ({ data }) => {
       flightQuery.to.iata
     }) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
-    "og:image": `http://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`,
+    "og:image": `https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`,
     canonical: data.canonicalUrl,
   };
 };
@@ -493,7 +493,7 @@ export default function Search() {
               <div>
                 <MapStatic
                   altText={`Map of the flight from ${flightQuery.from.name} to ${flightQuery.to.name}`}
-                  imageUrl={`http://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`}
+                  imageUrl={`https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`}
                   onShowMap={() => setShowMap(!showMap)}
                 />
               </div>
