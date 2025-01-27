@@ -28,6 +28,9 @@ export const getSkyscannerPlaceNearbyByLatLng = async ({
 }): Promise<{
     geo: GeoSDK;
     iataPlace?: Place;
+    iataPlaceAirport?: Place;
+    iataPlaceCity?: Place;
+    iataPlaceCountry?: Place;
 } | undefined> => {
   if (!location || !location.latitude || !location.longitude) return undefined;
   const nearby = await skyscanner()
@@ -41,10 +44,16 @@ export const getSkyscannerPlaceNearbyByLatLng = async ({
     });
     if("error" in nearby) return undefined;
 
-const iataPlace = nearby.places.find((place) => place.type === "PLACE_TYPE_CITY" && place.iata) || nearby.places.find((place) => place.type === "PLACE_TYPE_AIRPORT" && place.iata);
+    const iataPlaceAirport = nearby.places.find((place) => place.type === "PLACE_TYPE_AIRPORT" && place.iata);
+    const iataPlaceCity = nearby.places.find((place) => place.type === "PLACE_TYPE_CITY" && place.iata);
+    const iataPlaceCountry = nearby.places.find((place) => place.type === "PLACE_TYPE_COUNTRY" && place.iata);
+    const iataPlace = iataPlaceCity || iataPlaceAirport;
 
   return {
     geo: nearby,
     iataPlace: iataPlace,
+    iataPlaceAirport,
+    iataPlaceCity,
+    iataPlaceCountry,
   };
 };

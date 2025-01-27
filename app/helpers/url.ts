@@ -28,7 +28,7 @@ export function handleOutdatedDate(query: QueryPlace): Response | null {
   // Check if the date is in the past
   if (parsedDate.isBefore(today, "day")) {
     // Redirect to the same route with today's date
-    const updatedDepartDate: Moment = today.add(1, "week");
+    const updatedDepartDate: Moment = today.add(3, "months");
     const updatedDepartDateString: string =
       updatedDepartDate.format("YYYY-MM-DD");
 

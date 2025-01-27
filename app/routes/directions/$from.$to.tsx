@@ -1,17 +1,30 @@
-import type { LoaderArgs } from "@remix-run/node";
+import type { ActionArgs, LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { HeroSimple } from "~/components/section/hero/hero-simple";
+import { actionsSaveFlight } from "~/actions/save-flight";
+import { actionsSearchForm } from "~/actions/search-form";
+import { CarHireDeal } from "~/components/section/car-hire-deal/car-hire-deal.component";
+import { DirectionTimeline } from "~/components/section/directions-timeline/directions";
+import { FlightControlsApp } from "~/components/ui/flight-controls/flight-controls-app";
 import { Layout } from "~/components/ui/layout/layout";
-import { getDistanceOfFromTo } from "~/helpers/distance";
 import {
   getGoogleLocationFromId,
   getSkyscannerPlaceNearbyByLatLng,
 } from "~/helpers/google";
 import { getSearchLink } from "~/helpers/nearby";
-import type { GeoSDK } from "~/helpers/sdk/geo/geo-sdk";
+import type { GeoSDK, Place } from "~/helpers/sdk/geo/geo-sdk";
 import type { GoogleDetailsResponse } from "~/helpers/sdk/google-details/google-details-response";
-import { GoogleRouteSDK } from "~/helpers/sdk/google-route/google-route-sdk";
+import type { GoogleRouteSDK } from "~/helpers/sdk/google-route/google-route-sdk";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+
+export async function action({ request }: ActionArgs) {
+  let action;
+  action = await actionsSearchForm({ request });
+  if (!action) {
+    action = await actionsSaveFlight({ request });
+  }
+
+  return action;
+}
 
 export const loader = async ({ params }: LoaderArgs) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
@@ -51,10 +64,28 @@ export const loader = async ({ params }: LoaderArgs) => {
     to: toNearby,
   };
 
-  const route = await skyscanner().services.google.route({
+  const routeFrom = await skyscanner().services.google.route({
     apiUrl,
     origin: {
       placeId: query.from?.id,
+    },
+    destination: {
+      latLng: {
+        latitude: nearby.from?.iataPlaceAirport?.coordinates.latitude || "",
+        longitude: nearby.from?.iataPlaceAirport?.coordinates.longitude || "",
+      },
+    },
+    travelMode: "TRANSIT",
+    arrivalTime: "2025-02-10T15:00:00Z",
+  });
+
+  const routeTo = await skyscanner().services.google.route({
+    apiUrl,
+    origin: {
+      latLng: {
+        latitude: nearby.to?.iataPlaceAirport?.coordinates.latitude || "",
+        longitude: nearby.to?.iataPlaceAirport?.coordinates.longitude || "",
+      },
     },
     destination: {
       placeId: query.to?.id,
@@ -66,9 +97,12 @@ export const loader = async ({ params }: LoaderArgs) => {
   return {
     apiUrl,
     query,
-    nearby: { from: nearby.from?.geo, to: nearby.to?.geo },
+    nearby: { from: nearby.from, to: nearby.to },
     searchLink: getSearchLink(nearby.from?.iataPlace, nearby.to?.iataPlace),
-    route,
+    route: {
+      from: routeFrom,
+      to: routeTo,
+    },
   };
 };
 
@@ -88,169 +122,95 @@ export default function Directions() {
     imgMapBase64: string;
     searchLink?: string;
     nearby: {
-      to?: GeoSDK;
-      from?: GeoSDK;
+      to?: {
+        geo: GeoSDK;
+        iataPlace?: Place;
+        iataPlaceAirport?: Place;
+        iataPlaceCity?: Place;
+      };
+      from?: {
+        geo: GeoSDK;
+        iataPlace?: Place;
+        iataPlaceAirport?: Place;
+        iataPlaceCity?: Place;
+      };
     };
-    route: GoogleRouteSDK;
+    route: {
+      from: GoogleRouteSDK;
+      to: GoogleRouteSDK;
+    };
   } = useLoaderData();
-  console.log("query", query);
-  console.log("nearby", nearby);
-  type Item = "to" | "from";
-  const items: Item[] = ["from", "to"];
 
   return (
     <div>
       <Layout selectedUrl="/search" apiUrl={apiUrl}>
-        <HeroSimple
-          title={`${query.from?.displayName?.text} to ${
-            query.to?.displayName?.text
-          } (${
-            query.from?.location?.latitude &&
-            query.to?.location?.latitude &&
-            query.from?.location?.longitude &&
-            query.to?.location?.longitude
-              ? `${Math.ceil(
-                  getDistanceOfFromTo(query.from.location, query.to.location)
-                )}km`
-              : ""
-          })`}
+        <FlightControlsApp
+          apiUrl={apiUrl}
+          useForm
+          rounded
+          hideFlightFormOnMobile={false}
+          showFlightDetails={false}
         />
-        <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 text-center lg:py-16">
-          <img src={`https://flights.owenmerry.com/image?from=${query.from.iata}&to=${query.to.iata}`} alt="route" />
-          <div className="flex gap-4">
-            {items.map((key) => {
-              return (
-                <div className="flex-1" key={key}>
-                  <h2 className="text-2xl font-bold">
-                    {query[key]?.displayName?.text}
-                  </h2>
-                  <div>
-                    {query[key]?.location?.latitude},{" "}
-                    {query[key]?.location?.longitude}
-                  </div>
-                  <div className="text-xl font-bold mb-4">Nearby</div>
-                  <div className="grid grid-cols-1 gap-4">
-                    {nearby[key]?.places.map((place) => {
-                      return (
-                        <div
-                          key={place.entityId}
-                          className="grid grid-cols-1 gap-2 bg-slate-800 p-4 rounded-lg break-words"
-                        >
-                          <div className="text-2xl font-bold">{place.name}</div>
-                          <div>
-                            Distance:{" "}
-                            {query[key]?.location?.latitude &&
-                            query[key]?.location?.longitude &&
-                            place.coordinates?.latitude &&
-                            place.coordinates?.longitude
-                              ? `${Math.ceil(
-                                  getDistanceOfFromTo(
-                                    query[key]?.location,
-                                    place.coordinates
-                                  )
-                                )}km`
-                              : ""}
-                          </div>
-                          <div>Iata Code: {place.iata}</div>
-                          <div>Type: {place.type}</div>
-                          <div>Slug: {place.slug}</div>
-                          <div>Image Count: {place.images.length}</div>
-                          <div>Lat: {place.coordinates?.latitude}</div>
-                          <div>Lng: {place.coordinates?.longitude}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
+        <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-lg lg:px-12 text-center lg:py-16">
+          <div className="text-center">
+            <img
+              className="inline-block"
+              src={`https://flights.owenmerry.com/image?from=${nearby.from?.iataPlace?.iata}&to=${nearby.to?.iataPlace?.iata}&w=300&h=300`}
+              alt="route"
+            />
           </div>
-
-          {"error" in route || !route?.routes ? (
-            ""
-          ) : (
+          <div className="grid grid-cols-1 gap-4">
             <div>
-              <h2 className="text-2xl font-bold">Route</h2>
-              <div className="grid grid-cols-1 gap-4">
-                {route?.routes?.map((step, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className="grid grid-cols-1 gap-2 rounded-lg break-words"
-                    >
-                      <div>Distance: {step.distanceMeters}</div>
-                      <div>Duration: {step.duration}</div>
-                      <div>Instructions:</div>
-                      {step.legs.map((leg, index) => {
-                        return (
-                          <div key={index} className="grid grid-cols-1 gap-2 ">
-                            <div>
-                              Distance: {leg.localizedValues.distance.text}
-                            </div>
-                            <div>
-                              Duration: {leg.localizedValues.duration.text}
-                            </div>
-                            <div>
-                              Static Duration:{" "}
-                              {leg.localizedValues.staticDuration.text}
-                            </div>
-                            <div>Steps Overview:</div>
-                            {leg.stepsOverview.multiModalSegments.map(
-                              (segment, index) => {
-                                return (
-                                  <div
-                                    key={index}
-                                    className="grid grid-cols-1 gap-2 bg-slate-800 p-4"
-                                  >
-                                    <div>
-                                      Step Start Index: {segment.stepStartIndex}
-                                    </div>
-                                    <div>
-                                      Step End Index: {segment.stepEndIndex}
-                                    </div>
-                                    <div>Travel Mode: {segment.travelMode}</div>
-                                    <div>Navigation Instruction:</div>
-                                    <div>
-                                      {
-                                        segment.navigationInstruction
-                                          ?.instructions
-                                      }
-                                    </div>
-                                  </div>
-                                );
-                              }
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
+              <DirectionTimeline from={query.from} route={route.from} />
+            </div>
+            <div>
+              <div className="flex gap-4 my-4 bg-slate-700 rounded-lg p-4">
+                <div className="text-lg font-semibold">
+                  Flight from {nearby.from?.iataPlace?.name} to{" "}
+                  {nearby.to?.iataPlace?.name}
+                </div>
               </div>
             </div>
-          )}
-
-          <div className="mt-8">
-            {searchLink ? (
-              <a
-                className="inline-block cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700"
-                href={searchLink}
-              >
-                Search {searchLink}
-              </a>
-            ) : (
-              "No Search Found"
-            )}
+            <div>
+              <h3 className="mb-1 text-2xl font-semibold text-gray-900 dark:text-white">
+                {nearby.from?.iataPlace?.name} (Airport:{" "}
+                {nearby.from?.iataPlaceAirport?.name})
+              </h3>
+            </div>
+            <div className="mt-8">
+              {searchLink ? (
+                <a
+                  className="inline-block cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700"
+                  href={searchLink}
+                >
+                  Search {nearby.from?.iataPlace?.name} to{" "}
+                  {nearby.to?.iataPlace?.name}
+                </a>
+              ) : (
+                "No Search Found"
+              )}
+            </div>
+            <div>
+              <h3 className="mb-1 text-2xl font-semibold text-gray-900 dark:text-white">
+                {nearby.to?.iataPlace?.name} (Airport:{" "}
+                {nearby.to?.iataPlaceAirport?.name})
+              </h3>
+            </div>
+            <div>
+              <DirectionTimeline to={query.to} route={route.to} />
+            </div>
+            <div>
+              <CarHireDeal
+                query={{
+                  from: nearby.to?.iataPlace?.entityId || "",
+                  depart: "2025-02-10",
+                  return: "2025-02-11",
+                }}
+                apiUrl={apiUrl}
+              />
+            </div>
           </div>
         </div>
-
-        {/* <div className="py-12 sm:py-8 px-2 sm:px-4 mx-auto max-w-screen-xl lg:px-12 text-center lg:py-16">
-          <MapStatic
-            imageUrl={imgMapBase64}
-            altText="Map"
-            onShowMap={() => {}}
-          />
-        </div> */}
       </Layout>
     </div>
   );

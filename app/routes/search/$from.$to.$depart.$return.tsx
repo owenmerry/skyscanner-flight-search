@@ -419,7 +419,7 @@ export default function Search() {
             {isPastDate ? (
               <Message
                 title="We've Updated Your Search!"
-                description="It looks like the date you selected has passed. We've updated your search to show flights starting from next week. If you'd like to search for another date, feel free to adjust the calendar above!"
+                description="It looks like the date you selected has passed. We've updated your search for flights in 3 months time. If you'd like to search for another date, feel free to adjust the calendar above!"
               />
             ) : (
               ""
