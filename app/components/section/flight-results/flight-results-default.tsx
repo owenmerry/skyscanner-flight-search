@@ -20,6 +20,7 @@ import { Panel } from "./flight-panel";
 import { WaitForDisplay } from "~/components/ui/wait-for-display/ait-for-display.component";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { useFetcher } from "@remix-run/react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 interface DealsProps {
   flight: FlightSDK;
@@ -231,6 +232,7 @@ interface FlightProps {
   apiUrl: string;
   googleApiKey: string;
   googleMapId: string;
+  selected?: boolean;
 }
 const Flight = ({
   flight,
@@ -239,6 +241,7 @@ const Flight = ({
   apiUrl,
   googleApiKey,
   googleMapId,
+  selected = false,
 }: FlightProps) => {
   const [showDeals, setShowDeals] = useState(false);
   const fetcher = useFetcher();
@@ -300,7 +303,7 @@ const Flight = ({
     <>
       <JourneyDrawer>
         <div className="mb-2">
-          <div className="border-2 border-slate-100 py-4 px-4 rounded-lg dark:border-gray-700 hover:dark:border-gray-600 dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md transition ease-in-out">
+          <div className={`border-2 border-slate-100 py-4 px-4 rounded-lg ${selected ? 'dark:border-blue-600 hover:dark:border-blue-500' : 'dark:border-gray-700 hover:dark:border-gray-600'}  dark:bg-gray-800 bg-white drop-shadow-sm hover:drop-shadow-md transition ease-in-out`}>
             <Labels flight={flight} labels={labels} />
             {/* <fetcher.Form method="post">
               <input type="hidden" name='liked' value={1}/>
@@ -485,6 +488,8 @@ interface FlightResultsDefaultProps {
   googleApiKey: string;
   googleMapId: string;
   loading: boolean;
+  onSelect?: (id: string) => void;
+  selected?: string;
 }
 
 export const FlightResultsDefault = ({
@@ -497,6 +502,8 @@ export const FlightResultsDefault = ({
   googleApiKey,
   googleMapId,
   loading = false,
+  onSelect,
+  selected,
 }: FlightResultsDefaultProps) => {
   const [results, setResults] = useState(
     filters.numberOfResultsToShow || numberOfResultsToShow
@@ -581,15 +588,26 @@ export const FlightResultsDefault = ({
       </div>
       {filteredResultsList.results.map((flight) => {
         return (
-          <Flight
-            flight={flight}
-            flights={flights}
-            key={flight.itineraryId}
-            query={query}
-            apiUrl={apiUrl}
-            googleApiKey={googleApiKey}
-            googleMapId={googleMapId}
-          />
+          <div key={flight.itineraryId} className="relative">
+            {onSelect ? (
+              <div className="absolute z-10 top-1 right-1 p-2 text-blue-600 hover:text-blue-500 cursor-pointer">
+                <div onClick={() => onSelect(flight.itineraryId)}>
+                  {selected !== flight.itineraryId ? <FaRegHeart /> : <FaHeart />}
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+            <Flight
+              flight={flight}
+              flights={flights}
+              query={query}
+              apiUrl={apiUrl}
+              googleApiKey={googleApiKey}
+              googleMapId={googleMapId}
+              selected={selected === flight.itineraryId}
+            />
+          </div>
         );
       })}
       <Paging
