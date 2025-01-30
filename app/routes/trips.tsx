@@ -66,7 +66,7 @@ export async function action({ request }: ActionArgs) {
     cookie.holidays = bodyParams.get("holidays");
   }
 
-  return redirect("/holidays", {
+  return redirect("/trips", {
     headers: {
       "Set-Cookie": await userPrefs.serialize(cookie),
     },
@@ -210,8 +210,8 @@ export default function Index() {
   return (
     <Layout>
       <HeroSimple
-        title={"My Holidays"}
-        text="See all the holidays for the year"
+        title={"My Trips"}
+        text="See all the trips for the year"
         backgroundImage={randomHeroImage}
       />
       <div>
@@ -235,8 +235,8 @@ export default function Index() {
                   holiday.query.return
                 )}{" "}
                 from{" "}
-                {holiday?.search?.cheapest[0] &&
-                  holiday?.search?.cheapest[0].price}
+                {holiday?.search?.cheapest[0] ?
+                  holiday?.search?.cheapest[0].price : <div className="inline-block"><Loading height="5" /></div>}
               </div>
             ))}
             <Form method="post" className="inline-block py-4 mr-2">
@@ -288,8 +288,8 @@ export default function Index() {
                         {holiday.search ? (
                           <span className="text-md lg:text-md md:text-md">
                             (from{" "}
-                            {holiday?.search?.cheapest[0] &&
-                              holiday?.search?.cheapest[0].price}
+                            {holiday?.search?.cheapest[0] ?
+                              holiday?.search?.cheapest[0].price : <Loading height="5" />}
                             )
                           </span>
                         ) : (
