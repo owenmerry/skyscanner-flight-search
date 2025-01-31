@@ -3,6 +3,7 @@ import { imageUrlToBase64 } from "~/helpers/image";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const googleStaticMapKey = process.env.GOOGLE_STATIC_MAP_Key || "";
   const url = new URL(request.url);
   const from = url.searchParams.get("from");
   const to = url.searchParams.get("to");
@@ -26,7 +27,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     }
 
     //image map
-    const urlMap = `https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${fromPlace.coordinates.latitude},${fromPlace.coordinates.longitude}|${toPlace.coordinates.latitude},${toPlace.coordinates.longitude}&size=${width}x${height}&maptype=roadmap&markers=color:blue%7Clabel:S%7C${fromPlace.coordinates.latitude},${fromPlace.coordinates.longitude}&markers=color:green%7Clabel:E%7C${toPlace.coordinates.latitude},${toPlace.coordinates.longitude}&key=AIzaSyAYYGzly02Z6H1mk0vuvfxRtA3VEDOKNww`;
+    const urlMap = `https://maps.googleapis.com/maps/api/staticmap?path=color:0x0000ff80|weight:5|${fromPlace.coordinates.latitude},${fromPlace.coordinates.longitude}|${toPlace.coordinates.latitude},${toPlace.coordinates.longitude}&size=${width}x${height}&maptype=roadmap&markers=color:blue%7Clabel:S%7C${fromPlace.coordinates.latitude},${fromPlace.coordinates.longitude}&markers=color:green%7Clabel:E%7C${toPlace.coordinates.latitude},${toPlace.coordinates.longitude}&key=${googleStaticMapKey}`;
     const imgMapBase64 = await imageUrlToBase64(urlMap);
     const base64Data = imgMapBase64;
 
