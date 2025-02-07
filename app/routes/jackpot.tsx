@@ -1,10 +1,7 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { HeroDefault } from "~/components/section/hero/hero-default";
-import { NavigationWebsite } from "~/components/ui/navigation/navigation-website";
 import { Layout } from "~/components/ui/layout/layout";
 import { getImages } from "~/helpers/sdk/query";
-import { getRandomNumber } from "~/helpers/utils";
 import { GameJackpot } from "~/components/section/game/jackpot/game-jackpot";
 import { HeroSimple } from "~/components/section/hero/hero-simple";
 
