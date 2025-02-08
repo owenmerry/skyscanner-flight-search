@@ -28,6 +28,7 @@
     "@remix-run/react": "^1.16.0",
     "@remix-run/serve": "^1.16.0",
     "@sentry/remix": "^8.45.1",
+    "@vis.gl/react-google-maps": "^1.5.1",
     "date-fns": "^2.29.3",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.10.1",

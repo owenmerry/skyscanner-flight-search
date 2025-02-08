@@ -1,13 +1,16 @@
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
+import { MeetUpLocation } from "~/components/section/meet-up/meet-up-location";
+import { MeetUpMap } from "~/components/section/meet-up/meet-up-map";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
+import { getFullPrice } from "~/helpers/meetup";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { Place } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
-interface PersonLocation {
+export interface PersonLocation {
   place?: Place;
   budget?: number;
   quotes?: IndicativeQuotesSDK[];
@@ -15,24 +18,30 @@ interface PersonLocation {
 
 export const loader = async () => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+  const googleApiKey = process.env.GOOGLE_API_KEY || "";
+  const googleMapId = process.env.GOOGLE_MAP_ID || "";
 
   return {
     apiUrl,
+    googleApiKey,
+    googleMapId,
   };
 };
 
 export default function Meetup() {
   const {
     apiUrl,
+    googleApiKey,
+    googleMapId,
   }: {
     apiUrl: string;
+    googleApiKey: string;
+    googleMapId: string;
   } = useLoaderData();
   const [personLocation, setPersonLocation] = useState<PersonLocation[]>([
     {},
     {},
   ]);
-
-  const search2 = personLocation[1]?.quotes || [];
   const month = 5;
 
   function findCommonElements(...arrays: string[][]): string[] {
@@ -58,6 +67,12 @@ export default function Meetup() {
     );
 
   const common = findCommonElements(...cityNamesArray);
+  const orderDeals =
+    personLocation[0].quotes?.map((quote) => ({
+      quote,
+      fullPrice: getFullPrice(personLocation, quote.city?.name),
+    })) || [];
+  const sortedDeals = orderDeals.sort((a, b) => a.fullPrice - b.fullPrice);
 
   const getFlightPrices = async (
     from: Place,
@@ -124,9 +139,7 @@ export default function Meetup() {
       <Layout apiUrl={apiUrl} selectedUrl="/search">
         <div className="relative z-10 py-16 px-4 mx-auto max-w-screen-xl lg:py-20 lg:px-12">
           <div className="text-5xl font-bold mb-8">Meet in the middle</div>
-          <div className="text-2xl font-bold mb-6">
-            Select Locations ({personLocation.length})
-          </div>
+          <div className="text-2xl font-bold mb-6">Select Locations</div>
           <div className="flex flex-col md:flex-row gap-1">
             {personLocation.map((person, index) => {
               return (
@@ -172,51 +185,43 @@ export default function Meetup() {
             </div>
           </div>
 
-          <div className="text-2xl font-bold pb-6">
-            Locations {common.length}
-          </div>
-          {personLocation[0].quotes?.map((quote) => {
-            if (!common.includes(quote.city?.name || "")) return "";
-            const quote2 = search2.find(
-              (item) => item.city?.name === quote.city?.name
-            );
-            if (!quote2) return "";
-            return (
-              <div key={quote.id}>
-                {quote.country.name}, {quote.city?.name}, {quote.tripDays},{" "}
-                {quote.price.display}+ {quote2.price.display} ={" "}
-                {quote.price.raw && quote2.price.raw
-                  ? quote.price.raw + quote2.price.raw
-                  : ""}
-                (per person{" "}
-                {quote.price.raw && quote2.price.raw
-                  ? (quote.price.raw + quote2.price.raw) / 2
-                  : ""}
-                )
-                {personLocation
-                  .filter((person) => person.quotes !== undefined)
-                  .map((person, index) => {
-                    const quotePerson = person.quotes?.find(
-                      (item) => item.city?.name === quote.city?.name
-                    );
-                    if (!quotePerson) return "";
-
-                    return (
-                      <div key={`${person.place?.entityId}`}>
-                        <a
-                          className="text-blue-600 hover:no-underline underline"
-                          target="_blank"
-                          rel="noreferrer"
-                          href={`/search/${quotePerson.query.from.iata}/${quotePerson.query.to.iata}/2025-0${month}-15/2025-0${month}-25`}
-                        >
-                          From {person.place?.name}
-                        </a>
-                      </div>
-                    );
-                  })}
+          {sortedDeals.length > 0 ? (
+            <>
+              <div className="text-2xl font-bold my-6">Locations</div>
+              <div className="mb-8">
+                <MeetUpMap
+                  googleApiKey={googleApiKey}
+                  googleMapId={googleMapId}
+                  places={sortedDeals
+                    .filter(
+                      (item) => common.includes(item.quote.city?.name || "")
+                    )
+                    .map((item) => ({
+                      place: item.quote.to,
+                      fullPrice: item.fullPrice,
+                    }))}
+                />
               </div>
-            );
-          })}
+              <div className="grid md:grid-cols-3 gap-2">
+                {sortedDeals.map((location, key) => {
+                  if (!common.includes(location.quote.city?.name || ""))
+                    return "";
+                  return (
+                    <div key={location.quote.id}>
+                      <MeetUpLocation
+                        quote={location.quote}
+                        key={key}
+                        locations={personLocation}
+                        month={month}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </Layout>
     </div>
