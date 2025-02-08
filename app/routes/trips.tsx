@@ -186,7 +186,7 @@ export default function Index() {
     runSearch(holidayAdd);
   };
 
-  const handleSelectedItem = (holidayUpdate : Holiday) => {
+  const handleSelectedItem = (holidayUpdate: Holiday) => {
     setHolidays((prevHolidays) =>
       prevHolidays.map((holiday) =>
         JSON.stringify(holiday.query) === JSON.stringify(holidayUpdate.query)
@@ -235,8 +235,16 @@ export default function Index() {
                   holiday.query.return
                 )}{" "}
                 from{" "}
-                {holiday?.search?.cheapest[0] ?
-                  holiday?.search?.cheapest[0].price : <div className="inline-block"><Loading height="5" /></div>}
+                {holiday?.search?.cheapest[0]
+                  ? holiday?.search?.cheapest[0].price
+                  : ""}
+                {holiday?.search?.status !== "RESULT_STATUS_COMPLETE" ? (
+                  <div className="ml-2 inline-block">
+                    <Loading height="5" />
+                  </div>
+                ) : (
+                  ""
+                )}
               </div>
             ))}
             <Form method="post" className="inline-block py-4 mr-2">
@@ -283,13 +291,16 @@ export default function Index() {
                     key={`${holiday.query.from.iata}${holiday.query.to.iata}${holiday.query.depart}${holiday.query.return}`}
                   >
                     <div className="sticky z-20 top-14 bg-white dark:bg-gray-900 py-4">
-                      <h2 className=" mb-4 text-3xl font-extrabold tracking-tight leading-none md:text-3xl lg:text-3xl text-white ">
+                      <h2 className=" mb-4 text-2xl font-extrabold tracking-tight leading-none md:text-2xl lg:text-2xl text-white ">
                         {holiday.query.from.name} to {holiday.query.to.name}{" "}
                         {holiday.search ? (
                           <span className="text-md lg:text-md md:text-md">
                             (from{" "}
-                            {holiday?.search?.cheapest[0] ?
-                              holiday?.search?.cheapest[0].price : <Loading height="5" />}
+                            {holiday?.search?.cheapest[0] ? (
+                              holiday?.search?.cheapest[0].price
+                            ) : (
+                              <Loading height="5" />
+                            )}
                             )
                           </span>
                         ) : (
@@ -332,7 +343,9 @@ export default function Index() {
                         headerSticky={false}
                         apiUrl={apiUrl}
                         googleApiKey={googleApiKey}
-                        onSelect={(id) => handleSelectedItem({...holiday, selected: id})}
+                        onSelect={(id) =>
+                          handleSelectedItem({ ...holiday, selected: id })
+                        }
                         selected={holiday.selected}
                       />
                     </div>

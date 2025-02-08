@@ -50,7 +50,7 @@ export const TripTimeline = ({}: TripTimelineProps) => {
             return (
               <React.Fragment key={day.date}>
                 {/* day details */}
-                <li className="ml-8" onClick={() => setDayView(day.date)}>
+                <li className="ml-8 cursor-pointer" onClick={() => setDayView(day.date)}>
                   <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -start-3 ring-6 ring-white dark:ring-gray-700 dark:bg-blue-600 z-20 shadow-md">
                     <MdDateRange />
                   </span>
@@ -103,7 +103,7 @@ export const TripTimeline = ({}: TripTimelineProps) => {
                 {dayViewItem?.events.map((event, key) => {
                   return (
                     <React.Fragment key={key}>
-                      <div className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500" onClick={() => setEventView(key)}>
+                      <div className="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500 cursor-pointer" onClick={() => setEventView(key)}>
                         <div className="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded dark:bg-blue-900 dark:text-blue-300">
                           {event.type === "activity" ? event.name : event.type}
                         </div>

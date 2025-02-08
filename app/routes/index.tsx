@@ -22,6 +22,7 @@ import { MarketingPlaces } from "~/components/section/marketing/marketing-places
 import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { NavigationExperimentalFeatures } from "~/components/ui/navigation/navigation-experimental-features";
 
 export const meta: MetaFunction = ({ data }) => {
   return {
@@ -139,6 +140,7 @@ export default function Index() {
           ""
         )}
         <NavigationMiniApps />
+        <NavigationExperimentalFeatures />
         <AllCountries
           countries={countries}
           showAll={countryShow}
