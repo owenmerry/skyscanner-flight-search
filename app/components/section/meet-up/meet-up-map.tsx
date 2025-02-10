@@ -14,7 +14,6 @@ export const MeetUpMap = ({
 }: MeetUpMapProps) => {
   return (
     <div className="h-[500px]">
-      Map
       <APIProvider apiKey={googleApiKey} libraries={["marker"]}>
         <Map
           mapId={googleMapId}

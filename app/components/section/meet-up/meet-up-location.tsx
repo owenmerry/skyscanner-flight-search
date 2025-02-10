@@ -1,3 +1,4 @@
+import { ButtonLive } from "~/components/ui/button-live/button-live";
 import { getFullPrice } from "~/helpers/meetup";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import type { PersonLocation } from "~/routes/meet-up";
@@ -7,6 +8,8 @@ interface MeetUpLocationProps {
   key: number;
   locations: PersonLocation[];
   month: number;
+  apiUrl: string;
+  dates: DatesQuery;
 }
 
 export const MeetUpLocation = ({
@@ -14,6 +17,8 @@ export const MeetUpLocation = ({
   key,
   locations = [],
   month,
+  apiUrl,
+  dates,
 }: MeetUpLocationProps) => {
   return (
     <div key={quote.id} className="">
@@ -33,7 +38,7 @@ export const MeetUpLocation = ({
             <div className="truncate">
               {quote.city?.name || quote.query.to.name}, {quote.country.name}
             </div>
-            <div className="whitespace-nowrap">{quote.tripDays}</div>
+            <div className="whitespace-nowrap"></div>
           </div>
           {/* ---------- */}
           {locations
@@ -65,6 +70,17 @@ export const MeetUpLocation = ({
                     </div>
                     <div className="text-center">
                       {quotePerson.price.display}
+                      <div className="mt-2">
+                        <ButtonLive
+                          query={{
+                            from: quotePerson.query.from,
+                            to: quotePerson.query.to,
+                            depart: dates.depart,
+                            return: dates.return,
+                          }}
+                          apiUrl={apiUrl}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

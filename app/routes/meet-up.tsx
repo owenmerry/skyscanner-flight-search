@@ -1,8 +1,11 @@
 import { useLoaderData } from "@remix-run/react";
+import { result } from "lodash";
+import moment from "moment";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { MeetUpLocation } from "~/components/section/meet-up/meet-up-location";
 import { MeetUpMap } from "~/components/section/meet-up/meet-up-map";
+import { DateSelector } from "~/components/ui/date/date-selector";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
 import { getFullPrice } from "~/helpers/meetup";
@@ -14,6 +17,9 @@ export interface PersonLocation {
   place?: Place;
   budget?: number;
   quotes?: IndicativeQuotesSDK[];
+}
+export interface MeetupFilters {
+  limitResults: number;
 }
 
 export const loader = async () => {
@@ -42,6 +48,13 @@ export default function Meetup() {
     {},
     {},
   ]);
+  const [dates, setDates] = useState<DatesQuery>({
+    depart: moment().add(3, "months").format("YYYY-MM-DD"),
+    return: moment().add(7, "days").add(3, "months").format("YYYY-MM-DD"),
+  });
+  const [filters, setFilters] = useState<MeetupFilters>({
+    limitResults: 20,
+  });
   const month = 5;
 
   function findCommonElements(...arrays: string[][]): string[] {
@@ -72,7 +85,10 @@ export default function Meetup() {
       quote,
       fullPrice: getFullPrice(personLocation, quote.city?.name),
     })) || [];
-  const sortedDeals = orderDeals.sort((a, b) => a.fullPrice - b.fullPrice);
+  const sortedDeals = orderDeals
+    .sort((a, b) => a.fullPrice - b.fullPrice)
+    .filter((item) => common.includes(item.quote.city?.name || ""))
+    .slice(0, filters.limitResults);
 
   const getFlightPrices = async (
     from: Place,
@@ -134,6 +150,20 @@ export default function Meetup() {
     );
   };
 
+  const handleDatesChange = (dates: DatesQuery) => {
+    setDates({
+      depart: dates.depart,
+      return: dates.return,
+    });
+  };
+
+  const handleFiltersChange = (updateFilters: Partial<MeetupFilters>) => {
+    setFilters({
+      ...filters,
+      ...updateFilters,
+    });
+  };
+
   return (
     <div>
       <Layout apiUrl={apiUrl} selectedUrl="/search">
@@ -192,15 +222,39 @@ export default function Meetup() {
                 <MeetUpMap
                   googleApiKey={googleApiKey}
                   googleMapId={googleMapId}
-                  places={sortedDeals
-                    .filter(
-                      (item) => common.includes(item.quote.city?.name || "")
-                    )
-                    .map((item) => ({
-                      place: item.quote.to,
-                      fullPrice: item.fullPrice,
-                    }))}
+                  places={sortedDeals.map((item) => ({
+                    place: item.quote.to,
+                    fullPrice: item.fullPrice,
+                  }))}
                 />
+              </div>
+              <div className="my-8">
+                <div className="text-2xl font-bold mb-6">Select Dates</div>
+                <div className="md:w-1/2">
+                  <DateSelector
+                    query={dates}
+                    onDateChange={handleDatesChange}
+                  />
+                </div>
+              </div>
+              <div className="my-8">
+                <div className="text-2xl font-bold mb-6">Filters</div>
+                <div className="md:w-1/2">
+                  <div>Limit Results:</div>
+                  <input
+                    className="text-left bg-gray-50 border border-grey-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 font-semibold"
+                    type="number"
+                    value={filters.limitResults}
+                    onChange={(e) =>
+                      handleFiltersChange({
+                        limitResults:
+                          Number(e.currentTarget.value) <= 0
+                            ? 1
+                            : Number(e.currentTarget.value),
+                      })
+                    }
+                  />
+                </div>
               </div>
               <div className="grid md:grid-cols-3 gap-2">
                 {sortedDeals.map((location, key) => {
@@ -213,6 +267,8 @@ export default function Meetup() {
                         key={key}
                         locations={personLocation}
                         month={month}
+                        apiUrl={apiUrl}
+                        dates={dates}
                       />
                     </div>
                   );
