@@ -1,13 +1,13 @@
-import { LoaderFunction, redirect, ActionArgs } from "@remix-run/node";
+import type { LoaderFunction, ActionArgs } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
 import { getImages } from "~/helpers/sdk/query";
 import { HeroSimple } from "~/components/section/hero/hero-simple";
-import { json } from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
-import { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
+import type { SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
-import { QueryPlace, QueryPlaceString } from "~/types/search";
+import type { QueryPlace, QueryPlaceString } from "~/types/search";
 import { useEffect, useRef, useState } from "react";
 import { Loading } from "~/components/ui/loading";
 import {
@@ -18,6 +18,9 @@ import {
 import { FlightControls } from "~/components/ui/flight-controls/flight-controls-default";
 import { getQueryPlaceFromQuery } from "~/helpers/sdk/flight";
 import { userPrefs } from "~/helpers/cookies";
+import { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
+import { IndicativeSDK } from "~/helpers/sdk/indicative/indicative-sdk";
+import moment from "moment";
 
 interface Holiday {
   query: QueryPlace;
@@ -37,6 +40,31 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     apiUrl,
     query: "beach",
   });
+  // const quote = {
+  //   apiUrl,
+  //   query: {
+  //     from: "27544008",
+  //     to: "anywhere",
+  //     tripType: "return",
+  //   },
+  //   month: 3,
+  //   year: 2025,
+  //   endMonth: 3,
+  //   endYear: 2025,
+  // };
+
+  const deals = await skyscanner().indicative({
+    apiUrl,
+    query: {
+      from: "27544008",
+      to: "anywhere",
+      tripType: "return",
+    },
+    month: 3,
+    year: 2025,
+    endMonth: 3,
+    endYear: 2025,
+  });
 
   const holidays: QueryPlaceString[] = [];
 
@@ -48,6 +76,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
 
   return json({
+    deals,
     apiUrl,
     googleApiKey,
     googleMapId,
@@ -81,6 +110,7 @@ export default function Index() {
     cookieHolidays,
     googleApiKey,
     googleMapId,
+    deals,
   } = useLoaderData<{
     backgroundImage: string[];
     apiUrl: string;
@@ -88,6 +118,7 @@ export default function Index() {
     googleMapId: string;
     holidaysPlace: Holiday[];
     cookieHolidays?: Holiday[];
+    deals: IndicativeSDK;
   }>();
   const randomHeroImage = backgroundImage[1];
   const [holidays, setHolidays] = useState<Holiday[]>(
@@ -208,7 +239,7 @@ export default function Index() {
   }));
 
   return (
-    <Layout>
+    <Layout apiUrl={apiUrl}>
       <HeroSimple
         title={"My Trips"}
         text="See all the trips for the year"
@@ -269,6 +300,70 @@ export default function Index() {
                 Clear
               </button>
             </Form>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            {deals.quotes.splice(0, 6).map((deal, key) => (
+              <div key={deal.id} className="min-w-72 sm:min-w-0">
+                <a
+                  href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
+                  className="group/link relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
+                >
+                  <div
+                    className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
+                    style={{
+                      backgroundImage: `url(${deal.country.images[0]}&w=500)`,
+                    }}
+                  ></div>
+                  <div className="opacity-80 group-hover/link:opacity-60 transition ease-in bg-slate-900 absolute top-0 left-0 w-[100%] h-[100%] z-0 rounded-lg"></div>
+                  <div className="bg-gradient-to-t from-slate-900 to-transparent absolute bottom-0 left-0 w-[100%] h-[80%] z-0 rounded-lg"></div>
+                  <div className="relative z-10 p-4 leading-normal">
+                    <h5 className="mb-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                      {deal.tripDays} in {deal.country.name}
+                    </h5>
+                    {/* ---------- */}
+                    <div className="grid grid-cols-3 mb-6 place-items-center">
+                      <div className="col-span-2">
+                        <div className="text-[1.1rem] text-white font-bold">
+                          {moment(deal.legs.depart.dateString).format(
+                            "ddd, MMM Do"
+                          )}
+                        </div>
+                        <div className="text-xs mt-2 truncate">
+                          {deal.from.iata} - {deal.to.iata} with{" "}
+                          {deal.legs.depart.carrier.name}
+                        </div>
+                      </div>
+                      <div>{deal.isDirect ? "Direct" : "1 Stop"}</div>
+                    </div>
+                    {/* ---------- */}
+                    {/* ---------- */}
+                    <div className="grid grid-cols-3 place-items-center mb-4">
+                      <div className="col-span-2">
+                        <div className="text--[1.1rem] text-white font-bold">
+                          {moment(deal.legs.return.dateString).format(
+                            "ddd, MMM Do"
+                          )}
+                        </div>
+                        <div className="text-xs mt-2 truncate">
+                          {deal.to.iata} - {deal.from.iata} with{" "}
+                          {deal.legs.return.carrier.name}
+                        </div>
+                      </div>
+                      <div>{deal.isDirect ? "Direct" : "1 Stop"}</div>
+                    </div>
+                    {/* ---------- */}
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-right">
+                      {deal.price.display.split(".")[0]}{" "}
+                      <span className="text-sm">Return</span>
+                    </h5>
+                    <div className="text-xs mt-2 mb-2 text-gray-500 text-right italic">
+                      Updated {deal.updated}
+                    </div>
+                  </div>
+                </a>
+              </div>
+            ))}
           </div>
 
           {getNextXMonthsStartDayAndEndDay(10).map((month) => (
@@ -343,6 +438,7 @@ export default function Index() {
                         headerSticky={false}
                         apiUrl={apiUrl}
                         googleApiKey={googleApiKey}
+                        googleMapId={googleMapId}
                         onSelect={(id) =>
                           handleSelectedItem({ ...holiday, selected: id })
                         }

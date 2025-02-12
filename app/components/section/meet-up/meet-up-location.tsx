@@ -27,7 +27,7 @@ export const MeetUpLocation = ({
           className="absolute top-0 left-0 bg-cover bg-no-repeat w-full h-full z-0 rounded-lg"
           style={{
             backgroundImage: `url(${
-              quote.country.images[key % quote.country.images.length]
+              quote.country.images[0]
             }&w=500)`,
           }}
         ></div>
@@ -55,7 +55,7 @@ export const MeetUpLocation = ({
                     <div className="col-span-2 text-left">
                       <div className="text-[1.1rem] text-white font-bold">
                         <a
-                          className=""
+                          className="underline hover:no-underline"
                           target="_blank"
                           rel="noreferrer"
                           href={`/search/${quotePerson.query.from.iata}/${quotePerson.query.to.iata}/2025-0${month}-15/2025-0${month}-25`}
@@ -65,12 +65,14 @@ export const MeetUpLocation = ({
                       </div>
                       <div className="text-xs mt-2 truncate">
                         {quotePerson.isDirect ? "Direct" : "1 Stop"} -{" "}
-                        {quotePerson.legs.depart.carrier.name} -{" "}
+                        {quotePerson.legs.depart.carrier.name}
                       </div>
                     </div>
                     <div className="text-center">
+                      <div className="text-slate-400 text-sm">Estimated:</div>
                       {quotePerson.price.display}
                       <div className="mt-2">
+                        <div className="text-slate-400 text-sm">Live:</div>
                         <ButtonLive
                           query={{
                             from: quotePerson.query.from,

@@ -1,4 +1,4 @@
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { result } from "lodash";
 import moment from "moment";
 import { useState } from "react";
@@ -10,7 +10,7 @@ import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
 import { getFullPrice } from "~/helpers/meetup";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
-import type { Place } from "~/helpers/sdk/place";
+import { getPlacesFromIatas, type Place } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 export interface PersonLocation {
@@ -44,9 +44,15 @@ export default function Meetup() {
     googleApiKey: string;
     googleMapId: string;
   } = useLoaderData();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const queryLocations = getPlacesFromIatas(
+    searchParams.get("locations") !== ""
+      ? searchParams.get("locations")?.split(" ")
+      : []
+  );
   const [personLocation, setPersonLocation] = useState<PersonLocation[]>([
-    {},
-    {},
+    { place: queryLocations[0] ? queryLocations[0] : undefined },
+    { place: queryLocations[1] ? queryLocations[1] : undefined },
   ]);
   const [dates, setDates] = useState<DatesQuery>({
     depart: moment().add(3, "months").format("YYYY-MM-DD"),
@@ -60,17 +66,18 @@ export default function Meetup() {
   function findCommonElements(...arrays: string[][]): string[] {
     if (arrays.length === 0) return [];
 
-    // Start with the first array converted to a Set
+    // Convert the first array to a Set for efficient lookup
     let commonElements = new Set(arrays[0]);
 
-    // Intersect the common elements with each subsequent array
+    // Iterate over the remaining arrays and update commonElements
     for (let i = 1; i < arrays.length; i++) {
       commonElements = new Set(
         arrays[i].filter((item) => commonElements.has(item))
       );
     }
 
-    return Array.from(commonElements);
+    // Return a sorted array of unique common elements
+    return [...commonElements];
   }
 
   const cityNamesArray = personLocation
@@ -138,6 +145,7 @@ export default function Meetup() {
     const newPersonLocation = personLocation;
     newPersonLocation[index] = { place };
     setPersonLocation(newPersonLocation);
+    setQueryString();
   };
 
   const addLocation = () => {
@@ -164,6 +172,15 @@ export default function Meetup() {
     });
   };
 
+  const setQueryString = () => {
+    let newParams = new URLSearchParams(searchParams);
+    newParams.set(
+      "locations",
+      personLocation.map((person) => person.place?.iata).join(" ")
+    );
+    setSearchParams(newParams);
+  };
+
   return (
     <div>
       <Layout apiUrl={apiUrl} selectedUrl="/search">
@@ -175,6 +192,7 @@ export default function Meetup() {
               return (
                 <div key={index} className="mr-4 flex items-center">
                   <Location
+                    defaultValue={person.place?.name}
                     apiUrl={apiUrl}
                     onSelect={(value, iata, place) =>
                       handleAddPersonLocation(place, index)
