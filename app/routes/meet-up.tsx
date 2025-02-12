@@ -1,13 +1,15 @@
+import type { MetaFunction } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
-import { result } from "lodash";
 import moment from "moment";
 import { useState } from "react";
 import { FaRegTrashCan } from "react-icons/fa6";
+import type { LoaderFunction } from "storybook/internal/types";
 import { MeetUpLocation } from "~/components/section/meet-up/meet-up-location";
 import { MeetUpMap } from "~/components/section/meet-up/meet-up-map";
 import { DateSelector } from "~/components/ui/date/date-selector";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
+import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { getFullPrice } from "~/helpers/meetup";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { getPlacesFromIatas, type Place } from "~/helpers/sdk/place";
@@ -22,15 +24,31 @@ export interface MeetupFilters {
   limitResults: number;
 }
 
-export const loader = async () => {
+export const meta: MetaFunction = ({ data }) => {
+  return {
+    title: `Meetup | Flights.owenmerry.com`,
+    description: `Want to meet up but not sure where? Use our tool to find the best location for you and your friends to meet up.`,
+    canonical: data.canonicalUrl,
+  };
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
+  const url = new URL(request.url);
+  const queryParams = Object.fromEntries(url.searchParams.entries());
+  const canonicalUrl = generateCanonicalUrl({
+    origin: url.origin,
+    path: url.pathname,
+    queryParams,
+  });
 
   return {
     apiUrl,
     googleApiKey,
     googleMapId,
+    canonicalUrl,
   };
 };
 
