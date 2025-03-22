@@ -19,6 +19,7 @@ import { MarketingBackgroundImage } from "~/components/section/marketing/marketi
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { useEffect } from "react";
+import { MarketingGraphDay } from "~/components/section/marketing/marketing-graph-day";
 
 export const meta: MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
@@ -156,6 +157,7 @@ export default function SEOAnytime() {
         <MarketingGallery images={cityImages} />
         {/* <MarketingPlaces place={city} from={from} search={search} /> */}
         <MarketingDeals from={from} search={search} to={city} />
+        <MarketingGraphDay apiUrl={apiUrl} from={from} to={city} />
         <MarketingGraph search={search} />
         {/* <MarketingNearby search={search} to={city} apiUrl={apiUrl} /> */}
         <MarketingMapPlaces
