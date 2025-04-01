@@ -5,7 +5,7 @@ import {
   SkyscannerDateTimeObject,
   IndicitiveQuoteDate,
 } from "~/helpers/sdk/indicative/indicative-response";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { generateDateRange, skyscannerDateToYYYYMMDD } from "~/helpers/date";
 
 const getDateDisplay = (date: SkyscannerDateTimeObject) => {
@@ -26,6 +26,15 @@ const getDateNumber = (date: SkyscannerDateTimeObject) => {
   )}`;
 };
 
+const EmptyDate = ({ date }: { date: Moment }) => {
+  return (
+    <div className={`flex flex-col flex-1 mx-1 items-end text-xs text-center content-center`}>
+      <div className="w-full">{date.format("dd")}</div>
+      <div className="w-full">{date.format("D")}</div>
+    </div>
+  );
+};
+
 export const DatesGraphDate = ({
   search,
   query,
@@ -42,7 +51,7 @@ export const DatesGraphDate = ({
   range: {
     start: string;
     end: string;
-  }
+  };
 }) => {
   const sortByDate = (
     quoteGroups: IndicitiveQuote[] | IndicitiveQuoteDate[]
@@ -118,54 +127,57 @@ export const DatesGraphDate = ({
           style={{ maxWidth: hasMaxWidth ? "900px" : "" }}
         >
           <div className="flex items-end">
-            {fillDateRange(range.start, range.end,sortByDate(quotesGroup)).map((quoteDate, key) => {
-              const quoteKey = quoteDate.quote;
-              if (!quoteKey) return <>skip</>;
-              const quotesFilteredFirst = quoteKey.quoteIds[0];
-              if (!quotesFilteredFirst) return <>skip</>;
+            {fillDateRange(range.start, range.end, sortByDate(quotesGroup)).map(
+              (quoteDate, key) => {
+                const quoteKey = quoteDate.quote;
+                if (!quoteKey) return <EmptyDate key={quoteDate.date} date={moment(quoteDate.date)} />;
+                const quotesFilteredFirst = quoteKey.quoteIds[0];
+                if (!quotesFilteredFirst) return <EmptyDate key={quoteDate.date} date={moment(quoteDate.date)} />;
 
-              const quote = search.content.results.quotes[quotesFilteredFirst];
-              const departDateYYYYMMDD = getDateDisplay(
-                quote.outboundLeg.departureDateTime
-              );
-              const selectedDate = isReturn
-                ? query.return === departDateYYYYMMDD
-                : query.depart === departDateYYYYMMDD;
-              const dateMoment = moment(departDateYYYYMMDD);
+                const quote =
+                  search.content?.results.quotes[quotesFilteredFirst];
+                const departDateYYYYMMDD = getDateDisplay(
+                  quote.outboundLeg.departureDateTime
+                );
+                const selectedDate = isReturn
+                  ? query.return === departDateYYYYMMDD
+                  : query.depart === departDateYYYYMMDD;
+                const dateMoment = moment(departDateYYYYMMDD);
 
-              return (
-                <div
-                  key={quoteKey.quoteIds[0]}
-                  className={`flex flex-col flex-1 mx-1 items-end text-xs text-center content-center`}
-                >
-                  <div className="h-60 flex items-end w-full">
-                    <div
-                      className={`${
-                        selectedDate
-                          ? "bg-blue-700 hover:bg-blue-600"
-                          : "bg-slate-700 hover:bg-slate-600"
-                      } p-1 w-full cursor-pointer`}
-                      style={{
-                        height: `${getPercentageBar(
-                          Number(quote?.minPrice.amount),
-                          Number(topPrice)
-                        )}%`,
-                      }}
-                      onClick={() =>
-                        handleDateSelected(
-                          departDateYYYYMMDD,
-                          quote?.minPrice.amount
-                        )
-                      }
-                    >
-                      <div>£{quote?.minPrice.amount}</div>
+                return (
+                  <div
+                    key={quoteKey.quoteIds[0]}
+                    className={`flex flex-col flex-1 mx-1 items-end text-xs text-center content-center`}
+                  >
+                    <div className="h-60 flex items-end w-full">
+                      <div
+                        className={`${
+                          selectedDate
+                            ? "bg-blue-700 hover:bg-blue-600"
+                            : "bg-slate-700 hover:bg-slate-600"
+                        } p-1 w-full cursor-pointer`}
+                        style={{
+                          height: `${getPercentageBar(
+                            Number(quote?.minPrice.amount),
+                            Number(topPrice)
+                          )}%`,
+                        }}
+                        onClick={() =>
+                          handleDateSelected(
+                            departDateYYYYMMDD,
+                            quote?.minPrice.amount
+                          )
+                        }
+                      >
+                        <div>£{quote?.minPrice.amount}</div>
+                      </div>
                     </div>
+                    <div className="w-full">{dateMoment.format("dd")}</div>
+                    <div className="w-full">{dateMoment.format("D")}</div>
                   </div>
-                  <div className="w-full">{dateMoment.format("dd")}</div>
-                  <div className="w-full">{dateMoment.format("D")}</div>
-                </div>
-              );
-            })}
+                );
+              }
+            )}
           </div>
         </div>
       ) : (
