@@ -1,4 +1,5 @@
 import type { LoaderArgs } from "@remix-run/node";
+import moment from "moment";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 export let loader = async ({ request }: LoaderArgs) => {
@@ -8,7 +9,7 @@ export let loader = async ({ request }: LoaderArgs) => {
   const continents = skyscanner().geo().continent;
   const countries = skyscanner().geo().countries;
   const cities = skyscanner().geo().cities;
-  const dateUpdated = "2024-10-05";
+  const dateUpdated = moment().format("YYYY-MM-DD");
 
   // Generate XML content
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -16,14 +17,14 @@ export let loader = async ({ request }: LoaderArgs) => {
      <url>
       <loc>${baseUrl}/</loc>
       <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-      <changefreq>daily</changefreq>
-      <priority>0.8</priority>
+      <changefreq>hourly</changefreq>
+      <priority>1.0</priority>
     </url>
      <url>
       <loc>${baseUrl}/explore</loc>
       <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-      <changefreq>daily</changefreq>
-      <priority>0.8</priority>
+      <changefreq>hourly</changefreq>
+      <priority>1.0</priority>
     </url>
       ${continents
         .map((continent) => {
@@ -31,8 +32,8 @@ export let loader = async ({ request }: LoaderArgs) => {
           <url>
             <loc>${baseUrl}/continent/${continent.slug}</loc>
             <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-            <changefreq>daily</changefreq>
-            <priority>0.8</priority>
+            <changefreq>hourly</changefreq>
+            <priority>0.9</priority>
           </url>
         `;
         })
@@ -43,7 +44,7 @@ export let loader = async ({ request }: LoaderArgs) => {
           <url>
             <loc>${baseUrl}/country/${country.slug}</loc>
             <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-            <changefreq>daily</changefreq>
+            <changefreq>hourly</changefreq>
             <priority>0.8</priority>
           </url>
         `;
@@ -55,8 +56,8 @@ export let loader = async ({ request }: LoaderArgs) => {
           <url>
             <loc>${baseUrl}/city/${city.country.slug}/${city.slug}</loc>
             <lastmod>${new Date(dateUpdated).toISOString()}</lastmod>
-            <changefreq>daily</changefreq>
-            <priority>0.8</priority>
+            <changefreq>hourly</changefreq>
+            <priority>0.5</priority>
           </url>
         `;
         })
