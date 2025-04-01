@@ -157,8 +157,8 @@ export default function SEOAnytime() {
         <MarketingGallery images={cityImages} />
         {/* <MarketingPlaces place={city} from={from} search={search} /> */}
         <MarketingDeals from={from} search={search} to={city} />
-        <MarketingGraphDay apiUrl={apiUrl} from={from} to={city} />
         <MarketingGraph search={search} />
+        <MarketingGraphDay apiUrl={apiUrl} from={from} to={city} />
         {/* <MarketingNearby search={search} to={city} apiUrl={apiUrl} /> */}
         <MarketingMapPlaces
           search={search}
