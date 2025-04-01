@@ -48,8 +48,8 @@ export const DatesGraphDate = ({
     quoteGroups: IndicitiveQuote[] | IndicitiveQuoteDate[]
   ) => {
     const sorted = quoteGroups.sort(function (a, b) {
-      const quoteA = search?.content.results.quotes[a.quoteIds[0]];
-      const quoteB = search?.content.results.quotes[b.quoteIds[0]];
+      const quoteA = search?.content?.results.quotes[a.quoteIds[0]];
+      const quoteB = search?.content?.results.quotes[b.quoteIds[0]];
 
       return quoteA && quoteB
         ? Number(getDateNumber(quoteA?.outboundLeg.departureDateTime)) -
@@ -76,7 +76,9 @@ export const DatesGraphDate = ({
       quote?: IndicitiveQuote | IndicitiveQuoteDate;
     }[] = [];
     allDates.forEach((date) => {
-      const quoteList = quoteGroups.filter((quote) => {
+      const quoteList = quoteGroups.filter((quoteIds) => {
+        const quote = search?.content?.results.quotes[quoteIds.quoteIds[0]];
+        if (!quote) return false;
         const departDateYYYYMMDD = skyscannerDateToYYYYMMDD(
           quote.outboundLeg.departureDateTime
         );
@@ -98,7 +100,7 @@ export const DatesGraphDate = ({
     const quotesFilteredFirst = quoteKey.quoteIds[0];
     if (!quotesFilteredFirst) return <></>;
     const quotePrice = Number(
-      search?.content.results.quotes[quotesFilteredFirst]?.minPrice.amount
+      search?.content?.results.quotes[quotesFilteredFirst]?.minPrice.amount
     );
     if (topPrice > quotePrice) return;
     topPrice = quotePrice;
