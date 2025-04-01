@@ -6,6 +6,7 @@ import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { QueryPlace } from "~/types/search";
 import moment from "moment";
 import { getNextXMonthsStartDayAndEndDay, getTripDays } from "~/helpers/date";
+import { DatesGraphDate } from "../dates-graph/dates-graph-date";
 
 interface MarketingGraphDayProps {
   apiUrl: string;
@@ -104,7 +105,11 @@ export const MarketingGraphDay = ({
             <div
               onClick={() => setMonth(itemMonth.firstDay)}
               key={key}
-              className={`${month === itemMonth.firstDay  ? `border-blue-600 bg-blue-600 hover:border-blue-500` : `border-slate-600 bg-slate-800 hover:bg-slate-500` } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
+              className={`${
+                month === itemMonth.firstDay
+                  ? `border-blue-600 bg-blue-600 hover:border-blue-500`
+                  : `border-slate-600 bg-slate-800 hover:bg-slate-500`
+              } border py-3 px-3 rounded-lg cursor-pointer text-white font-bold text-sm whitespace-nowrap`}
             >
               {itemMonth.displayMonthText}
             </div>
@@ -126,7 +131,11 @@ export const MarketingGraphDay = ({
         {searchIndicativeDates?.content?.results?.quotes ? (
           <>
             <div className="text-lg font-bold my-4">Departure</div>
-            <DatesGraph
+            <DatesGraphDate
+              range={{
+                start: moment(month).startOf("month").format("YYYY-MM-DD"),
+                end: moment(month).endOf("month").format("YYYY-MM-DD"),
+              }}
               search={searchIndicativeDates}
               query={selectedQuery}
               onSelected={(date) =>
@@ -136,7 +145,11 @@ export const MarketingGraphDay = ({
             {showReturn ? (
               <>
                 <div className="text-lg font-bold my-4">Return</div>
-                <DatesGraph
+                <DatesGraphDate
+                  range={{
+                    start: moment(month).startOf("month").format("YYYY-MM-DD"),
+                    end: moment(month).endOf("month").format("YYYY-MM-DD"),
+                  }}
                   search={searchIndicativeDatesReturn}
                   query={selectedQuery}
                   onSelected={(date) =>

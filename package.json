@@ -1,6 +1,9 @@
 {
   "private": true,
   "sideEffects": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "scripts": {
     "build-old": "remix build",
     "build": "remix build --sourcemap && sentry-upload-sourcemaps --org owenmerry --project flightsowenmerrrycom",

@@ -107,6 +107,12 @@ export const NavigationExperimentalFeatures = () => {
             description="A feature for finding a good location when everyone is coming from different places."
             to="/meet-up"
           />
+          <Article
+            label="Feature"
+            title="What To Do"
+            description="A feature for finding things to do in a city."
+            to="/what-to-do"
+          />
         </div>
       </div>
     </section>

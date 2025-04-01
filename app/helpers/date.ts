@@ -227,3 +227,25 @@ export const getUpdatedFromTimestamps = (outboundLegTimestamp : string, inboundL
     addSuffix: true,
   });
 };
+
+export const generateDateRange = (start: string, end: string): string[] => {
+  const dates: string[] = [];
+  let current = moment(start);
+  const endDate = moment(end);
+
+  while (current.isSameOrBefore(endDate, "day")) {
+    dates.push(current.format("YYYY-MM-DD"));
+    current.add(1, "day");
+  }
+
+  return dates;
+};
+
+  export const skyscannerDateToYYYYMMDD = (
+    dateTime: SkyscannerDateTimeObject,
+    display?: string
+  ) => {
+    return moment(`${dateTime.year}-${dateTime.month}-${dateTime.day}`).format(
+      display || "YYYY-MM-DD"
+    );
+  };

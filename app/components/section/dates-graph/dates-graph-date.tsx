@@ -26,18 +26,23 @@ const getDateNumber = (date: SkyscannerDateTimeObject) => {
   )}`;
 };
 
-export const DatesGraph = ({
+export const DatesGraphDate = ({
   search,
   query,
   hasMaxWidth = false,
   onSelected,
   isReturn,
+  range,
 }: {
   search?: SkyscannerAPIIndicativeResponse;
   query: QueryPlace;
   isReturn?: boolean;
   hasMaxWidth?: boolean;
   onSelected?: (date: string, price: string) => void;
+  range: {
+    start: string;
+    end: string;
+  }
 }) => {
   const sortByDate = (
     quoteGroups: IndicitiveQuote[] | IndicitiveQuoteDate[]
@@ -111,10 +116,11 @@ export const DatesGraph = ({
           style={{ maxWidth: hasMaxWidth ? "900px" : "" }}
         >
           <div className="flex items-end">
-            {sortByDate(quotesGroup).map((quoteKey, key) => {
-              debugger;
+            {fillDateRange(range.start, range.end,sortByDate(quotesGroup)).map((quoteDate, key) => {
+              const quoteKey = quoteDate.quote;
+              if (!quoteKey) return <>skip</>;
               const quotesFilteredFirst = quoteKey.quoteIds[0];
-              if (!quotesFilteredFirst) return <></>;
+              if (!quotesFilteredFirst) return <>skip</>;
 
               const quote = search.content.results.quotes[quotesFilteredFirst];
               const departDateYYYYMMDD = getDateDisplay(
