@@ -112,7 +112,6 @@ export const DatesGraph = ({
         >
           <div className="flex items-end">
             {sortByDate(quotesGroup).map((quoteKey, key) => {
-              debugger;
               const quotesFilteredFirst = quoteKey.quoteIds[0];
               if (!quotesFilteredFirst) return <></>;
 
