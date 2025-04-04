@@ -36,11 +36,19 @@ export const meta: V2_MetaFunction = ({ params, data }) => {
     title: `Explore ${country ? country.name : ""}${
       search[0] ? ` From ${search[0].price.display}` : ""
     } | Flights.owenmerry.com`,
-    description: `Discover ${
+  },
+  {
+    name: "description",
+    content: `Discover ${
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
-    canonical: canonicalUrl,
-  }];
+  },
+  { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  {
+    name: "og:image",
+    content: data.country.images[0] ? `${data.country.images[0]}&w=500` : "",
+  },
+];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {

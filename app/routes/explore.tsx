@@ -1,4 +1,8 @@
-import type { ActionArgs, LoaderFunction, V2_MetaFunction } from "@remix-run/node";
+import type {
+  ActionArgs,
+  LoaderFunction,
+  V2_MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -20,12 +24,22 @@ import { MarketingBackgroundImage } from "~/components/section/marketing/marketi
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
-export const meta: V2_MetaFunction = ({data}) => {
-  return [{
-    title: `Explore Everywhere | Flights.owenmerry.com`,
-    description: `Discover everywhere in the world with maps, images and suggested must try locations`,
-    canonical: data.canonicalUrl,
-  }];
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [
+    {
+      title: `Explore Everywhere | Flights.owenmerry.com`,
+    },
+    {
+      name: "description",
+      content: `Discover everywhere in the world with maps, images and suggested must try locations`,
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl }
+    ,
+    {
+      name: "og:image",
+      content: data.exploreImages[0] ? `${data.exploreImages[0]}&w=500` : "",
+    },
+  ];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {

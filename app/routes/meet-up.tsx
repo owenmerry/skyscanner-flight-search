@@ -25,11 +25,16 @@ export interface MeetupFilters {
 }
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  return [{
-    title: `Meetup | Flights.owenmerry.com`,
-    description: `Want to meet up but not sure where? Use our tool to find the best location for you and your friends to meet up.`,
-    canonical: data.canonicalUrl,
-  }];
+  return [
+    {
+      title: `Meetup | Flights.owenmerry.com`,
+    },
+    {
+      name: "description",
+      content: `Want to meet up but not sure where? Use our tool to find the best location for you and your friends to meet up.`,
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  ];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {

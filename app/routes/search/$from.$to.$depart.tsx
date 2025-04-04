@@ -42,12 +42,18 @@ import { handleOutdatedDate } from "~/helpers/url";
 import { Message } from "~/components/section/message/message.component";
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  const defaultMeta = {
-    title: "Search for Flights | Flights.owenmerry.com",
-    description: "Search for Flights | Flights.owenmerry.com",
-  };
+  const defaultMeta = [
+    {
+      title: "Search for Flights | Flights.owenmerry.com",
+    },
+    {
+      name: "description",
+      content: "Search for Flights | Flights.owenmerry.com",
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  ];
   const noIndex = { name: "robots", content: "noindex" };
-  if (!data) return [defaultMeta, noIndex];
+  if (!data) return [...defaultMeta, noIndex];
   const {
     flightQuery,
     indicativeSearchFlight,
@@ -69,17 +75,27 @@ export const meta: V2_MetaFunction = ({ data }) => {
       : undefined;
   const flightPrice = historyPrice || indicativePrice;
 
-  return [{
-    title: `${
-      flightPrice ? `${flightPrice} ` : ""
-    }Cheap One-way Flights from (${flightQuery.from.iata}) to ${
-      flightQuery.to.name
-    } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format("MMMM")}`,
-    description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) flights with maps, images and suggested must try locations`,
-  },
-  noIndex,
-  { tagName: "link", rel: "canonical", href: data.canonicalUrl },
-];
+  return [
+    {
+      title: `${
+        flightPrice ? `${flightPrice} ` : ""
+      }Cheap One-way Flights from (${flightQuery.from.iata}) to ${
+        flightQuery.to.name
+      } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format(
+        "MMMM"
+      )}`,
+    },
+    {
+      name: "description",
+      content: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) flights with maps, images and suggested must try locations`,
+    },
+    {
+      name: "og:image",
+      content: `https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`,
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    noIndex,
+  ];
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -186,7 +202,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       indicativeSearchFlight,
       flightHistoryPrices,
       canonicalUrl,
-      isPastDate: url.searchParams.get('message') === "past-date",
+      isPastDate: url.searchParams.get("message") === "past-date",
     },
     {
       headers: {

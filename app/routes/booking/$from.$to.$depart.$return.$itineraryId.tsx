@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { json, type LoaderArgs, type MetaFunction } from "@remix-run/node";
+import { json, V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { HotelList } from "~/components/section/hotels-list";
@@ -23,12 +23,18 @@ import moment from "moment";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  const defaultMeta = {
-    title: "Search for Flights | Flights.owenmerry.com",
-    description: "Search for Flights | Flights.owenmerry.com",
-  };
+  const defaultMeta = [
+    {
+      title: "Search for Flights | Flights.owenmerry.com",
+    },
+    {
+      name: "description",
+      content: "Search for Flights | Flights.owenmerry.com",
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  ];
   const noIndex = { name: "robots", content: "noindex" };
-  if (!data) return [defaultMeta, noIndex];
+  if (!data) return [...defaultMeta, noIndex];
   const {
     query,
   }: {
@@ -36,17 +42,25 @@ export const meta: V2_MetaFunction = ({ data }) => {
     canonicalUrl: string;
   } = data;
 
-  return [{
-    title: `Book ${query.from.name} (${query.from.iata}) to ${query.to.name} (${
-      query.to.iata
-    }) - Depart ${moment(query.depart).format("Do, MMMM")} and Return ${moment(
-      query.return
-    ).format("Do, MMMM")}`,
-    description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) return flights with maps, images and suggested must try locations`,
-  },
-  noIndex,
-  { tagName: "link", rel: "canonical", href: data.canonicalUrl },
-];
+  return [
+    {
+      title: `Book ${query.from.name} (${query.from.iata}) to ${
+        query.to.name
+      } (${query.to.iata}) - Depart ${moment(query.depart).format(
+        "Do, MMMM"
+      )} and Return ${moment(query.return).format("Do, MMMM")}`,
+    },
+    {
+      name: "description",
+      content: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) return flights with maps, images and suggested must try locations`,
+    },
+    {
+      name: "og:image",
+      content: `https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`,
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    noIndex,
+  ];
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

@@ -10,11 +10,16 @@ import { LocationPlaces } from "~/components/ui/location-places";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  return [{
-    title: `What to do | Flights.owenmerry.com`,
-    description: `Collection of places to visit in the city`,
-    canonical: data.canonicalUrl,
-  }];
+  return [
+    {
+      title: `What to do | Flights.owenmerry.com`,
+    },
+    {
+      name: "description",
+      content: `Collection of places to visit in the city`,
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  ];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {

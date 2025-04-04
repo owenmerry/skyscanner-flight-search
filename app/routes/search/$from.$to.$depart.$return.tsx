@@ -48,12 +48,18 @@ import { HotelList } from "~/components/section/hotels-list";
 import { MapStatic } from "~/components/section/map/map-static";
 
 export const meta: V2_MetaFunction = ({ data }) => {
-  const defaultMeta = {
-    title: "Search for Flights | Flights.owenmerry.com",
-    description: "Search for Flights | Flights.owenmerry.com",
-  };
+  const defaultMeta = [
+    {
+      title: "Search for Flights | Flights.owenmerry.com",
+    },
+    {
+      name: "description",
+      content: "Search for Flights | Flights.owenmerry.com",
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  ];
   const noIndex = { name: "robots", content: "noindex" };
-  if (!data) return [defaultMeta, noIndex];
+  if (!data) return [...defaultMeta, noIndex];
   const {
     flightQuery,
     indicativeSearchFlight,
@@ -89,11 +95,17 @@ export const meta: V2_MetaFunction = ({ data }) => {
       }) to ${flightQuery.to.name} (${flightQuery.to.iata}) in ${moment(
         flightQuery.depart
       ).format("MMMM")}`,
-      description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
-      "og:image": `https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`,
     },
-    noIndex,
+    {
+      name: "description",
+      content: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) return flights with maps, images and suggested must try locations`,
+    },
+    {
+      name: "og:image",
+      content: `https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`,
+    },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    noIndex,
   ];
 };
 

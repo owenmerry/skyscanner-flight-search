@@ -32,7 +32,6 @@ export const meta: V2_MetaFunction = ({ params, data }) => {
   );
   const {
     search,
-    canonicalUrl,
   }: {
     search: IndicativeQuotesSDK[];
     canonicalUrl: string;
@@ -41,11 +40,19 @@ export const meta: V2_MetaFunction = ({ params, data }) => {
     title: `Explore ${city ? city.name : ""}, ${country ? country.name : ""}${
       search[0] ? ` From ${search[0].price.display}` : ""
     } | Flights.owenmerry.com`,
-    description: `Discover ${city ? city.name : ""}, ${
+  },
+  {
+    name: "description",
+    content: `Discover ${city ? city.name : ""}, ${
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
-    canonical: canonicalUrl,
-  }];
+  },
+  { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  {
+    name: "og:image",
+    content: data.cityImages[0] ? `${data.cityImages[0]}&w=500` : "",
+  },
+];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {

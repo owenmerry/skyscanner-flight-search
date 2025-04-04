@@ -7,12 +7,16 @@ import { useState } from "react";
 import { Box, LinearProgress } from "@mui/material";
 import { AroundTheWorld } from "~/components/section/map/around-the-world";
 
-
 export const meta: V2_MetaFunction = () => {
-  return [{
-    title: `Travel Around the World for less then £1000 | Flights.owenmerry.com`,
-    description: `See if you can fly around the world with a budget of only £1000`,
-  }];
+  return [
+    {
+      title: `Travel Around the World for less then £1000 | Flights.owenmerry.com`,
+    },
+    {
+      name: "description",
+      content: `See if you can fly around the world with a budget of only £1000`,
+    },
+  ];
 };
 
 export const loader: LoaderFunction = async () => {

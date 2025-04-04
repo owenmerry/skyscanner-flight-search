@@ -1,4 +1,8 @@
-import type { ActionArgs, LoaderFunction, V2_MetaFunction } from "@remix-run/node";
+import type {
+  ActionArgs,
+  LoaderFunction,
+  V2_MetaFunction,
+} from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -24,15 +28,24 @@ export const meta: V2_MetaFunction = ({ params, data }) => {
     params.continent || "",
     "PLACE_TYPE_CONTINENT"
   );
-  return [{
-    title: `Explore ${
-      continent ? continent.name : ""
-    }  | Flights.owenmerry.com`,
-    description: `Discover ${
-      continent ? continent.name : ""
-    } with maps, images and suggested must try locations`,
-    canonical: data.canonicalUrl,
-  }];
+  return [
+    {
+      title: `Explore ${
+        continent ? continent.name : ""
+      }  | Flights.owenmerry.com`,
+    },
+    {
+      name: "description",
+      content: `Discover ${
+        continent ? continent.name : ""
+      } with maps, images and suggested must try locations`,
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    {
+      name: "og:image",
+      content: data.continentImages[0] ? `${data.continentImages[0]}&w=500` : "",
+    },
+  ];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
