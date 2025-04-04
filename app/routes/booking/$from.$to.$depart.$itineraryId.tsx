@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { json, V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useNavigate } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { HotelList } from "~/components/section/hotels-list";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
@@ -46,7 +46,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
     },
     {
       name: "og:image",
-      content: `https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`,
+      content: `https://flights.owenmerry.com/image?from=${query.from.iata}&to=${query.to.iata}`,
     },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
     noIndex,
@@ -113,6 +113,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
 export default function Search() {
   const [search, setSearch] = useState<SearchSDK>();
   const [flight, setFlight] = useState<FlightSDK>();
+    const navigate = useNavigate();
   const {
     apiUrl,
     googleApiKey,
@@ -145,6 +146,10 @@ export default function Search() {
       (flight) => flight.itineraryId === url.itineraryId
     );
     if (flight.length === 0) {
+      if(res.status === "RESULT_STATUS_COMPLETE"){
+        navigate(`/search/${query.from.iata}/${query.to.iata}/${query.depart}?message=flight-not-found`);
+        return;
+      }
       runPoll({ sessionToken: res.sessionToken });
       return;
     }
@@ -162,6 +167,10 @@ export default function Search() {
       (flight) => flight.itineraryId === url.itineraryId
     );
     if (flight.length === 0) {
+      if(res.status === "RESULT_STATUS_COMPLETE"){
+        navigate(`/search/${query.from.iata}/${query.to.iata}/${query.depart}?message=flight-not-found`);
+        return;
+      }
       runPoll({ sessionToken: res.sessionToken });
       return;
     }

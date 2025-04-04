@@ -203,6 +203,7 @@ export const loader = async ({ params, request }: LoaderArgs) => {
       flightHistoryPrices,
       canonicalUrl,
       isPastDate: url.searchParams.get("message") === "past-date",
+      flightNotFound: url.searchParams.get("message") === "flight-not-found",
     },
     {
       headers: {
@@ -229,7 +230,7 @@ export default function Search() {
     hotelQuery,
     country,
     city,
-    isPastDate,
+    flightNotFound,
   }: {
     apiUrl: string;
     googleApiKey: string;
@@ -241,6 +242,7 @@ export default function Search() {
     country: Place;
     city: Place;
     isPastDate: boolean;
+    flightNotFound: boolean;
   } = useLoaderData();
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState<
@@ -402,6 +404,14 @@ export default function Search() {
               <Message
                 title="We've Updated Your Search!"
                 description="It looks like the date you selected has passed. We've updated your search to show flights starting from next week. If you'd like to search for another date, feel free to adjust the calendar above!"
+              />
+            ) : (
+              ""
+            )}
+            {flightNotFound ? (
+              <Message
+                title="Sadly that flight has changed!"
+                description="It looks like the flight you were looking for has changed. Here are some other options you might like."
               />
             ) : (
               ""
