@@ -154,13 +154,26 @@ export default function Search() {
       apiUrl,
       query: query,
     });
-    if ("error" in res) return;
+    if ("error" in res) {
+      navigate(
+        `/search/${query.from.iata}/${query.to.iata}/${query.depart}/${
+          query.return
+        }${
+          res.error.includes("date cannot be historical")
+            ? "?message=date-past"
+            : ""
+        }`
+      );
+      return;
+    }
     const flight = res.best.filter(
       (flight) => flight.itineraryId === url.itineraryId
     );
     if (flight.length === 0) {
-      if(res.status === "RESULT_STATUS_COMPLETE"){
-        navigate(`/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}?message=flight-not-found`);
+      if (res.status === "RESULT_STATUS_COMPLETE") {
+        navigate(
+          `/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}?message=flight-not-found`
+        );
         return;
       }
       runPoll({ sessionToken: res.sessionToken });
@@ -180,8 +193,10 @@ export default function Search() {
       (flight) => flight.itineraryId === url.itineraryId
     );
     if (flight.length === 0) {
-      if(res.status === "RESULT_STATUS_COMPLETE"){
-        navigate(`/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}?message=flight-not-found`);
+      if (res.status === "RESULT_STATUS_COMPLETE") {
+        navigate(
+          `/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}?message=flight-not-found`
+        );
         return;
       }
       runPoll({ sessionToken: sessionToken });

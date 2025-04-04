@@ -141,7 +141,17 @@ export default function Search() {
       apiUrl,
       query: query,
     });
-    if ("error" in res) return;
+    if ("error" in res) {
+      navigate(
+        `/search/${query.from.iata}/${query.to.iata}/${query.depart}${
+          res.error.includes("date cannot be historical")
+            ? "?message=date-past"
+            : ""
+        }`
+      );
+
+      return;
+    }
     const flight = res.best.filter(
       (flight) => flight.itineraryId === url.itineraryId
     );
