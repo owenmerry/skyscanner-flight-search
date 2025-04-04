@@ -300,6 +300,7 @@ export const ExploreDates = ({
             return (
               <a
                 className="inline-block bg-slate-50 font-semibold mr-2 mb-2 p-2 rounded dark:bg-gray-800 text-slate-400 hover:dark:bg-gray-700"
+                rel="nofollow"
                 href={getLink({
                   ...query,
                   depart: departDateYYYYMMDD,
@@ -329,20 +330,21 @@ export const ExplorePage = ({ country }: { country?: Place }) => {
     <>
       {country ? (
         <div className="mt-2 mb-2">
-          <div className="relative h-40 bg-cover bg-center w-full rounded-lg" style={{backgroundImage: `url(${country.images[0]})`}}>
-          <div className="absolute bottom-0 left-0 p-2">
-          <Link
-            to={`/country/${country.slug}`}
-            target="_blank"
-            className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+          <div
+            className="relative h-40 bg-cover bg-center w-full rounded-lg"
+            style={{ backgroundImage: `url(${country.images[0]})` }}
           >
-            <IoLocationSharp className="mr-2" />
-             Explore {country.name}{" "}
-          </Link>
-
+            <div className="absolute bottom-0 left-0 p-2">
+              <Link
+                to={`/country/${country.slug}`}
+                target="_blank"
+                className="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900"
+              >
+                <IoLocationSharp className="mr-2" />
+                Explore {country.name}{" "}
+              </Link>
+            </div>
           </div>
-          </div>
-          
         </div>
       ) : (
         ""
@@ -351,18 +353,28 @@ export const ExplorePage = ({ country }: { country?: Place }) => {
   );
 };
 
-export const ExplorePageButton = ({ country, city }: { country?: Place, city?: Place }) => {
+export const ExplorePageButton = ({
+  country,
+  city,
+}: {
+  country?: Place;
+  city?: Place;
+}) => {
   return (
     <>
       {country ? (
         <div>
           <Link
-            to={city ? `/city/${country.slug}/${city.slug}` : `/country/${country.slug}`}
+            to={
+              city
+                ? `/city/${country.slug}/${city.slug}`
+                : `/country/${country.slug}`
+            }
             target="_blank"
             className="justify-center cursor-pointer text-white bg-primary-700 hover:bg-primary-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 inline-flex items-center whitespace-nowrap"
           >
             <IoLocationSharp className="mr-2" />
-             Explore {city ? city.name : country.name}{" "}
+            Explore {city ? city.name : country.name}{" "}
           </Link>
         </div>
       ) : (

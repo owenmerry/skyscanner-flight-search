@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import moment from "moment";
 import { useState } from "react";
@@ -24,12 +24,12 @@ export interface MeetupFilters {
   limitResults: number;
 }
 
-export const meta: MetaFunction = ({ data }) => {
-  return {
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [{
     title: `Meetup | Flights.owenmerry.com`,
     description: `Want to meet up but not sure where? Use our tool to find the best location for you and your friends to meet up.`,
     canonical: data.canonicalUrl,
-  };
+  }];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {

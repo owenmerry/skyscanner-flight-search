@@ -3,6 +3,7 @@ module.exports = {
   ignoredRouteFiles: ["**/.*"],
   future: {
     unstable_tailwind: true,
+    v2_meta: true,
   },
   routes(defineRoutes) {
     return defineRoutes((route) => {

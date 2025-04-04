@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderFunction, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -19,12 +19,12 @@ import { MarketingBackgroundImage } from "~/components/section/marketing/marketi
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
-export const meta: MetaFunction = ({ params, data }) => {
+export const meta: V2_MetaFunction = ({ params, data }) => {
   const continent = getPlaceFromSlug(
     params.continent || "",
     "PLACE_TYPE_CONTINENT"
   );
-  return {
+  return [{
     title: `Explore ${
       continent ? continent.name : ""
     }  | Flights.owenmerry.com`,
@@ -32,7 +32,7 @@ export const meta: MetaFunction = ({ params, data }) => {
       continent ? continent.name : ""
     } with maps, images and suggested must try locations`,
     canonical: data.canonicalUrl,
-  };
+  }];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {

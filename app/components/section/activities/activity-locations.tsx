@@ -85,6 +85,7 @@ export const ActivityLocations = ({
                     return (
                       <>
                         <Link
+                          rel="nofollow"
                           to={`/search/${from.iata}/${airport.iata}/${nextMonth(
                             moment().format("YYYY-MM-DD"),
                             moment().month(month).format("M")

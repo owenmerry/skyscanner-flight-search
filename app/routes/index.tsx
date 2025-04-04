@@ -1,8 +1,8 @@
 import {
   json,
+  type V2_MetaFunction,
   type ActionArgs,
   type LoaderFunction,
-  type MetaFunction,
 } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroDefault } from "~/components/section/hero/hero-default";
@@ -24,12 +24,15 @@ import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { NavigationExperimentalFeatures } from "~/components/ui/navigation/navigation-experimental-features";
 
-export const meta: MetaFunction = ({ data }) => {
-  return {
-    title: `Explore the World | Flights.owenmerry.com`,
-    description: `Discover the world with maps, images and suggested must try locations`,
-    canonical: data.canonicalUrl,
-  };
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [
+    { title: `Explore the World | Flights.owenmerry.com`,  },
+    {
+      name: "description",
+      content: `Discover the world with maps, images and suggested must try locations`,
+    },
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  ];
 };
 
 export const loader: LoaderFunction = async ({ request, context, params }) => {

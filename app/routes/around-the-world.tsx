@@ -1,4 +1,4 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { LoaderFunction, V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { Layout } from "~/components/ui/layout/layout";
 import { getPlaceFromIata } from "~/helpers/sdk/place";
@@ -8,11 +8,11 @@ import { Box, LinearProgress } from "@mui/material";
 import { AroundTheWorld } from "~/components/section/map/around-the-world";
 
 
-export const meta: MetaFunction = () => {
-  return {
+export const meta: V2_MetaFunction = () => {
+  return [{
     title: `Travel Around the World for less then £1000 | Flights.owenmerry.com`,
     description: `See if you can fly around the world with a budget of only £1000`,
-  };
+  }];
 };
 
 export const loader: LoaderFunction = async () => {

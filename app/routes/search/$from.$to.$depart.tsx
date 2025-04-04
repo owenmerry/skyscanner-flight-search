@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import {
   json,
+  V2_MetaFunction,
   type ActionArgs,
   type LoaderArgs,
-  type MetaFunction,
 } from "@remix-run/node";
 import { FiltersDefault } from "~/components/ui/filters/filters-default";
 import { FlightResultsDefault } from "~/components/section/flight-results/flight-results-default";
@@ -41,12 +41,13 @@ import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { handleOutdatedDate } from "~/helpers/url";
 import { Message } from "~/components/section/message/message.component";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: V2_MetaFunction = ({ data }) => {
   const defaultMeta = {
     title: "Search for Flights | Flights.owenmerry.com",
     description: "Search for Flights | Flights.owenmerry.com",
   };
-  if (!data) return defaultMeta;
+  const noIndex = { name: "robots", content: "noindex" };
+  if (!data) return [defaultMeta, noIndex];
   const {
     flightQuery,
     indicativeSearchFlight,
@@ -68,15 +69,17 @@ export const meta: MetaFunction = ({ data }) => {
       : undefined;
   const flightPrice = historyPrice || indicativePrice;
 
-  return {
+  return [{
     title: `${
       flightPrice ? `${flightPrice} ` : ""
     }Cheap One-way Flights from (${flightQuery.from.iata}) to ${
       flightQuery.to.name
     } (${flightQuery.to.iata}) in ${moment(flightQuery.depart).format("MMMM")}`,
     description: `Discover flights from ${flightQuery.from.name} (${flightQuery.from.iata}) to ${flightQuery.to.name} (${flightQuery.to.iata}) flights with maps, images and suggested must try locations`,
-    canonical: data.canonicalUrl,
-  };
+  },
+  noIndex,
+  { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+];
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

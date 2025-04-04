@@ -209,6 +209,7 @@ export default function SEOAnytime() {
               return (
                 <div className="">
                   <Link
+                    rel="nofollow"
                     className="hover:underline"
                     to={`/search/${from ? from.iata : ""}/${place.iata}/${
                       defaultSearch.depart

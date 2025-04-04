@@ -108,7 +108,9 @@ export const FlightsSearchForm: React.FC<FlightsSearchFormProps> = ({
   return (
     <Form
       method="post"
-      className={`grid gap-y-4 w-full rounded lg:gap-x-4 lg:grid-cols-9 ${hasBackground ? `dark:bg-gray-800 bg-white` : ''}`}
+      className={`grid gap-y-4 w-full rounded lg:gap-x-4 lg:grid-cols-9 ${
+        hasBackground ? `dark:bg-gray-800 bg-white` : ""
+      }`}
     >
       <input
         type="hidden"
@@ -212,6 +214,7 @@ export const FlightsSearchForm: React.FC<FlightsSearchFormProps> = ({
             </button>
           ) : (
             <Link
+              rel="nofollow"
               to={`/search/${query.fromIata}/${query.toIata}/${query.depart}/${query.return}`}
               className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
               onClick={handleSearchClicked}

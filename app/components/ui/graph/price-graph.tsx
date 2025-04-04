@@ -103,6 +103,7 @@ export const PriceGraph = ({
           )}
           <div className="my-6">
           <a
+            rel="nofollow"
             href={`/search/${selectedQuery.from.iata}/${selectedQuery.to.iata}/${
               selectedQuery.depart
             }/${selectedQuery.return ? selectedQuery.return : ""}`}

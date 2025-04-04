@@ -163,6 +163,7 @@ export const MarketingGraphDay = ({
             )}
             <div className="my-6">
               <a
+                rel="nofollow"
                 href={`/search/${selectedQuery.from.iata}/${
                   selectedQuery.to.iata
                 }/${selectedQuery.depart}/${

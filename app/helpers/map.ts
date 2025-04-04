@@ -81,7 +81,7 @@ export const getMarkersCountry = (
       <div class="relative bg-white p-2 border border-indigo-500 rounded-lg">
       
       <div class="text-gray-800 text-sm">
-        <a href='/search/${from ? from.iata : ""}/${place.iata}/${
+        <a rel="nofollow" href='/search/${from ? from.iata : ""}/${place.iata}/${
         defaultSearch.depart
       }/${defaultSearch.return}'>
         <div>${place.name}</div>

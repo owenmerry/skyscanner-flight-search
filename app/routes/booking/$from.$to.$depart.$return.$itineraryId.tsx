@@ -22,29 +22,31 @@ import { Deals } from "~/components/section/flight-results/flight-results-defaul
 import moment from "moment";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: V2_MetaFunction = ({ data }) => {
   const defaultMeta = {
     title: "Search for Flights | Flights.owenmerry.com",
     description: "Search for Flights | Flights.owenmerry.com",
   };
-  if (!data) return defaultMeta;
+  const noIndex = { name: "robots", content: "noindex" };
+  if (!data) return [defaultMeta, noIndex];
   const {
     query,
-    canonicalUrl,
   }: {
     query: QueryPlace;
     canonicalUrl: string;
   } = data;
 
-  return {
+  return [{
     title: `Book ${query.from.name} (${query.from.iata}) to ${query.to.name} (${
       query.to.iata
     }) - Depart ${moment(query.depart).format("Do, MMMM")} and Return ${moment(
       query.return
     ).format("Do, MMMM")}`,
     description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) return flights with maps, images and suggested must try locations`,
-    canonical: canonicalUrl,
-  };
+  },
+  noIndex,
+  { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+];
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {
@@ -186,6 +188,7 @@ export default function Search() {
                 {
                   name: `${query.from.name} to ${query.to.name}`,
                   link: `/search/${query.from.iata}/${query.to.iata}/${query.depart}/${query.return}`,
+                  nofollow: true,
                 },
                 {
                   name: `Flight Details`,

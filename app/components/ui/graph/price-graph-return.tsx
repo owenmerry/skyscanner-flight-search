@@ -82,7 +82,7 @@ export const PriceGraph = ({
       </select>
       {searchIndicativeDates?.content?.results?.quotes ? (
         <>
-        <div className="text-lg font-bold my-4">Departure</div>
+          <div className="text-lg font-bold my-4">Departure</div>
           <DatesGraph
             search={searchIndicativeDates}
             query={{
@@ -107,14 +107,16 @@ export const PriceGraph = ({
             ""
           )}
           <div className="my-4">
-          <a
-            href={`/search/${selected.from.iata}/${selected.to.iata}/${
-              selected.depart
-            }/${selected.return ? selected.return : ""}`}
-            className="justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
-          >
-            See Flights ({moment(selected.depart).format('ddd, DD MMM')} - {moment(selected.return).format('ddd, DD MMM')})
-          </a>
+            <a
+              rel="nofollow"
+              href={`/search/${selected.from.iata}/${selected.to.iata}/${
+                selected.depart
+              }/${selected.return ? selected.return : ""}`}
+              className="justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+            >
+              See Flights ({moment(selected.depart).format("ddd, DD MMM")} -{" "}
+              {moment(selected.return).format("ddd, DD MMM")})
+            </a>
           </div>
         </>
       ) : (

@@ -243,6 +243,7 @@ export const ExploreEverywhere = ({
                 return (
                   <div className="bg-slate-50 font-semibold mr-2 p-4 rounded dark:hover:bg-gray-700 dark:bg-gray-800 text-slate-400">
                     <a
+                      rel="nofollow"
                       href={getLink({
                         from,
                         to: destinationPlace,

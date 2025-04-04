@@ -2,11 +2,7 @@ Sitemap: https://flights.owenmerry.com/sitemaps
 
 User-agent: Googlebot
 Disallow: /refresh
-Disallow: /search
-Disallow: /booking
 
 User-agent: *
 Disallow: /refresh
-Disallow: /search
-Disallow: /booking
 Crawl-delay: 10

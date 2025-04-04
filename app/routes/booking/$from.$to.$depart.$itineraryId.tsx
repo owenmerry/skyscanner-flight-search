@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { json, MetaFunction, type LoaderArgs } from "@remix-run/node";
+import { json, V2_MetaFunction, type LoaderArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { HeroPage } from "~/components/section/hero/hero-page";
 import { HotelList } from "~/components/section/hotels-list";
@@ -15,12 +15,13 @@ import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import moment from "moment";
 import { FlightSDK, SearchSDK } from "~/helpers/sdk/flight/flight-functions";
 
-export const meta: MetaFunction = ({ data }) => {
+export const meta: V2_MetaFunction = ({ data }) => {
   const defaultMeta = {
     title: "Search for Flights | Flights.owenmerry.com",
     description: "Search for Flights | Flights.owenmerry.com",
   };
-  if (!data) return defaultMeta;
+  const noIndex = { name: "robots", content: "noindex" };
+  if (!data) return [defaultMeta, noIndex];
   const {
     query,
     canonicalUrl,
@@ -29,13 +30,16 @@ export const meta: MetaFunction = ({ data }) => {
     canonicalUrl: string;
   } = data;
 
-  return {
-    title: `Book ${query.from.name} (${query.from.iata}) to ${query.to.name} (${
-      query.to.iata
-    }) - Depart ${moment(query.depart).format("Do, MMMM")}`,
-    description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) flights with maps, images and suggested must try locations`,
-    canonical: canonicalUrl,
-  };
+  return [
+    {
+      title: `Book ${query.from.name} (${query.from.iata}) to ${
+        query.to.name
+      } (${query.to.iata}) - Depart ${moment(query.depart).format("Do, MMMM")}`,
+      description: `Discover flights from ${query.from.name} (${query.from.iata}) to ${query.to.name} (${query.to.iata}) flights with maps, images and suggested must try locations`,
+    },
+    noIndex,
+    { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  ];
 };
 
 export const loader = async ({ params, request }: LoaderArgs) => {

@@ -1,4 +1,4 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { V2_MetaFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import type { LoaderFunction } from "storybook/internal/types";
@@ -9,12 +9,12 @@ import { Layout } from "~/components/ui/layout/layout";
 import { LocationPlaces } from "~/components/ui/location-places";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
-export const meta: MetaFunction = ({ data }) => {
-  return {
+export const meta: V2_MetaFunction = ({ data }) => {
+  return [{
     title: `What to do | Flights.owenmerry.com`,
     description: `Collection of places to visit in the city`,
     canonical: data.canonicalUrl,
-  };
+  }];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {

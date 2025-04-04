@@ -378,6 +378,7 @@ export default function Search() {
             return (
               <div key={deal.id} className="">
                 <a
+                  rel="nofollow"
                   href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
                   className="group/link relative block rounded-lg shadow md:flex-row md:max-w-xl border border-slate-700 bg-slate-800 hover:border-slate-600 transition"
                 >

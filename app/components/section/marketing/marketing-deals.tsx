@@ -55,6 +55,7 @@ export const MarketingDeals = ({
                 return (
                   <div key={deal.id} className="min-w-72 sm:min-w-0">
                     <a
+                      rel="nofollow"
                       href={`/search/${deal.from.iata}/${deal.to.iata}/${deal.legs.depart.dateString}/${deal.legs.return.dateString}`}
                       className="group/link relative block bg-white border border-gray-200  rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 hover:dark:border-gray-500"
                     >

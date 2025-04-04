@@ -1,7 +1,7 @@
 import type {
   ActionArgs,
   LoaderFunction,
-  MetaFunction,
+  V2_MetaFunction,
 } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
@@ -23,7 +23,7 @@ import { MarketingBackgroundImage } from "~/components/section/marketing/marketi
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 
-export const meta: MetaFunction = ({ params, data }) => {
+export const meta: V2_MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
   const {
     search,
@@ -32,7 +32,7 @@ export const meta: MetaFunction = ({ params, data }) => {
     search: IndicativeQuotesSDK[];
     canonicalUrl: string;
   } = data;
-  return {
+  return [{
     title: `Explore ${country ? country.name : ""}${
       search[0] ? ` From ${search[0].price.display}` : ""
     } | Flights.owenmerry.com`,
@@ -40,7 +40,7 @@ export const meta: MetaFunction = ({ params, data }) => {
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
     canonical: canonicalUrl,
-  };
+  }];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {

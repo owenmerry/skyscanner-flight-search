@@ -1,4 +1,4 @@
-import type { ActionArgs, LoaderFunction, MetaFunction } from "@remix-run/node";
+import type { ActionArgs, LoaderFunction, V2_MetaFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import type { Place } from "~/helpers/sdk/place";
@@ -21,7 +21,7 @@ import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { useEffect } from "react";
 import { MarketingGraphDay } from "~/components/section/marketing/marketing-graph-day";
 
-export const meta: MetaFunction = ({ params, data }) => {
+export const meta: V2_MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
   const city = getPlaceFromSlug(
     params.city || "",
@@ -37,7 +37,7 @@ export const meta: MetaFunction = ({ params, data }) => {
     search: IndicativeQuotesSDK[];
     canonicalUrl: string;
   } = data;
-  return {
+  return [{
     title: `Explore ${city ? city.name : ""}, ${country ? country.name : ""}${
       search[0] ? ` From ${search[0].price.display}` : ""
     } | Flights.owenmerry.com`,
@@ -45,7 +45,7 @@ export const meta: MetaFunction = ({ params, data }) => {
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
     canonical: canonicalUrl,
-  };
+  }];
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {

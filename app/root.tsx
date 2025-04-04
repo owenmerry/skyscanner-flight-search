@@ -1,9 +1,9 @@
 import { withSentry } from "@sentry/remix";
 import * as amplitude from "@amplitude/analytics-browser";
 import {
-  type MetaFunction,
   type LinksFunction,
   redirect,
+  type V2_MetaFunction,
 } from "@remix-run/node";
 import {
   Links,
@@ -29,12 +29,12 @@ interface DocumentProps {
   title?: string;
 }
 
-export const meta: MetaFunction = () => ({
+export const meta: V2_MetaFunction = () => ([{
   charset: "utf-8",
   title: "Flight Search App",
   viewport:
     "width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0",
-});
+}]);
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
