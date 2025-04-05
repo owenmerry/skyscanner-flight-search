@@ -30,11 +30,12 @@ interface DocumentProps {
 }
 
 export const meta: V2_MetaFunction = () => ([{
-  charset: "utf-8",
   title: "Flight Search App",
-  viewport:
-    "width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0",
-}]);
+},
+{ charSet: "utf-8" },
+{ name: "viewport", content: "width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0" },
+    ]);
+
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
