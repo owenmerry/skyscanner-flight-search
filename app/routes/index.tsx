@@ -23,6 +23,7 @@ import { MarketingDeals } from "~/components/section/marketing/marketing-deals";
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { NavigationExperimentalFeatures } from "~/components/ui/navigation/navigation-experimental-features";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -32,6 +33,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
       content: `Discover the world with maps, images and suggested must try locations`,
     },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    ...getCommonMeta(),
   ];
 };
 

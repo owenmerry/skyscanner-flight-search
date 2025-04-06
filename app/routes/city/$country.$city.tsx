@@ -20,6 +20,7 @@ import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { useEffect } from "react";
 import { MarketingGraphDay } from "~/components/section/marketing/marketing-graph-day";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
@@ -52,6 +53,7 @@ export const meta: V2_MetaFunction = ({ params, data }) => {
     name: "og:image",
     content: data.cityImages[0] ? `${data.cityImages[0]}&w=500` : "",
   },
+  ...getCommonMeta(),
 ];
 };
 

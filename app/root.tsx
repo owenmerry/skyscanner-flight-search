@@ -14,7 +14,7 @@ import {
   ScrollRestoration,
   useLoaderData,
   useLocation,
-  useNavigate
+  useNavigate,
 } from "@remix-run/react";
 import stylesheet from "~/tailwind.css";
 
@@ -24,18 +24,15 @@ import { unstable_useEnhancedEffect as useEnhancedEffect } from "@mui/material";
 import ClientStyleContext from "./src/ClientStyleContext";
 import Layout from "./src/Layout";
 import { useContext, useEffect } from "react";
+import { getCommonMeta } from "./helpers/meta";
 interface DocumentProps {
   children: React.ReactNode;
   title?: string;
 }
 
-export const meta: V2_MetaFunction = () => ([{
-  title: "Flight Search App",
-},
-{ charSet: "utf-8" },
-{ name: "viewport", content: "width=device-width, user-scalable=no, maximum-scale=1.0, initial-scale=1.0, minimum-scale=1.0" },
-    ]);
-
+export const meta: V2_MetaFunction = () => [
+  ...getCommonMeta(),
+];
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -117,8 +114,12 @@ function App() {
     }
   }, [isMaintenanceMode, location.pathname, navigate]);
 
-  if(isMaintenanceMode) return <Document>
-      <Layout>Maintenance Mode</Layout></Document>;
+  if (isMaintenanceMode)
+    return (
+      <Document>
+        <Layout>Maintenance Mode</Layout>
+      </Document>
+    );
 
   return (
     <Document>

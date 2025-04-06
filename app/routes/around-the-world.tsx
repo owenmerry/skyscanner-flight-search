@@ -6,6 +6,7 @@ import type { Place } from "~/helpers/sdk/place";
 import { useState } from "react";
 import { Box, LinearProgress } from "@mui/material";
 import { AroundTheWorld } from "~/components/section/map/around-the-world";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -16,6 +17,7 @@ export const meta: V2_MetaFunction = () => {
       name: "description",
       content: `See if you can fly around the world with a budget of only £1000`,
     },
+    ...getCommonMeta(),
   ];
 };
 
@@ -37,7 +39,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export default function Index() {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const {
     apiUrl,
     from,

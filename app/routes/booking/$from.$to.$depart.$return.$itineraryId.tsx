@@ -21,6 +21,7 @@ import { FaMapLocationDot } from "react-icons/fa6";
 import { Deals } from "~/components/section/flight-results/flight-results-default";
 import moment from "moment";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   const defaultMeta = [
@@ -34,7 +35,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
   ];
   const noIndex = { name: "robots", content: "noindex" };
-  if (!data) return [...defaultMeta, noIndex];
+  if (!data) return [...defaultMeta, noIndex,...getCommonMeta(),];
   const {
     query,
   }: {
@@ -60,6 +61,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
     },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
     noIndex,
+    ...getCommonMeta(),
   ];
 };
 

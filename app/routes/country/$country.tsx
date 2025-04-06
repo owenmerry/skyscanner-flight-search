@@ -22,6 +22,7 @@ import { MarketingWeather } from "~/components/section/marketing/marketing-weath
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ params, data }) => {
   const country = getPlaceFromSlug(params.country || "", "PLACE_TYPE_COUNTRY");
@@ -43,11 +44,12 @@ export const meta: V2_MetaFunction = ({ params, data }) => {
       country ? country.name : ""
     } with maps, images and suggested must try locations`,
   },
-  { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+  { tagName: "link", rel: "canonical", href: canonicalUrl },
   {
     name: "og:image",
     content: data.country.images[0] ? `${data.country.images[0]}&w=500` : "",
   },
+  ...getCommonMeta(),
 ];
 };
 

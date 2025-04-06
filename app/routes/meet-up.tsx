@@ -11,6 +11,7 @@ import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { getFullPrice } from "~/helpers/meetup";
+import { getCommonMeta } from "~/helpers/meta";
 import type { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { getPlacesFromIatas, type Place } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
@@ -34,6 +35,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
       content: `Want to meet up but not sure where? Use our tool to find the best location for you and your friends to meet up.`,
     },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    ...getCommonMeta(),
   ];
 };
 

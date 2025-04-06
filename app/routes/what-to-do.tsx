@@ -8,6 +8,7 @@ import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-m
 import { Layout } from "~/components/ui/layout/layout";
 import { LocationPlaces } from "~/components/ui/location-places";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -19,6 +20,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
       content: `Collection of places to visit in the city`,
     },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
+    ...getCommonMeta(),
   ];
 };
 

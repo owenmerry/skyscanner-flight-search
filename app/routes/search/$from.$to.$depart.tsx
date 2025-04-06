@@ -40,6 +40,7 @@ import type { FlightHistorySDK } from "~/helpers/sdk/flight-history/flight-histo
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { handleOutdatedDate } from "~/helpers/url";
 import { Message } from "~/components/section/message/message.component";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   const defaultMeta = [
@@ -53,7 +54,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
   ];
   const noIndex = { name: "robots", content: "noindex" };
-  if (!data) return [...defaultMeta, noIndex];
+  if (!data) return [...defaultMeta, noIndex, ...getCommonMeta()];
   const {
     flightQuery,
     indicativeSearchFlight,
@@ -95,6 +96,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
     },
     { tagName: "link", rel: "canonical", href: data.canonicalUrl },
     noIndex,
+    ...getCommonMeta(),
   ];
 };
 

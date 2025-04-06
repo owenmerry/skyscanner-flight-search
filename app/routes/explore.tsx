@@ -23,8 +23,10 @@ import { AllCountries } from "~/components/section/page/explore";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ data }) => {
+
   return [
     {
       title: `Explore Everywhere | Flights.owenmerry.com`,
@@ -39,6 +41,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
       name: "og:image",
       content: data.exploreImages[0] ? `${data.exploreImages[0]}&w=500` : "",
     },
+    ...getCommonMeta(),
   ];
 };
 

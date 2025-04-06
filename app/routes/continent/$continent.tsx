@@ -22,6 +22,7 @@ import { MarketingMap } from "~/components/section/marketing/marketing-map";
 import { MarketingBackgroundImage } from "~/components/section/marketing/marketing-background-image";
 import { actionsSearchForm } from "~/actions/search-form";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
+import { getCommonMeta } from "~/helpers/meta";
 
 export const meta: V2_MetaFunction = ({ params, data }) => {
   const continent = getPlaceFromSlug(
@@ -45,6 +46,7 @@ export const meta: V2_MetaFunction = ({ params, data }) => {
       name: "og:image",
       content: data.continentImages[0] ? `${data.continentImages[0]}&w=500` : "",
     },
+    ...getCommonMeta(),
   ];
 };
 
