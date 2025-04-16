@@ -10,3 +10,5 @@ node_modules
 *storybook-build
 # Sentry Config File
 .sentryclirc
+
+newrelic_agent.log
