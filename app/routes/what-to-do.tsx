@@ -6,9 +6,11 @@ import type { PlaceGoogle } from "~/components/section/map/map-planner";
 import { WhatToDoMap } from "~/components/section/what-to-do/what-to-do-map";
 import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-map";
 import { Layout } from "~/components/ui/layout/layout";
+import { Location } from "~/components/ui/location";
 import { LocationPlaces } from "~/components/ui/location-places";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { getCommonMeta } from "~/helpers/meta";
+import { Place } from "~/helpers/sdk/place";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -54,6 +56,7 @@ export default function WhatToDo() {
     googleApiKey: string;
     googleMapId: string;
   } = useLoaderData();
+  const [mapLocation, setMapLocation] = useState<Place | undefined>(undefined);
   const [places, setPlaces] = useState<WhatToDoPlace[]>([]);
 
   const handlePlaceSelect = ({ placeGoogle }: { placeGoogle: PlaceGoogle }) => {
@@ -72,18 +75,31 @@ export default function WhatToDo() {
     });
   };
 
+  const handleMapLocationSelect = ( value: string, iataCode: string, place: Place ) => {
+    setMapLocation(place);
+  };
+
   return (
     <div>
       <Layout apiUrl={apiUrl} selectedUrl="/search">
         <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-          <h1>What to do</h1>
-          <div className="mb-4">
-            <LocationPlaces apiUrl={apiUrl} onSelect={handlePlaceSelect} />
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-white">Trip Location</h2>
+            <div className="mb-4">
+              <Location apiUrl={apiUrl} onSelect={handleMapLocationSelect} />
+            </div>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-white">What to do</h2>
+            <div className="mb-4">
+              <LocationPlaces apiUrl={apiUrl} onSelect={handlePlaceSelect} place={mapLocation}  />
+            </div>
           </div>
           <WhatToDoMap
             googleApiKey={googleApiKey}
             googleMapId={googleMapId}
             places={places}
+            mapLocation={mapLocation}
           />
         </div>
       </Layout>

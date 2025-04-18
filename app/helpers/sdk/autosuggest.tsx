@@ -20,14 +20,25 @@ export interface Place {
   regionId: string;
   resultingPhrase: string;
   untransliteratedResultingPhrase: string;
-  type: 'PLACE_TYPE_AIRPORT' | 'PLACE_TYPE_CITY';
+  type: "PLACE_TYPE_AIRPORT" | "PLACE_TYPE_CITY";
+  airportInformation: {
+    iataCode: string;
+    name: string;
+    countryId: string;
+    cityId: string;
+    entityId: string;
+    parentId: string;
+    distance: {
+      value: number;
+      unitCode: "mile";
+    };
+    location: string;
+  };
 }
 
 export const searchAutoSuggest = async (searchTerm: string, apiUrl: string) => {
-  if (searchTerm === '') return [];
-  const res = await fetch(
-    `${apiUrl}/autosuggest/flights/${searchTerm}`,
-  );
+  if (searchTerm === "") return [];
+  const res = await fetch(`${apiUrl}/autosuggest/flights/${searchTerm}`);
   const json: SkyscannerAPIAutoSuggestResponse = await res.json();
 
   return json.places;

@@ -1,5 +1,12 @@
-import { AdvancedMarker, APIProvider, Map } from "@vis.gl/react-google-maps";
+import {
+  AdvancedMarker,
+  APIProvider,
+  Map,
+  useMap,
+} from "@vis.gl/react-google-maps";
 import type { PlaceGoogle } from "../map/map-planner";
+import type { Place } from "~/helpers/sdk/place";
+import { useEffect } from "react";
 
 export interface WhatToDoPlace {
   place: PlaceGoogle;
@@ -10,12 +17,30 @@ interface WhatToDoMapProps {
   googleApiKey: string;
   googleMapId: string;
   places: WhatToDoPlace[];
+  mapLocation?: Place;
 }
+
+const MapController = ({ location }: { location?: Place }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    if (map && location) {
+      map.panTo({
+        lat: location.coordinates.latitude,
+        lng: location.coordinates.longitude,
+      });
+      map.setZoom(12);
+    }
+  }, [map, location]);
+
+  return null; // this component only controls the map
+};
 
 export const WhatToDoMap = ({
   googleApiKey,
   googleMapId,
   places,
+  mapLocation,
 }: WhatToDoMapProps) => {
   return (
     <div className="h-[500px]">
@@ -23,7 +48,14 @@ export const WhatToDoMap = ({
         <Map
           mapId={googleMapId}
           defaultZoom={3}
-          defaultCenter={{ lat: 12, lng: 0 }}
+          defaultCenter={
+            mapLocation
+              ? {
+                  lat: mapLocation?.coordinates.latitude,
+                  lng: mapLocation?.coordinates.longitude,
+                }
+              : undefined
+          }
           gestureHandling={"greedy"}
           disableDefaultUI
         >
@@ -40,7 +72,7 @@ export const WhatToDoMap = ({
                 <div className="relative bg-primary-700 p-2 rounded-lg">
                   <div className="text-white text-sm">
                     <div>
-                      {place.place.name} £{Math.floor(place.fullPrice)}
+                      {place.place.name}
                     </div>
                   </div>
 
@@ -50,6 +82,7 @@ export const WhatToDoMap = ({
             );
           })}
         </Map>
+        <MapController location={mapLocation} />
       </APIProvider>
     </div>
   );

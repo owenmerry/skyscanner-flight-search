@@ -51,13 +51,13 @@ export const Location = ({
     iataCode: string
   ) => {
     const place = await getPlaceFromEntityId(geoId);
-    if(!place) return;
+    if (!place) return;
     setSearchTerm(placeId);
     setSearchOrigin([]);
     setShowAutoSuggest(false);
     onChange && onChange(geoId);
     onSelect && onSelect(geoId, iataCode, place);
-    if(clearOnSelect) setSearchTerm('');
+    if (clearOnSelect) setSearchTerm("");
   };
 
   const handleInputClick = () => {
@@ -100,24 +100,57 @@ export const Location = ({
                 key={place.entityId}
                 onClick={() =>
                   handleSelect(
-                    place.name,
-                    place.entityId,
-                    place?.iataCode || ""
+                    place.airportInformation
+                      ? place.airportInformation.name
+                      : place.name,
+                    place.airportInformation
+                      ? place.airportInformation.entityId
+                      : place.entityId,
+                    place.airportInformation
+                      ? place.airportInformation.iataCode || ""
+                      : place?.iataCode || ""
                   )
                 }
-                className="grid grid-cols-2 content-center flex-auto p-4 border-b-2 border-slate-100 relative cursor-pointer hover:bg-slate-100  dark:hover:bg-slate-900 dark:border-slate-600"
+                className="grid grid-cols-2 gap-2 content-center flex-auto p-4 border-b-2 border-slate-100 relative cursor-pointer hover:bg-slate-100  dark:hover:bg-slate-900 dark:border-slate-600"
               >
-                <div className="text-left">
+                <div className="text-left break-words">
                   <div>
-                    {place.name}
-                    {place.cityId !== "" && <> ({place.iataCode})</>}
+                    {place.airportInformation ? (
+                      <>
+                        {place.airportInformation.name}
+                        {place.airportInformation.cityId !== "" && (
+                          <> ({place.airportInformation.iataCode})</>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {place.name}
+                        {place.cityId !== "" && <> ({place.iataCode})</>}
+                      </>
+                    )}
                   </div>
-                  <div className="text-xs">{place.countryName}</div>
+                  <div className="text-xs">
+                    {place.airportInformation
+                      ? place.airportInformation.countryId
+                      : place.countryName}
+                  </div>
                 </div>
-                <div className="text-right text-xs self-center">
-                  {place.type === "PLACE_TYPE_AIRPORT" ? "Airport" : ""}
-                  {place.type === "PLACE_TYPE_CITY" ? "City" : ""}
-                </div>
+                {place.airportInformation ? (
+                  <div className="text-right text-xs self-center">
+                    {place.airportInformation.distance.value.toFixed(0)}
+                    {place.airportInformation.distance.unitCode === "mile"
+                      ? " miles"
+                      : " km"}{" "}
+                    <span>
+                      from <span className="font-bold">{place.name}</span>
+                    </span>
+                  </div>
+                ) : (
+                  <div className="text-right text-xs self-center">
+                    {place.type === "PLACE_TYPE_AIRPORT" ? "Airport" : ""}
+                    {place.type === "PLACE_TYPE_CITY" ? "City" : ""}
+                  </div>
+                )}
               </li>
             ))}
           </ul>

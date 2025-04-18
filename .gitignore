@@ -11,4 +11,4 @@ node_modules
 # Sentry Config File
 .sentryclirc
 
-newrelic_agent.log
+/newrelic_agent.log
