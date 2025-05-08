@@ -31,13 +31,18 @@ import { getGoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest
 import type { GoogleAutosuggestSDK } from "./google-autosuggest/google-autosuggest-sdk";
 import type { GoogleDetailsSDK } from "./google-details/google-details-sdk";
 import { getGoogleDetailsSDK } from "./google-details/google-details-sdk";
+import type { FlightHistorySDK } from "./flight-history/flight-history-sdk";
+import { getFlightHistorySDK } from "./flight-history/flight-history-sdk";
+import { getGoogleRouteSDK } from "./google-route/google-route-sdk";
 import type {
-  FlightHistorySDK,
-} from "./flight-history/flight-history-sdk";
-import {
-  getFlightHistorySDK,
-} from "./flight-history/flight-history-sdk";
-import { getGoogleRouteSDK, GoogleRouteProps, GoogleRouteSDK } from "./google-route/google-route-sdk";
+  GoogleRouteProps,
+  GoogleRouteSDK,
+} from "./google-route/google-route-sdk";
+import type {
+  TripDetailsProps,
+  TripDetailsSDK,
+} from "./trip-details/trip-details-sdk";
+import { getTripDetailsSDK } from "./trip-details/trip-details-sdk";
 
 // types (Response)
 
@@ -100,6 +105,7 @@ export interface SkyscannerSDK {
     query?: CarHireIndicativeQuery;
     apiUrl?: string;
   }) => Promise<CarHireIndicativeSDK>;
+  tripDetails: (props: TripDetailsProps) => TripDetailsSDK;
   services: {
     google: {
       autosuggest: ({
@@ -120,7 +126,7 @@ export interface SkyscannerSDK {
         apiUrl: string;
         placeId: string;
       }) => Promise<GoogleDetailsSDK>;
-      route: (props : GoogleRouteProps) => Promise<GoogleRouteSDK>;
+      route: (props: GoogleRouteProps) => Promise<GoogleRouteSDK>;
     };
   };
 }
@@ -137,6 +143,7 @@ export const skyscanner = (): SkyscannerSDK => {
     indicative: getIndicativeSDK,
     content: getContentSDK,
     carHire: getCarHireIndicativeSDK,
+    tripDetails: getTripDetailsSDK,
     services: {
       google: {
         autosuggest: getGoogleAutosuggestSDK,

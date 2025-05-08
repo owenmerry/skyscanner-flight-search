@@ -11,6 +11,7 @@ import { LocationPlaces } from "~/components/ui/location-places";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { getCommonMeta } from "~/helpers/meta";
 import { Place } from "~/helpers/sdk/place";
+import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -78,6 +79,23 @@ export default function WhatToDo() {
   const handleMapLocationSelect = ( value: string, iataCode: string, place: Place ) => {
     setMapLocation(place);
   };
+  const saveTrip = async () => {
+    const trip = await skyscanner().tripDetails({apiUrl, id: ''}).createTrip({
+      apiUrl,
+      cityEntityId: "1234567",
+      trip: {
+        inside: '',
+      },
+    });
+    console.log(trip);
+  };
+  const getTrip = async () => {
+    const trip = await skyscanner().tripDetails({apiUrl, id: ''}).getTrip({
+      apiUrl,
+      id: "2",
+    });
+    console.log(trip);
+  };
 
   return (
     <div>
@@ -102,6 +120,8 @@ export default function WhatToDo() {
             mapLocation={mapLocation}
           />
         </div>
+        <div onClick={saveTrip}>Save</div>
+        <div onClick={getTrip}>Get</div>
       </Layout>
     </div>
   );
