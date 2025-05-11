@@ -1,17 +1,14 @@
-import type { V2_MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { ActionArgs, redirect, type V2_MetaFunction } from "@remix-run/node";
+import { Form, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import type { LoaderFunction } from "storybook/internal/types";
-import type { PlaceGoogle } from "~/components/section/map/map-planner";
-import { WhatToDoMap } from "~/components/section/what-to-do/what-to-do-map";
-import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-map";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
-import { LocationPlaces } from "~/components/ui/location-places";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { getCommonMeta } from "~/helpers/meta";
 import { Place } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
+import type { TripDetailsResponseSDK } from "~/helpers/sdk/trip-details/trip-details-sdk";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -27,7 +24,7 @@ export const meta: V2_MetaFunction = ({ data }) => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
   const googleApiKey = process.env.GOOGLE_API_KEY || "";
   const googleMapId = process.env.GOOGLE_MAP_ID || "";
@@ -39,89 +36,119 @@ export const loader: LoaderFunction = async ({ request }) => {
     queryParams,
   });
 
+  const trips = await skyscanner()
+    .tripDetails({ apiUrl, id: params.id || "" })
+    .getAllTrip({
+      apiUrl,
+    });
+
   return {
     apiUrl,
     googleApiKey,
     googleMapId,
     canonicalUrl,
+    trips,
   };
 };
 
+
+export async function action({ request }: ActionArgs) {
+  const bodyParams = await request.formData();
+  const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
+
+  if (bodyParams.get("action") === "createTrip") {
+    const cityEntityId = String(bodyParams.get("cityEntityId"));
+    if(!cityEntityId) return redirect(`/what-to-do/?error=cityEntityId`);
+    const created = await skyscanner()
+      .tripDetails({ apiUrl, id: "" })
+      .createTrip({
+        apiUrl,
+        cityEntityId,
+        trip: {places:[]},
+      });
+    if ("error" in created) return redirect(`/what-to-do/?error=${created.error}`);
+    
+    return redirect(`/what-to-do/${created.id}`);
+  }
+  return redirect(`/what-to-do/?error=unknown`);
+}
+
 export default function WhatToDo() {
-  const {
-    apiUrl,
-    googleApiKey,
-    googleMapId,
-  }: {
+  const [mapLocation, setMapLocation] = useState<Place | undefined>();
+  const { apiUrl, trips } = useLoaderData<{
     apiUrl: string;
     googleApiKey: string;
     googleMapId: string;
-  } = useLoaderData();
-  const [mapLocation, setMapLocation] = useState<Place | undefined>(undefined);
-  const [places, setPlaces] = useState<WhatToDoPlace[]>([]);
+    trips: TripDetailsResponseSDK[];
+  }>();
 
-  const handlePlaceSelect = ({ placeGoogle }: { placeGoogle: PlaceGoogle }) => {
-    setPlaces((prevPlaces) => {
-      const existingPlace = prevPlaces.find(
-        (place) => place.place.id === placeGoogle.id
-      );
-      if (existingPlace) {
-        return prevPlaces;
-      }
-      const newPlace = {
-        place: placeGoogle,
-        fullPrice: 0,
-      };
-      return [...prevPlaces, newPlace];
-    });
-  };
-
-  const handleMapLocationSelect = ( value: string, iataCode: string, place: Place ) => {
+  const handleMapLocationSelect = async (
+    value: string,
+    iataCode: string,
+    place: Place
+  ) => {
     setMapLocation(place);
-  };
-  const saveTrip = async () => {
-    const trip = await skyscanner().tripDetails({apiUrl, id: ''}).createTrip({
-      apiUrl,
-      cityEntityId: "1234567",
-      trip: {
-        inside: '',
-      },
-    });
-    console.log(trip);
-  };
-  const getTrip = async () => {
-    const trip = await skyscanner().tripDetails({apiUrl, id: ''}).getTrip({
-      apiUrl,
-      id: "2",
-    });
-    console.log(trip);
   };
 
   return (
     <div>
       <Layout apiUrl={apiUrl} selectedUrl="/search">
         <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-white">Trip Location</h2>
-            <div className="mb-4">
+          <div className="text-center">
+            <div className="flex justify-center mb-4">
+              <svg
+                className="w-6 h-6 text-gray-800 dark:text-blue-600"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeWidth="2"
+                  d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
+                />
+              </svg>
+            </div>
+            <h2 className="mb-8 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
+              What to do
+            </h2>
+          </div>
+
+          <div className="mb-4 grid grid-cols-3 gap-4">
+            {trips.map((trip) => (
+              <div key={trip.id}>
+                <a href={`/what-to-do/${trip.id}`}>{trip.id} - {trip.city?.name}</a>
+              </div>
+            ))}
+            <div>
+
+              <Form method="post" className="inline-block py-4 mr-2">
+              <input
+                type="hidden"
+                name="action"
+                value={"createTrip"}
+              />
+              <input
+                type="hidden"
+                name="cityEntityId"
+                value={mapLocation?.entityId}
+              />
               <Location apiUrl={apiUrl} onSelect={handleMapLocationSelect} />
+              <button
+                className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+                type="submit"
+              >
+                Create Trip
+              </button>
+              </Form>
+
             </div>
           </div>
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-white">What to do</h2>
-            <div className="mb-4">
-              <LocationPlaces apiUrl={apiUrl} onSelect={handlePlaceSelect} place={mapLocation}  />
-            </div>
-          </div>
-          <WhatToDoMap
-            googleApiKey={googleApiKey}
-            googleMapId={googleMapId}
-            places={places}
-            mapLocation={mapLocation}
-          />
         </div>
-        <div onClick={saveTrip}>Save</div>
-        <div onClick={getTrip}>Get</div>
       </Layout>
     </div>
   );

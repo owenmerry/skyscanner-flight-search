@@ -1,3 +1,5 @@
+import { Place } from "../place";
+import { convertTripDetailsResponsetoSDK } from "./trip-details-helpers";
 import type { TripDetailsResponse } from "./trip-details-response";
 
 // SDK Types
@@ -8,6 +10,12 @@ export type TripDetailsSDK = {
   }: TripDetailsProps) => Promise<TripDetailsResponseSDK | TripDetailsError>;
   createTrip: (
     props: TripDetailsCreateProps
+  ) => Promise<TripDetailsResponse | TripDetailsError>;
+  getAllTrip: (
+    props: TripDetailsAllProps
+  ) => Promise<TripDetailsResponseSDK[] | TripDetailsError>;
+  updateTrip: (
+    props: TripDetailsUpdateProps
   ) => Promise<TripDetailsResponse | TripDetailsError>;
 };
 
@@ -22,18 +30,20 @@ export type TripDetailsError = {
 export interface TripDetailsResponseSDK {
   id: string;
   cityEntityId: string;
+  city?: Place;
   trip: any;
+  editHash: string;
   extra: string;
   updatedAt: string;
   createdAt: string;
 }
 
-export const getTripDetailsSDK = (
-  props: TripDetailsProps
-): TripDetailsSDK => {
+export const getTripDetailsSDK = (props: TripDetailsProps): TripDetailsSDK => {
   return {
     createTrip: createTripDetails,
     getTrip: getTripDetails,
+    getAllTrip: getAllTripDetails,
+    updateTrip: updateTripDetails,
   };
 };
 
@@ -57,11 +67,7 @@ export const getTripDetails = async ({
 
   if (!content) return { error };
 
-  return {
-    ...content,
-    trip: JSON.parse(content.trip),
-    extra: "",
-  };
+  return convertTripDetailsResponsetoSDK(content);
 };
 
 export type TripDetailsCreateProps = {
@@ -81,6 +87,71 @@ export const createTripDetails = async ({
   try {
     const res = await fetch(
       `${apiUrl}/trip/details/create?cityEntityId=${cityEntityId}&trip=${JSON.stringify(
+        trip
+      )}`
+    );
+    const json: TripDetailsResponse = await res.json();
+
+    if (!json) {
+      error =
+        "Sorry, something happened and we couldnt do this search, maybe try a differnt search";
+    } else {
+      content = json;
+    }
+  } catch (ex) {}
+
+  if (!content) return { error };
+
+  return content;
+};
+
+export type TripDetailsAllProps = {
+  apiUrl: string;
+};
+export const getAllTripDetails = async ({
+  apiUrl,
+}: TripDetailsAllProps): Promise<TripDetailsResponseSDK[] | TripDetailsError> => {
+  let content : TripDetailsResponseSDK[] = [],
+    error = "";
+  try {
+    console.log("get data");
+    const res = await fetch(`${apiUrl}/trip/details/all`);
+    const json: TripDetailsResponse[] = await res.json();
+
+    if (!json) {
+      error =
+        "Sorry, something happened and we couldnt do this search, maybe try a differnt search";
+    } else {
+      content = json.map((trip) => (convertTripDetailsResponsetoSDK(trip)));
+    }
+  } catch (ex) {}
+
+  if (!content) return { error };
+
+  return content;
+};
+
+export type TripDetailsUpdateProps = {
+  apiUrl: string;
+  id: string;
+  editHash: string;
+  cityEntityId: string;
+  trip: any;
+};
+export const updateTripDetails = async ({
+  apiUrl,
+  id,
+  editHash,
+  cityEntityId,
+  trip,
+}: TripDetailsUpdateProps): Promise<
+  TripDetailsResponse | { error: string }
+> => {
+  let content,
+    error = "";
+  try {
+    const res = await fetch(
+      `${apiUrl}/trip/details/update?id=${id}&editHash=${editHash}&cityEntityId=${cityEntityId}&trip=${JSON.stringify(
         trip
       )}`
     );
