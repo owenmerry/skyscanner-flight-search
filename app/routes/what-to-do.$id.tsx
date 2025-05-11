@@ -1,5 +1,5 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { Link, useLoaderData } from "@remix-run/react";
 import { useState } from "react";
 import type { LoaderFunction } from "storybook/internal/types";
 import type { PlaceGoogle } from "~/components/section/map/map-planner";
@@ -162,6 +162,7 @@ export default function WhatToDo() {
     <div>
       <Layout apiUrl={apiUrl} selectedUrl="/search">
         <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
+          <Link to={`/what-to-do`}>Back</Link>
           <div>
             <h2 className="text-xl font-bold tracking-tight text-white">
               Trip Location

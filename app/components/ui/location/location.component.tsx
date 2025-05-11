@@ -13,6 +13,8 @@ interface LocationProps {
   clearOnSelect?: boolean;
   onChange?: (value: string) => void;
   onSelect?: (value: string, iataCode: string, place: Place) => void;
+  types?: ("PLACE_TYPE_CITY" | "PLACE_TYPE_AIRPORT" | "PLACE_TYPE_COUNTRY")[];
+  vertical?: "flights" | "hotels";
 }
 
 export const Location = ({
@@ -22,6 +24,8 @@ export const Location = ({
   clearOnSelect = false,
   onChange,
   onSelect,
+  types,
+  vertical,
 }: LocationProps): JSX.Element => {
   const [searchTerm, setSearchTerm] = useState(defaultValue);
   const [searchOrigin, setSearchOrigin] = useState<PlaceAutosuggest[]>([]);
@@ -37,7 +41,10 @@ export const Location = ({
   const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
     onChange && onChange(e.target.value);
-    const originResults = await searchAutoSuggest(e.target.value, apiUrl);
+    const originResults = await searchAutoSuggest(e.target.value, apiUrl, {
+      type: types,
+      vertical,
+    });
     const originResultsFiltered = originResults.filter(
       (suggest) => suggest.iataCode
     );

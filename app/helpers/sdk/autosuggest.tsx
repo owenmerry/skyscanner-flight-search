@@ -36,9 +36,23 @@ export interface Place {
   };
 }
 
-export const searchAutoSuggest = async (searchTerm: string, apiUrl: string) => {
+export const searchAutoSuggest = async (
+  searchTerm: string,
+  apiUrl: string,
+  {
+    type,
+    vertical,
+  }: {
+    type?: ("PLACE_TYPE_CITY" | "PLACE_TYPE_AIRPORT" | "PLACE_TYPE_COUNTRY")[];
+    vertical?: "flights" | "hotels";
+  } = {}
+) => {
   if (searchTerm === "") return [];
-  const res = await fetch(`${apiUrl}/autosuggest/flights/${searchTerm}`);
+  const res = await fetch(
+    `${apiUrl}/autosuggest/${vertical || "flights"}/${searchTerm}${
+      type ? `?type=${type.join(",")}` : ""
+    }`
+  );
   const json: SkyscannerAPIAutoSuggestResponse = await res.json();
 
   return json.places;

@@ -42,6 +42,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     .getAllTrip({
       apiUrl,
     });
+  if ("error" in trips) {
+    console.log("error", trips.error);
+  } else {
+    console.log("trips len", trips.length);
+  }
 
   return {
     apiUrl,
@@ -52,23 +57,23 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   };
 };
 
-
 export async function action({ request }: ActionArgs) {
   const bodyParams = await request.formData();
   const apiUrl = process.env.SKYSCANNER_APP_API_URL || "";
 
   if (bodyParams.get("action") === "createTrip") {
     const cityEntityId = String(bodyParams.get("cityEntityId"));
-    if(!cityEntityId) return redirect(`/what-to-do/?error=cityEntityId`);
+    if (!cityEntityId) return redirect(`/what-to-do/?error=cityEntityId`);
     const created = await skyscanner()
       .tripDetails({ apiUrl, id: "" })
       .createTrip({
         apiUrl,
         cityEntityId,
-        trip: {places:[]},
+        trip: { places: [] },
       });
-    if ("error" in created) return redirect(`/what-to-do/?error=${created.error}`);
-    
+    if ("error" in created)
+      return redirect(`/what-to-do/?error=${created.error}`);
+
     return redirect(`/what-to-do/${created.id}`);
   }
   return redirect(`/what-to-do/?error=unknown`);
@@ -82,6 +87,8 @@ export default function WhatToDo() {
     googleMapId: string;
     trips: TripDetailsResponseSDK[];
   }>();
+
+  console.log("trips", trips);
 
   const handleMapLocationSelect = async (
     value: string,
@@ -121,34 +128,30 @@ export default function WhatToDo() {
           <div className="mb-4 grid grid-cols-3 gap-4">
             {trips.map((trip) => (
               <div key={trip.id}>
-                <div>{moment(trip.createdAt).fromNow()}</div>
-                <a href={`/what-to-do/${trip.id}`}>{trip.id} - {trip.city?.name}</a>
+                <a href={`/what-to-do/${trip.id}`}>
+                  <div>
+                    {trip.city?.name}
+                  </div>
+                  <div>{moment(trip.created_at).fromNow()}</div>
+                </a>
               </div>
             ))}
-            <div>
-
-              <Form method="post" className="inline-block py-4 mr-2">
-              <input
-                type="hidden"
-                name="action"
-                value={"createTrip"}
-              />
-              <input
-                type="hidden"
-                name="cityEntityId"
-                value={mapLocation?.entityId}
-              />
-              <Location apiUrl={apiUrl} onSelect={handleMapLocationSelect} />
-              <button
-                className="lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
-                type="submit"
-              >
-                Create Trip
-              </button>
-              </Form>
-
-            </div>
           </div>
+          <Form method="post" className="inline-block py-4 mr-2">
+            <input type="hidden" name="action" value={"createTrip"} />
+            <input
+              type="hidden"
+              name="cityEntityId"
+              value={mapLocation?.entityId}
+            />
+            <Location apiUrl={apiUrl} onSelect={handleMapLocationSelect} types={['PLACE_TYPE_CITY', 'PLACE_TYPE_COUNTRY']} />
+            <button
+              className="mt-2 lg:col-span-2 justify-center md:w-auto text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 inline-flex items-center"
+              type="submit"
+            >
+              Create Trip
+            </button>
+          </Form>
         </div>
       </Layout>
     </div>

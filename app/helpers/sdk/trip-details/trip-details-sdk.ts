@@ -1,4 +1,4 @@
-import { Place } from "../place";
+import type { Place } from "../place";
 import { convertTripDetailsResponsetoSDK } from "./trip-details-helpers";
 import type { TripDetailsResponse } from "./trip-details-response";
 
@@ -27,15 +27,10 @@ export type TripDetailsError = {
   error: string;
 };
 
-export interface TripDetailsResponseSDK {
-  id: string;
-  cityEntityId: string;
+export type TripDetailsResponseSDK = TripDetailsResponse & {
   city?: Place;
   trip: any;
-  editHash: string;
   extra: string;
-  updatedAt: string;
-  createdAt: string;
 }
 
 export const getTripDetailsSDK = (props: TripDetailsProps): TripDetailsSDK => {
@@ -124,7 +119,9 @@ export const getAllTripDetails = async ({
     } else {
       content = json.map((trip) => (convertTripDetailsResponsetoSDK(trip)));
     }
-  } catch (ex) {}
+  } catch (ex) {
+    console.log("error", ex);
+  }
 
   if (!content) return { error };
 

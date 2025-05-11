@@ -1,8 +1,8 @@
-export interface TripDetailsResponse {
+export type TripDetailsResponse = {
   id: string;
   cityEntityId: string;
   editHash: string;
   trip:string;
-  updatedAt: string;
-  createdAt: string;
+  updated_at: string;
+  created_at: string;
 }
