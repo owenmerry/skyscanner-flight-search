@@ -1,5 +1,6 @@
 import { ActionArgs, redirect, type V2_MetaFunction } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
+import moment from "moment";
 import { useState } from "react";
 import type { LoaderFunction } from "storybook/internal/types";
 import { Layout } from "~/components/ui/layout/layout";
@@ -108,7 +109,6 @@ export default function WhatToDo() {
                 <path
                   stroke="currentColor"
                   strokeLinecap="round"
-                  strokeWidth="2"
                   d="M8 7V6a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1M3 18v-7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"
                 />
               </svg>
@@ -121,6 +121,7 @@ export default function WhatToDo() {
           <div className="mb-4 grid grid-cols-3 gap-4">
             {trips.map((trip) => (
               <div key={trip.id}>
+                <div>{moment(trip.createdAt).fromNow()}</div>
                 <a href={`/what-to-do/${trip.id}`}>{trip.id} - {trip.city?.name}</a>
               </div>
             ))}
