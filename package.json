@@ -39,6 +39,7 @@
     "isbot": "^3.6.5",
     "lodash": "^4.17.21",
     "logrocket": "^4.0.1",
+    "lucide-react": "^0.511.0",
     "moment": "^2.29.4",
     "newrelic": "^12.18.0",
     "pluralize": "^8.0.0",
