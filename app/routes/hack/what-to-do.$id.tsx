@@ -219,7 +219,7 @@ export default function WhatToDo() {
         <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
           <Link
             className="py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
-            to={`hack/what-to-do`}
+            to={`/hack/what-to-do`}
           >
             Back
           </Link>
