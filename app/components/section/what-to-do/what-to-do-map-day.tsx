@@ -36,6 +36,23 @@ const MapController = ({ location }: { location?: Place }) => {
   return null; // this component only controls the map
 };
 
+function FitBounds({ markers }: { markers: google.maps.LatLngLiteral[] }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (map && markers.length > 1) {
+      const bounds = new google.maps.LatLngBounds();
+      markers.forEach(marker => bounds.extend(marker));
+      map.fitBounds(bounds);
+      // if (markers.length === 1) {
+      //   map.setZoom(10); // Adjust zoom level if it's too high
+      // }
+    }
+  }, [map, markers]);
+
+  return null;
+}
+
 export const WhatToDoMapDay = ({
   googleApiKey,
   googleMapId,
@@ -116,22 +133,33 @@ export const WhatToDoMapDay = ({
     // updateTrip({ trip: updatedPlace });
   };
 
-  function FitBounds({ markers }: { markers: google.maps.LatLngLiteral[] }) {
-    const map = useMap();
-  
-    useEffect(() => {
-      if (map && markers.length > 0) {
-        const bounds = new google.maps.LatLngBounds();
-        markers.forEach(marker => bounds.extend(marker));
-        map.fitBounds(bounds);
-        if (markers.length === 1) {
-          map.setZoom(10); // Adjust zoom level if it's too high
+  const handleActivityDelete = (index: number) => {
+    if (!selectedDestination || !selectedDestination.days[0].activities) return;
+    const updatedActivities = selectedDestination.days[0].activities.filter(
+      (_, i) => i !== index
+    );
+
+    onUpdateTrip && onUpdateTrip({
+      ...trip,
+      destinations: trip.destinations.map((destination, destIndex) => {
+        if (destIndex === selected) {
+          return {
+            ...destination,
+            days: destination.days.map((day, dayIndex) => {
+              if (dayIndex === 0) {
+                return {
+                  ...day,
+                  activities: updatedActivities,
+                };
+              }
+              return day;
+            }),
+          };
         }
-      }
-    }, [map, markers]);
-  
-    return null;
-  }
+        return destination;
+      }),
+    });
+  };
 
   return (
     <div className="h-[500px]">
@@ -181,7 +209,7 @@ export const WhatToDoMapDay = ({
           gestureHandling={"greedy"}
           disableDefaultUI
         >
-          {activities.map((activity) => {
+          {activities.map((activity, index) => {
             if (!activity?.googlePlace) return null;
             return (
               <AdvancedMarker
@@ -195,6 +223,7 @@ export const WhatToDoMapDay = ({
                 <div className="relative bg-primary-700 p-2 rounded-lg">
                   <div className="text-white text-sm">
                     <div>{activity.googlePlace.name}</div>
+                    <div onClick={() => handleActivityDelete(index)}>delete</div>
                   </div>
 
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
