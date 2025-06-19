@@ -63,7 +63,7 @@ export async function action({ request }: ActionArgs) {
 
   if (bodyParams.get("action") === "createTrip") {
     const cityEntityId = String(bodyParams.get("cityEntityId"));
-    if (!cityEntityId) return redirect(`/what-to-do/?error=cityEntityId`);
+    if (!cityEntityId) return redirect(`/hack/what-to-do/?error=cityEntityId`);
     const created = await skyscanner()
       .tripDetails({ apiUrl, id: "" })
       .createTrip({
@@ -72,11 +72,11 @@ export async function action({ request }: ActionArgs) {
         trip: { places: [] },
       });
     if ("error" in created)
-      return redirect(`/what-to-do/?error=${created.error}`);
+      return redirect(`/hack/what-to-do/?error=${created.error}`);
 
-    return redirect(`/what-to-do/${created.id}`);
+    return redirect(`/hack/what-to-do/${created.id}`);
   }
-  return redirect(`/what-to-do/?error=unknown`);
+  return redirect(`/hack/what-to-do/?error=unknown`);
 }
 
 export default function WhatToDo() {
@@ -128,7 +128,7 @@ export default function WhatToDo() {
           <div className="mb-4 grid grid-cols-3 gap-4">
             {trips.map((trip) => (
               <div key={trip.id}>
-                <a href={`/what-to-do/${trip.id}`}>
+                <a href={`/hack/what-to-do/${trip.id}`}>
                   <div>
                     {trip.city?.name}
                   </div>

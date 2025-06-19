@@ -1,8 +1,8 @@
 interface SkyscannerAPIAutoSuggestResponse {
-  places: Place[];
+  places: SkyscannerPlace[];
 }
 
-export interface Place {
+export interface SkyscannerPlace {
   cityId: string;
   cityName: string;
   cityNameEn: string;
@@ -15,6 +15,7 @@ export interface Place {
   localizedPlaceName: string;
   location: string;
   placeId: string;
+  parentId: string;
   name: string;
   placeNameEn: string;
   regionId: string;

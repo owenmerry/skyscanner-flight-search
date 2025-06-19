@@ -62,7 +62,7 @@ export const getTripDetails = async ({
 
   if (!content) return { error };
 
-  return convertTripDetailsResponsetoSDK(content);
+  return convertTripDetailsResponsetoSDK(content, apiUrl);
 };
 
 export type TripDetailsCreateProps = {
@@ -117,7 +117,13 @@ export const getAllTripDetails = async ({
       error =
         "Sorry, something happened and we couldnt do this search, maybe try a differnt search";
     } else {
-      content = json.map((trip) => (convertTripDetailsResponsetoSDK(trip)));
+      // Convert each trip details response to SDK format
+      let contentInRiched: TripDetailsResponseSDK[] = [];
+      for (const trip of json) {
+        const convertedTrip = await convertTripDetailsResponsetoSDK(trip, apiUrl);
+        contentInRiched.push(convertedTrip);
+      }
+      content = contentInRiched;
     }
   } catch (ex) {
     console.log("error", ex);
