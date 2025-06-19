@@ -4,7 +4,6 @@ import moment from "moment";
 import { useState } from "react";
 import type { LoaderFunction } from "storybook/internal/types";
 import type { PlaceGoogle } from "~/components/section/map/map-planner";
-import { WhatToDoMap } from "~/components/section/what-to-do/what-to-do-map";
 import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-map";
 import { WhatToDoMapDay } from "~/components/section/what-to-do/what-to-do-map-day";
 import {
@@ -13,7 +12,7 @@ import {
 } from "~/components/section/what-to-do/what-to-do-map-flight";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
-import { LocationPlaces } from "~/components/ui/location-places";
+import { Title } from "~/components/ui/title/title";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { getCommonMeta } from "~/helpers/meta";
 import type { Place } from "~/helpers/sdk/place";
@@ -105,37 +104,15 @@ export default function WhatToDo() {
   const [mapLocation, setMapLocation] = useState<Place | undefined>(
     tripDetails.city
   );
-  const [places, setPlaces] = useState<WhatToDoPlace[]>(
+  const [places] = useState<WhatToDoPlace[]>(
     tripDetails.trip?.places ? tripDetails.trip.places : []
   );
-  const [trip, setTrip] = useState<Trip>({
+  const [trip, setTrip] = useState<Trip>(tripDetails.trip.hackTrip ? tripDetails.trip.hackTrip : {
     name: "My Trip",
     startDate: moment().add(7, "days").format("YYYY-MM-DD"),
     destinations: [{ days: [{}] }, { days: [{}] }],
   });
   console.log("tripDetails", tripDetails);
-
-  const handlePlaceSelect = async ({
-    placeGoogle,
-  }: {
-    placeGoogle: PlaceGoogle;
-  }) => {
-    const existingPlace = places.find(
-      (place) => place.place.id === placeGoogle.id
-    );
-    if (existingPlace) {
-      return;
-    }
-
-    const newPlace = {
-      place: placeGoogle,
-      fullPrice: 0,
-    };
-    const updatedPlace = [...places, newPlace];
-
-    setPlaces(updatedPlace);
-    updateTrip({ trip: updatedPlace });
-  };
 
   const handleMapLocationSelect = (
     value: string,
@@ -150,23 +127,28 @@ export default function WhatToDo() {
     const updatedDestinations = [...trip.destinations];
     updatedDestinations[number] = { ...updatedDestinations[number], place };
     setTrip({ ...trip, destinations: updatedDestinations });
+    updateTrip({ hackTrip: trip });
   };
 
   const handleDestinationAdd = () => {
     setTrip({ ...trip, destinations: [...trip.destinations, { days: [{}] }] });
+    updateTrip({ hackTrip: trip });
   };
   const handleDestinationRemove = (number: number) => {
     const updatedDestinations = [...trip.destinations];
     updatedDestinations.splice(number, 1);
     setTrip({ ...trip, destinations: updatedDestinations });
+    updateTrip({ hackTrip: trip });
   };
 
   const updateTrip = async ({
     city,
     trip,
+    hackTrip,
   }: {
     city?: Place;
     trip?: WhatToDoPlace[];
+    hackTrip?: Trip;
   }) => {
     const placesUpdate = trip ? trip : places;
     skyscanner()
@@ -180,6 +162,7 @@ export default function WhatToDo() {
           places: placesUpdate.map((place) => ({
             id: place.place.id,
           })),
+          hackTrip: hackTrip,
         },
       });
   };
@@ -188,8 +171,14 @@ export default function WhatToDo() {
     <div>
       <Layout apiUrl={apiUrl} selectedUrl="/search">
         <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-          <Link className="py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700" to={`/what-to-do`}>Back</Link>
+          <Link
+            className="py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
+            to={`/what-to-do`}
+          >
+            Back
+          </Link>
           <div>
+            <Title text="Your Trip" />
             <h2 className="text-xl font-bold tracking-tight text-white">
               Trip Location
             </h2>
@@ -202,9 +191,7 @@ export default function WhatToDo() {
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-bold tracking-tight text-white">
-              Destinations
-            </h2>
+            <Title text="Destinations" />
             {trip.destinations.map((destination, index) => {
               return (
                 <div key={index} className="mb-4">
@@ -217,14 +204,20 @@ export default function WhatToDo() {
                   />
                   <div className="flex">
                     <div className="mr-2">{destination.days.length} days</div>
-                    <div className="cursor-pointer py-3 px-5 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700" onClick={() => handleDestinationRemove(index)}>
+                    <div
+                      className="cursor-pointer py-3 px-5 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
+                      onClick={() => handleDestinationRemove(index)}
+                    >
                       Remove
                     </div>
                   </div>
                 </div>
               );
             })}
-            <div className="cursor-pointer inline-block py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700" onClick={handleDestinationAdd}>
+            <div
+              className="cursor-pointer inline-block py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
+              onClick={handleDestinationAdd}
+            >
               Add Another Location
             </div>
             <div>
@@ -239,21 +232,18 @@ export default function WhatToDo() {
           {trip.destinations.filter((destination) => destination.place).flat()
             .length > 0 ? (
             <div>
-              <h2 className="text-xl font-bold tracking-tight text-white">
-                Days
-              </h2>
-              <div className="mb-4">
-                <LocationPlaces
-                  apiUrl={apiUrl}
-                  onSelect={handlePlaceSelect}
-                  place={mapLocation}
-                />
-              </div>
+              <Title text="Days" />
               <WhatToDoMapDay
                 googleApiKey={googleApiKey}
                 googleMapId={googleMapId}
                 trip={trip}
                 mapLocation={mapLocation}
+                apiUrl={apiUrl}
+                onUpdateTrip={(trip) => {
+                  setTrip({ ...trip });
+                  console.log("trip", trip);
+                  updateTrip({ hackTrip: trip });
+                }}
               />
             </div>
           ) : (

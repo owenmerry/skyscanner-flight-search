@@ -6,13 +6,17 @@ import {
 } from "@vis.gl/react-google-maps";
 import { getPlaceFromEntityId, type Place } from "~/helpers/sdk/place";
 import { useEffect, useState } from "react";
-import type { Trip } from "./what-to-do-map-flight";
+import type { Activity, Trip } from "./what-to-do-map-flight";
+import { LocationPlaces } from "~/components/ui/location-places";
+import type { PlaceGoogle } from "~/components/section/map/map-planner";
 
-interface WhatToDoMapFlightProps {
+interface WhatToDoMapDayProps {
   googleApiKey: string;
   googleMapId: string;
   trip: Trip;
   mapLocation?: Place;
+  apiUrl: string;
+  onUpdateTrip?: (trip: Trip) => void;
 }
 
 const MapController = ({ location }: { location?: Place }) => {
@@ -37,38 +41,129 @@ export const WhatToDoMapDay = ({
   googleMapId,
   trip,
   mapLocation,
-}: WhatToDoMapFlightProps) => {
-  const markers = trip.destinations.map(destination => {
-    if (!destination.place) return null;
-    return {
-      lat: destination.place.coordinates.latitude,
-      lng: destination.place.coordinates.longitude,
-    };
-  }).filter(marker => marker !== null);
+  apiUrl,
+  onUpdateTrip
+}: WhatToDoMapDayProps) => {
   const [selected, setSelected] = useState<number>(0);
-  const days = trip.destinations.reduce((a, b) => a + b.days.length, 0);
-  const selectedDestination = trip.destinations[selected].place ? trip.destinations[selected] : undefined;
+  //const days = trip.destinations.reduce((a, b) => a + b.days.length, 0);
+  const selectedDestination = trip.destinations[selected].place
+    ? trip.destinations[selected]
+    : undefined;
   if (!selectedDestination) return null;
   const selectedPlace = selectedDestination.place;
   if (!selectedPlace) return null;
-  const activities = selectedDestination.days.map(day => day.activities).flat();
-  const mapCenter = selectedPlace.type === "PLACE_TYPE_AIRPORT" && getPlaceFromEntityId(selectedPlace.parentId) ? getPlaceFromEntityId(selectedPlace.parentId) : selectedPlace;
-  if(!mapCenter) return null;
+  const activities = selectedDestination.days
+    .map((day) => day.activities)
+    .flat();
+  const mapCenter =
+    selectedPlace.type === "PLACE_TYPE_AIRPORT" &&
+    getPlaceFromEntityId(selectedPlace.parentId)
+      ? getPlaceFromEntityId(selectedPlace.parentId)
+      : selectedPlace;
+  if (!mapCenter) return null;
+  const markers = activities.map(activities => {
+    if (!activities?.googlePlace) return null;
+    return {
+      lat: activities.googlePlace.location.latitude,
+      lng: activities.googlePlace.location.longitude,
+    };
+  }).filter(marker => marker !== null);
+
+  const handlePlaceSelect = async ({
+    placeGoogle,
+  }: {
+    placeGoogle: PlaceGoogle;
+  }) => {
+    const existingPlace = selectedDestination.days[0].activities?.find(
+      (activity) => activity.googlePlace?.id === placeGoogle.id
+    );
+    if (existingPlace) {
+      return;
+    }
+
+    const newActivity: Activity = {
+      googlePlace: placeGoogle,
+    };
+    const updatedActivities = [
+      ...selectedDestination.days[0].activities || [],
+      newActivity,
+    ];
+
+    onUpdateTrip && onUpdateTrip({
+      ...trip,
+      destinations: trip.destinations.map((destination, index) => {
+        if (index === selected) {
+          return {
+            ...destination,
+            days: destination.days.map((day, dayIndex) => {
+              if (dayIndex === 0) {
+                return {
+                  ...day,
+                  activities: updatedActivities,
+                };
+              }
+              return day;
+            }),
+          };
+        }
+        return destination;
+      }),
+    });
+
+
+
+    // setPlaces(updatedPlace);
+    // updateTrip({ trip: updatedPlace });
+  };
+
+  function FitBounds({ markers }: { markers: google.maps.LatLngLiteral[] }) {
+    const map = useMap();
+  
+    useEffect(() => {
+      if (map && markers.length > 0) {
+        const bounds = new google.maps.LatLngBounds();
+        markers.forEach(marker => bounds.extend(marker));
+        map.fitBounds(bounds);
+        if (markers.length === 1) {
+          map.setZoom(10); // Adjust zoom level if it's too high
+        }
+      }
+    }, [map, markers]);
+  
+    return null;
+  }
 
   return (
     <div className="h-[500px]">
       <div className="flex">
-        {trip.destinations.filter(destination => destination.place).map((destination, index) => (
-          <div key={index} className="mb-4">
-            <div className={`py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 ${selected === index ? `bg-primary-700` : `bg-primary-900`}`} onClick={() => setSelected(index)}>{destination.place?.name}</div>
-          </div>
-        ))}
+        {trip.destinations
+          .filter((destination) => destination.place)
+          .map((destination, index) => (
+            <div key={index} className="mb-4">
+              <div
+                className={`cursor-pointer py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 ${
+                  selected === index ? `bg-primary-700` : `bg-primary-900`
+                }`}
+                onClick={() => setSelected(index)}
+              >
+                {destination.place?.name} ({destination.days.length} Days)
+              </div>
+            </div>
+          ))}
+
         {/* {Array.from({ length: days }, (_, i) => i).map((day, index) => (
           <div key={index} className="mb-4">
             <div >Day {day + 1}</div>
           </div>
         ))} */}
       </div>
+      <LocationPlaces
+        apiUrl={apiUrl}
+        onSelect={({ placeGoogle }: { placeGoogle: PlaceGoogle }) =>
+          handlePlaceSelect({ placeGoogle })
+        }
+        place={mapLocation}
+      />
       <APIProvider apiKey={googleApiKey} libraries={["marker"]}>
         <Map
           mapId={googleMapId}
@@ -97,9 +192,7 @@ export const WhatToDoMapDay = ({
               >
                 <div className="relative bg-primary-700 p-2 rounded-lg">
                   <div className="text-white text-sm">
-                    <div>
-                      {activity.googlePlace.name}
-                    </div>
+                    <div>{activity.googlePlace.name}</div>
                   </div>
 
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
@@ -109,6 +202,7 @@ export const WhatToDoMapDay = ({
           })}
         </Map>
         <MapController location={mapCenter} />
+        <FitBounds markers={markers} />
       </APIProvider>
     </div>
   );
