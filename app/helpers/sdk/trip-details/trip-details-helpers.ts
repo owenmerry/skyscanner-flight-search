@@ -12,7 +12,6 @@ export const convertTripDetailsResponsetoSDK = async (
   apiUrl: string
 ): Promise<TripDetailsResponseSDK> => {
   let city: undefined | Place;
-  debugger;
   const cityByEntityId = getPlaceFromEntityId(tripDetails.cityEntityId);
   if (cityByEntityId) {
     city = getPlaceFromEntityId(tripDetails.cityEntityId) || undefined;

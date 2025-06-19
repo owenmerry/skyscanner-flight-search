@@ -289,7 +289,6 @@ export default function WhatToDo() {
                 mapLocation={mapLocation}
                 apiUrl={apiUrl}
                 onUpdateTrip={(trip) => {
-                  debugger;
                   setTrip({ ...trip });
                   console.log("trip", trip);
                   updateTrip({ hackTrip: trip });
