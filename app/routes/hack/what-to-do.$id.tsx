@@ -1,13 +1,15 @@
 import type { V2_MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
+import moment from "moment";
 import { useState } from "react";
 import type { LoaderFunction } from "storybook/internal/types";
 import type { PlaceGoogle } from "~/components/section/map/map-planner";
 import { WhatToDoMap } from "~/components/section/what-to-do/what-to-do-map";
 import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-map";
+import { WhatToDoMapDay } from "~/components/section/what-to-do/what-to-do-map-day";
 import {
+  Trip,
   WhatToDoMapFlight,
-  WhatToDoPlaceFlights,
 } from "~/components/section/what-to-do/what-to-do-map-flight";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
@@ -106,7 +108,11 @@ export default function WhatToDo() {
   const [places, setPlaces] = useState<WhatToDoPlace[]>(
     tripDetails.trip?.places ? tripDetails.trip.places : []
   );
-  const [flights, setFlights] = useState<WhatToDoPlaceFlights[]>([{}, {}]);
+  const [trip, setTrip] = useState<Trip>({
+    name: "My Trip",
+    startDate: moment().add(7, "days").format("YYYY-MM-DD"),
+    destinations: [{ days: [{}] }, { days: [{}] }],
+  });
   console.log("tripDetails", tripDetails);
 
   const handlePlaceSelect = async ({
@@ -140,19 +146,19 @@ export default function WhatToDo() {
     updateTrip({ city: place });
   };
 
-  const handleFlightSelected = (place: Place, number: number) => {
-    const updatedFlights = [...flights];
-    updatedFlights[number] = { place };
-    setFlights(updatedFlights);
+  const handleDestinationUpdate = (place: Place, number: number) => {
+    const updatedDestinations = [...trip.destinations];
+    updatedDestinations[number] = { ...updatedDestinations[number], place };
+    setTrip({ ...trip, destinations: updatedDestinations });
   };
 
-  const handleAnotherLocation = () => {
-    setFlights((prev) => [...prev, {}]);
+  const handleDestinationAdd = () => {
+    setTrip({ ...trip, destinations: [...trip.destinations, { days: [{}] }] });
   };
-  const handleRemoveLocation = (number: number) => {
-    const updatedFlights = [...flights];
-    updatedFlights.splice(number, 1);
-    setFlights(updatedFlights);
+  const handleDestinationRemove = (number: number) => {
+    const updatedDestinations = [...trip.destinations];
+    updatedDestinations.splice(number, 1);
+    setTrip({ ...trip, destinations: updatedDestinations });
   };
 
   const updateTrip = async ({
@@ -182,7 +188,7 @@ export default function WhatToDo() {
     <div>
       <Layout apiUrl={apiUrl} selectedUrl="/search">
         <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-          <Link to={`/what-to-do`}>Back</Link>
+          <Link className="py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700" to={`/what-to-do`}>Back</Link>
           <div>
             <h2 className="text-xl font-bold tracking-tight text-white">
               Trip Location
@@ -197,34 +203,66 @@ export default function WhatToDo() {
           </div>
           <div>
             <h2 className="text-xl font-bold tracking-tight text-white">
-              Flights
+              Destinations
             </h2>
-            {flights.map((flight, index) => (
-              <div key={index} className="mb-4">
-                <div>Location {index}:</div>
-                <Location
-                  apiUrl={apiUrl}
-                  onSelect={(value: string, iataCode: string, place: Place) =>
-                    handleFlightSelected(place, index)
-                  }
-                />
-                <div onClick={() => handleRemoveLocation(index)}>Remove</div>
-              </div>
-            ))}
-            <div className="" onClick={handleAnotherLocation}>
+            {trip.destinations.map((destination, index) => {
+              return (
+                <div key={index} className="mb-4">
+                  <div>Location {index + 1}:</div>
+                  <Location
+                    apiUrl={apiUrl}
+                    onSelect={(value: string, iataCode: string, place: Place) =>
+                      handleDestinationUpdate(place, index)
+                    }
+                  />
+                  <div className="flex">
+                    <div className="mr-2">{destination.days.length} days</div>
+                    <div className="cursor-pointer py-3 px-5 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700" onClick={() => handleDestinationRemove(index)}>
+                      Remove
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+            <div className="cursor-pointer inline-block py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700" onClick={handleDestinationAdd}>
               Add Another Location
             </div>
             <div>
               <WhatToDoMapFlight
                 googleApiKey={googleApiKey}
                 googleMapId={googleMapId}
-                places={flights}
+                trip={trip}
                 mapLocation={mapLocation}
               />
-              <h2 className="text-xl font-bold tracking-tight text-white">
-                City
-              </h2>
             </div>
+          </div>
+          {trip.destinations.filter((destination) => destination.place).flat()
+            .length > 0 ? (
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-white">
+                Days
+              </h2>
+              <div className="mb-4">
+                <LocationPlaces
+                  apiUrl={apiUrl}
+                  onSelect={handlePlaceSelect}
+                  place={mapLocation}
+                />
+              </div>
+              <WhatToDoMapDay
+                googleApiKey={googleApiKey}
+                googleMapId={googleMapId}
+                trip={trip}
+                mapLocation={mapLocation}
+              />
+            </div>
+          ) : (
+            ""
+          )}
+          {/* <div>
+            <h2 className="text-xl font-bold tracking-tight text-white">
+              City
+            </h2>
             <div className="mb-4">
               <LocationPlaces
                 apiUrl={apiUrl}
@@ -232,13 +270,13 @@ export default function WhatToDo() {
                 place={mapLocation}
               />
             </div>
-          </div>
-          <WhatToDoMap
-            googleApiKey={googleApiKey}
-            googleMapId={googleMapId}
-            places={places}
-            mapLocation={mapLocation}
-          />
+            <WhatToDoMap
+              googleApiKey={googleApiKey}
+              googleMapId={googleMapId}
+              places={places}
+              mapLocation={mapLocation}
+            />
+          </div> */}
         </div>
       </Layout>
     </div>
