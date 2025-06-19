@@ -5,6 +5,10 @@ import type { LoaderFunction } from "storybook/internal/types";
 import type { PlaceGoogle } from "~/components/section/map/map-planner";
 import { WhatToDoMap } from "~/components/section/what-to-do/what-to-do-map";
 import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-map";
+import {
+  WhatToDoMapFlight,
+  WhatToDoPlaceFlights,
+} from "~/components/section/what-to-do/what-to-do-map-flight";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
 import { LocationPlaces } from "~/components/ui/location-places";
@@ -102,6 +106,7 @@ export default function WhatToDo() {
   const [places, setPlaces] = useState<WhatToDoPlace[]>(
     tripDetails.trip?.places ? tripDetails.trip.places : []
   );
+  const [flights, setFlights] = useState<WhatToDoPlaceFlights[]>([{}, {}]);
   console.log("tripDetails", tripDetails);
 
   const handlePlaceSelect = async ({
@@ -133,6 +138,21 @@ export default function WhatToDo() {
   ) => {
     setMapLocation(place);
     updateTrip({ city: place });
+  };
+
+  const handleFlightSelected = (place: Place, number: number) => {
+    const updatedFlights = [...flights];
+    updatedFlights[number] = { place };
+    setFlights(updatedFlights);
+  };
+
+  const handleAnotherLocation = () => {
+    setFlights((prev) => [...prev, {}]);
+  };
+  const handleRemoveLocation = (number: number) => {
+    const updatedFlights = [...flights];
+    updatedFlights.splice(number, 1);
+    setFlights(updatedFlights);
   };
 
   const updateTrip = async ({
@@ -177,15 +197,33 @@ export default function WhatToDo() {
           </div>
           <div>
             <h2 className="text-xl font-bold tracking-tight text-white">
-              What to do
+              Flights
             </h2>
+            {flights.map((flight, index) => (
+              <div key={index} className="mb-4">
+                <div>Location {index}:</div>
+                <Location
+                  apiUrl={apiUrl}
+                  onSelect={(value: string, iataCode: string, place: Place) =>
+                    handleFlightSelected(place, index)
+                  }
+                />
+                <div onClick={() => handleRemoveLocation(index)}>Remove</div>
+              </div>
+            ))}
+            <div className="" onClick={handleAnotherLocation}>
+              Add Another Location
+            </div>
             <div>
-            <WhatToDoMap
-            googleApiKey={googleApiKey}
-            googleMapId={googleMapId}
-            places={places}
-            mapLocation={mapLocation}
-          />
+              <WhatToDoMapFlight
+                googleApiKey={googleApiKey}
+                googleMapId={googleMapId}
+                places={flights}
+                mapLocation={mapLocation}
+              />
+              <h2 className="text-xl font-bold tracking-tight text-white">
+                City
+              </h2>
             </div>
             <div className="mb-4">
               <LocationPlaces
