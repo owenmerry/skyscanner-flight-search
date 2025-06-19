@@ -147,6 +147,7 @@ export default function WhatToDo() {
           destinations: [{ days: [{}] }, { days: [{}] }],
         }
   );
+  const tripHack = trip;
   console.log("tripDetails", tripDetails);
 
   const handleMapLocationSelect = (
@@ -161,19 +162,22 @@ export default function WhatToDo() {
   const handleDestinationUpdate = (place: Place, number: number) => {
     const updatedDestinations = [...trip.destinations];
     updatedDestinations[number] = { ...updatedDestinations[number], place };
-    setTrip({ ...trip, destinations: updatedDestinations });
-    updateTrip({ hackTrip: trip });
+    const updatedTrip = { ...trip, destinations: updatedDestinations };
+    setTrip(updatedTrip);
+    updateTrip({ hackTrip: updatedTrip });
   };
 
   const handleDestinationAdd = () => {
-    setTrip({ ...trip, destinations: [...trip.destinations, { days: [{}] }] });
-    updateTrip({ hackTrip: trip });
+    const updatedTrip = { ...trip, destinations: [...trip.destinations, { days: [{}] }] };
+    setTrip(updatedTrip);
+    updateTrip({ hackTrip: updatedTrip });
   };
   const handleDestinationRemove = (number: number) => {
     const updatedDestinations = [...trip.destinations];
     updatedDestinations.splice(number, 1);
-    setTrip({ ...trip, destinations: updatedDestinations });
-    updateTrip({ hackTrip: trip });
+    const updatedTrip = { ...trip, destinations: updatedDestinations };
+    setTrip(updatedTrip);
+    updateTrip({ hackTrip: updatedTrip });
   };
 
   const updateTrip = async ({
@@ -201,7 +205,7 @@ export default function WhatToDo() {
           places: placesUpdate.map((place) => ({
             id: place.place.id,
           })),
-          hackTrip: derichTrip({ trip: hackTrip }),
+          hackTrip: hackTrip ? derichTrip({ trip: hackTrip }) : tripHack,
         },
       });
   };
@@ -234,17 +238,18 @@ export default function WhatToDo() {
             {trip.destinations.map((destination, index) => {
               return (
                 <div key={index} className="mb-4">
-                  <div>Location {index + 1}:</div>
+                  <div className="mb-2">Location {index + 1}:</div>
                   <Location
                     apiUrl={apiUrl}
+                    defaultValue={destination.place?.name || ""}
                     onSelect={(value: string, iataCode: string, place: Place) =>
                       handleDestinationUpdate(place, index)
                     }
                   />
-                  <div className="flex">
+                  <div className="flex mt-2">
                     <div className="mr-2">{destination.days.length} days</div>
                     <div
-                      className="cursor-pointer py-3 px-5 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
+                      className="cursor-pointer py-1 px-2 text-base font-small text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
                       onClick={() => handleDestinationRemove(index)}
                     >
                       Remove
@@ -254,7 +259,7 @@ export default function WhatToDo() {
               );
             })}
             <div
-              className="cursor-pointer inline-block py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
+              className="cursor-pointer mb-4 inline-block py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
               onClick={handleDestinationAdd}
             >
               Add Another Location

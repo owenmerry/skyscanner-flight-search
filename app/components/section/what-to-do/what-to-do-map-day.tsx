@@ -157,6 +157,7 @@ export const WhatToDoMapDay = ({
           </div>
         ))} */}
       </div>
+      <div className="mb-4">
       <LocationPlaces
         apiUrl={apiUrl}
         onSelect={({ placeGoogle }: { placeGoogle: PlaceGoogle }) =>
@@ -164,6 +165,7 @@ export const WhatToDoMapDay = ({
         }
         place={mapLocation}
       />
+      </div>
       <APIProvider apiKey={googleApiKey} libraries={["marker"]}>
         <Map
           mapId={googleMapId}
