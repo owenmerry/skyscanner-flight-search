@@ -6,10 +6,8 @@ import type { LoaderFunction } from "storybook/internal/types";
 import type { PlaceGoogle } from "~/components/section/map/map-planner";
 import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-map";
 import { WhatToDoMapDay } from "~/components/section/what-to-do/what-to-do-map-day";
-import {
-  Trip,
-  WhatToDoMapFlight,
-} from "~/components/section/what-to-do/what-to-do-map-flight";
+import type { Trip } from "~/components/section/what-to-do/what-to-do-map-flight";
+import { WhatToDoMapFlight } from "~/components/section/what-to-do/what-to-do-map-flight";
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
 import { Title } from "~/components/ui/title/title";
@@ -18,6 +16,8 @@ import { getCommonMeta } from "~/helpers/meta";
 import type { Place } from "~/helpers/sdk/place";
 import { skyscanner } from "~/helpers/sdk/skyscannerSDK";
 import type { TripDetailsResponseSDK } from "~/helpers/sdk/trip-details/trip-details-sdk";
+import { derichTrip } from "~/helpers/trip/derich";
+import { enrichTrip } from "~/helpers/trip/enrich";
 
 export const meta: V2_MetaFunction = ({ data }) => {
   return [
@@ -85,6 +85,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     })
   );
 
+  console.log("tripDetails?.trip?.hackTrip", tripDetails?.trip?.hackTrip);
+
+  if (tripDetails?.trip?.hackTrip) {
+    tripDetails.trip.hackTrip = await enrichTrip({
+      trip: tripDetails.trip.hackTrip,
+      apiUrl,
+    });
+  }
+
   return {
     apiUrl,
     googleApiKey,
@@ -101,17 +110,43 @@ export default function WhatToDo() {
     googleMapId: string;
     tripDetails: TripDetailsResponseSDK;
   }>();
+
+  console.log("tripDetails", tripDetails);
+
+  // if (!tripDetails || !tripDetails.trip || !tripDetails.city) {
+  //   return (
+  //     <Layout apiUrl={apiUrl} selectedUrl="/search">
+  //       <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
+  //         <Title text="What to do" />
+  //         <h2 className="text-xl font-bold tracking-tight text-white">
+  //           Trip not found:
+  //           {!tripDetails ? `No tripDetails found` : ""}
+  //           {tripDetails && !tripDetails.city ? `No city found` : ""}
+  //           {tripDetails && !tripDetails.trip
+  //             ? `No tripDetails.trip found`
+  //             : ""}
+  //         </h2>
+  //       </div>
+  //     </Layout>
+  //   );
+  // }
+
   const [mapLocation, setMapLocation] = useState<Place | undefined>(
     tripDetails.city
   );
+
   const [places] = useState<WhatToDoPlace[]>(
     tripDetails.trip?.places ? tripDetails.trip.places : []
   );
-  const [trip, setTrip] = useState<Trip>(tripDetails.trip.hackTrip ? tripDetails.trip.hackTrip : {
-    name: "My Trip",
-    startDate: moment().add(7, "days").format("YYYY-MM-DD"),
-    destinations: [{ days: [{}] }, { days: [{}] }],
-  });
+  const [trip, setTrip] = useState<Trip>(
+    tripDetails.trip.hackTrip
+      ? tripDetails.trip.hackTrip
+      : {
+          name: "My Trip",
+          startDate: moment().add(7, "days").format("YYYY-MM-DD"),
+          destinations: [{ days: [{}] }, { days: [{}] }],
+        }
+  );
   console.log("tripDetails", tripDetails);
 
   const handleMapLocationSelect = (
@@ -157,12 +192,16 @@ export default function WhatToDo() {
         apiUrl,
         id: tripDetails.id,
         editHash: tripDetails.editHash,
-        cityEntityId: city ? city.entityId : tripDetails.cityEntityId,
+        cityEntityId: city
+          ? city.entityId
+          : tripDetails.cityEntityId
+          ? tripDetails.cityEntityId
+          : "27537437",
         trip: {
           places: placesUpdate.map((place) => ({
             id: place.place.id,
           })),
-          hackTrip: hackTrip,
+          hackTrip: derichTrip({ trip: hackTrip }),
         },
       });
   };
@@ -240,6 +279,7 @@ export default function WhatToDo() {
                 mapLocation={mapLocation}
                 apiUrl={apiUrl}
                 onUpdateTrip={(trip) => {
+                  debugger;
                   setTrip({ ...trip });
                   console.log("trip", trip);
                   updateTrip({ hackTrip: trip });
