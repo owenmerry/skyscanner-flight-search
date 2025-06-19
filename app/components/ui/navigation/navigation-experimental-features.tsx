@@ -113,6 +113,12 @@ export const NavigationExperimentalFeatures = () => {
             description="A feature for finding things to do in a city."
             to="/what-to-do"
           />
+          <Article
+            label="Feature"
+            title="HACK: What To Do"
+            description="A feature for finding things to do in a city."
+            to="hack/what-to-do"
+          />
         </div>
       </div>
     </section>

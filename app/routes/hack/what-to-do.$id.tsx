@@ -168,7 +168,10 @@ export default function WhatToDo() {
   };
 
   const handleDestinationAdd = () => {
-    const updatedTrip = { ...trip, destinations: [...trip.destinations, { days: [{}] }] };
+    const updatedTrip = {
+      ...trip,
+      destinations: [...trip.destinations, { days: [{}] }],
+    };
     setTrip(updatedTrip);
     updateTrip({ hackTrip: updatedTrip });
   };
@@ -216,13 +219,13 @@ export default function WhatToDo() {
         <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
           <Link
             className="py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
-            to={`/what-to-do`}
+            to={`hack/what-to-do`}
           >
             Back
           </Link>
           <div>
             <Title text="Your Trip" />
-            <h2 className="text-xl font-bold tracking-tight text-white">
+            <h2 className="mb-2 text-md font-bold tracking-tight text-white">
               Trip Location
             </h2>
             <div className="mb-4">
@@ -238,7 +241,9 @@ export default function WhatToDo() {
             {trip.destinations.map((destination, index) => {
               return (
                 <div key={index} className="mb-4">
-                  <div className="mb-2">Location {index + 1}:</div>
+                  <h2 className="mb-2 text-md font-bold tracking-tight text-white">
+                    Location {index + 1}:
+                  </h2>
                   <Location
                     apiUrl={apiUrl}
                     defaultValue={destination.place?.name || ""}
