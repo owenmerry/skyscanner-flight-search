@@ -2,6 +2,8 @@ import type { V2_MetaFunction } from "@remix-run/node";
 import { Link, useLoaderData } from "@remix-run/react";
 import moment from "moment";
 import { useState } from "react";
+import { FaMapPin } from "react-icons/fa6";
+import Markdown from "react-markdown";
 import type { LoaderFunction } from "storybook/internal/types";
 import type { PlaceGoogle } from "~/components/section/map/map-planner";
 import type { WhatToDoPlace } from "~/components/section/what-to-do/what-to-do-map";
@@ -11,6 +13,7 @@ import { WhatToDoMapFlight } from "~/components/section/what-to-do/what-to-do-ma
 import { Layout } from "~/components/ui/layout/layout";
 import { Location } from "~/components/ui/location";
 import { Title } from "~/components/ui/title/title";
+import { openAIGenerateText } from "~/helpers/ai/openai";
 import { generateCanonicalUrl } from "~/helpers/canonical-url";
 import { getCommonMeta } from "~/helpers/meta";
 import type { Place } from "~/helpers/sdk/place";
@@ -56,37 +59,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return false;
   }
 
-  tripDetails.trip.places = await Promise.all(
-    tripDetails.trip.places.map(async (place: { id: string }) => {
-      const placeGoogle = await skyscanner().services.google.details({
-        apiUrl,
-        placeId: place.id,
-      });
-      if ("error" in placeGoogle) {
-        return false;
-      }
-
-      const googlePlace: PlaceGoogle = {
-        id: placeGoogle.id,
-        name: placeGoogle.displayName.text,
-        types: placeGoogle.types,
-        images: placeGoogle.photos
-          ? placeGoogle.photos.map((photo) => {
-              return photo.name;
-            })
-          : [],
-        location: placeGoogle.location,
-      };
-
-      return {
-        place: googlePlace,
-        fullPrice: 0,
-      };
-    })
-  );
-
-  console.log("tripDetails?.trip?.hackTrip", tripDetails?.trip?.hackTrip);
-
   if (tripDetails?.trip?.hackTrip) {
     tripDetails.trip.hackTrip = await enrichTrip({
       trip: tripDetails.trip.hackTrip,
@@ -104,32 +76,31 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 export default function WhatToDo() {
-  const { apiUrl, googleApiKey, googleMapId, tripDetails } = useLoaderData<{
-    apiUrl: string;
-    googleApiKey: string;
-    googleMapId: string;
-    tripDetails: TripDetailsResponseSDK;
-  }>();
+  const { apiUrl, googleApiKey, googleMapId, tripDetails, openai } =
+    useLoaderData<{
+      apiUrl: string;
+      googleApiKey: string;
+      googleMapId: string;
+      tripDetails: TripDetailsResponseSDK;
+    }>();
 
-  console.log("tripDetails", tripDetails);
-
-  // if (!tripDetails || !tripDetails.trip || !tripDetails.city) {
-  //   return (
-  //     <Layout apiUrl={apiUrl} selectedUrl="/search">
-  //       <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
-  //         <Title text="What to do" />
-  //         <h2 className="text-xl font-bold tracking-tight text-white">
-  //           Trip not found:
-  //           {!tripDetails ? `No tripDetails found` : ""}
-  //           {tripDetails && !tripDetails.city ? `No city found` : ""}
-  //           {tripDetails && !tripDetails.trip
-  //             ? `No tripDetails.trip found`
-  //             : ""}
-  //         </h2>
-  //       </div>
-  //     </Layout>
-  //   );
-  // }
+  if (!tripDetails || !tripDetails.trip || !tripDetails.city) {
+    return (
+      <Layout apiUrl={apiUrl} selectedUrl="/search">
+        <div className="justify-between mx-4 max-w-screen-lg bg-white dark:bg-gray-900 xl:p-9 xl:mx-auto">
+          <Title text="What to do" />
+          <h2 className="text-xl font-bold tracking-tight text-white">
+            Trip not found:
+            {!tripDetails ? `No tripDetails found` : ""}
+            {tripDetails && !tripDetails.city ? `No city found` : ""}
+            {tripDetails && !tripDetails.trip
+              ? `No tripDetails.trip found`
+              : ""}
+          </h2>
+        </div>
+      </Layout>
+    );
+  }
 
   const [mapLocation, setMapLocation] = useState<Place | undefined>(
     tripDetails.city
@@ -223,6 +194,12 @@ export default function WhatToDo() {
           >
             Back
           </Link>
+          <Link
+            className="py-3 px-5 mr-2 text-base font-medium text-center text-white rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900 bg-primary-700"
+            to={`/hack/what-to-do-app/${tripDetails.id}`}
+          >
+            Use App
+          </Link>
           <div>
             <Title text="Your Trip" />
             <h2 className="mb-2 text-md font-bold tracking-tight text-white">
@@ -242,7 +219,7 @@ export default function WhatToDo() {
               return (
                 <div key={index} className="mb-4">
                   <h2 className="mb-2 text-md font-bold tracking-tight text-white">
-                    Location {index + 1}:
+                    <FaMapPin className="inline-block" /> Location {index + 1}:
                   </h2>
                   <Location
                     apiUrl={apiUrl}
@@ -282,6 +259,9 @@ export default function WhatToDo() {
             .length > 0 ? (
             <div>
               <Title text="Days" />
+              {/* <div className="p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800">
+                <Markdown>{openai}</Markdown>
+              </div> */}
               <WhatToDoMapDay
                 googleApiKey={googleApiKey}
                 googleMapId={googleMapId}

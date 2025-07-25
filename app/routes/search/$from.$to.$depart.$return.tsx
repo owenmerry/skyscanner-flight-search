@@ -524,7 +524,7 @@ export default function Search() {
               <div>
                 <MapStatic
                   altText={`Map of the flight from ${flightQuery.from.name} to ${flightQuery.to.name}`}
-                  imageUrl={`https://flights.owenmerry.com/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`}
+                  imageUrl={`/image?from=${flightQuery.from.iata}&to=${flightQuery.to.iata}`}
                   onShowMap={() => setShowMap(!showMap)}
                 />
               </div>

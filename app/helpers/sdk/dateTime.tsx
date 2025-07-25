@@ -80,3 +80,23 @@ export const getTimeDurationMoment = (departure: string, arrival?: string): mome
 
   return duration;
 }
+
+
+export function timeTillDate(n: string): string {
+  const now = moment();
+  const target = moment(n);
+
+  if (target.isBefore(now)) {
+    return 'Date has already passed';
+  }
+
+  const duration = moment.duration(target.diff(now));
+
+  const parts: string[] = [];
+
+  if (duration.years()) parts.push(`${duration.years()}y`);
+  if (duration.months()) parts.push(`${duration.months()}mo`);
+  if (duration.days()) parts.push(`${duration.days()}d`);
+
+  return parts.join(' ');
+}

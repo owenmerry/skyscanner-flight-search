@@ -10,7 +10,7 @@ import type { PlaceGoogle } from "../map/map-planner";
 import { Polyline } from "@react-google-maps/api";
 
 export interface Flight {
-  to: Place
+  to: Place;
 }
 export interface Accomidation {
   place?: Place;
@@ -66,7 +66,7 @@ function FitBounds({ markers }: { markers: google.maps.LatLngLiteral[] }) {
   useEffect(() => {
     if (map && markers.length > 0) {
       const bounds = new google.maps.LatLngBounds();
-      markers.forEach(marker => bounds.extend(marker));
+      markers.forEach((marker) => bounds.extend(marker));
       map.fitBounds(bounds);
       if (Number(map.getZoom()) > 10) {
         map.setZoom(10); // Adjust zoom level if it's too high
@@ -83,13 +83,15 @@ export const WhatToDoMapFlight = ({
   trip,
   mapLocation,
 }: WhatToDoMapFlightProps) => {
-  const markers = trip.destinations.map(destination => {
-    if (!destination.place) return null;
-    return {
-      lat: destination.place.coordinates.latitude,
-      lng: destination.place.coordinates.longitude,
-    };
-  }).filter(marker => marker !== null);
+  const markers = trip.destinations
+    .map((destination) => {
+      if (!destination.place) return null;
+      return {
+        lat: destination.place.coordinates.latitude,
+        lng: destination.place.coordinates.longitude,
+      };
+    })
+    .filter((marker) => marker !== null);
 
   return (
     <div className="h-[500px]">
@@ -121,9 +123,7 @@ export const WhatToDoMapFlight = ({
               >
                 <div className="relative bg-primary-700 p-2 rounded-lg">
                   <div className="text-white text-sm">
-                    <div>
-                      {destination.place.name}
-                    </div>
+                    <div>{destination.place.name}</div>
                   </div>
 
                   <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-4 h-4 bg-primary-700"></div>
@@ -131,17 +131,17 @@ export const WhatToDoMapFlight = ({
               </AdvancedMarker>
             );
           })}
+          <Polyline
+            path={markers}
+            options={{
+              strokeColor: "#4285F4",
+              strokeOpacity: 0.8,
+              strokeWeight: 3,
+            }}
+          />
         </Map>
         <MapController location={mapLocation} />
         <FitBounds markers={markers} />
-        {/* <Polyline
-          path={markers}
-          options={{
-            strokeColor: '#4285F4',
-            strokeOpacity: 0.8,
-            strokeWeight: 3,
-          }}
-        /> */}
       </APIProvider>
     </div>
   );

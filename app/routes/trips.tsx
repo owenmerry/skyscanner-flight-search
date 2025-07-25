@@ -21,6 +21,7 @@ import { userPrefs } from "~/helpers/cookies";
 import { IndicativeQuotesSDK } from "~/helpers/sdk/indicative/indicative-functions";
 import { IndicativeSDK } from "~/helpers/sdk/indicative/indicative-sdk";
 import moment from "moment";
+import { timeTillDate } from "~/helpers/sdk/dateTime";
 
 interface Holiday {
   query: QueryPlace;
@@ -264,10 +265,10 @@ export default function Index() {
                 {getTripDaysLengthFromYYYYMMDD(
                   holiday.query.depart,
                   holiday.query.return
-                )}{" "}
+                )}{" "} - ({moment(holiday.query.depart).format('ddd, MMM D')} to {moment(holiday.query.return).format('ddd, MMM D')}){" "}
                 from{" "}
                 {holiday?.search?.cheapest[0]
-                  ? holiday?.search?.cheapest[0].price
+                  ? <>{holiday?.search?.cheapest[0].price} <a target="_blank" href={`/search/${holiday.query.from.iata}/${holiday.query.to.iata}/${holiday.query.depart}/${holiday.query.return}`} rel="noreferrer">See Search</a></>
                   : ""}
                 {holiday?.search?.status !== "RESULT_STATUS_COMPLETE" ? (
                   <div className="ml-2 inline-block">
@@ -419,6 +420,7 @@ export default function Index() {
                           holiday.query.depart,
                           holiday.query.return
                         )}
+                        {" "}-{" "}{timeTillDate(holiday.query.depart)}
                         {holiday.search &&
                         holiday.search.status === "RESULT_STATUS_COMPLETE" ? (
                           ""
